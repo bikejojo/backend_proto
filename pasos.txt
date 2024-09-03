@@ -1,0 +1,7 @@
+## paso 1 ##
+
+#se creo con 
+composer create-project laravel/laravel backend-app
+
+#creo la DB y se migro las tablas
+php artisan migrate
