@@ -17,6 +17,8 @@ type Query {
       "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
       name: String @where(operator: "like")
     ): [User!]! @paginate(defaultCount: 10)
+
+    
 }
 
 "Account of a person who utilizes this application."
@@ -38,4 +40,23 @@ type User {
 
     "When the account was last updated."
     updated_at: DateTime!
+}
+
+
+type Mutation {
+  #CRUD users
+  createUser(name: String!,email:String!,password:String!): User @field(resolver:"App\\GraphQL\\Mutations\\UserMutations@create")
+  updateUser(id:ID! ,name: String!,email:String!,password:String!): User @field(resolver:"App\\GraphQL\\Mutations\\UserMutations@update")
+  deleteUser(id:ID! @whereKey): Response @field(resolver:"App\\GraphQL\\Mutations\\UserMutations@delete")
+  
+  login(email:String!,password:String!): String @field(resolver: "App\\GraphQL\\Mutations\\UserMutations@login")
+}
+
+type Query {
+  userss: [User!] @all
+  user(id:ID! @whereKey): User @find
+}
+
+type Response {
+  message: String
 }
