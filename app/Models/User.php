@@ -23,6 +23,10 @@ class User extends Authenticatable
         'password',
     ];
 
+    public function clientes_externos(){
+        return $this->hasMany(Cliente_Externo::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -45,4 +49,5 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
 }

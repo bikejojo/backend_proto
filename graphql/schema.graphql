@@ -42,19 +42,38 @@ type User {
     updated_at: DateTime!
 }
 
+type Cliente_Externo {
+  id: ID!
+  nombre:String!
+  email:String!
+  metodo_login:String!
+  foto:String!
+  users_id:String!
+}
 
 type Mutation {
   #CRUD users
   createUser(name: String!,email:String!,password:String!): User @field(resolver:"App\\GraphQL\\Mutations\\UserMutations@create")
   updateUser(id:ID! ,name: String!,email:String!,password:String!): User @field(resolver:"App\\GraphQL\\Mutations\\UserMutations@update")
   deleteUser(id:ID! @whereKey): Response @field(resolver:"App\\GraphQL\\Mutations\\UserMutations@delete")
-  
+
   login(email:String!,password:String!): String @field(resolver: "App\\GraphQL\\Mutations\\UserMutations@login")
+
+  #CRUD cliente_externo
+  createCliente(nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!): Cliente_Externo @field(resolver:"App\\GraphQL\\Mutations\\ClienteExternoMutations@create")
+  updateCliente(id:ID!,nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!): Cliente_Externo @field(resolver:"App\\GraphQL\\Mutations\\ClienteExternoMutations@update")
+  deleteCliente(id:ID! @whereKey): Response @field(resolver:"App\\GraphQL\\Mutations\\ClienteExternoMutations@delete")
+
 }
 
 type Query {
+  #query de users
   userss: [User!] @all
   user(id:ID! @whereKey): User @find
+  #query de cliente
+  cliente_externos:[Cliente_Externo!] @all
+  cliente_externo(id:ID! @whereKey): Cliente_Externo @find
+
 }
 
 type Response {
