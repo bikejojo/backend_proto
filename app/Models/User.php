@@ -24,7 +24,10 @@ class User extends Authenticatable
     ];
 
     public function clientes_externos(){
-        return $this->hasMany(Cliente_Externo::class);
+        return $this->hasMany(Cliente_Externo::class,'users_id');
+    }
+    public function tecnicos(){
+        return $this->hasMany(Tecnico::class,'users_id');
     }
 
     /**

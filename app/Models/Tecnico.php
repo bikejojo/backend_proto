@@ -21,4 +21,8 @@ class Tecnico extends Model
         'users_id'
 
     ];
+
+    public function tecnicos() {
+        return $this->belongsTo(User::class,'users_id');
+    }
 }
