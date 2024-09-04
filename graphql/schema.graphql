@@ -54,7 +54,7 @@ type Cliente_Externo {
   foto:String!
   #users_id:String!
   users:User! @belongsTo
-
+  
 }
 
 type Tecnico {

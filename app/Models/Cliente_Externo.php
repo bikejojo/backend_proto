@@ -16,8 +16,12 @@ class Cliente_Externo extends Model
         'metodo_login',
         'foto',
         'users_id',
+        'ciudades_id',
     ];
     public function users() {
         return $this->belongsTo(User::class,'users_id');
+    }
+    public function ciudades() {
+        return $this->belongsTo(Ciudad::class,'ciudades_id');
     }
 }
