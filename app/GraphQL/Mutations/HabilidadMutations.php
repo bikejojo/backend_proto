@@ -2,16 +2,16 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Models\Ciudad;
+use App\Models\Habilidad;
 
-class CiudadMutations{
+class HabilidadMutations {
    public function create($root,array $args){
-    return $ciudad=Ciudad::create($args);
+    return $habilidad = Habilidad::create($args);
    }      
    public function update($root,array $args){
-    $id=Ciudad::find($args['id']);
-    $ciudad=Ciudad::where('id',$id)->update(['descripcion'=>$args['descripcion']]);
-    return $ciudad;
+    $id= Habilidad::find($args['id']);
+    $habilidad = Habilidad::where('id',$id)->update(['nombre'=>$args['nombre']]);
+    return $habilidad;
    }    
    public function delete($root,array $args){}                                                                                                                                             
 }
