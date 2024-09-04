@@ -52,10 +52,10 @@ type Cliente_Externo {
   email:String!
   metodo_login:String!
   foto:String!
-  ciudades_id:String!
+  #ciudades_id:String!
   #users_id:String!
   users:User! @belongsTo
-  
+  ciudades:Ciudad! @belongsTo
 }
 
 type Tecnico {
@@ -67,8 +67,8 @@ type Tecnico {
   correo: String!
   contrasenia: String!
   foto: String!
-  ciudades_id:String!
-  
+  #ciudades_id:String!
+  ciudades:Ciudad! @belongsTo
   users:User! @belongsTo
 }
 
@@ -99,13 +99,13 @@ type Mutation {
   login(email:String!,password:String!): String @field(resolver: "UserMutations@login")
 
   #CRUD cliente_externo
-  createCliente(nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!,ciudad_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@create")
-  updateCliente(id:ID!,nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!,ciudad_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@update")
+  createCliente(nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!,ciudades_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@create")
+  updateCliente(id:ID!,nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!,ciudades_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@update")
   deleteCliente(id:ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
 
   #CRUD tecnicos
-  createTecnico(nombre:String!,apellido:String!,carnet_anverso:String!,carnet_reverso:String!,correo:String!,contrasenia:String!,foto:String!,users_id:String!,ciudad_id:String!): Tecnico @field(resolver:"TecnicoMutations@create")
-  updateTecnico(id:ID!,nombre:String!,apellido:String!,carnet_anverso:String!,carnet_reverso:String!,correo:String!,contrasenia:String!,foto:String!,users_id:String!,ciudad_id:String!): Tecnico @field(resolver:"TecnicoMutations@update")
+  createTecnico(nombre:String!,apellido:String!,carnet_anverso:String!,carnet_reverso:String!,correo:String!,contrasenia:String!,foto:String!,users_id:String!,ciudades_id:String!): Tecnico @field(resolver:"TecnicoMutations@create")
+  updateTecnico(id:ID!,nombre:String!,apellido:String!,carnet_anverso:String!,carnet_reverso:String!,correo:String!,contrasenia:String!,foto:String!,users_id:String!,ciudades_id:String!): Tecnico @field(resolver:"TecnicoMutations@update")
   deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
 
   #CRUD ciudad
@@ -117,7 +117,10 @@ type Mutation {
   createHabilidad(nombre:String!):Habilidad @field(resolver:"HabilidadMutations@create")
   updateHabilidad(id:ID!,nombre:String!):Habilidad @field(resolver:"HabilidadMutations@create")
   deleteHabilidad(id:ID! @whereKey):Habilidad @field(resolver:"HabilidadMutations@create")
-
+  
+  #CRUD preferencia habilidades
+  create(habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"")
+  create(id:ID!,habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"") 
 }
 
 type Query {
