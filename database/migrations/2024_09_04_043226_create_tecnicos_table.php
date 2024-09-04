@@ -21,7 +21,9 @@ return new class extends Migration
             $table->string('contrasenia');
             $table->string('foto');
             $table->unsignedBigInteger("users_id");
+            $table->unsignedBigInteger("ciudades_id");
             $table->foreign("users_id")->references("id")->on("users")->onDelete("cascade");
+            $table->foreign("ciudades_id")->references("id")->on("users")->onDelete("cascade");
             $table->timestamps();
         });
     }

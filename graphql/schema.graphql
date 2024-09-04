@@ -66,6 +66,7 @@ type Tecnico {
   correo: String!
   contrasenia: String!
   foto: String!
+  
   users:User! @belongsTo
 }
 

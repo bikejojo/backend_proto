@@ -13,8 +13,8 @@ class Tecnico extends Model
     protected $fillable = [
         'nombre',
         'apellido',
-        'carnet-anverso',
-        'carnet-reverso',
+        'carnet_anverso',
+        'carnet_reverso',
         'correo',
         'contrasenia',
         'foto',
