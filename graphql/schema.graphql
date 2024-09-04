@@ -40,6 +40,8 @@ type User {
 
     "When the account was last updated."
     updated_at: DateTime!
+
+    cliente_externos:[Cliente_Externo!]! @hasMany
 }
 
 type Cliente_Externo {
@@ -48,7 +50,8 @@ type Cliente_Externo {
   email:String!
   metodo_login:String!
   foto:String!
-  users_id:String!
+  
+  user: User! @belongsTo
 }
 
 type Mutation {
@@ -61,7 +64,7 @@ type Mutation {
 
   #CRUD cliente_externo
   createCliente(nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!): Cliente_Externo @field(resolver:"App\\GraphQL\\Mutations\\ClienteExternoMutations@create")
-  updateCliente(id:ID!,nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!): Cliente_Externo @field(resolver:"App\\GraphQL\\Mutations\\ClienteExternoMutations@update")
+  updateCliente(id:ID!,nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:ID!): Cliente_Externo @field(resolver:"App\\GraphQL\\Mutations\\ClienteExternoMutations@update")
   deleteCliente(id:ID! @whereKey): Response @field(resolver:"App\\GraphQL\\Mutations\\ClienteExternoMutations@delete")
 
 }

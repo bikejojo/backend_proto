@@ -5,3 +5,7 @@ composer create-project laravel/laravel backend-app
 
 #creo la DB y se migro las tablas
 php artisan migrate
+
+#instalando lighthouse y publicando sus archivos de configuracion
+composer require nuwave/lighthouse
+php artisan config:publish cors 
