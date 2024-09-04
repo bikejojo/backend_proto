@@ -11,6 +11,14 @@ class Tecnico extends Model
     protected $PrimaryKey = 'id';
     protected $table = 'tecnicos';
     protected $fillable = [
+        'nombre',
+        'apellido',
+        'carnet-anverso',
+        'carnet-reverso',
+        'correo',
+        'contrasenia',
+        'foto',
+        'users_id'
 
     ];
 }
