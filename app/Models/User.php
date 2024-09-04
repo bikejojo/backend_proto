@@ -23,7 +23,7 @@ class User extends Authenticatable
         'password',
     ];
 
-    public function cliente_externos(){
+    public function clientes_externos(){
         return $this->hasMany(Cliente_Externo::class);
     }
 

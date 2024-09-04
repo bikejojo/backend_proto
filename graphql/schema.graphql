@@ -18,7 +18,7 @@ type Query {
       name: String @where(operator: "like")
     ): [User!]! @paginate(defaultCount: 10)
 
-    
+
 }
 
 "Account of a person who utilizes this application."
@@ -40,8 +40,6 @@ type User {
 
     "When the account was last updated."
     updated_at: DateTime!
-
-    cliente_externos:[Cliente_Externo!]! @hasMany
 }
 
 type Cliente_Externo {
@@ -50,8 +48,7 @@ type Cliente_Externo {
   email:String!
   metodo_login:String!
   foto:String!
-  
-  user: User! @belongsTo
+  users_id:String!
 }
 
 type Mutation {
