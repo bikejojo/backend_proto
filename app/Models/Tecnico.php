@@ -22,7 +22,7 @@ class Tecnico extends Model
 
     ];
 
-    public function tecnicos() {
+    public function users() {
         return $this->belongsTo(User::class,'users_id');
     }
 }
