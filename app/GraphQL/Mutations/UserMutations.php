@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserMutations{
 
@@ -17,7 +18,15 @@ class UserMutations{
      * @throws ValidationException
      */
     public function create($root , array $args){
-        return $user = User::create($args);
+        
+        $userData = $args['userRequest'];
+        $user = User::create([
+            'name' => $userData['name'], // Este campo es requerido
+            'email' => $userData['email'],
+            'password' => Hash::make($userData['password']),
+        ]);
+
+        return $user;
     }
 
     public function update($root , array $args){
