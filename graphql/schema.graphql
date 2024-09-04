@@ -70,6 +70,24 @@ type Tecnico {
   users:User! @belongsTo
 }
 
+type Ciudad {
+  id: ID!
+  descripcion: String!
+
+  clientes_externos: [Cliente_Externo!]! @hasMany
+  tecnicos: [Tecnico!]! @hasMany
+}
+
+type Habilidad {
+  id: ID!
+  nombre: string!
+
+  preferencia_habilidad: [Preferencia_Habilidad!]! @hasMany
+}
+type Preferencia_Habilidad{
+  habilidad: Habilidad! @belongsTo
+  cliente_externo: Cliente_Externo! @belongsTo
+}
 type Mutation {
   #CRUD users
   createUser(name: String!,email:String!,password:String!): User @field(resolver:"App\\GraphQL\\Mutations\\UserMutations@create")
