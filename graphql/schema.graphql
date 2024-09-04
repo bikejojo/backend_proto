@@ -159,20 +159,20 @@ type Mutation {
 
 type Query {
   #query de users
-  userss: [User!] @all
-  user(id:ID! @whereKey): User @find
+  getAllUser: [User!] @all
+  getUserById(id:ID! @whereKey): User @find
   #query de cliente
-  cliente_externos:[Cliente_Externo!] @all
-  cliente_externo(id:ID! @whereKey): Cliente_Externo @find
+  getAllClienteExterno:[Cliente_Externo!] @all
+  getClienteExternoById(id:ID! @whereKey): Cliente_Externo @find
   #Query de tecnicos
-  tecnicos:[Tecnico]@all
-  tecnico(id:ID! @whereKey): Tecnico @find
+  getAllTecnico:[Tecnico]@all
+  getTecnicoById(id:ID! @whereKey): Tecnico @find
   #Query de cuidades
-  cuidades: [Ciudad] @all
-  cuidad(id:ID! @whereKey): Ciudad @find
+  getAllCiudad: [Ciudad] @all
+  getCiudadById(id:ID! @whereKey): Ciudad @find
   #Query de Habilidades
-  habilidades:[Habilidad] @all
-  habilidad(id:ID! @whereKey): Habilidad @find 
+  getAllHabilidad:[Habilidad] @all
+  getHabilidadById(id:ID! @whereKey): Habilidad @find 
 }
 
 type Response {
