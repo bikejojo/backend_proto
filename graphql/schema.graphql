@@ -83,8 +83,8 @@ type Mutation {
   deleteCliente(id:ID! @whereKey): Response @field(resolver:"App\\GraphQL\\Mutations\\ClienteExternoMutations@delete")
 
   #CRUD tecnicos
-  createTecnico(): Tecnico @field(resolver:"App\\GraphQL\\Mutations\\TecnicoMutations@create")
-  updateTecnico(): Tecnico @field(resolver:"App\\GraphQL\\Mutations\\TecnicoMutations@update")
+  createTecnico(nombre:String!,apellido:String!,carnet_anverso:String!,carnet_reverso:String!,correo:String!,contrasenia:String!,foto:String!,users_id:String!): Tecnico @field(resolver:"App\\GraphQL\\Mutations\\TecnicoMutations@create")
+  updateTecnico(id:ID!,nombre:String!,apellido:String!,carnet_anverso:String!,carnet_reverso:String!,correo:String!,contrasenia:String!,foto:String!,users_id:String!): Tecnico @field(resolver:"App\\GraphQL\\Mutations\\TecnicoMutations@update")
   deleteTecnico(id:ID! @whereKey): Response @field(resolver:"App\\GraphQL\\Mutations\\TecnicoMutations@delete")
 }
 
@@ -95,7 +95,9 @@ type Query {
   #query de cliente
   cliente_externos:[Cliente_Externo!] @all
   cliente_externo(id:ID! @whereKey): Cliente_Externo @find
-
+  #Query de tecnicos
+  tecnicos:[Tecnico]@all
+  tecnico(id:ID! @whereKey): Tecnico @find
 }
 
 type Response {

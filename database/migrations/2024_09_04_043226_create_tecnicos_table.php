@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('apellido');
-            $table->string('carnet-anverso');
-            $table->string('carnet-reverso');
+            $table->string('carnet_anverso');
+            $table->string('carnet_reverso');
             $table->string('correo');
             $table->string('contrasenia');
             $table->string('foto');
