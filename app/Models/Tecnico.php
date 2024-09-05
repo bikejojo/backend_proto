@@ -16,6 +16,7 @@ class Tecnico extends Model
         'carnet_anverso',
         'carnet_reverso',
         'correo',
+        'telefono',
         'contrasenia',
         'foto',
         'users_id',
