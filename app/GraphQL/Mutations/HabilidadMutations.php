@@ -13,5 +13,13 @@ class HabilidadMutations {
     $habilidad = Habilidad::where('id',$id)->update(['nombre'=>$args['nombre']]);
     return $habilidad;
    }    
-   public function delete($root,array $args){}                                                                                                                                             
+   public function delete($root,array $args){
+      $id = Habilidad::find($args['id']);
+      if($id){
+         return ['message'=> 'Borrado no existoso'];
+      }else{
+         $habilidad=Habilidad::where('id',$id)->delete();
+         return ['message'=> 'Borrado existoso'];
+      }
+   }                                                                                                                                             
 }

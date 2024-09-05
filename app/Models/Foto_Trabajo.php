@@ -13,6 +13,10 @@ class Foto_Trabajo extends Model
     protected $fillable = [
         'foto',
         'tecnico_id',
-
+        'url_foto',
     ];
+
+    public function tecnicos(){
+        return $this->belongsTo(Tecnico::class,'tecnico_id');
+    }
 }

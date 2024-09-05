@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->date('fecha_certificacion');
+            $table->string('foto_url');
             $table->unsignedBigInteger('tecnico_id');
             $table->foreign('tecnico_id')->references('id')->on('tecnicos')->onDelete('cascade');
             $table->timestamps();

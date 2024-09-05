@@ -9,7 +9,7 @@ class PreferenciaHabilidadMutations{
     return $ciudad=Preferencia_Habilidad::create($args);
    }      
    public function update($root,array $args){
-
+      
    }    
    public function delete($root,array $args){}                                                                                                                                             
 }

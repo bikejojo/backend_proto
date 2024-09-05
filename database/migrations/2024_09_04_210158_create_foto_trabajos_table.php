@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('foto_trabajos', function (Blueprint $table) {
             $table->id();
             $table->String('foto');
+            $table->String('url_foto');
             $table->unsignedBigInteger('tecnico_id');
             $table->foreign('tecnico_id')->references('id')->on('tecnicos')->onDelete('cascade');
             $table->timestamps();

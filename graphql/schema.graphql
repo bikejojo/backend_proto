@@ -104,13 +104,14 @@ type Tecnico_Habilidad{
 type Certificacion{
   id:ID!
   nombre:String!
-  foto:String!
-  fecha_certificacion:DateTime!
+  foto_url:String!
+  fecha_certificacion:String!
 }
 
 type Foto_Trabajo{
   id:ID!
   foto:String!
+  foto_url:String!
 }
 
 type Mutation {
@@ -142,13 +143,13 @@ type Mutation {
   deleteHabilidad(id:ID! @whereKey):Habilidad @field(resolver:"HabilidadMutations@create")
   
   #CRUD preferencia habilidades
-  create(habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@create")
-  update(id:ID!,habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@update")
+  createPreferenciaHabilidad(habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@create")
+  updatePreferenciaHabilidad(id:ID!,habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@update")
 
   #CRUD Certificacion
-  #create():Certificacion @fiel(resolver:"")
-  #update():Certificacion @fiel(resolver:"")
-  #delete():Certificacion @fiel(resolver:"")
+  createCertificacion(nombre:String,foto_url:String!,fecha_certificacion:String!):Certificacion @fiel(resolver:"CertificacionMutations@create")
+  updateCertificacion(id:ID!,nombre:String,foto_url:String!,fecha_certificacion:String!):Certificacion @fiel(resolver:"CertificacionMutations@update")
+  deleteCertificacion(id:ID! @whereKey):Certificacion @fiel(resolver:"CertificacionMutations@delete")
   #CRUD Foto Trabajo
   #create():Foto_Trabajo @field(resolver:"")
   #update():Foto_Trabajo @field(resolver:"")

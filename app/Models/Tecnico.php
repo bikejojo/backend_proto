@@ -28,4 +28,13 @@ class Tecnico extends Model
     public function ciudades() {
         return $this->belongsTo(Ciudad::class,'ciudades_id');
     }
+    public function certificaciones(){
+        return $this->hasMany(Certificacion::class,'tecnico_id');
+    }
+    public function fotoTrabajos(){
+        return $this->hasMany(FotoTrabajo::class,'tecnico_id');
+    }
+    public function tecnicoHabilidades(){
+        return $this->hasMany(Tecnico_Habilidad::class,'tecnico_id');
+    }
 }

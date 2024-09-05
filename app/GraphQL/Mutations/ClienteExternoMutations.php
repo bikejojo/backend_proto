@@ -17,7 +17,7 @@ class ClienteExternoMutations{
         return Cliente_Externo::find($id);
     }
     public function delete($root ,array $args){
-            $id=Cliente_Externo::find(args['id']);
+            $id=Cliente_Externo::find($args['id']);
             if($id){
                 return ['message'=> 'Borrado no existoso'];
             }else{
