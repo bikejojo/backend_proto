@@ -19,7 +19,7 @@ class Preferencia_Habilidad extends Model
         return $this->belongsTo(Habilidad::class,'habilidades_id');
     }
 
-    public function clientes(){
+    public function cliente_externos(){
         return $this->belongsTo(Cliente_Externo::class,'cliente_id');
     }
 }

@@ -64,6 +64,7 @@ type Cliente_Externo {
 
   users:User! @belongsTo
   ciudades:Ciudad! @belongsTo
+  preferencia_habilidades:[Preferencia_Habilidad!]! @hasMany
 }
 
 type Tecnico {
@@ -78,6 +79,9 @@ type Tecnico {
   #ciudades_id:String!
   ciudades:Ciudad! @belongsTo
   users:User! @belongsTo
+  certificaciones:[Certificacion!]! @hasMany
+  fotoTrabajos:[Foto_Trabajo!] @hasMany
+  tecnicoHabilidades:[Tecnico_Habilidad!]! @hasMany
 }
 
 type Ciudad {
@@ -92,11 +96,15 @@ type Habilidad {
   id: ID!
   nombre: String!
 
-  preferencia_habilidad: [Preferencia_Habilidad!]! @hasMany
+  preferencia_habilidades: [Preferencia_Habilidad!]! @hasMany
+  tecnico_habilidades:[Tecnico_Habilidad!]! @hasMany
 }
 type Preferencia_Habilidad{
-  habilidad: Habilidad! @belongsTo
-  cliente_externo: Cliente_Externo! @belongsTo
+  habilidades_id:String!
+  cliente_id:String!
+
+  habilidades: Habilidad! @belongsTo
+  cliente_externos: Cliente_Externo! @belongsTo
 }
 
 type Tecnico_Habilidad{
@@ -104,6 +112,9 @@ type Tecnico_Habilidad{
   habilidad_id:String!
   experiencia:String!
   descripcion:String!
+
+  tecnicos: [Tecnico!]! @hasMany
+  habilidades: [Habilidad!]! @hasMany
 }
 
 type Certificacion{
@@ -111,12 +122,16 @@ type Certificacion{
   nombre:String
   foto_url:[String]
   fecha_certificacion:String
+
+  tecnicos:Tecnico! @belongsTo
 }
 
 type Foto_Trabajo{
   id:ID!
-  foto:String!
-  foto_url:String!
+  descripcion:String!
+  tecnico_id:String!
+
+  tecnicos: Tecnico! @belongsTo
 }
 
 type Mutation {
@@ -145,22 +160,25 @@ type Mutation {
   #CRUD habilidades
   createHabilidad(nombre:String!):Habilidad @field(resolver:"HabilidadMutations@create")
   updateHabilidad(id:ID!,nombre:String!):Habilidad @field(resolver:"HabilidadMutations@create")
-  deleteHabilidad(id:ID! @whereKey):Habilidad @field(resolver:"HabilidadMutations@create")
+  deleteHabilidad(id:ID! @whereKey):Response @field(resolver:"HabilidadMutations@create")
   
   #CRUD preferencia habilidades
   createPreferenciaHabilidad(habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@create")
   updatePreferenciaHabilidad(id:ID!,habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@update")
 
   #CRUD Certificacion
-  createCertificacion(nombre:String,foto_url:String!,fecha_certificacion:String!,tecnico_id:String!):Certificacion @field(resolver:"CertificacionMutations@create")
-  updateCertificacion(id:ID!,nombre:String,foto_url:String!,fecha_certificacion:String!):Certificacion @field(resolver:"CertificacionMutations@update")
+  createCertificacion(nombre:String,foto_url:String,fecha_certificacion:String,tecnico_id:String):Certificacion @field(resolver:"CertificacionMutations@create")
+  updateCertificacion(id:ID!,nombre:String!,foto_url:String!,fecha_certificacion:String!):Certificacion @field(resolver:"CertificacionMutations@update")
   deleteCertificacion(id:ID! @whereKey):Response @field(resolver:"CertificacionMutations@delete")
   #CRUD Foto Trabajo
-  #create():Foto_Trabajo @field(resolver:"")
-  #update():Foto_Trabajo @field(resolver:"")
-  #delete():Foto_Trabajo @field(resolver:"")
+  createFotoTrabajo(descripcion:String!,tecnico_id:String!):Foto_Trabajo @field(resolver:"")
+  updateFotoTrabajo(id:ID!,descripcion:String!,tecnico_id:String!):Foto_Trabajo @field(resolver:"")
+  deleteFotoTrabajo(id:ID! @whereKey):Response @field(resolver:"")
 
   #CRUD Tecnico habilidad
+  create(tecnico_id:String!,habilidad_id:String!,experiencia:String!,descripcion:String!):Tecnico_Habilidad @field(resolver:"")
+  update(id:ID!,tecnico_id:String!,habilidad_id:String!,experiencia:String!,descripcion:String!):Tecnico_Habilidad @field(resolver:"")
+
 }
 
 type Query {

@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('foto_trabajos', function (Blueprint $table) {
             $table->id();
             $table->String('descripcion');
-            $table->unsignedBigInteger('tecnico_id');
-            $table->foreign('tecnico_id')->references('id')->on('tecnicos')->onDelete('cascade');
+            $table->text('fotos');
             $table->timestamps();
         });
     }

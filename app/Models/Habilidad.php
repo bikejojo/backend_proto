@@ -14,7 +14,7 @@ class Habilidad extends Model
         'nombre',
     ];
 
-    public function prefencias_habilidades(){
+    public function prefencia_habilidades(){
         return $this->hasMany(Preferencia_Habilidad::class,'habilidad_id');
     }
 

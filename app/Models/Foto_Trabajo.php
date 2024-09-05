@@ -19,4 +19,5 @@ class Foto_Trabajo extends Model
     public function tecnicos(){
         return $this->belongsTo(Tecnico::class,'tecnico_id');
     }
+
 }
