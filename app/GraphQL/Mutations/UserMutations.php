@@ -27,16 +27,24 @@ class UserMutations{
             'password' => Hash::make($userData['password']),
         ]);
         
-        $token = $user->createToken('token')->plainTextToken;
+        $token = $user->createToken('token'+$user['ci'])->plainTextToken;
 
         return [$user,$token];
     }
 
     public function update($root , array $args){
-        $id= $args['id'];
+        /*$id= $args['id'];
         $args['password'] = bcrypt($args['password']);
         $user=User::where('id',$id)->update(['ci'=>$args['ci'],'email'=>$args['email'],'password'=>$args['password']]);
-        return User::find($id);
+        return User::find($id);*/
+        $user = User::find($args['id']);
+        if(!$user){
+            throw new \Exception('Usuario no encontrado');
+        }
+        $user->ci=$args['userRequest']['ci'];
+        $user->tipo_usuario=$args['userRequest']['tipo_usuario'];
+        $user->email=$args['userRequest']['email'];
+        $user->password=Hash::make($args['userRequest']['password']);
     }
 
     public function delete($root,array $args){
@@ -56,9 +64,8 @@ class UserMutations{
             throw new \Exception('Credenciales inválidas');
         }
     
-        $token = $user->createToken('Api Token')->plainTextToken;
-    
-        return $token;
+            
+        return $user;
     } 
     public function logout(){}
 }
