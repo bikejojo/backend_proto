@@ -14,7 +14,7 @@ class Certificacion extends Model
         'nombre',
         'fecha_certificacion',
         'tecnico_id',
-        'foto_url'
+        'foto_url',
     ];
     public function tecnicos(){
         return $this->belongsTo(Tecnico::class,'tecnico_id');

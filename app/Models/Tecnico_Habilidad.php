@@ -14,6 +14,7 @@ class Tecnico_Habilidad extends Model
         'tecnico_id',
         'habilidad_id',
         'experiencia',
+        'descripcion',
     ];
     public function tecnicos(){
         return $this->belongsTo(Tecnico::class,'tecnico_id');

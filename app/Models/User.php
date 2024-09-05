@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'ci',
+        'tipo_usuario',
     ];
 
     public function clientes_externos(){

@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('certficaciones', function (Blueprint $table) {
+        Schema::create('certificaciones', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->date('fecha_certificacion');
-            $table->string('foto_url');
-            $table->unsignedBigInteger('tecnico_id');
+            $table->string('nombre')->nullable();
+            $table->date('fecha_certificacion')->nullable();
+            $table->string('foto_url')->nullable();
+            $table->unsignedBigInteger('tecnico_id')->nullable();
             $table->foreign('tecnico_id')->references('id')->on('tecnicos')->onDelete('cascade');
             $table->timestamps();
         });
