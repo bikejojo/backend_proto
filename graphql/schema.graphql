@@ -109,7 +109,7 @@ type Tecnico_Habilidad{
 type Certificacion{
   id:ID
   nombre:String
-  foto_url:String
+  foto_url:[String]
   fecha_certificacion:String
 }
 
