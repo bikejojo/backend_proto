@@ -40,7 +40,7 @@ type User {
 
     "When the account was last updated."
     updated_at: DateTime!
-    
+
     clientes_externos:[Cliente_Externo!]! @hasMany
     tecnicos:[Tecnico!]! @hasMany
 
@@ -140,7 +140,7 @@ type Mutation {
   createHabilidad(nombre:String!):Habilidad @field(resolver:"HabilidadMutations@create")
   updateHabilidad(id:ID!,nombre:String!):Habilidad @field(resolver:"HabilidadMutations@create")
   deleteHabilidad(id:ID! @whereKey):Habilidad @field(resolver:"HabilidadMutations@create")
-  
+
   #CRUD preferencia habilidades
   create(habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@create")
   update(id:ID!,habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@update")
@@ -172,7 +172,7 @@ type Query {
   cuidad(id:ID! @whereKey): Ciudad @find
   #Query de Habilidades
   habilidades:[Habilidad] @all
-  habilidad(id:ID! @whereKey): Habilidad @find 
+  habilidad(id:ID! @whereKey): Habilidad @find
 }
 
 type Response {
