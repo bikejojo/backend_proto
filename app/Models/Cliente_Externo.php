@@ -24,4 +24,7 @@ class Cliente_Externo extends Model
     public function ciudades() {
         return $this->belongsTo(Ciudad::class,'ciudades_id');
     }
+    public function preferencia_habilidades(){
+        return $this->hasMany(Preferencia_Habilidad::class,'cliente_id');
+    }
 }

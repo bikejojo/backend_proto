@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('carnet_anverso');
             $table->string('carnet_reverso');
             $table->string('correo');
+            $table->string('telefono');
             $table->string('contrasenia');
             $table->string('foto');
             $table->unsignedBigInteger("users_id");

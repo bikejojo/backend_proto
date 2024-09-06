@@ -13,5 +13,14 @@ class Tecnico_Habilidad extends Model
     protected $fillable = [
         'tecnico_id',
         'habilidad_id',
+        'experiencia',
+        'descripcion',
     ];
+    public function tecnicos(){
+        return $this->belongsTo(Tecnico::class,'tecnico_id');
+    }
+
+    public function habilidades(){
+        return $this->belongsTo(Habilidad::class,'habilidad_id');
+    }
 }
