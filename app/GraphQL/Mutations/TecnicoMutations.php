@@ -28,8 +28,8 @@ class TecnicoMutations {
         $id=Tecnico::find($args['id']);
         $tecnico = Tecnico::where('id',$id)
         ->update(['nombre'=>$args['nombre'],'apellido'=>$args['apellido'],'carnet_anverso'=>$args['carnet_anverso'],
-        'correo'=>$agrs['correo'],'contrasenia'=>$args['contrasenia'],
-        'foto'=>$agrs['foto']]);
+        'correo'=>$args['correo'],'contrasenia'=>$args['contrasenia'],
+        'foto'=>$args['foto']]);
         return $tecnico->all();
     }
     public function delete($root,array $args){
