@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tecnico_habilidades', function (Blueprint $table) {
             $table->id();
             $table->string('experiencia');
-            $table->string('descripcion');
+            $table->text('descripcion');
             $table->unsignedBigInteger('tecnico_id');
             $table->unsignedBigInteger('habilidades_id');
             $table->foreign("habilidades_id")->references("id")->on("habilidades")->onDelete("cascade");

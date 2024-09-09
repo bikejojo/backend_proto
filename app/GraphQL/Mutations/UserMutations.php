@@ -18,7 +18,7 @@ class UserMutations{
      * @throws ValidationException
      */
     public function create($root , array $args){
-        
+
         $userData = $args['userRequest'];
         $user = User::create([
             'ci' => $userData['ci'],
@@ -26,8 +26,15 @@ class UserMutations{
             'email' => $userData['email'],
             'password' => Hash::make($userData['password']),
         ]);
+<<<<<<< HEAD
         
         $token = $user->createToken('token'+$user['ci'])->plainTextToken;
+=======
+
+        $token = $user->createToken('token')->plainTextToken;
+>>>>>>> b5ca0d2b462be5ba851b44fba2ced57bed1a8cf3
+
+        //Log::info('Usuario creado con éxito, ID:', $user->id);
 
         return [$user,$token];
     }
@@ -59,13 +66,21 @@ class UserMutations{
 
     public function login($root, array $args) {
         $user = User::where('ci', $args['ci'])->first();
-    
+
         if (!$user || !Hash::check($args['password'], $user->password)) {
             throw new \Exception('Credenciales inválidas');
         }
+<<<<<<< HEAD
     
             
         return $user;
     } 
+=======
+
+        $token = $user->createToken('Api Token')->plainTextToken;
+
+        return $token;
+    }
+>>>>>>> b5ca0d2b462be5ba851b44fba2ced57bed1a8cf3
     public function logout(){}
 }
