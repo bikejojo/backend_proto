@@ -30,6 +30,16 @@ return [
 
     'disks' => [
 
+        'certifis' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/certificados'),
+            'throw' => false,
+        ],
+        'fotos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/fotos'),
+            'throw' => false,
+        ],
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
