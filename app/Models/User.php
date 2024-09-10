@@ -22,6 +22,7 @@ class User extends Authenticatable
         'password',
         'ci',
         'tipo_usuario',
+        'token',
     ];
     protected $appends = ['token'];
 

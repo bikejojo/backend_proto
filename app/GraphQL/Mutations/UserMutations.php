@@ -29,6 +29,7 @@ class UserMutations{
         
         $token = $user->createToken('token_' . $user['ci'])->plainTextToken;
         $user->token = $token;
+        $user->save();
 
         //Log::info('Usuario creado con éxito, ID:', $user->id);
 

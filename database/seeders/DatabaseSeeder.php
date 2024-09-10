@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Ciudad;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -22,5 +23,13 @@ class DatabaseSeeder extends Seeder
             'tipo_usuario' => 1,
             'token' => "1"
         ]);
+
+        Ciudad::create(['descripcion'=>'SC']);
+        Ciudad::create(['descripcion'=>'CH']);
+        Ciudad::create(['descripcion'=>'CB']);
+        Ciudad::create(['descripcion'=>'TJ']);
+        Ciudad::create(['descripcion'=>'BN']);
+        Ciudad::create(['descripcion'=>'PD']);
+        Ciudad::create(['descripcion'=>'LP']);
     }
 }
