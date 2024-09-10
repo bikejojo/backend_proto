@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('ci');
             $table->string('email')->unique();
             $table->bigInteger('tipo_usuario')->nullable();
+            $table->text('token');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

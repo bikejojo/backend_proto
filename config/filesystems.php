@@ -40,6 +40,11 @@ return [
             'root' => storage_path('app/public/fotos'),
             'throw' => false,
         ],
+        'carnet' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/carnets'),
+            'throw' => false,
+        ],
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),

@@ -14,7 +14,7 @@ class TecnicoMutations {
             'apellido'=>$tecnicoData['apellido'],
             'carnet_anverso'=>$tecnicoData['carnet_anverso'],
             'carnet_reverso'=>$tecnicoData['carnet_reverso'],
-            'correo'=>$tecnicoData['correo'],
+            'email'=>$tecnicoData['email'],
             'telefono'=>$tecnicoData['telefono'],
             'contrasenia'=>$tecnicoData['contrasenia'],
             'foto'=>$tecnicoData['foto'],
@@ -28,7 +28,7 @@ class TecnicoMutations {
         $id=Tecnico::find($args['id']);
         $tecnico = Tecnico::where('id',$id)
         ->update(['nombre'=>$args['nombre'],'apellido'=>$args['apellido'],'carnet_anverso'=>$args['carnet_anverso'],
-        'correo'=>$args['correo'],'contrasenia'=>$args['contrasenia'],
+        'email'=>$args['email'],'contrasenia'=>$args['contrasenia'],
         'foto'=>$args['foto']]);
         return $tecnico->all();
     }

@@ -23,6 +23,12 @@ class User extends Authenticatable
         'ci',
         'tipo_usuario',
     ];
+    protected $appends = ['token'];
+
+    public function getTokenAttribute()
+    {
+        return $this->attributes['token'] ?? null;
+    }
 
     public function clientes_externos(){
         return $this->hasMany(Cliente_Externo::class,'users_id');

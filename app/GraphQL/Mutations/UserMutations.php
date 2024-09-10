@@ -26,17 +26,13 @@ class UserMutations{
             'email' => $userData['email'],
             'password' => Hash::make($userData['password']),
         ]);
-<<<<<<< HEAD
         
-        $token = $user->createToken('token'+$user['ci'])->plainTextToken;
-=======
-
-        $token = $user->createToken('token')->plainTextToken;
->>>>>>> b5ca0d2b462be5ba851b44fba2ced57bed1a8cf3
+        $token = $user->createToken('token_' . $user['ci'])->plainTextToken;
+        $user->token = $token;
 
         //Log::info('Usuario creado con éxito, ID:', $user->id);
 
-        return [$user,$token];
+        return $user;
     }
 
     public function update($root , array $args){
@@ -70,17 +66,11 @@ class UserMutations{
         if (!$user || !Hash::check($args['password'], $user->password)) {
             throw new \Exception('Credenciales inválidas');
         }
-<<<<<<< HEAD
-    
-            
-        return $user;
-    } 
-=======
 
-        $token = $user->createToken('Api Token')->plainTextToken;
+        //$token = $user->createToken('Api Token')->plainTextToken;
 
         return $token;
     }
->>>>>>> b5ca0d2b462be5ba851b44fba2ced57bed1a8cf3
+
     public function logout(){}
 }

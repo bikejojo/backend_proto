@@ -19,7 +19,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
             'password' => '123',
             'ci' => '123',
-            'tipo_usuario' => 1
+            'tipo_usuario' => 1,
+            'token' => "1"
         ]);
     }
 }

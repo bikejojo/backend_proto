@@ -25,7 +25,6 @@ type Query {
 type User {
     "Unique primary key."
     id: ID!
-
     #"Non-unique name."
     #name: String!
     "Unique email address."
@@ -38,19 +37,17 @@ type User {
     updated_at: DateTime!
     ci:String!
     tipo_usuario:Int!
-     token: String
+    token: String!
     clientes_externos:[Cliente_Externo!]! @hasMany
     tecnicos:[Tecnico!]! @hasMany
 
 }
 
 input UserRequest {
-
   email:String
   password:String!
   ci:String!
   tipo_usuario:Int!
-   token: String
 }
 
 type Cliente_Externo {
@@ -80,7 +77,7 @@ type Tecnico {
   contrasenia: String!
   foto: String!
   users_id:String!
-  ciudad_id:String!
+  ciudades_id:String!
 
   ciudades:Ciudad! @belongsTo
   users:User! @belongsTo
@@ -99,7 +96,7 @@ input TecnicoRequest {
   contrasenia: String!
   foto: String!
   users_id:ID!
-  ciudad_id:ID!
+  ciudades_id:ID!
 }
 
 type Tecnico_Habilidad{
@@ -161,11 +158,11 @@ type Foto_Trabajo{
 
 type Mutation {
 #CRUD users
-createUser(userRequest: UserRequest!): User @field(resolver:"UserMutations@create")
+createUser(userRequest: UserRequest!):User @field(resolver:"UserMutations@create")
 updateUser(id:ID! ,userRequest: UserRequest!): User @field(resolver:"UserMutations@update")
 deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
 
-login(ci: String!,password:String!):String @field(resolver:"UserMutations@login")
+#login(ci: String!,password:String!):String @field(resolver:"UserMutations@login")
 
 #CRUD tecnicos
 createTecnico(tecnicoRequest:TecnicoRequest): Tecnico @field(resolver:"TecnicoMutations@create")
@@ -227,4 +224,9 @@ type Query {
 
 type Response {
   message: String
+}
+
+type AuthPayload {
+  user: User!
+  token: String!
 }

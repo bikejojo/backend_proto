@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('apellido');
             $table->string('carnet_anverso');
             $table->string('carnet_reverso');
-            $table->string('correo');
+            $table->string('email');
             $table->string('telefono');
             $table->string('contrasenia');
             $table->string('foto');
