@@ -9,7 +9,7 @@ class Preferencia_Habilidad extends Model
 {
     use HasFactory;
     protected $table="preferencia_habilidades";
-    protected $PramiryKey="id";
+    protected $PrimaryKey="id";
     protected $fillable = [
         'habilidades_id',
         'cliente_id',

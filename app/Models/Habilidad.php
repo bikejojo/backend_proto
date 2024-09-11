@@ -9,7 +9,7 @@ class Habilidad extends Model
 {
     use HasFactory;
     protected $table="habilidades";
-    protected $PramiryKey="id";
+    protected $PrimaryKey="id";
     protected $fillable = [
         'nombre',
     ];

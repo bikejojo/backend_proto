@@ -1,5 +1,6 @@
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+scalar JSON
 
 "Indicates what fields are available at the top level of a query operation."
 type Query {
@@ -158,11 +159,15 @@ type Foto_Trabajo{
 
 type Mutation {
 #CRUD users
-createUser(userRequest: UserRequest!):User @field(resolver:"UserMutations@create")
-updateUser(id:ID! ,userRequest: UserRequest!): User @field(resolver:"UserMutations@update")
+#createUser(userRequest: UserRequest!):User @field(resolver:"UserMutations@create")
+#updateUser(id:ID! ,userRequest: UserRequest!): User @field(resolver:"UserMutations@update")
+#deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
+
+createUser(userRequest: JSON!):User @field(resolver:"UserMutations@create")
+updateUser(id:ID! ,userRequest: JSON!): User @field(resolver:"UserMutations@update")
 deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
 
-#login(ci: String!,password:String!):String @field(resolver:"UserMutations@login")
+login(ci: String!,password:String!):String! @field(resolver:"UserMutations@login")
 
 #CRUD tecnicos
 createTecnico(tecnicoRequest:TecnicoRequest): Tecnico @field(resolver:"TecnicoMutations@create")

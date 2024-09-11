@@ -19,21 +19,41 @@ class UserMutations{
      */
     public function create($root , array $args){
 
-        $userData = $args['userRequest'];
+       /* $userData = $args['userRequest'];
         $user = User::create([
             'ci' => $userData['ci'],
             'tipo_usuario' => $userData['tipo_usuario'],
             'email' => $userData['email'],
             'password' => Hash::make($userData['password']),
         ]);
-        
+
         $token = $user->createToken('token_' . $user['ci'])->plainTextToken;
         $user->token = $token;
         $user->save();
 
         //Log::info('Usuario creado con éxito, ID:', $user->id);
 
-        return $user;
+        return $user;*/
+        $userData = $args['userRequest'];
+        $email = $userData['email'] ?? null;
+        $password = $userData['password'] ?? null;
+        $ci=$userData['ci'] ?? null;
+        $tipo_usuario=$userData['tipo_usuario'] ?? null;
+
+        if($email && $password && $ci && $tipo_usuario){
+            $user = User::create([
+                'email' => $email,
+                'password' => Hash::make($password),
+                'ci' => $ci,
+                'tipo_usuario' => $tipo_usuario,
+            ]);
+            $token = $user->createToken('token_' . $user['ci'])->plainTextToken;
+            $user->token = $token;
+            $user->save();
+
+            return $user;
+        }
+        return null;
     }
 
     public function update($root , array $args){
@@ -68,7 +88,7 @@ class UserMutations{
             throw new \Exception('Credenciales inválidas');
         }
 
-        //$token = $user->createToken('Api Token')->plainTextToken;
+        $token = $user->createToken('Api Token')->plainTextToken;
 
         return $token;
     }

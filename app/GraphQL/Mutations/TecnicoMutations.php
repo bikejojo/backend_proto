@@ -4,6 +4,7 @@ namespace App\GraphQL\Mutations;
 
 use App\Models\Tecnico;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class TecnicoMutations {
     public function create($root,array $args){
@@ -16,7 +17,7 @@ class TecnicoMutations {
             'carnet_reverso'=>$tecnicoData['carnet_reverso'],
             'email'=>$tecnicoData['email'],
             'telefono'=>$tecnicoData['telefono'],
-            'contrasenia'=>$tecnicoData['contrasenia'],
+            'contrasenia'=>Hash::make($tecnicoData['contrasenia']),
             'foto'=>$tecnicoData['foto'],
             'users_id'=>$tecnicoData['users_id'],
             'ciudades_id'=>$tecnicoData['ciudades_id'],
