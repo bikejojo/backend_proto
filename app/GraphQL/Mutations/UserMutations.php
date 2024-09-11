@@ -57,18 +57,15 @@ class UserMutations{
     }
 
     public function update($root , array $args){
-        /*$id= $args['id'];
-        $args['password'] = bcrypt($args['password']);
-        $user=User::where('id',$id)->update(['ci'=>$args['ci'],'email'=>$args['email'],'password'=>$args['password']]);
-        return User::find($id);*/
+        $userData = $args['userRequest'];
         $user = User::find($args['id']);
         if(!$user){
             throw new \Exception('Usuario no encontrado');
         }
-        $user->ci=$args['userRequest']['ci'];
-        $user->tipo_usuario=$args['userRequest']['tipo_usuario'];
-        $user->email=$args['userRequest']['email'];
-        $user->password=Hash::make($args['userRequest']['password']);
+        $user->ci=$userData['ci']??$user->ci;
+        $user->tipo_usuario=$userData['tipo_usuario']??$user->tipo_usuario;
+        $user->email=$userData['email']??$user->email;
+        $user->password=isset($userData['password']) ? Hash::make($userData['password']): $user->password;
     }
 
     public function delete($root,array $args){

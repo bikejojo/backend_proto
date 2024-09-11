@@ -1,7 +1,5 @@
-"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 scalar JSON
-scalar Upload
 
 "Indicates what fields are available at the top level of a query operation."
 type Query {
@@ -45,6 +43,13 @@ type User {
 
 }
 
+input UserRequest {
+  email:String
+  password:String!
+  ci:String!
+  tipo_usuario:Int!
+}
+
 type Cliente_Externo {
   id: ID!
   nombre:String!
@@ -81,6 +86,19 @@ type Tecnico {
   tecnicoHabilidades:[Tecnico_Habilidad!]! @hasMany
 }
 
+input TecnicoRequest {
+  nombre: String!
+  apellido: String!
+  carnet_anverso: String!
+  carnet_reverso: String!
+  email: String
+  telefono:String!
+  contrasenia: String!
+  foto: String!
+  users_id:ID!
+  ciudades_id:ID!
+}
+
 type Tecnico_Habilidad{
   tecnico_id:ID!
   habilidad_id:ID!
@@ -89,6 +107,12 @@ type Tecnico_Habilidad{
 
   tecnicos: [Tecnico!]! @hasMany
   habilidades: [Habilidad!]! @hasMany
+}
+
+input Tecnico_HabilidadRequest{
+  habilidad_id:ID!
+  experiencia:String!
+  descripcion:String!
 }
 
 type Ciudad {
@@ -133,8 +157,11 @@ type Foto_Trabajo{
 }
 
 type Mutation {
-
 #CRUD users
+#createUser(userRequest: UserRequest!):User @field(resolver:"UserMutations@create")
+#updateUser(id:ID! ,userRequest: UserRequest!): User @field(resolver:"UserMutations@update")
+#deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
+
 createUser(userRequest: JSON!):User @field(resolver:"UserMutations@create")
 updateUser(id:ID! ,userRequest: JSON!): User @field(resolver:"UserMutations@update")
 deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
@@ -142,6 +169,9 @@ deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
 login(ci: String!,password:String!):String! @field(resolver:"UserMutations@login")
 
 #CRUD tecnicos
+#createTecnico(tecnicoRequest:TecnicoRequest): Tecnico @field(resolver:"TecnicoMutations@create")
+#updateTecnico(id:ID!,tecnicoRequest:TecnicoRequest!): Tecnico @field(resolver:"TecnicoMutations@update")
+#deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
 createTecnico(tecnicoRequest:JSON): Tecnico @field(resolver:"TecnicoMutations@create")
 updateTecnico(id:ID!,tecnicoRequest:JSON!): Tecnico @field(resolver:"TecnicoMutations@update")
 deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
@@ -157,23 +187,25 @@ updateTecnicoHabilidad(id:ID!,habilidades: [Tecnico_HabilidadRequest!]!):[Tecnic
 
 
  #CRUD cliente_externo
-createCliente(nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!,ciudades_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@create")
-updateCliente(id:ID!,nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!,ciudades_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@update")
-deleteCliente(id:ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
+  createCliente(nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!,ciudades_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@create")
+  updateCliente(id:ID!,nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!,ciudades_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@update")
+  deleteCliente(id:ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
+
+
 
   #CRUD ciudad
-createCiudad(descripcion:String! ):Ciudad @field(resolver:"CiudadMutations@create")
-updateCiudad(id:ID!,descripcion:String!):Ciudad @field(resolver:"CiudadMutations@create")
-deleteCiudad(id:ID! @whereKey):Ciudad @field(resolver:"CiudadMutations@create")
+  createCiudad(descripcion:String! ):Ciudad @field(resolver:"CiudadMutations@create")
+  updateCiudad(id:ID!,descripcion:String!):Ciudad @field(resolver:"CiudadMutations@create")
+  deleteCiudad(id:ID! @whereKey):Ciudad @field(resolver:"CiudadMutations@create")
 
-#CRUD preferencia habilidades
-createPreferenciaHabilidad(habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@create")
-updatePreferenciaHabilidad(id:ID!,habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@update")
+  #CRUD preferencia habilidades
+  createPreferenciaHabilidad(habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@create")
+  updatePreferenciaHabilidad(id:ID!,habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@update")
 
-#CRUD Certificacion
-createCertificacion(nombre:String,foto_url:String,fecha_certificacion:String,tecnico_id:String):Certificacion @field(resolver:"CertificacionMutations@create")
-updateCertificacion(id:ID!,nombre:String!,foto_url:String!,fecha_certificacion:String!):Certificacion @field(resolver:"CertificacionMutations@update")
-deleteCertificacion(id:ID! @whereKey):Response @field(resolver:"CertificacionMutations@delete")
+  #CRUD Certificacion
+  createCertificacion(nombre:String,foto_url:String,fecha_certificacion:String,tecnico_id:String):Certificacion @field(resolver:"CertificacionMutations@create")
+  updateCertificacion(id:ID!,nombre:String!,foto_url:String!,fecha_certificacion:String!):Certificacion @field(resolver:"CertificacionMutations@update")
+  deleteCertificacion(id:ID! @whereKey):Response @field(resolver:"CertificacionMutations@delete")
   #CRUD Foto Trabajo
 
 
