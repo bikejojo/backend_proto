@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 
 class TecnicoMutations {
     public function create($root,array $args){
@@ -14,23 +15,23 @@ class TecnicoMutations {
         // Handle files
         // Manejar los archivos
         if (isset($args['carnet_anverso']) && $args['carnet_anverso'] instanceof UploadedFile) {
-            $carnetAnversoPath1 = $args['carnet_anverso']->store('carnets', 'carnet');
-            $tecnicoData['carnet_anverso'] = $carnetAnversoPath1;
+            $carnetAnversoPath = $args['carnet_anverso']->store('carnets', 'carnets');
+            $tecnicoData['carnet_anverso'] = $carnetAnversoPath;
+
+            if (Storage::disk('carnets')->exists($carnetAnversoPath)) {
+                Log::info("El archivo de carnet anverso se guardó correctamente en: " . $carnetAnversoPath);
+            } else {
+                Log::error("Hubo un problema al guardar el archivo de carnet anverso.");
+            }
         }
 
         if (isset($args['carnet_reverso']) && $args['carnet_reverso'] instanceof UploadedFile) {
-            $carnetReversoPath2 = $args['carnet_reverso']->store('carnets', 'carnet');
+            $carnetReversoPath2 = $args['carnet_reverso']->store('carnets', 'carnets');
             $tecnicoData['carnet_reverso'] = $carnetReversoPath2;
-        }
-        // Verificar si el archivo fue guardado
-        if (Storage::disk('carnet')->exists($carnetAnversoPath1)) {
-            logger("El archivo de carnet anverso se guardó correctamente en: " . $carnetAnversoPath1);
-        } else {
-            logger("Hubo un problema al guardar el archivo de carnet anverso.");
         }
 
         if (isset($args['foto']) && $args['foto'] instanceof UploadedFile) {
-            $fotoPath = $args['foto']->store('fotos', 'foto');
+            $fotoPath = $args['foto']->store('fotos', 'fotos');
             $tecnicoData['foto'] = $fotoPath;
         }
 
