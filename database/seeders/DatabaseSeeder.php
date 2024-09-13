@@ -24,12 +24,16 @@ class DatabaseSeeder extends Seeder
             'token' => "1"
         ]);
 
-        Ciudad::create(['descripcion'=>'SC']);
-        Ciudad::create(['descripcion'=>'CH']);
-        Ciudad::create(['descripcion'=>'CB']);
-        Ciudad::create(['descripcion'=>'TJ']);
-        Ciudad::create(['descripcion'=>'BN']);
-        Ciudad::create(['descripcion'=>'PD']);
-        Ciudad::create(['descripcion'=>'LP']);
+        Ciudad::create(['descripcion'=>'Santa Cruz']);
+        Ciudad::create(['descripcion'=>'Cochabamba']);
+        Ciudad::create(['descripcion'=>'Chuquisaca']);
+        Ciudad::create(['descripcion'=>'Tarija']);
+        Ciudad::create(['descripcion'=>'Beni']);
+        Ciudad::create(['descripcion'=>'Pando']);
+        Ciudad::create(['descripcion'=>'La Paz']);
+        Ciudad::create(['descripcion'=>'El Alto']);
+        Ciudad::create(['descripcion'=>'Oruro']);
+        Ciudad::create(['descripcion'=>'Potosi']);
+
     }
 }

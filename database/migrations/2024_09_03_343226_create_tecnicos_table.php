@@ -15,12 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->string('apellido');
-            $table->string('carnet_anverso');
-            $table->string('carnet_reverso');
-            $table->string('email');
+            $table->string('carnet_anverso')->nullable();
+            $table->string('carnet_reverso')->nullable();
+            $table->string('email')->nullable();
             $table->string('telefono');
             $table->string('contrasenia');
-            $table->string('foto');
+            $table->string('foto')->nullable();
             $table->unsignedBigInteger("users_id");
             $table->unsignedBigInteger("ciudades_id");
             $table->foreign("users_id")->references("id")->on("users")->onDelete("cascade");

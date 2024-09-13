@@ -33,17 +33,20 @@ return [
         'certifis' => [
             'driver' => 'local',
             'root' => storage_path('app/public/certificados'),
-            'throw' => false,
+            'url' => env('APP_URL') . '/storage/certifis',
+            'visibility' => 'public',
         ],
         'fotos' => [
             'driver' => 'local',
             'root' => storage_path('app/public/fotos'),
-            'throw' => false,
+            'url' => env('APP_URL') . '/storage//fotos',
+            'visibility' => 'public',
         ],
         'carnet' => [
             'driver' => 'local',
             'root' => storage_path('app/public/carnets'),
-            'throw' => false,
+            'url' => env('APP_URL') . '/storage/carnet',
+            'visibility' => 'public',
         ],
         'local' => [
             'driver' => 'local',

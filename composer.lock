@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "219844ca8db47b355cedc48fc1961442",
+    "content-hash": "9ab13d51c9e98d024edd58b8fc02a3ff",
     "packages": [
         {
             "name": "brick/math",
@@ -1980,6 +1980,58 @@
                 }
             ],
             "time": "2024-01-28T23:22:08+00:00"
+        },
+        {
+            "name": "marqant-lab/lighthouse-json",
+            "version": "v0.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/marqant-lab/lighthouse-json.git",
+                "reference": "26265e30c428f9c8b9953bb69c59edb59cd082a9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/marqant-lab/lighthouse-json/zipball/26265e30c428f9c8b9953bb69c59edb59cd082a9",
+                "reference": "26265e30c428f9c8b9953bb69c59edb59cd082a9",
+                "shasum": ""
+            },
+            "require": {
+                "nuwave/lighthouse": "^4.13||^5.23||^6.8"
+            },
+            "type": "package",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Marqant\\LighthouseJson\\LighthouseJsonServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Marqant\\LighthouseJson\\": "src/",
+                    "Marqant\\LighthouseJson\\Tests\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Thomas Venturini",
+                    "email": "thomas@du.digital"
+                },
+                {
+                    "name": "Dmytro Sydorenko",
+                    "email": "dmytro@du.digital"
+                }
+            ],
+            "description": "JSON Scalar for lighthouse-php.",
+            "support": {
+                "issues": "https://github.com/marqant-lab/lighthouse-json/issues",
+                "source": "https://github.com/marqant-lab/lighthouse-json/tree/v0.0.5"
+            },
+            "time": "2023-04-19T11:55:31+00:00"
         },
         {
             "name": "mll-lab/laravel-graphiql",

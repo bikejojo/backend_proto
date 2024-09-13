@@ -5,53 +5,40 @@ namespace App\GraphQL\Mutations;
 use App\Models\Tecnico;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 
 class TecnicoMutations {
     public function create($root,array $args){
-        //return $tecnico=Tecnico::create($args);
-       /* $tecnicoData = $args['tecnicoRequest'];
-        $tecnico = Tecnico::create([
-            'nombre' => $tecnicoData['nombre'] ,
-            'apellido'=>$tecnicoData['apellido'],
-            'carnet_anverso'=>$tecnicoData['carnet_anverso'],
-            'carnet_reverso'=>$tecnicoData['carnet_reverso'],
-            'email'=>$tecnicoData['email'],
-            'telefono'=>$tecnicoData['telefono'],
-            'contrasenia'=>Hash::make($tecnicoData['contrasenia']),
-            'foto'=>$tecnicoData['foto'],
-            'users_id'=>$tecnicoData['users_id'],
-            'ciudades_id'=>$tecnicoData['ciudades_id'],
-        ]);
-        return $tecnico;*/
         $tecnicoData = $args['tecnicoRequest'];
-        $nombre = $tecnicoData['nombre'];
-        $apellido = $tecnicoData['apellido'];
-        $carnet_anverso=$tecnicoData['carnet_anverso'];
-        $carnet_reverso=$tecnicoData['carnet_reverso'];
-        $email=$tecnicoData['email'];
-        $telefono=$tecnicoData['telefono'];
-        $contrasenia=$tecnicoData['contrasenia'];
-        $foto=$tecnicoData['foto'];
-        $users_id=$tecnicoData['users_id'];
-        $ciudades_id=$tecnicoData['ciudades_id'];
-
-        if($nombre && $apellido && $carnet_anverso && $carnet_reverso &&
-            $email && $telefono && $contrasenia&&$foto&&$users_id&&$ciudades_id ){
-                $tecnico = Tecnico::create([
-                    'nombre' => $nombre,
-                    'apellido' => $apellido,
-                    'carnet_anverso' => $carnet_anverso,
-                    'carnet_reverso' => $carnet_reverso,
-                    'email' => $email,
-                    'telefono' => $telefono,
-                    'contrasenia' => Hash::make($contrasenia),
-                    'foto' => $foto,
-                    'users_id' => $users_id,
-                    'ciudades_id' => $ciudades_id,
-                ]);
-                return $tecnico;
+        // Handle files
+        // Manejar los archivos
+        if (isset($args['carnet_anverso']) && $args['carnet_anverso'] instanceof UploadedFile) {
+            $carnetAnversoPath1 = $args['carnet_anverso']->store('carnets', 'carnet');
+            $tecnicoData['carnet_anverso'] = $carnetAnversoPath1;
         }
-        return null;
+
+        if (isset($args['carnet_reverso']) && $args['carnet_reverso'] instanceof UploadedFile) {
+            $carnetReversoPath2 = $args['carnet_reverso']->store('carnets', 'carnet');
+            $tecnicoData['carnet_reverso'] = $carnetReversoPath2;
+        }
+        // Verificar si el archivo fue guardado
+        if (Storage::disk('carnet')->exists($carnetAnversoPath1)) {
+            logger("El archivo de carnet anverso se guardó correctamente en: " . $carnetAnversoPath1);
+        } else {
+            logger("Hubo un problema al guardar el archivo de carnet anverso.");
+        }
+
+        if (isset($args['foto']) && $args['foto'] instanceof UploadedFile) {
+            $fotoPath = $args['foto']->store('fotos', 'foto');
+            $tecnicoData['foto'] = $fotoPath;
+        }
+
+        //$urlCarnetAnverso = Storage::disk('carnet')->url($carnetAnversoPath1);
+        //$urlFoto = Storage::disk('fotos')->url($fotoPath);
+        $tecnico = Tecnico::create($tecnicoData);
+
+        return $tecnico;
     }
 
     public function update($root,array $args){

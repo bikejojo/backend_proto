@@ -1,7 +1,8 @@
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 scalar JSON
-scalar Upload
+#import ../vendor/marqant-lab/lighthouse-json/graphql/*.graphql
+scalar Upload @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload")
 
 "Indicates what fields are available at the top level of a query operation."
 type Query {
@@ -45,6 +46,25 @@ type User {
 
 }
 
+type Tecnico {
+  id: ID!
+  nombre: String!
+  apellido: String!
+  carnet_anverso: String
+  carnet_reverso: String
+  email: String
+  telefono:String!
+  contrasenia: String!
+  foto: String
+  users_id:String!
+  ciudades_id:String!
+
+  ciudades:Ciudad! @belongsTo
+  users:User! @belongsTo
+  certificaciones:[Certificacion!]! @hasMany
+  fotoTrabajos:[Foto_Trabajo!] @hasMany
+  tecnicoHabilidades:[Tecnico_Habilidad!]! @hasMany
+}
 type Cliente_Externo {
   id: ID!
   nombre:String!
@@ -60,27 +80,6 @@ type Cliente_Externo {
 #input Cliente_Externo(
 #
 #)
-
-type Tecnico {
-  id: ID!
-  nombre: String!
-  apellido: String!
-  carnet_anverso: String!
-  carnet_reverso: String!
-  email: String
-  telefono:String!
-  contrasenia: String!
-  foto: String!
-  users_id:String!
-  ciudades_id:String!
-
-  ciudades:Ciudad! @belongsTo
-  users:User! @belongsTo
-  certificaciones:[Certificacion!]! @hasMany
-  fotoTrabajos:[Foto_Trabajo!] @hasMany
-  tecnicoHabilidades:[Tecnico_Habilidad!]! @hasMany
-}
-
 type Tecnico_Habilidad{
   tecnico_id:ID!
   habilidad_id:ID!
@@ -136,15 +135,18 @@ type Mutation {
 
 #CRUD users
 createUser(userRequest: JSON!):User @field(resolver:"UserMutations@create")
-updateUser(id:ID! ,userRequest: JSON!): User @field(resolver:"UserMutations@update")
-deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
+#updateUser(id:ID! ,userRequest: JSON!): User @field(resolver:"UserMutations@update")
+#deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
 
 login(ci: String!,password:String!):String! @field(resolver:"UserMutations@login")
 
 #CRUD tecnicos
-createTecnico(tecnicoRequest:JSON): Tecnico @field(resolver:"TecnicoMutations@create")
-updateTecnico(id:ID!,tecnicoRequest:JSON!): Tecnico @field(resolver:"TecnicoMutations@update")
-deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
+createTecnico(tecnicoRequest:JSON!,carnet_anverso: Upload,carnet_reverso: Upload, foto: Upload): Tecnico @field(resolver:"TecnicoMutations@create")
+#updateTecnico(id:ID!,tecnicoRequest:JSON!): Tecnico @field(resolver:"TecnicoMutations@update")
+#deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
+
+
+
 
 #CRUD habilidades
 createHabilidad(nombre:String!):Habilidad @field(resolver:"HabilidadMutations@create")
