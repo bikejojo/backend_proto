@@ -55,16 +55,16 @@ class UserMutations{
         }
     }
 
-    public function login($root, array $args) {
+    public function login($root, array $args)
+    {
         $user = User::where('ci', $args['ci'])->first();
 
         if (!$user || !Hash::check($args['password'], $user->password)) {
             throw new \Exception('Credenciales inválidas');
         }
 
-        $token = $user->createToken('Api Token')->plainTextToken;
-
-        return $token;
+   // Crear un token con Sanctum
+        return $user->createToken('authToken')->plainTextToken;
     }
 
     public function logout(){}

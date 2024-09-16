@@ -138,7 +138,7 @@ createUser(userRequest: JSON!):User @field(resolver:"UserMutations@create")
 #updateUser(id:ID! ,userRequest: JSON!): User @field(resolver:"UserMutations@update")
 #deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
 
-login(ci: String!,password:String!):String! @field(resolver:"UserMutations@login")
+login(ci: String!,password:String!):String @field(resolver:"UserMutations@login")
 
 #CRUD tecnicos
 createTecnico(tecnicoRequest:JSON!,carnet_anverso: Upload,carnet_reverso: Upload, foto: Upload): Tecnico @field(resolver:"TecnicoMutations@create")
