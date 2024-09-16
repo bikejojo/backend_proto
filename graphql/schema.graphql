@@ -81,10 +81,11 @@ type Cliente_Externo {
 #
 #)
 type Tecnico_Habilidad{
+  id:ID!
   tecnico_id:ID!
   habilidad_id:ID!
-  experiencia:String!
-  descripcion:String!
+  experiencia:String
+  descripcion:String
 
   tecnicos: [Tecnico!]! @hasMany
   habilidades: [Habilidad!]! @hasMany
@@ -138,14 +139,12 @@ createUser(userRequest: JSON!):User @field(resolver:"UserMutations@create")
 #updateUser(id:ID! ,userRequest: JSON!): User @field(resolver:"UserMutations@update")
 #deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
 
-login(ci: String!,password:String!):String @field(resolver:"UserMutations@login")
+login(ci: String!,contrasenia:String!):String @field(resolver:"UserMutations@login")
 
 #CRUD tecnicos
 createTecnico(tecnicoRequest:JSON!,carnet_anverso: Upload,carnet_reverso: Upload, foto: Upload): Tecnico @field(resolver:"TecnicoMutations@create")
 #updateTecnico(id:ID!,tecnicoRequest:JSON!): Tecnico @field(resolver:"TecnicoMutations@update")
 #deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
-
-
 
 
 #CRUD habilidades
@@ -154,7 +153,7 @@ updateHabilidad(id:ID!,nombre:String!):Habilidad @field(resolver:"HabilidadMutat
 #deleteHabilidad(id:ID! @whereKey):Habilidad @field(resolver:"HabilidadMutations@create")
 
 #CRUD Tecnico habilidad
-assignTecnicoHabilidad(tecnico_id:ID!,habilidades: [Tecnico_HabilidadRequest!]!):[Tecnico_Habilidad!]! @field(resolver:"TecnicoHabilidadMutations@assign")
+assignTecnicoHabilidad(tecnico_id:ID!,habilidades:JSON):Tecnico_Habilidad @field(resolver:"TecnicoHabilidadMutations@assign")
 updateTecnicoHabilidad(id:ID!,habilidades: [Tecnico_HabilidadRequest!]!):[Tecnico_Habilidad!]! @field(resolver:"TecnicoHabilidadMutations@update")
 
 
@@ -195,7 +194,7 @@ type Query {
   getAllCiudad: [Ciudad] @all
   getCiudadById(id:ID! @whereKey): Ciudad @find
   #Query de Habilidades
-  habilidades:[Habilidad] @all
+  getAllHabilidades:[Habilidad] @all
   habilidad(id:ID! @whereKey): Habilidad @find
 }
 

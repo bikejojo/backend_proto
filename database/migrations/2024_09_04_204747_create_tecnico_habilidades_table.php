@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('tecnico_habilidades', function (Blueprint $table) {
             $table->id();
-            $table->string('experiencia');
-            $table->text('descripcion');
+            $table->string('experiencia')->nullable();
+            $table->text('descripcion')->nullable();
             $table->unsignedBigInteger('tecnico_id');
-            $table->unsignedBigInteger('habilidades_id');
-            $table->foreign("habilidades_id")->references("id")->on("habilidades")->onDelete("cascade");
+            $table->unsignedBigInteger('habilidad_id');
+            $table->foreign("habilidad_id")->references("id")->on("habilidades")->onDelete("cascade");
             $table->foreign("tecnico_id")->references("id")->on("tecnicos")->onDelete("cascade");
             $table->timestamps();
         });

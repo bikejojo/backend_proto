@@ -6,6 +6,7 @@ use App\Models\Tecnico_Habilidad;
 use App\Models\Tecnico;
 
 class TecnicoHabilidadMutations{
+
     public function assign($root,array $args){
         #return $tecnico=Tecnico_Habilidad::create($args);
         $id = $args['tecnico_id'];

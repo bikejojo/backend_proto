@@ -18,7 +18,7 @@ return new class extends Migration
             $table->bigInteger('tipo_usuario')->nullable();
             $table->text('token')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('contrasenia');
             $table->rememberToken();
             $table->timestamps();
         });

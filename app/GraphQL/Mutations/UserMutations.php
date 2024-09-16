@@ -21,7 +21,7 @@ class UserMutations{
         $userData = $args['userRequest'];
         $user = User::create([
             'email' => $userData['email'],
-            'password' => $userData['password'],
+            'contrasenia' => Hash::make($userData['contrasenia']),
             'ci' => $userData['ci'],
             'tipo_usuario' =>$userData['tipo_usuario'],
         ]);
@@ -42,7 +42,7 @@ class UserMutations{
         $user->ci=$userData['ci']??$user->ci;
         $user->tipo_usuario=$userData['tipo_usuario']??$user->tipo_usuario;
         $user->email=$userData['email']??$user->email;
-        $user->password=isset($userData['password']) ? Hash::make($userData['password']): $user->password;
+        $user->contrasenia=isset($userData['contrasenia']) ? Hash::make($userData['contrasenia']): $user->contrasenia;
     }
 
     public function delete($root,array $args){
@@ -59,7 +59,7 @@ class UserMutations{
     {
         $user = User::where('ci', $args['ci'])->first();
 
-        if (!$user || !Hash::check($args['password'], $user->password)) {
+        if (!$user || !Hash::check($args['contrasenia'], $user->contrasenia)) {
             throw new \Exception('Credenciales inválidas');
         }
 
