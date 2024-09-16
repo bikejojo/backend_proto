@@ -7,34 +7,75 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Log;
+use Intervention\Image\ImageManager;
+use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Drivers\Gd\Encoders\WebpEncoder;
+
+use Intervention\Image\Imagick\Driver as ImagickDriver;
+use Nuwave\Lighthouse\Schema\Types\Scalars\Upload;
 
 class TecnicoMutations {
     public function create($root,array $args){
         $tecnicoData = $args['tecnicoRequest'];
         // Handle files
         // Manejar los archivos
-        if (isset($args['carnet_anverso']) && $args['carnet_anverso'] instanceof UploadedFile) {
-            $carnetAnversoPath = $args['carnet_anverso']->store('carnets', 'carnets');
-            $tecnicoData['carnet_anverso'] = $carnetAnversoPath;
+        $manager = new ImageManager(new Driver());
+        //$manager->configure(['driver' => 'gd']);
 
-            if (Storage::disk('carnets')->exists($carnetAnversoPath)) {
-                Log::info("El archivo de carnet anverso se guardó correctamente en: " . $carnetAnversoPath);
-            } else {
-                Log::error("Hubo un problema al guardar el archivo de carnet anverso.");
-            }
+        $validator = validator::make($args ,[
+            'carnet_anverso' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'carnet_reverso' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
+        ]);
+
+        if($validator->fails()){
+            throw new \Exception('archivo de imagen invalido');
         }
 
-        if (isset($args['carnet_reverso']) && $args['carnet_reverso'] instanceof UploadedFile) {
+        if (isset($args['carnet_anverso']) && $args['carnet_anverso'] instanceof UploadedFile) {
+            /*$carnetAnversoPath = $args['carnet_anverso']->store('carnets', 'carnets');
+            $tecnicoData['carnet_anverso'] = $carnetAnversoPath;*/
+            $image = $manager->read($args['carnet_anverso']->getRealPath());
+            //redimensionar
+            $image->resize(800,nulL, function($constraint){
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            $carnetAnversoPath = 'carnets/' . uniqid() . '.png';
+            $fullPath = storage_path('app/public/' . $carnetAnversoPath);
+            $image->save($fullPath, 75, 'png');
+        }
+
+        /*if (isset($args['carnet_reverso']) && $args['carnet_reverso'] instanceof UploadedFile) {
             $carnetReversoPath2 = $args['carnet_reverso']->store('carnets', 'carnets');
             $tecnicoData['carnet_reverso'] = $carnetReversoPath2;
-        }
+        }*/
+        if(isset($args['carnet_reverso']) && $args['carnet_reverso'] instanceof UploadedFile){
+            $image = $manager->read($args['carnet_reverso']->getRealPath());
 
-        if (isset($args['foto']) && $args['foto'] instanceof UploadedFile) {
+            $image->resize(800,null,function($constraint){
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+        $carnetReversoPath2 = 'carnets/'.uniqid(). '.png';
+        $fullPath = storage_path('app/public/'.$carnetReversoPath2);
+        $image->save($fullPath,7,'png');
+        }
+        /*if (isset($args['foto']) && $args['foto'] instanceof UploadedFile) {
             $fotoPath = $args['foto']->store('fotos', 'fotos');
             $tecnicoData['foto'] = $fotoPath;
+        }*/
+        if(isset($args['foto'])&&$args['foto'] instanceof UploadedFile){
+            $image = $manager->read($args['foto']->getRealPath());
+            $image->resize(800,null,function($constraint){
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            $foto = 'fotos/' . uniqid() . '.png';
+            $fullPath = storage_path('app/public/'. $foto);
+            $image->save($fullPath,75,'png');
         }
-
         //$urlCarnetAnverso = Storage::disk('carnet')->url($carnetAnversoPath1);
         //$urlFoto = Storage::disk('fotos')->url($fotoPath);
         $tecnico = Tecnico::create($tecnicoData);
@@ -43,12 +84,6 @@ class TecnicoMutations {
     }
 
     public function update($root,array $args){
-        /*$id=Tecnico::find($args['id']);
-        $tecnico = Tecnico::where('id',$id)
-        ->update(['nombre'=>$args['nombre'],'apellido'=>$args['apellido'],'carnet_anverso'=>$args['carnet_anverso'],
-        'email'=>$args['email'],'contrasenia'=>$args['contrasenia'],
-        'foto'=>$args['foto']]);
-        return $tecnico->all(); */
         $tecnicoData = $args['tecnicoRequest'];
         $tecnico = Tecnico::find($args['id']);
 
