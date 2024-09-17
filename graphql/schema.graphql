@@ -77,9 +77,6 @@ type Cliente_Externo {
   preferencia_habilidades:[Preferencia_Habilidad!]! @hasMany
 }
 
-#input Cliente_Externo(
-#
-#)
 type Tecnico_Habilidad{
   id:ID!
   tecnico_id:ID!
@@ -142,7 +139,7 @@ createUser(userRequest: JSON!):User @field(resolver:"UserMutations@create")
 login(ci: String!,contrasenia:String!):String @field(resolver:"UserMutations@login")
 
 #CRUD tecnicos
-createTecnico(tecnicoRequest:JSON!,carnet_anverso: Upload,carnet_reverso: Upload, foto: Upload): Tecnico @field(resolver:"TecnicoMutations@create")
+createTecnico(tecnicoRequest:JSON!,carnet_anverso: Upload,carnet_reverso: Upload, foto: Upload): tecnico @field(resolver:"TecnicoMutations@create")
 #updateTecnico(id:ID!,tecnicoRequest:JSON!): Tecnico @field(resolver:"TecnicoMutations@update")
 #deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
 
@@ -195,14 +192,18 @@ type Query {
   getCiudadById(id:ID! @whereKey): Ciudad @find
   #Query de Habilidades
   getAllHabilidades:[Habilidad] @all
-  habilidad(id:ID! @whereKey): Habilidad @find
+  getHabilidadById(id:ID! @whereKey): Habilidad @find
+  #Query de certificados
+  getAllCertificados:[Certificacion] @all
+  getCertificadoById(id:ID! @whereKey): Certificacion @find
 }
 
 type Response {
   message: String
 }
 
-type AuthPayload {
-  user: User!
-  token: String!
+type tecnico{
+    tecnico: Tecnico
+    url_anv: String
+    url_rev: String
 }

@@ -6,20 +6,29 @@ use App\Models\Certificacion;
 use Illuminate\http\UploadedFile;
 use Intervention\image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Support\Facades\Storage;
 
 class CertificacionMutations{
     public function create($root,array $args){
         $certificadoData = $args['certificadoRequest'];
+        $certificado = Certificacion::create($certificadoData);
+        $certificadoId= $certificado->tecnico_id;
+
         $manager = new ImageManager(new Driver());
+
+        $certificadoDir = 'public/' . $certificadoId;
+        Storage::makeDirectory($certificadoDir.'certificado');
+
         if(isset($args['foto_url'])&&$args['foto_url'] instanceof UploadedFile){
             $image = $manager->read($args['foto_url']->getRealPath());
             $image->resize(700,null,function($constrain){
                 $constrain->aspectRatio();
                 $constrain->upsize();
             });
-            $certificacion = 'certificis/'. uniqid() . '.png';
+            $certificacion =$certificadoId. '/certificado'.'/'. uniqid() . '.png';
             $fullPath = storage_path('app/public/'.$certificacion);
             $image->save($fullPath,75,'png');
+            $certificado->foto_url = str_replace('public/','',$certificacion);
 
         }
     }

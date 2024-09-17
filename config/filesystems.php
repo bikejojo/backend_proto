@@ -30,7 +30,7 @@ return [
 
     'disks' => [
 
-        'certifis' => [
+       /* 'certifis' => [
             'driver' => 'local',
             'root' => storage_path('app/public/certificados'),
             'url' => env('APP_URL') . '/storage/certificados',
@@ -47,7 +47,7 @@ return [
             'root' => storage_path('app/public/carnets'),
             'url' => env('APP_URL') . '/storage/carnets',
             'visibility' => 'public',
-        ],
+        ],*/
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
