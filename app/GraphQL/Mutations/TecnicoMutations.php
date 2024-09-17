@@ -64,7 +64,7 @@ public function create($root,array $args){
         $compressedUrl2 = url('storage/' . $tecnico->carnet_reverso);
     }
 
-    if (isset($args['foto']) && $args['foto'] instanceof UploadedFile) {
+    /*if (isset($args['foto']) && $args['foto'] instanceof UploadedFile) {
         $image = $manager->read($args['foto']->getRealPath());
         $image->resize(700, null, function ($constraint) {
             $constraint->aspectRatio();
@@ -76,7 +76,7 @@ public function create($root,array $args){
 
         $image->save($fullPath, 75, 'png');
         $tecnico->foto = str_replace('public/','',$fotoPath);
-    }
+    }*/
 
     // Guardar las rutas de las imágenes en el técnico
     $tecnico->save();
@@ -92,9 +92,8 @@ public function create($root,array $args){
         $tecnicoData = $args['tecnicoRequest'];
         $tecnico = Tecnico::find($args['id']);
 
-        if(!$tecnico){
+        if(!$tecnico)
             throw new \Exception('Tecnico no encontrado');
-        }
 
         $tecnico->nombre = $tecnicoData['nombre']??$tecnico->nombre;
         $tecnico->apellido = $tecnicoData['apellido']??$tecnico->apellido;
@@ -106,6 +105,51 @@ public function create($root,array $args){
         $tecnico->foto = $tecnicoData['foto'] ?? $tecnico->foto;
         $tecnico->users_id = $tecnicoData['users_id'] ?? $tecnico->users_id;
         $tecnico->ciudades_id = $tecnicoData['ciudades_id'] ?? $tecnico->ciudades_id;
+
+        $manager = new ImageManager(new Driver());
+
+        if(isset($args['carnet_anverso']) && $args['carnet_anverso'] instanceof UploadedFile){
+            if ($tecnico->carnet_anverso) {
+                Storage::delete('public/' . $tecnico->carnet_anverso);
+            }
+            $image = $manager->read($args['carnet_anverso']->getRealPath());
+            $image->resize(700,null,function($constraint){
+                $constraint->aspectRadio();
+                $constraint->upsize();
+            });
+            $carnetAnversoPath = $tecnico->id. '/carnet/Anverso_' . uniqid() . '.png';
+            $fullPath = storage_path('app/public/'.$carnetAnversoPath);
+            $image->save($fullPath,75,'png');
+            $tecnico->carnet_anverso = str_replace('public/','',$carnetAnversoPath);
+        }
+
+        if(isset($args['carnet_reverso']) && $args['carnet_reverso'] instanceof UploadedFile){
+            if ($tecnico->carnet_reverso) {
+                Storage::delete('public/' . $tecnico->carnet_reverso);
+            }
+            $image = $manager->read($args['carnet_reverso']->getRealPath());
+            $image->resize(700,null,function($constraint){
+                $constraint->aspectRadio();
+                $constraint->upsize();
+            });
+            $carnetReversoPath = $tecnico->id. '/carnet/Reverso_' . uniqid() . '.png';
+            $fullPath = storage_path('app/public/'.$carnetReversoPath);
+            $image->save($fullPath,75,'png');
+            $tecnico->carnet_reverso = str_replace('public/','',$carnetReversoPath);
+        }
+
+        if(isset($args['foto']) && $args['foto'] instanceof UploadedFile){
+            $image = $manager->read($args['foto']->getRealPath());
+            $image->resize(700,null,function($constraint){
+                $constraint->aspectRadio();
+                $constraint->upsize();
+            });
+            $fotoPath = $tecnico->id. '/perfil/foto_' . uniqid() . '.png';
+            $fullPath = storage_path('app/public/'.$fotoPath);
+            $image->save($fullPath,75,'png');
+            $tecnico->foto = str_replace('public/','',$fotoPath);
+        }
+        $tecnico->save();
 
         return $tecnico;
     }
