@@ -124,7 +124,8 @@ type Certificacion{
 type Foto_Trabajo{
   id:ID!
   descripcion:String!
-  tecnico_id:String!
+  tecnicos_id:ID!
+  fotos_url:[String!]!
 
   tecnicos: Tecnico! @belongsTo
 }
@@ -169,11 +170,11 @@ createPreferenciaHabilidad(habilidades_id:String!,cliente_id:String!):Preferenci
 updatePreferenciaHabilidad(id:ID!,habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@update")
 
 #CRUD Certificacion
-createCertificacion(nombre:String,foto_url:String,fecha_certificacion:String,tecnico_id:String):Certificacion @field(resolver:"CertificacionMutations@create")
+createCertificacion(certificacionRequest:JSON , foto_url:Upload):Certificacion @field(resolver:"CertificacionMutations@create")
 updateCertificacion(id:ID!,nombre:String!,foto_url:String!,fecha_certificacion:String!):Certificacion @field(resolver:"CertificacionMutations@update")
 deleteCertificacion(id:ID! @whereKey):Response @field(resolver:"CertificacionMutations@delete")
   #CRUD Foto Trabajo
-
+createFotoTrabajo(fotoTrabajoRequest:JSON , fotos_url:[Upload!]!):Foto_Trabajo @field(resolver:"FotoTrabajoMutations@create")
 
 }
 

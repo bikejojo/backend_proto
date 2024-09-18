@@ -4,7 +4,8 @@ namespace App\GraphQL\Mutations;
 
 use App\Models\Certificacion;
 use Illuminate\http\UploadedFile;
-use Intervention\image\ImageManager;
+
+use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -12,13 +13,14 @@ use Illuminate\Support\Facades\Validator;
 class CertificacionMutations{
     public function create($root,array $args){
 
-        $certificadoData = $args['certificadoRequest'];
+        $certificadoData = $args['certificacionRequest'];
         $certificado = Certificacion::create($certificadoData);
         $validator = validator::make($args, [
-            'foto_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'foto_url' =>  'required|file|mimes:jpeg,png,jpg,gif,svg,webp',
         ]);
-        if ($validator->fails())
+        if ($validator->fails()){
             throw new \Exception('Archivo de imagen inválido');
+        }
         $certificadoId= $certificado->tecnico_id;
 
         $manager = new ImageManager(new Driver());
@@ -36,8 +38,9 @@ class CertificacionMutations{
             $fullPath = storage_path('app/public/'.$certificacion);
             $image->save($fullPath,75,'png');
             $certificado->foto_url = str_replace('public/','',$certificacion);
-
         }
+        $certificado->save();
+        //return $certificado;
     }
     public function update($root,array $args){
         $id=Certificacion::find($args['id']);

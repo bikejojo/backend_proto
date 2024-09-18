@@ -11,9 +11,12 @@ class Foto_Trabajo extends Model
     protected $PrimaryKey = 'id';
     protected $table = 'foto_trabajos';
     protected $fillable = [
-        'foto',
-        'tecnico_id',
-        'url_foto',
+        'descripcion',
+        'tecnicos_id',
+        'fotos_url',
+    ];
+    protected $casts = [
+        'fotos_url' => 'array',
     ];
 
     public function tecnicos(){
