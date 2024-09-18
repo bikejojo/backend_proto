@@ -23,7 +23,7 @@ class CertificacionMutations{
 
         $manager = new ImageManager(new Driver());
 
-        $certificadoDir = 'public/' . $certificadoId.'/certificado';
+        $certificadoDir = 'public/' . $certificadoId.'/certificados';
         Storage::makeDirectory($certificadoDir);
 
         if(isset($args['foto_url'])&&$args['foto_url'] instanceof UploadedFile){
@@ -32,7 +32,7 @@ class CertificacionMutations{
                 $constrain->aspectRatio();
                 $constrain->upsize();
             });
-            $certificacion =$certificadoId. '/certificado'.'/'. uniqid() . '.png';
+            $certificacion =$certificadoId. '/certificados'.'/'. uniqid() . '.png';
             $fullPath = storage_path('app/public/'.$certificacion);
             $image->save($fullPath,75,'png');
             $certificado->foto_url = str_replace('public/','',$certificacion);

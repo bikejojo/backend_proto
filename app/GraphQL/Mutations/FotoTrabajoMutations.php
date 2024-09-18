@@ -13,28 +13,43 @@ class FotoTrabajoMutations{
     public function create($root,array $args){
         //return $foto = Foto_Trabajo::create($args);
         $fotoData = $args['fotoRequest'];
-        $fotos = Foto_Trabajo::create($fotoData);
-        $validator = validator::make($args, [
-            'foto_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
-        ]);
-        if ($validator->fails())
-            throw new \Exception('Archivo de imagen inválido');
-        $fotoId=$fotos->tecnicos_id;
-        $manager = new ImageManager(new Driver());
-        $fotoDir= 'public/' . $fotoId.'/foto_trabajo';
-        Storage::makeDirectory($fotoDir);
-        if(isset($args['fotos_url'])&&$args['fotos_url'] instanceof UploadedFile){
-            $image = $manager->read($args['fotos_url']->getRealPath());
-            $image->resize(700,null,function($constrain){
-                $constrain->aspectRatio();
-                $constrain->upsize();
-            });
-            $foto_trabajo =$fotoId. '/foto_trabajo'.'/'. uniqid() . '.png';
-            $fullPath = storage_path('app/public/'.$foto_trabajo);
-            $image->save($fullPath,75,'png');
-            $fotos->fotos_url = str_replace('public/','',$foto_trabajo);
-
+        //validacion de cantidad de fotos
+        if (!is_array($args['foto_url']) || count($args['foto_url']) > 3) {
+            throw new \Exception('Solo se pueden subir 3 fotos.');
         }
+        // Validar que todos los archivos son imágenes y tienen el formato correcto
+        foreach ($args['foto_url'] as $foto) {
+            $validator = Validator::make(['foto_url' => $foto], [
+                'foto_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            ]);
+
+            if ($validator->fails()) {
+                throw new \Exception('Archivo de imagen inválido');
+            }
+        }
+        $tecnicoId = $fotoData['tecnicos_id'];
+        $fotoDir= 'public/' . $tecnicoId.'/foto_trabajo';
+        Storage::makeDirectory($fotoDir);
+        //$fotos = Foto_Trabajo::create($fotoData);
+        $manager = new ImageManager(new Driver());
+        $fotoUrls = [];
+        foreach($args['foto_url'] as $foto) {
+            if($foto instanceof UploadedFile){
+                $image = $manager->read($foto->getRealPath());
+                $image->resize(700,null,function($constrain){
+                    $constrain->aspectRatio();
+                    $constrain->upsize();
+                });
+                $foto_trabajo =$tecnicoId. '/foto_trabajo'.'/'. uniqid() . '.png';
+                $fullPath = storage_path('app/public/'.$foto_trabajo);
+                $image->save($fullPath,75,'png');
+                $fotoUrls[] = str_replace('public/','',$foto_trabajo);
+            }
+        }
+        $foto->fotos_url = json_encode($fotoUrls);
+        $foto->save();
+
+        return $foto;
     }
     public function update($root,array $args){
         $id=Foto_Trabajo::find($args['id']);

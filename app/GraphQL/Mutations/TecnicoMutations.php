@@ -139,6 +139,9 @@ public function create($root,array $args){
         }
 
         if(isset($args['foto']) && $args['foto'] instanceof UploadedFile){
+            if ($tecnico->carnet_reverso) {
+                Storage::delete('public/' . $tecnico->carnet_reverso);
+            }
             $image = $manager->read($args['foto']->getRealPath());
             $image->resize(700,null,function($constraint){
                 $constraint->aspectRadio();
