@@ -47,6 +47,7 @@ class FotoTrabajoMutations{
                 //dd($foto_trabajo);
                 $fotoTrabajo = new Foto_Trabajo([
                     'tecnicos_id' => $tecnicoId,
+                    'descripcion' => $fotoData['descripcion'],
                     'fotos_url' =>  $url,
                 ]);
                 //$fotoTrabajo->fotos_url = preg_replace('/\\\\|\/\/|\/public/', '/',$fotoTrabajo->fotos_url);
