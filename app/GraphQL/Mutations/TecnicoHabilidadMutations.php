@@ -24,27 +24,27 @@ class TecnicoHabilidadMutations{
         return $habilidades;
     }
     public function update($root,array $args){
-       $tecnico = Tecnico::find($args['tecnico_id']);
-       foreach($args['habilidades'] as $habilidad){
-            $existe = Tecnico_Habilidad::where('tecnico_id',$args['tecnico_id'] &&
-            'habilidad_id',$habilidad['habilidad_id'])
-            ->first();
+        $tecnicoId = $args['id'];
+        $habilidades = $args['habilidades'];
 
-        if($existe){
-            $existe->update([
+        // Buscar el técnico primero
+        $tecnico = Tecnico::findOrFail($tecnicoId);
+
+        // Eliminar las habilidades existentes del técnico
+        Tecnico_Habilidad::where('tecnico_id', $tecnicoId)->delete();
+
+        // Guardar las nuevas habilidades
+        foreach ($habilidades as $habilidad) {
+            Tecnico_Habilidad::create([
+                'tecnico_id' => $tecnicoId,
+                'habilidad_id' => $habilidad['habilidad_id'],
                 'experiencia' => $habilidad['experiencia'],
                 'descripcion' => $habilidad['descripcion'],
             ]);
-        }else{
-            Tecnico_Habilidad::create([
-                'tecnico_id' => $args['tecnico_id'],
-                'habilidad_id' => $habilidad['habilidad_id'],
-                'experiencia'=>$habilidad['experiencia'],
-                'descripcion'=>$habilidad['descripcion'],
-            ]);
         }
-       }
-       return $tecnico->load('habilidades');
+
+        // Retornar las nuevas habilidades
+        return Tecnico_Habilidad::where('tecnico_id', $tecnicoId)->get();
     }
     public function delete($root,array $args){
 

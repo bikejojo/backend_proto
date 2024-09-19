@@ -16,14 +16,14 @@ public function create($root,array $args){
     $tecnicoData = $args['tecnicoRequest'];
     $manager = new ImageManager(new Driver()); // se crea instancia + el driver de gd
           // Validación de formato de imágenes
-    $validator = validator::make($args, [
+   /* $validator = validator::make($args, [
         'carnet_anverso' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
         'carnet_reverso' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
         'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
     ]);
 
     if ($validator->fails())
-        throw new \Exception('Archivo de imagen inválido');
+        throw new \Exception('Archivo de imagen inválido');*/
 
     // Crear técnico con datos iniciales
     $tecnico = Tecnico::create($tecnicoData);
@@ -81,11 +81,7 @@ public function create($root,array $args){
     // Guardar las rutas de las imágenes en el técnico
     $tecnico->save();
 
-        return [
-        'tecnico' => $tecnico,
-        'url_anv' => $compressedUrl1 ?? null,
-        'url_rev' => $compressedUrl2 ?? null,
-        ];
+    return $tecnico;
     }
 
     public function update($root,array $args){

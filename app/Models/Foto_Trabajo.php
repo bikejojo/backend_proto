@@ -15,9 +15,6 @@ class Foto_Trabajo extends Model
         'tecnicos_id',
         'fotos_url',
     ];
-    protected $casts = [
-        'fotos_url' => 'array',
-    ];
 
     public function tecnicos(){
         return $this->belongsTo(Tecnico::class,'tecnico_id');

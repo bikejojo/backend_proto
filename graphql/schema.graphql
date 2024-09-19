@@ -84,8 +84,8 @@ type Tecnico_Habilidad{
   experiencia:String
   descripcion:String
 
-  tecnicos: [Tecnico!]! @hasMany
-  habilidades: [Habilidad!]! @hasMany
+  tecnicos: [Tecnico!]! @belongsTo
+  habilidades: [Habilidad!]! @belongsTo
 }
 
 type Ciudad {
@@ -125,7 +125,7 @@ type Foto_Trabajo{
   id:ID!
   descripcion:String!
   tecnicos_id:ID!
-  fotos_url:[String!]!
+  fotos_url:String
 
   tecnicos: Tecnico! @belongsTo
 }
@@ -140,7 +140,7 @@ createUser(userRequest: JSON!):User @field(resolver:"UserMutations@create")
 login(ci: String!,contrasenia:String!):String @field(resolver:"UserMutations@login")
 
 #CRUD tecnicos
-createTecnico(tecnicoRequest:JSON!,carnet_anverso: Upload,carnet_reverso: Upload, foto: Upload): tecnico @field(resolver:"TecnicoMutations@create")
+createTecnico(tecnicoRequest:JSON!,carnet_anverso: Upload,carnet_reverso: Upload, foto: Upload): Tecnico @field(resolver:"TecnicoMutations@create")
 #updateTecnico(id:ID!,tecnicoRequest:JSON!): Tecnico @field(resolver:"TecnicoMutations@update")
 #deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
 
@@ -207,4 +207,14 @@ type tecnico{
     tecnico: Tecnico
     url_anv: String
     url_rev: String
+}
+
+input requestFotoTrabajajo {
+    fotos: [Upload!]!
+}
+
+input Tecnico_HabilidadRequest {
+  habilidad_id: ID!
+  experiencia: String!
+  descripcion: String!
 }

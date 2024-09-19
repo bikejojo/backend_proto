@@ -10,6 +10,8 @@ use Intervention\Image\ImageManager;
 
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Validator;
+use Psy\Readline\Hoa\Console;
+use Symfony\Component\Console\Event\ConsoleEvent;
 
 class FotoTrabajoMutations{
     public function create($root, array $args)
@@ -18,17 +20,6 @@ class FotoTrabajoMutations{
 
         if (!is_array($args['fotos_url']) || count($args['fotos_url']) > 3) {
             throw new \Exception('Solo se pueden subir 3 fotos.');
-        }
-
-        // Validar que todos los archivos son imágenes y tienen el formato correcto
-        foreach ($args['fotos_url'] as $foto) {
-            $validator = Validator::make(['fotos_url' => $foto], [
-                'fotos_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp',
-            ]);
-
-            if ($validator->fails()) {
-                throw new \Exception('Archivo de imagen inválido');
-            }
         }
 
         $tecnicoId = $fotoData['tecnicos_id'];
@@ -46,30 +37,29 @@ class FotoTrabajoMutations{
                     $constrain->aspectRatio();
                     $constrain->upsize();
                 });
-
+                $array = array('\\',"//","\/","/public","\/");
                 $foto_trabajo = $tecnicoId . '/foto_trabajo/' . uniqid() . '.png';
                 $fullPath = storage_path('app/public/' . $foto_trabajo);
                 $image->save($fullPath, 75, 'png');
-
-                // Usar str_replace para asegurarse de que se usen barras normales
-                $url = str_replace('public/', '', $foto_trabajo);
-
+                $url = preg_replace('/\\\\|\/\/|\/public/', '/', $foto_trabajo);
+                //$url = stripslashes($foto_trabajo);
                 // Crear una nueva instancia de Foto_Trabajo para cada imagen
+                //dd($foto_trabajo);
                 $fotoTrabajo = new Foto_Trabajo([
                     'tecnicos_id' => $tecnicoId,
-                    'fotos_url' => $url // Guardar cada URL por separado
+                    'fotos_url' =>  $url,
                 ]);
+                //$fotoTrabajo->fotos_url = preg_replace('/\\\\|\/\/|\/public/', '/',$fotoTrabajo->fotos_url);
+                //dd($fotoTrabajo->fotos_url);
                 $fotoTrabajo->save();
 
                 // Guardar la URL en un array para referencia, si es necesario
-                $fotoUrls[] = $url;
+                $fotoUrls[] = $fotoTrabajo;
             }
         }
-
+        //dd($foto_trabajo);
+        return $fotoTrabajo;
         // Puedes devolver las URLs guardadas, o cualquier otra cosa que necesites
-        return [
-            'urls' => $fotoUrls,
-        ];
     }
     public function update($root,array $args){
         $id=Foto_Trabajo::find($args['id']);

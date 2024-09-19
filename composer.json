@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "marqant-lab/lighthouse-json": "^0.0.5",
+        "mll-lab/graphql-php-scalars": "^6.3",
         "mll-lab/laravel-graphiql": "^3.2",
         "nuwave/lighthouse": "^6.44"
     },
