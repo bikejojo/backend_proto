@@ -182,7 +182,6 @@ type Cita {
     id:ID!
     solicitud_id:ID!
     estado_id:ID!
-    cita:id:ID!
     descripcion_solicitud:String!
     ubicacion:String!
     resultado:String!
@@ -258,6 +257,15 @@ createCliente(nombre:String!,email:String!,metodo_login:String!,foto:String!,use
 updateCliente(id:ID!,nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!,ciudades_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@update")
 deleteCliente(id:ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
 
+#CRUD solicitudes
+createSolicitudes(solicitudRequest:JSON!):[Solicitud] @field(resolver:)
+#CRUD cita
+createCita(citaRequest:JSON!):[Cita] @field(resolver:)
+#CRUD notas
+createNote(notesRequest:JSON!):[Note] @field(resolver:)
+#agenda
+createAgenda(agendaRequest:JSON!):[Agenda_Tecnico] @field(resolver:)
+
 #CRUD preferencia habilidades
 createPreferenciaHabilidad(habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@create")
 updatePreferenciaHabilidad(id:ID!,habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@update")
@@ -284,6 +292,10 @@ type Query {
   #Query de certificados
   getAllCertificados:[Certificacion] @all
   getCertificadoById(id:ID! @whereKey): Certificacion @find
+
+  getAllTipoEstado:[Tipo_Estado] @all
+
+  getAllTipoActividad:[Tipo_Actividad] @all
 }
 
 type Response {
