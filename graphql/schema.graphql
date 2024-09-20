@@ -134,14 +134,14 @@ type Mutation {
 
 #CRUD users
 createUser(userRequest: JSON!):User @field(resolver:"UserMutations@create")
-#updateUser(id:ID! ,userRequest: JSON!): User @field(resolver:"UserMutations@update")
+updateUser(id:ID! ,userRequest: JSON!): User @field(resolver:"UserMutations@update")
 #deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
 
 login(ci: String!,contrasenia:String!):String @field(resolver:"UserMutations@login")
 
 #CRUD tecnicos
 createTecnico(tecnicoRequest:JSON!,carnet_anverso: Upload,carnet_reverso: Upload, foto: Upload): Tecnico @field(resolver:"TecnicoMutations@create")
-#updateTecnico(id:ID!,tecnicoRequest:JSON!): Tecnico @field(resolver:"TecnicoMutations@update")
+updateTecnico(id:ID!,tecnicoRequest:JSON!): Tecnico @field(resolver:"TecnicoMutations@update")
 #deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
 
 
@@ -207,10 +207,6 @@ type tecnico{
     tecnico: Tecnico
     url_anv: String
     url_rev: String
-}
-
-input requestFotoTrabajajo {
-    fotos: [Upload!]!
 }
 
 input Tecnico_HabilidadRequest {

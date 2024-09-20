@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Ciudad;
 use App\Models\Habilidad;
+use App\Models\Tipo_Estado;
+use App\Models\Tipo_Actividad;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -57,5 +59,19 @@ class DatabaseSeeder extends Seeder
         Habilidad::create(['nombre' => 'Limpieza General']);
         Habilidad::create(['nombre' => 'Tecnico en telefonia movil']);
 
+        Tipo_Actividad::create(['descripcion'=>'mantenimiento']);
+        Tipo_Actividad::create(['descripcion'=>'reparacion']);
+        Tipo_Actividad::create(['descripcion'=>'seguimiento']);
+        Tipo_Actividad::create(['descripcion'=>'visita']);
+        Tipo_Actividad::create(['descripcion'=>'finalizado']);
+        #solicitud
+        Tipo_Estado::create(['descripcion'=>'pendiente por aceptar']);
+        Tipo_Estado::create(['descripcion'=>'aceptada']);
+        Tipo_Estado::create(['descripcion'=>'cancelada por tiempo de espera']);
+        Tipo_Estado::create(['descripcion'=>'rechazada']);
+        #cita
+        Tipo_Estado::create(['descripcion'=>'completada']);
+        Tipo_Estado::create(['descripcion'=>'cliente ausente']);
+        Tipo_Estado::create(['descripcion'=>'reprogramada']);
     }
 }
