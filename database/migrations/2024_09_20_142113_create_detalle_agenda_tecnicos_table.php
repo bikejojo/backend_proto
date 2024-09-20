@@ -14,8 +14,11 @@ return new class extends Migration
         Schema::create('detalle_agenda_tecnicos', function (Blueprint $table) {
             $table->id();
             $table->date('fecha_proxima');
+            $table->text('descripcion_proxima');
+            $table->unsignedBigInteger('agenda_tecnico_id');
             $table->unsignedBigInteger('tipo_actividad_id');
-            $table->text('duracion');
+            $table->foreign('agenda_tecnico_id')->references('id')->on('agenda_tecnicos')->onDelete('cascade');
+            $table->foreign('tipo_actividad_id')->references('id')->on('tipo_actividades')->onDelete('cascade');
             $table->timestamps();
         });
     }

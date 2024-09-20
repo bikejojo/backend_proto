@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('cliente_externos', function (Blueprint $table) {
             $table->id();
             $table->String("nombre");
+            $table->String("apellido");
             $table->String("email");
             $table->String("metodo_login")->nullable();
             $table->String("foto")->nullable();

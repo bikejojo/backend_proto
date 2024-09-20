@@ -18,7 +18,11 @@ return new class extends Migration
             $table->text('resultado');
             $table->unsignedBigInteger('estado_id');
             $table->unsignedBigInteger('solicitud_id');
-            $table->date('fecha_registra');
+            $table->date('fecha_registrada');
+            $table->date('fecha_fin');
+            $table->text('duracion');
+            $table->foreign('solicitud_id')->references('id')->on('solicituds')->onDelete('cascade');
+            $table->foreign('estado_id')->references('id')->on('tipo_estados')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -13,4 +13,8 @@ class Tipo_Actividad extends Model
     protected $fillable =[
         'descripcion'
     ];
+
+    public function detalle_agenda_tecnicos(){
+        return $this->belongsTo(Detalle_Agenda_Tecnico::class,'tipo_actividad_id');
+    }
 }

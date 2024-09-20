@@ -12,6 +12,7 @@ class Cliente_Externo extends Model
     protected $table = 'cliente_externos';
     protected $fillable = [
         'nombre',
+        'apellido',
         'email',
         'metodo_login',
         'foto',
@@ -26,5 +27,12 @@ class Cliente_Externo extends Model
     }
     public function preferencia_habilidades(){
         return $this->hasMany(Preferencia_Habilidad::class,'cliente_id');
+    }
+    public function solicitud(){
+        return $this->hasMany(Solicitud::class,'solicitud_id');
+    }
+
+    public function agendas(){
+        return $this->hasMany(Agenda_Tecnico::class,'cliente_id');
     }
 }

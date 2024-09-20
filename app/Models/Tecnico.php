@@ -36,4 +36,11 @@ class Tecnico extends Model
     public function tecnicoHabilidades(){
         return $this->hasMany(Tecnico_Habilidad::class,'tecnico_id');
     }
+
+    public function solicitud(){
+        return $this->hasMany(Solicitud::class,'tecnico_id');
+    }
+    public function agendas(){
+        return $this->hasMany(Agenda_Tecnico::class,'tecnico_id');
+    }
 }

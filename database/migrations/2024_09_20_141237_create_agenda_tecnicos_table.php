@@ -18,6 +18,10 @@ return new class extends Migration
             $table->unsignedBigInteger('note_id');
             $table->unsignedBigInteger('cita_id');
             $table->date('fecha_creada');
+            $table->foreign('cliente_id')->references('id')->on('cliente_externos')->onDelete('cascade');
+            $table->foreign('tecnico_id')->references('id')->on('tecnicos')->onDelete('cascade');
+            $table->foreign('note_id')->references('id')->on('notes')->onDelete('cascade');
+            $table->foreign('cita_id')->references('id')->on('citas')->onDelete('cascade');
             $table->timestamps();
         });
     }
