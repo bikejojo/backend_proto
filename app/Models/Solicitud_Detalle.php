@@ -16,6 +16,6 @@ class Solicitud_Detalle extends Model
     ];
 
     public function solicitudes(){
-        return $this->hasMany(Solicitud::class,'solicitud_id');
+        return $this->belongsTo(Solicitud::class,'solicitud_id');
     }
 }

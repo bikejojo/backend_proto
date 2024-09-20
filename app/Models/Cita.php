@@ -28,6 +28,6 @@ class Cita extends Model
         return $this->belongsTo(Tipo_Estado::class,'estado_id');
     }
     public function agendas(){
-        return $this->hasMany(Agenda_Tecnico::class,'cita_id');
+        return $this->belongsTo(Agenda_Tecnico::class,'cita_id');
     }
 }

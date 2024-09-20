@@ -20,12 +20,16 @@ class Solicitud extends Model
     ];
 
     public function tecnicos(){
-        return $this->hasMany(Tecnico::class, 'tecnico_id');
+        return $this->belongsTo(Tecnico::class, 'tecnico_id');
     }
     public function clientes(){
-        return $this->hasMany(Cliente_Externo::class,'cliente_id');
+        return $this->belongsTo(Cliente_Externo::class,'cliente_id');
     }
-    public function solicitud_detalle(){
-        return $this->belongsTo(Solicitud_Detalle::class,'solicitud_id');
+    public function solicitud_detalles(){
+        return $this->hasMany(Solicitud_Detalle::class,'solicitud_id');
+    }
+
+    public function estados(){
+        return $this->belongsTo(Tipo_Estado::class,'estado_id');
     }
 }

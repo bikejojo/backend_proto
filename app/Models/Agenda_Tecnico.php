@@ -20,19 +20,19 @@ class Agenda_Tecnico extends Model
     ];
 
     public function tecnicos(){
-        return $this->hasMany(Tecnico::class,'tecnico_id');
+        return $this->belongsTo(Tecnico::class,'tecnico_id');
     }
     public function clientes(){
-        return $this->HasMany(Cliente_Externo::class,'cliente_id');
+        return $this->belongsTo(Cliente_Externo::class,'cliente_id');
     }
     public function notes(){
-        return $this->hasMany(Note::class,'note_id');
+        return $this->belongsTo(Note::class,'note_id');
     }
     public function citas(){
-        return $this->hasMany(Cita::class,'cita_id');
+        return $this->belongsTo(Cita::class,'cita_id');
     }
 
-    public function agenda_tecnicos(){
-        return $this->belongsTo(Agenda_Tecnico::class,'agenda_tecnico_id');
+    public function detalleAgendas(){
+        return $this->hasMany(Detalle_Agenda_Tecnico::class,'agenda_tecnico_id');
     }
 }
