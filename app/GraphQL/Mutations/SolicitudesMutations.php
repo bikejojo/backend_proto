@@ -23,6 +23,20 @@ class SolicitudesMutaions
         $fecha_fin=$fecha_hoy->addMinute(5);
         $detalles = new Solicitud_Detalle();
         $foto = new Foto_Solicitud();
+
+        $solicitud = new Solicitud();
+        $solicitud->cliente_id = $cliente_id;
+        $solicitud->tecnico_id = $tecnico_id;
+        $solicitud->fecha_registrado = $fecha_hoy;
+        $solicitud->fecha_vencimiento = $fecha_fin;
+        $solicitud->estado_id = 1;
+        $solicitud->descripcion_servicio = $args['descripcion_servicio'];
+        $solicitud->save();
+
+        $detalles = new Solicitud_Detalle();
+        $detalles->solicitud_id = $solicitud->id;
+        $detalles->habilidades_solicitadas = $args['habilidades_solicitadas'];
+        $detalles->save();
     }
 
 }
