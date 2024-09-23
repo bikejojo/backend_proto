@@ -9,7 +9,7 @@ class Cita extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $tables = 'citas';
+    protected $table = 'citas';
     protected $fillable = [
         'descripcion_solicitud',
         'ubicacion',

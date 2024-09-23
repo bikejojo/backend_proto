@@ -9,7 +9,7 @@ class Solicitud_Detalle extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $tables = 'solicitud_detalles';
+    protected $table = 'solicitud_detalles';
     protected $fillable = [
         'solicitud_id',
         'habilidades_solicitadas',

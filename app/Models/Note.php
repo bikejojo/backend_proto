@@ -9,7 +9,7 @@ class Note extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $tables = 'notes';
+    protected $table = 'notes';
     protected $fillable = ['descripcion'];
 
     public function agenda_act(){

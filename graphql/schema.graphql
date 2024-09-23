@@ -206,14 +206,15 @@ type Agenda_Tecnico {
     clientes:Cliente_Externo! @belongsTo
     notes:Note! @belongsTo
     citas:Cita! @belongsTo
-    agenda_tecnicos: Agenda_Tecnico! @hasMany
+    detalleAgenda: [Detalle_Agenda_Tecnicos!]! @hasMany
 }
 
 type Detalle_Agenda_Tecnicos {
     id:ID!
     agenda_tecnicos_id:ID!
     tipo_actividad_id:ID!
-    fecha_proxima:string!
+    fecha_proxima:String!
+    fecha_proxima:String!
     descripcion_proxima:String!
 
     agendas:Agenda_Tecnico! @belongsTo
@@ -252,19 +253,19 @@ deleteCertificacion(id:ID! @whereKey):Response @field(resolver:"CertificacionMut
 createFotoTrabajo(fotoTrabajoRequest:JSON , fotos_url:[Upload!]!):Foto_Trabajo @field(resolver:"FotoTrabajoMutations@create")
 
 
- #CRUD cliente_externo
+#CRUD cliente_externo
 createCliente(nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!,ciudades_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@create")
 updateCliente(id:ID!,nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!,ciudades_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@update")
 deleteCliente(id:ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
 
 #CRUD solicitudes
-createSolicitudes(solicitudRequest:JSON!):[Solicitud] @field(resolver:)
+#createSolicitudes(solicitudRequest:JSON!):[Solicitud] @field(resolver:)
 #CRUD cita
-createCita(citaRequest:JSON!):[Cita] @field(resolver:)
+#createCita(citaRequest:JSON!):[Cita] @field(resolver:)
 #CRUD notas
-createNote(notesRequest:JSON!):[Note] @field(resolver:)
-#agenda
-createAgenda(agendaRequest:JSON!):[Agenda_Tecnico] @field(resolver:)
+#createNote(notesRequest:JSON!):[Note] @field(resolver:)
+#CUD agenda
+indexAgenda(tecnico_id:ID!):Agenda_Tecnico! @field(resolver:"AgendaMutations@index")
 
 #CRUD preferencia habilidades
 createPreferenciaHabilidad(habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@create")

@@ -9,7 +9,7 @@ class Historial_Servicios extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $tables = 'historial_servicios';
+    protected $table = 'historial_servicios';
     protected $fillable = [
        'cliente_id',
        'tecnico_id',

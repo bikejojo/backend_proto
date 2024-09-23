@@ -10,7 +10,7 @@ class Detalle_Agenda_Tecnico extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $tables = 'detalle_agenda_tecnicos';
+    protected $table = 'detalle_agenda_tecnicos';
     protected $fillable = [
         'fecha_proxima',
         'descripcion_proxima',

@@ -3,7 +3,7 @@
 namespace App\GraphQL\Mutations;
 
 
-
+use App\Models\User;
 use App\Models\Cliente_Externo;
 
 class ClienteExternoMutations{
