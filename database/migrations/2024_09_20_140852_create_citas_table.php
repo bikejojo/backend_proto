@@ -16,11 +16,11 @@ return new class extends Migration
             $table->text('descripcion_solicitud');
             $table->text('ubicacion');
             $table->text('resultado');
+            $table->datetime('fecha_hora_registrada');
+            $table->datetime('fecha_hora_fin');
+            $table->text('duracion');
             $table->unsignedBigInteger('estado_id');
             $table->unsignedBigInteger('solicitud_id');
-            $table->date('fecha_registrada');
-            $table->date('fecha_fin');
-            $table->text('duracion');
             $table->foreign('solicitud_id')->references('id')->on('solicituds')->onDelete('cascade');
             $table->foreign('estado_id')->references('id')->on('tipo_estados')->onDelete('cascade');
             $table->timestamps();

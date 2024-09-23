@@ -200,26 +200,18 @@ type Agenda_Tecnico {
     cliente_id:ID!
     note_id:ID!
     cita_id:ID!
+    tipo_actividad_id:ID!
     fecha_creada:String!
+    fecha_proxima:String!
+    descripcion_proxima:String!
 
     tecnicos:Tecnico! @belongsTo
     clientes:Cliente_Externo! @belongsTo
     notes:Note! @belongsTo
     citas:Cita! @belongsTo
-    detalleAgenda: [Detalle_Agenda_Tecnicos!]! @hasMany
+    actividads:Tipo_Actividad! @belongsTo
 }
 
-type Detalle_Agenda_Tecnicos {
-    id:ID!
-    agenda_tecnicos_id:ID!
-    tipo_actividad_id:ID!
-    fecha_proxima:String!
-    fecha_proxima:String!
-    descripcion_proxima:String!
-
-    agendas:Agenda_Tecnico! @belongsTo
-    actividades:Tipo_Actividad! @belongsTo
-}
 type Mutation {
 
 #CRUD users
@@ -265,7 +257,7 @@ deleteCliente(id:ID! @whereKey): Response @field(resolver:"ClienteExternoMutatio
 #CRUD notas
 #createNote(notesRequest:JSON!):[Note] @field(resolver:)
 #CUD agenda
-indexAgenda(tecnico_id:ID!):Agenda_Tecnico! @field(resolver:"AgendaMutations@index")
+indexAgenda(tecnico_id:ID!):[Agenda_Tecnico] @field(resolver:"AgendaMutations@index")
 
 #CRUD preferencia habilidades
 createPreferenciaHabilidad(habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@create")
@@ -297,6 +289,8 @@ type Query {
   getAllTipoEstado:[Tipo_Estado] @all
 
   getAllTipoActividad:[Tipo_Actividad] @all
+
+  getAllDetalle:[Detalle_Agenda_Tecnico!] @all
 }
 
 type Response {

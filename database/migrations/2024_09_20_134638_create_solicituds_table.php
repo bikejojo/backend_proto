@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('solicituds', function (Blueprint $table) {
             $table->id();
-            $table->date('fecha_registrado');
-            $table->date('fecha_vencimiento');
+            $table->datetime('fecha_tiempo_registrado');
+            $table->datetime('fecha_tiempo_vencimiento');
+            $table->text('descripcion_servicio');
             $table->unsignedBigInteger('estado_id');
             $table->unsignedBigInteger('cliente_id');
             $table->unsignedBigInteger('tecnico_id');
-            $table->text('descripcion_servicio');
             $table->foreign('tecnico_id')->references('id')->on('tecnicos')->onDelete('cascade');
             $table->foreign('cliente_id')->references('id')->on('cliente_externos')->onDelete('cascade');
             $table->timestamps();

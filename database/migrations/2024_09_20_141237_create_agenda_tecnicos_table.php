@@ -15,13 +15,17 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('tecnico_id');
             $table->unsignedBigInteger('cliente_id');
-            $table->unsignedBigInteger('note_id');
+            $table->unsignedBigInteger('note_id')->nullable();
             $table->unsignedBigInteger('cita_id');
-            $table->date('fecha_creada');
+            $table->datetime('fecha_creada');
+            $table->datetime('fecha_proxima');
+            $table->text('descripcion_proxima');
+            $table->unsignedBigInteger('tipo_actividad_id');
             $table->foreign('cliente_id')->references('id')->on('cliente_externos')->onDelete('cascade');
             $table->foreign('tecnico_id')->references('id')->on('tecnicos')->onDelete('cascade');
             $table->foreign('note_id')->references('id')->on('notes')->onDelete('cascade');
             $table->foreign('cita_id')->references('id')->on('citas')->onDelete('cascade');
+            $table->foreign('tipo_actividad_id')->references('id')->on('tipo_actividades')->onDelete('cascade');
             $table->timestamps();
         });
     }

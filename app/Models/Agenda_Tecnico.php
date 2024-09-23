@@ -17,6 +17,9 @@ class Agenda_Tecnico extends Model
         'note_id',
         'cita_id',
         'fecha_creada',
+        'fecha_proxima',
+        'descripcion_proxima',
+        'tipo_actividad_id',
     ];
 
     public function tecnicos(){
@@ -31,8 +34,8 @@ class Agenda_Tecnico extends Model
     public function citas(){
         return $this->belongsTo(Cita::class,'cita_id');
     }
-
-    public function detalleAgendas(){
-        return $this->hasMany(Detalle_Agenda_Tecnico::class,'agenda_tecnico_id');
+    public function actividads(){
+        return $this->belongsTo(Tipo_Actividad::class,'tipo_actividad_id');
     }
+
 }

@@ -28,7 +28,9 @@ class Solicitud extends Model
     public function solicitud_detalles(){
         return $this->hasMany(Solicitud_Detalle::class,'solicitud_id');
     }
-
+    public function solicituds(){
+        return $this->hasMany(Foto_Solicitud::class,'solictud_id');
+    }
     public function estados(){
         return $this->belongsTo(Tipo_Estado::class,'estado_id');
     }
