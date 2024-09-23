@@ -35,7 +35,6 @@ class Agenda_Tecnico extends Model
         return $this->belongsTo(Cita::class,'cita_id');
     }
     public function actividads(){
-        return $this->belongsTo(Tipo_Actividad::class,'tipo_actividad_id');
+        return $this->hasMany(Tipo_Actividad::class,'tipo_actividad_id');
     }
-
 }

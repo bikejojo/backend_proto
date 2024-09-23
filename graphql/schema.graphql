@@ -185,8 +185,8 @@ type Cita {
     descripcion_solicitud:String!
     ubicacion:String!
     resultado:String!
-    fecha_registrada:String!
-    fecha_fin:String!
+    fecha_hora_registrada:String!
+    fecha_hora_fin:String!
     duracion:String!
 
     solicitudes:Solicitud! @belongsTo
@@ -203,6 +203,7 @@ type Agenda_Tecnico {
     tipo_actividad_id:ID!
     fecha_creada:String!
     fecha_proxima:String!
+    duracion:String!
     descripcion_proxima:String!
 
     tecnicos:Tecnico! @belongsTo
@@ -210,6 +211,15 @@ type Agenda_Tecnico {
     notes:Note! @belongsTo
     citas:Cita! @belongsTo
     actividads:Tipo_Actividad! @belongsTo
+}
+
+type Foto_Solicitud {
+    id:ID!
+    descripcion:String!
+    fotos_url:String!
+    solicitud_id:ID!
+
+    solicituds:Solicitud @belongsTo
 }
 
 type Mutation {
@@ -251,7 +261,7 @@ updateCliente(id:ID!,nombre:String!,email:String!,metodo_login:String!,foto:Stri
 deleteCliente(id:ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
 
 #CRUD solicitudes
-#createSolicitudes(solicitudRequest:JSON!):[Solicitud] @field(resolver:)
+createSolicitudes(solicitudRequest:JSON!,fotos_url:[Upload!]!):[Solicitud] @field(resolver:"SolicitudesMutations@create")
 #CRUD cita
 #createCita(citaRequest:JSON!):[Cita] @field(resolver:)
 #CRUD notas

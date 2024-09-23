@@ -14,7 +14,7 @@ class Tipo_Actividad extends Model
         'descripcion'
     ];
 
-    public function detalle_agenda_tecnicos(){
-        return $this->belongsTo(Detalle_Agenda_Tecnico::class,'tipo_actividad_id');
+    public function agenda_tecnicos(){
+        return $this->belongsTo(Agenda_Tecnico::class,'tipo_actividad_id');
     }
 }

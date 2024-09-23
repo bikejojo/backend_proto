@@ -11,12 +11,13 @@ class Solicitud extends Model
     protected $PrimaryKey = 'id';
     protected $table = 'solicituds';
     protected $fillable =[
-        'fecha_registrado',
-        'fecha_vencimiento',
-        'estado_id',
+        'fecha_tiempo_registrado',
+        'fecha_tiempo_vencimiento',
+    
         'descripcion_servicio',
         'tecnico_id',
         'cliente_id',
+        'estado_id',
     ];
 
     public function tecnicos(){
@@ -34,4 +35,5 @@ class Solicitud extends Model
     public function estados(){
         return $this->belongsTo(Tipo_Estado::class,'estado_id');
     }
+
 }
