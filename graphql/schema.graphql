@@ -163,6 +163,9 @@ type Solicitud {
     cliente_id:ID!
     tecnico_id:ID!
     descripcion_servicio:String!
+    latitud:String!
+    altitud:String!
+    descripcion_ubicacion:String!
 
     tecnicos:Tecnico! @belongsTo
     clientes:Cliente_Externo! @belongsTo
@@ -184,7 +187,9 @@ type Cita {
     solicitud_id:ID!
     estado_id:ID!
     descripcion_solicitud:String!
-    ubicacion:String!
+    latitud:String!
+    longitud:String!
+    descripcion_ubicacion:String!
     resultado:String!
     fecha_hora_registrada:String!
     fecha_hora_fin:String!

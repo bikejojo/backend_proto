@@ -13,8 +13,10 @@ class Solicitud extends Model
     protected $fillable =[
         'fecha_tiempo_registrado',
         'fecha_tiempo_vencimiento',
-
         'descripcion_servicio',
+        'latitud',
+        'longitud',
+        'descripcion_ubicacion',
         'tecnico_id',
         'cliente_id',
         'estado_id',

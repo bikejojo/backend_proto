@@ -16,6 +16,9 @@ return new class extends Migration
             $table->datetime('fecha_tiempo_registrado');
             $table->datetime('fecha_tiempo_vencimiento');
             $table->text('descripcion_servicio');
+            $table->decimal('latitud',10,7);
+            $table->decimal('longitud',10,7);
+            $table->text('descripcion_ubicacion');
             $table->unsignedBigInteger('estado_id');
             $table->unsignedBigInteger('cliente_id');
             $table->unsignedBigInteger('tecnico_id');

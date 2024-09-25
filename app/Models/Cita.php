@@ -12,7 +12,9 @@ class Cita extends Model
     protected $table = 'citas';
     protected $fillable = [
         'descripcion_solicitud',
-        'ubicacion',
+        'latitud',
+        'longitud',
+        'descripcion_ubicacion',
         'resultado',
         'estado_id',
         'solicitud_id',
