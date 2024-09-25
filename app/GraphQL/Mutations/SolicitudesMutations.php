@@ -37,6 +37,9 @@ class SolicitudesMutations
         $solicitud->fecha_tiempo_vencimiento = $fecha_fin;
         $solicitud->estado_id = 1;
         $solicitud->descripcion_servicio = $solicitudData['descripcion_servicio'];
+        $solicitud->latitud = $solicitudData['latitud'];
+        $solicitud->longitud = $solicitudData['longitud'];
+        $solicitud->descripcion_ubicacion = $solicitudData['descripcion_ubicacion'];
         $solicitud->save();
         // Guardar detalles de la solicitud
         $habilidades_ids = $solicitudData['habilidades_solicitadas'];

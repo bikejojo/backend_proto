@@ -270,7 +270,8 @@ deleteCliente(id:ID! @whereKey): Response @field(resolver:"ClienteExternoMutatio
 createSolicitudes(solicitud:requestSolicituds!):Solicitud @field(resolver:"SolicitudesMutations@create")
 updateSolicitudes(solicitudRequest:JSON!):Solicitud! @field(resolver:"SolicitudesMutations@technicianModify")
 #CRUD cita
-#createCita(citaRequest:JSON!):[Cita] @field(resolver:)
+createCita(citaRequest:JSON!):Cita! @field(resolver:"CitaMutations@create")
+
 #CRUD notas
 #createNote(notesRequest:JSON!):[Note] @field(resolver:)
 #CUD agenda
