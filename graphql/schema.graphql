@@ -166,9 +166,9 @@ type Solicitud {
 
     tecnicos:Tecnico! @belongsTo
     clientes:Cliente_Externo! @belongsTo
-    solicitud_detalle:Solitud_Detalle! @hasMany
+    solicitud_detalle:[Solitud_Detalle!]! @hasMany
     estados:Tipo_Estado! @belongsTo
-    solicituds:Foto_Solicitud! @hasMany
+    solicituds:[Foto_Solicitud!]! @hasMany
 }
 
 type Solicitud_Detalle {

@@ -23,15 +23,12 @@ class SolicitudesMutations
         $cliente_id = $solicitudData['cliente_id'];
         $fecha_programada = $solicitudData['fecha_tiempo_registrado'];
         $fecha_carbon = Carbon::createFromFormat('Y-m-d', $fecha_programada);
-
         if ($fecha_carbon->isSameDay($fecha_programada)) {
             $fecha_hoy = Carbon::now();
         } else {
             return "fechas no coinciden";
         }
-        //$fecha_inicio = $fecha_hoy;
         $fecha_fin = $fecha_hoy->addMinutes(5);
-
         // Crear instancia de Solicitud
         $solicitud = new Solicitud();
         $solicitud->cliente_id = $cliente_id;
@@ -41,21 +38,20 @@ class SolicitudesMutations
         $solicitud->estado_id = 1;
         $solicitud->descripcion_servicio = $solicitudData['descripcion_servicio'];
         $solicitud->save();
-
         // Guardar detalles de la solicitud
-        $detalles = new Solicitud_Detalle();
-        $detalles->solicitud_id = $solicitud->id;
-        $detalles->habilidades_solicitadas = json_encode($solicitudData['habilidades_solicitadas']); // Si es un array, asegúrate de guardarlo bien
-        $detalles->save();
-
+        $habilidades_ids = $solicitudData['habilidades_solicitadas'];
+        foreach($habilidades_ids as $habilidad_id){
+            $detalles = new Solicitud_Detalle();
+            $detalles->solicitud_id = $solicitud->id;
+            $detalles->habilidades_solicitadas = $habilidad_id;
+            $detalles->save();
+        }
         // Crear directorio para fotos
         $solicitudDir = 'public/' . $tecnico_id;
         Storage::makeDirectory($solicitudDir . '/foto_solicitud');
-
         // Manejar las fotos
         $fotoUrls = [];
         $manager = new ImageManager(new Driver());
-
         foreach ($args['solicitud']['fotos_url'] as $foto) {
             if ($foto instanceof UploadedFile) {
                 // Procesar la imagen
@@ -64,11 +60,9 @@ class SolicitudesMutations
                     $constrain->aspectRatio();
                     $constrain->upsize();
                 });
-
                 $foto_trabajo = $tecnico_id . '/foto_solicitud/' . uniqid() . '.png';
                 $fullPath = storage_path('app/public/' . $foto_trabajo);
                 $image->save($fullPath, 75, 'png');
-
                 // Guardar la URL en la base de datos
                 $foto = new Foto_Solicitud();
                 $foto->solicitud_id = $solicitud->id;
@@ -79,6 +73,5 @@ class SolicitudesMutations
             }
         }
         return Solicitud::where('id', $solicitud->id)->with('solicituds')->first();
-
     }
 }
