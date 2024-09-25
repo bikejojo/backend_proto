@@ -263,6 +263,7 @@ deleteCliente(id:ID! @whereKey): Response @field(resolver:"ClienteExternoMutatio
 
 #CRUD solicitudes
 createSolicitudes(solicitud:requestSolicituds!):Solicitud @field(resolver:"SolicitudesMutations@create")
+updateSolicitudes(solicitudRequest:JSON!):Solicitud! @field(resolver:"SolicitudesMutations@technicianModify")
 #CRUD cita
 #createCita(citaRequest:JSON!):[Cita] @field(resolver:)
 #CRUD notas

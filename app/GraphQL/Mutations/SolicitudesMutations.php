@@ -28,7 +28,7 @@ class SolicitudesMutations
         } else {
             return "fechas no coinciden";
         }
-        $fecha_fin = $fecha_hoy->addMinutes(5);
+        $fecha_fin = $fecha_hoy->addMinutes(2);
         // Crear instancia de Solicitud
         $solicitud = new Solicitud();
         $solicitud->cliente_id = $cliente_id;
@@ -73,5 +73,35 @@ class SolicitudesMutations
             }
         }
         return Solicitud::where('id', $solicitud->id)->with('solicituds')->first();
+    }
+
+    public function technicianModify($root,array $args){
+        $solicitudData = $args['solicitudRequest'];
+        $tecnico_id = $solicitudData['tecnico_id'];
+        $cliente_id = $solicitudData['cliente_id'];
+        $solicitud_id = $solicitudData['solicitud_id'];
+        $solicitudActual = new Solicitud();
+        $solicitudActual = Solicitud::where('tecnico_id',$tecnico_id)
+                            ->where('cliente_id',$cliente_id)
+                            ->where('id',$solicitud_id)
+                            ->first();
+        if($solicitudActual){
+            switch($solicitudData['estado_id']){
+                case 2:
+                    $solicitudActual->estado_id = 2;
+                    break;
+                case 4:
+                    $solicitudActual->estado_id = 4;
+                    break;
+                default:
+                    return response()->json(['message' => 'El estado proporcionado no es válido.'], 400);
+            }
+            $solicitudActual->fecha_tiempo_vencimiento = Carbon::now();
+            $solicitudActual->save();
+            return $solicitudActual;
+            //return response()->json(['message' => 'Solicitud actualizada con éxito.', 'solicitud' => $solicitudActual], 200);
+        }else{
+            //return response()->json(['message' => 'No se encontró una solicitud pendiente con el ID proporcionado.'], 404);
+        }
     }
 }
