@@ -157,8 +157,8 @@ type Note {
 
 type Solicitud {
     id:ID!
-    fecha_registrado:String!
-    fecha_vencimiento:String
+    fecha_tiempo_registrado:String!
+    fecha_tiempo_vencimiento:String
     estado_id:ID!
     cliente_id:ID!
     tecnico_id:ID!
@@ -168,6 +168,7 @@ type Solicitud {
     clientes:Cliente_Externo! @belongsTo
     solicitud_detalle:Solitud_Detalle! @hasMany
     estados:Tipo_Estado! @belongsTo
+    solicituds:Foto_Solicitud! @hasMany
 }
 
 type Solicitud_Detalle {
@@ -216,7 +217,7 @@ type Agenda_Tecnico {
 type Foto_Solicitud {
     id:ID!
     descripcion:String!
-    fotos_url:String!
+    fotos_url:String
     solicitud_id:ID!
 
     solicituds:Solicitud @belongsTo
@@ -261,7 +262,7 @@ updateCliente(id:ID!,nombre:String!,email:String!,metodo_login:String!,foto:Stri
 deleteCliente(id:ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
 
 #CRUD solicitudes
-createSolicitudes(solicitudRequest:JSON!,fotos_url:[Upload!]!):[Solicitud] @field(resolver:"SolicitudesMutations@create")
+createSolicitudes(solicitud:requestSolicituds!):Solicitud @field(resolver:"SolicitudesMutations@create")
 #CRUD cita
 #createCita(citaRequest:JSON!):[Cita] @field(resolver:)
 #CRUD notas
@@ -317,4 +318,9 @@ input Tecnico_HabilidadRequest {
   habilidad_id: ID!
   experiencia: String!
   descripcion: String!
+}
+
+input requestSolicituds {
+    solicitudRequest: JSON!
+    fotos_url: [Upload!]!
 }

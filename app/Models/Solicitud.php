@@ -13,7 +13,7 @@ class Solicitud extends Model
     protected $fillable =[
         'fecha_tiempo_registrado',
         'fecha_tiempo_vencimiento',
-    
+
         'descripcion_servicio',
         'tecnico_id',
         'cliente_id',
@@ -30,7 +30,7 @@ class Solicitud extends Model
         return $this->hasMany(Solicitud_Detalle::class,'solicitud_id');
     }
     public function solicituds(){
-        return $this->hasMany(Foto_Solicitud::class,'solictud_id');
+        return $this->hasMany(Foto_Solicitud::class,'solicitud_id');
     }
     public function estados(){
         return $this->belongsTo(Tipo_Estado::class,'estado_id');

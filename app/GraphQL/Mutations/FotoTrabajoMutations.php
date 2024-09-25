@@ -50,17 +50,12 @@ class FotoTrabajoMutations{
                     'descripcion' => $fotoData['descripcion'],
                     'fotos_url' =>  $url,
                 ]);
-                //$fotoTrabajo->fotos_url = preg_replace('/\\\\|\/\/|\/public/', '/',$fotoTrabajo->fotos_url);
-                //dd($fotoTrabajo->fotos_url);
                 $fotoTrabajo->save();
-
                 // Guardar la URL en un array para referencia, si es necesario
                 $fotoUrls[] = $fotoTrabajo;
             }
         }
-        //dd($foto_trabajo);
         return $fotoTrabajo;
-        // Puedes devolver las URLs guardadas, o cualquier otra cosa que necesites
     }
     public function update($root,array $args){
         $id=Foto_Trabajo::find($args['id']);
