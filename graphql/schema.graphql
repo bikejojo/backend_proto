@@ -164,7 +164,7 @@ type Solicitud {
     tecnico_id:ID!
     descripcion_servicio:String!
     latitud:String!
-    altitud:String!
+    longitud:String!
     descripcion_ubicacion:String!
 
     tecnicos:Tecnico! @belongsTo
@@ -271,6 +271,7 @@ createSolicitudes(solicitud:requestSolicituds!):Solicitud @field(resolver:"Solic
 updateSolicitudes(solicitudRequest:JSON!):Solicitud! @field(resolver:"SolicitudesMutations@technicianModify")
 #CRUD cita
 createCita(citaRequest:JSON!):Cita! @field(resolver:"CitaMutations@create")
+updateCita(citaRequest:JSON!):Cita! @field(resolver:"CitaMutations@update")
 
 #CRUD notas
 #createNote(notesRequest:JSON!):[Note] @field(resolver:)

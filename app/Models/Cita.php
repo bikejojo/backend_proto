@@ -18,8 +18,8 @@ class Cita extends Model
         'resultado',
         'estado_id',
         'solicitud_id',
-        'fecha_registrada',
-        'fecha_fin',
+        'fecha_hora_registrada',
+        'fecha_hora_fin',
         'duracion',
     ];
 

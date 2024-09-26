@@ -15,12 +15,11 @@ class CertificacionMutations{
 
         $certificadoData = $args['certificacionRequest'];
         $certificado = Certificacion::create($certificadoData);
-        $validator = validator::make($args, [
-            'foto_url' =>  'required|file|mimes:jpeg,png,jpg,gif,svg,webp',
-        ]);
-        if ($validator->fails()){
+
+        if ($this->validaImage($args)->fails()){
             throw new \Exception('Archivo de imagen inválido');
         }
+
         $certificadoId= $certificado->tecnico_id;
 
         $manager = new ImageManager(new Driver());
@@ -47,8 +46,9 @@ class CertificacionMutations{
         $certificacion=Certificacion::where('id',$id)
         ->update(['nombre'=>$args['nombre'],'fecha_certificacion'=>$args['fecha_certificacion'],'foto_url'=>$args['foto_url']]);
     }
-    public function delete($root,array $args){
-
+    private function validaImage($args){
+        return validator::make($args, [
+            'foto_url' =>  'required|file|mimes:jpeg,png,jpg,gif,svg,webp',
+        ]);
     }
-
 }

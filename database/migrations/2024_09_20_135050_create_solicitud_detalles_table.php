@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('solicitud_id');
             $table->unsignedBigInteger('habilidades_solicitadas');
+            $table->foreign('solicitud_id')->references('id')->on('solicituds')->onDelete('cascade');
             $table->timestamps();
         });
     }
