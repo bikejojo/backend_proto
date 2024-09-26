@@ -267,7 +267,7 @@ updateCliente(id:ID!,nombre:String!,email:String!,metodo_login:String!,foto:Stri
 deleteCliente(id:ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
 
 #CRUD solicitudes
-createSolicitudes(solicitud:requestSolicituds!):Solicitud @field(resolver:"SolicitudesMutations@create")
+createSolicitudes(solicitud:requestSolicituds!):ResponseSolic @field(resolver:"SolicitudesMutations@create")
 updateSolicitudes(solicitudRequest:JSON!):Solicitud! @field(resolver:"SolicitudesMutations@technicianModify")
 #CRUD cita
 createCita(citaRequest:JSON!):Cita! @field(resolver:"CitaMutations@create")
@@ -316,6 +316,10 @@ type Response {
   message: String
 }
 
+type ResponseSolic {
+    message:String
+    solicitud:Solicitud
+}
 type tecnico{
     tecnico: Tecnico
     url_anv: String

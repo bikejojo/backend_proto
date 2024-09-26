@@ -18,19 +18,34 @@ class SolicitudesMutations
 {
     public function create($root , array $args){
         // Extraer datos del request dentro de solicitudRequest
+        $solicitud = new Solicitud();
         $solicitudData = $args['solicitud']['solicitudRequest'];
+        $hoy= Carbon::today();
+
         $tecnico_id = $solicitudData['tecnico_id'];
         $cliente_id = $solicitudData['cliente_id'];
+
+        $numSolicitud= Solicitud::where('cliente_id',$cliente_id)
+        ->whereDate('fecha_tiempo_registrado',$hoy)
+        ->count();
+
+        if ($numSolicitud >= 3) {
+            return ['message'=>'No puedes enviar más de 3 solicitudes por día.',
+                    'solicitud'=> null ];
+        }
+        
         $fecha_programada = $solicitudData['fecha_tiempo_registrado'];
         $fecha_carbon = Carbon::createFromFormat('Y-m-d', $fecha_programada);
         if ($fecha_carbon->isSameDay($fecha_programada)) {
             $fecha_hoy = Carbon::now();
         } else {
-            return "fechas no coinciden";
+            return ['message'=>'fechas no coinciden',
+                    'solicitud'=> null
+                ];
         }
         $fecha_fin = $fecha_hoy->addMinutes(2);
         // Crear instancia de Solicitud
-        $solicitud = new Solicitud();
+
         $solicitud->cliente_id = $cliente_id;
         $solicitud->tecnico_id = $tecnico_id;
         $solicitud->fecha_tiempo_registrado = Carbon::now();
@@ -104,6 +119,7 @@ class SolicitudesMutations
             return $solicitudActual;
             //return response()->json(['message' => 'Solicitud actualizada con éxito.', 'solicitud' => $solicitudActual], 200);
         }else{
+            return $solicitudActual;
             //return response()->json(['message' => 'No se encontró una solicitud pendiente con el ID proporcionado.'], 404);
         }
     }
