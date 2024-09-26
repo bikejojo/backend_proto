@@ -18,6 +18,7 @@ class Agenda_Tecnico extends Model
         'cita_id',
         'fecha_creada',
         'fecha_proxima',
+        'duracion',
         'descripcion_proxima',
         'tipo_actividad_id',
     ];

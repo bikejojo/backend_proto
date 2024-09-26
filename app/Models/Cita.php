@@ -11,7 +11,7 @@ class Cita extends Model
     protected $PrimaryKey = 'id';
     protected $table = 'citas';
     protected $fillable = [
-        'descripcion_solicitud',
+        'descripcion_cita',
         'latitud',
         'longitud',
         'descripcion_ubicacion',
