@@ -158,6 +158,7 @@ type Note {
 type Solicitud {
     id:ID!
     fecha_tiempo_registrado:String!
+    fecha_tiempo_actualizado:String!
     fecha_tiempo_vencimiento:String
     estado_id:ID!
     cliente_id:ID!
@@ -268,7 +269,7 @@ deleteCliente(id:ID! @whereKey): Response @field(resolver:"ClienteExternoMutatio
 
 #CRUD solicitudes
 createSolicitudes(solicitud:requestSolicituds!):ResponseSolic @field(resolver:"SolicitudesMutations@create")
-updateSolicitudes(solicitudRequest:JSON!):Solicitud! @field(resolver:"SolicitudesMutations@technicianModify")
+updateSolicitudes(solicitudRequest:JSON!):ResponseSolic! @field(resolver:"SolicitudesMutations@technicianModify")
 #CRUD cita
 createCita(citaRequest:JSON!):Cita! @field(resolver:"CitaMutations@create")
 updateCita(citaRequest:JSON!):Cita! @field(resolver:"CitaMutations@update")

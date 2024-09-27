@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->datetime('fecha_tiempo_registrado');
             $table->datetime('fecha_tiempo_vencimiento');
+            $table->datetime('fecha_tiempo_actualizado')->nullable();
             $table->text('descripcion_servicio');
             $table->decimal('latitud',10,7);
             $table->decimal('longitud',10,7);

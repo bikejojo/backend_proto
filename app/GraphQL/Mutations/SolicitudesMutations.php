@@ -24,6 +24,7 @@ class SolicitudesMutations
 
         $tecnico_id = $solicitudData['tecnico_id'];
         $cliente_id = $solicitudData['cliente_id'];
+        #para la cantidad de solicitudes que puede hacer el cliente
         /*
         $numSolicitud= Solicitud::where('cliente_id',$cliente_id)
         ->whereDate('fecha_tiempo_registrado',$hoy)
@@ -43,12 +44,14 @@ class SolicitudesMutations
                     'solicitud'=> null
                 ];
         }
-        $fecha_fin = $fecha_hoy->addMinutes(2);
+        #cambiar el timepo de fecha fin;
+        #$fecha_fin = $fecha_hoy->addMinutes(2);
+        $fecha_fin = $fecha_hoy->addMinutes(10);
         // Crear instancia de Solicitud
-
         $solicitud->cliente_id = $cliente_id;
         $solicitud->tecnico_id = $tecnico_id;
         $solicitud->fecha_tiempo_registrado = Carbon::now();
+        $solicitud->fecha_tiempo_actualizado = Carbon::now();
         $solicitud->fecha_tiempo_vencimiento = $fecha_fin;
         $solicitud->estado_id = 1;
         $solicitud->descripcion_servicio = $solicitudData['descripcion_servicio'];
@@ -90,7 +93,11 @@ class SolicitudesMutations
                 $fotoUrls[] = $foto->fotos_url;
             }
         }
-        return Solicitud::where('id', $solicitud->id)->with('solicituds')->first();
+        return [
+            'message' => 'solicitud Creada',
+            'solicitud' => Solicitud::where('id', $solicitud->id)->with('solicituds')->first()
+        ];
+        #return Solicitud::where('id', $solicitud->id)->with('solicituds')->first();
     }
 
     public function technicianModify($root,array $args){
@@ -105,22 +112,40 @@ class SolicitudesMutations
                             ->first();
         if($solicitudActual){
             switch($solicitudData['estado_id']){
-                case 2:
-                    $solicitudActual->estado_id = 2;
+                case 3:
+                    $solicitudActual->estado_id = 3;
+                    $solicitudActual->fecha_tiempo_actualizado = Carbon::now();
                     break;
-                case 4:
-                    $solicitudActual->estado_id = 4;
+                case 5:
+                    $solicitudActual->fecha_tiempo_actualizado = Carbon::now();
+                    $solicitudActual->estado_id = 5;
+                    break;
+                case 6:
+                    $solicitudActual->fecha_tiempo_actualizado = Carbon::now();
+                    $solicitudActual->estado_id = 6;
                     break;
                 default:
-                    return response()->json(['message' => 'El estado proporcionado no es válido.'], 400);
+                    //return [response()->json(['message' => 'El estado proporcionado no es válido.'], 400);
+                    return [
+                        'message' =>'El estado proporcionado no es válido. Error 400',
+                        'solicitud' => null
+                    ];
             }
-            $solicitudActual->fecha_tiempo_vencimiento = Carbon::now();
+            #$solicitudActual->fecha_tiempo_vencimiento = Carbon::now();
             $solicitudActual->save();
-            return $solicitudActual;
-            //return response()->json(['message' => 'Solicitud actualizada con éxito.', 'solicitud' => $solicitudActual], 200);
+            #return $solicitudActual;
+
+            return [
+                'messge'=> 'actualizacion de solicitud hecha ',
+                'solicitud'=> $solicitudActual
+            ];
+
         }else{
-            return $solicitudActual;
-            //return response()->json(['message' => 'No se encontró una solicitud pendiente con el ID proporcionado.'], 404);
+            //return $solicitudActual;
+            return [
+                'message' => 'solcitud no encontrada',
+                'solictud' => $solicitudActual
+            ];
         }
     }
 }
