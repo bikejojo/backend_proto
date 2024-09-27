@@ -8,22 +8,16 @@ use App\Models\Solicitud_Detalle;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
-use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Drivers\Gd\Driver;
 
 use Carbon\Carbon;
-use Illuminate\Database\Capsule\Manager;
 
 class SolicitudesMutations
 {
     public function create($root , array $args){
         // Extraer datos del request dentro de solicitudRequest
-        $solicitud = new Solicitud();
         $solicitudData = $args['solicitud']['solicitudRequest'];
         $hoy= Carbon::today();
-
-        $tecnico_id = $solicitudData['tecnico_id'];
-        $cliente_id = $solicitudData['cliente_id'];
         #para la cantidad de solicitudes que puede hacer el cliente
         /*
         $numSolicitud= Solicitud::where('cliente_id',$cliente_id)
@@ -36,20 +30,18 @@ class SolicitudesMutations
         }*/
 
         $fecha_programada = $solicitudData['fecha_tiempo_registrado'];
-        $fecha_carbon = Carbon::createFromFormat('Y-m-d', $fecha_programada);
-        if ($fecha_carbon->isSameDay($fecha_programada)) {
-            $fecha_hoy = Carbon::now();
-        } else {
-            return ['message'=>'fechas no coinciden',
-                    'solicitud'=> null
-                ];
+        //validar fecha programada
+        if(!$this->validarFechaProgramada($fecha_programada)){
+            return $this->errorResponse('Fechas No Coinciden');
         }
         #cambiar el timepo de fecha fin;
         #$fecha_fin = $fecha_hoy->addMinutes(2);
+        $solicitud = new Solicitud();
+        $fecha_hoy = Carbon::now();
         $fecha_fin = $fecha_hoy->addMinutes(10);
         // Crear instancia de Solicitud
-        $solicitud->cliente_id = $cliente_id;
-        $solicitud->tecnico_id = $tecnico_id;
+        $solicitud->cliente_id = $solicitudData['cliente_id'];
+        $solicitud->tecnico_id = $solicitudData['tecnico_id'];
         $solicitud->fecha_tiempo_registrado = Carbon::now();
         $solicitud->fecha_tiempo_actualizado = Carbon::now();
         $solicitud->fecha_tiempo_vencimiento = $fecha_fin;
@@ -68,7 +60,7 @@ class SolicitudesMutations
             $detalles->save();
         }
         // Crear directorio para fotos
-        $solicitudDir = 'public/' . $tecnico_id;
+        $solicitudDir = 'public/' . $solicitudData['cliente_id'];;
         Storage::makeDirectory($solicitudDir . '/foto_solicitud');
         // Manejar las fotos
         $fotoUrls = [];
@@ -81,7 +73,7 @@ class SolicitudesMutations
                     $constrain->aspectRatio();
                     $constrain->upsize();
                 });
-                $foto_trabajo = $tecnico_id . '/foto_solicitud/' . uniqid() . '.png';
+                $foto_trabajo = $solicitudData['cliente_id'] . '/foto_solicitud/' . uniqid() . '.png';
                 $fullPath = storage_path('app/public/' . $foto_trabajo);
                 $image->save($fullPath, 75, 'png');
                 // Guardar la URL en la base de datos
@@ -97,9 +89,7 @@ class SolicitudesMutations
             'message' => 'solicitud Creada',
             'solicitud' => Solicitud::where('id', $solicitud->id)->with('solicituds')->first()
         ];
-        #return Solicitud::where('id', $solicitud->id)->with('solicituds')->first();
-    }
-
+   }
     public function technicianModify($root,array $args){
         $solicitudData = $args['solicitudRequest'];
         $tecnico_id = $solicitudData['tecnico_id'];
@@ -125,27 +115,31 @@ class SolicitudesMutations
                     $solicitudActual->estado_id = 6;
                     break;
                 default:
-                    //return [response()->json(['message' => 'El estado proporcionado no es válido.'], 400);
-                    return [
-                        'message' =>'El estado proporcionado no es válido. Error 400',
-                        'solicitud' => null
-                    ];
+                    return $this->errorResponse("El estado proporcionado no es válido");
             }
             #$solicitudActual->fecha_tiempo_vencimiento = Carbon::now();
             $solicitudActual->save();
-            #return $solicitudActual;
-
             return [
                 'messge'=> 'actualizacion de solicitud hecha ',
                 'solicitud'=> $solicitudActual
             ];
-
         }else{
-            //return $solicitudActual;
             return [
                 'message' => 'solcitud no encontrada',
                 'solictud' => $solicitudActual
             ];
         }
+    }
+
+    private function errorResponse($message){
+        return [
+            'message' => $message,
+            'solicitud' => null
+        ];
+    }
+
+    private function validarFechaProgramada($fecha_programada){
+        $fecha_carbon =Carbon::createFromFormat('Y-m-d',$fecha_programada);
+        return $fecha_carbon->isSameDay($fecha_programada);
     }
 }
