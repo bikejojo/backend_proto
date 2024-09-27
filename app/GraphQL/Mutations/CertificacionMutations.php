@@ -45,6 +45,7 @@ class CertificacionMutations{
         $id=Certificacion::find($args['id']);
         $certificacion=Certificacion::where('id',$id)
         ->update(['nombre'=>$args['nombre'],'fecha_certificacion'=>$args['fecha_certificacion'],'foto_url'=>$args['foto_url']]);
+        return $certificacion;
     }
     private function validaImage($args){
         return validator::make($args, [
