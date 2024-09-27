@@ -33,14 +33,11 @@ class FotoTrabajoMutations{
                     $constrain->aspectRatio();
                     $constrain->upsize();
                 });
-                $array = array('\\',"//","\/","/public","\/");
                 $foto_trabajo = $tecnicoId . '/foto_trabajo/' . uniqid() . '.png';
                 $fullPath = storage_path('app/public/' . $foto_trabajo);
                 $image->save($fullPath, 75, 'png');
                 $url = preg_replace('/\\\\|\/\/|\/public/', '/', $foto_trabajo);
-                //$url = stripslashes($foto_trabajo);
-                // Crear una nueva instancia de Foto_Trabajo para cada imagen
-                //dd($foto_trabajo);
+
                 $fotoTrabajo = new Foto_Trabajo([
                     'tecnicos_id' => $tecnicoId,
                     'descripcion' => $fotoData['descripcion'],
@@ -55,13 +52,14 @@ class FotoTrabajoMutations{
     }
     public function update($root,array $args){
         $id=Foto_Trabajo::find($args['id']);
-        $foto_trabajo = Foto_Trabajo::where('id',$id)->update(['foto'=>$args['foto'],'irl_foto'=>$args['url_foto']]);
+        return $foto_trabajo = Foto_Trabajo::where('id',$id)->update(['descripcion'=>$args['descripcion'],'url_foto'=>$args['url_foto']]);
     }
     public function delete($root,array $args){
         $id=Foto_Trabajo::find($args['id']);
         if($id){
             return ['message' => 'borrado no exitoso'];
         }else{
+            Storage::delete('public/' . $id->fotos_url);
             Foto_Trabajo::where('id',$id)->delete();
             return ['message' => 'borrado exitoso'];
         }
