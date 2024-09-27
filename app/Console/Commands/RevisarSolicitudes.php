@@ -60,7 +60,7 @@ class RevisarSolicitudes extends Command
         }
 
     }
- #debe ser dinamico , y no se corra por consola comentario
-            #comando omo se debe ejcutar en un servidor
+    #debe ser dinamico , y no se corra por consola comentario
+        #comando omo se debe ejcutar en un servidor
             //* * * * * cd /ruta-a-tu-proyecto && php artisan solicitudes:revisar >> /dev/null 2>&1
 }

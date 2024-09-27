@@ -14,12 +14,12 @@ class AgendaMutations
     public function index($root ,array $args){
         $id =$args['tecnico_id'];
         $today = now();
-        $a = Agenda_Tecnico::where('tecnico_id', $id)->where('fecha_proxima','>=',$today)->orderBy('fecha_proxima','asc')->get();
-        if ($a->isEmpty()) {
+        $agenda = Agenda_Tecnico::where('tecnico_id', $id)->where('fecha_proxima','>=',$today)->orderBy('fecha_proxima','asc')->get();
+        if ($agenda->isEmpty()) {
             throw new \GraphQL\Error\Error('No se encontró ninguna agenda para este técnico.');
         }
 
-        return $a;
+        return $agenda;
     }
 
     public function create($root , array $args){
@@ -60,6 +60,7 @@ class AgendaMutations
         $agenda->estado_id = $args['estado_id'];
         $agenda->cita_id = $cita_id;
         $agenda->save();
+
         return $agenda;
     }
 }

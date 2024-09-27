@@ -5,13 +5,9 @@ namespace App\GraphQL\Mutations;
 use App\Models\Foto_Trabajo;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\http\UploadedFile;
-
 use Intervention\Image\ImageManager;
-
 use Intervention\Image\Drivers\Gd\Driver;
-use Illuminate\Support\Facades\Validator;
-use Psy\Readline\Hoa\Console;
-use Symfony\Component\Console\Event\ConsoleEvent;
+
 
 class FotoTrabajoMutations{
     public function create($root, array $args)

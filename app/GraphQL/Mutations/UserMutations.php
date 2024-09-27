@@ -43,6 +43,7 @@ class UserMutations{
         $user->tipo_usuario=$userData['tipo_usuario']??$user->tipo_usuario;
         $user->email=$userData['email']??$user->email;
         $user->contrasenia=isset($userData['contrasenia']) ? Hash::make($userData['contrasenia']): $user->contrasenia;
+        return $user;
     }
 
     public function delete($root,array $args){

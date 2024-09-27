@@ -46,8 +46,5 @@ class TecnicoHabilidadMutations{
         // Retornar las nuevas habilidades
         return Tecnico_Habilidad::where('tecnico_id', $tecnicoId)->get();
     }
-    public function delete($root,array $args){
-
-    }
 
 }

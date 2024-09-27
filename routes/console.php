@@ -9,5 +9,5 @@ Artisan::command('inspire', function () {
 
 
 Artisan::command('solicitudes:revisar',function(){
-$this->call(\App\Console\Commands\RevisarSolicitudes::class);
+    $this->call(\App\Console\Commands\RevisarSolicitudes::class);
 });
