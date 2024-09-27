@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('tipo_actividad_id');
             $table->datetime('fecha_creada');
             $table->datetime('fecha_proxima');
-            $table->string('duracion');
+            //$table->string('duracion');
             $table->text('descripcion_proxima');
             $table->foreign('cliente_id')->references('id')->on('cliente_externos')->onDelete('cascade');
             $table->foreign('tecnico_id')->references('id')->on('tecnicos')->onDelete('cascade');

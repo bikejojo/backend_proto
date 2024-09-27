@@ -73,8 +73,8 @@ class DatabaseSeeder extends Seeder
         Tipo_Estado::create(['descripcion'=>'aceptada']);
         #cita
         Tipo_Estado::create(['descripcion'=>'en progreso']);
-        Tipo_Estado::create(['descripcion'=>'completada']);
         Tipo_Estado::create(['descripcion'=>'cliente ausente']);
         Tipo_Estado::create(['descripcion'=>'reprogramada']);
+        Tipo_Estado::create(['descripcion'=>'completada']);
     }
 }

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('resultado')->nullable();
             $table->datetime('fecha_hora_registrada');
             $table->datetime('fecha_hora_fin');
-            $table->text('duracion')->nullable();
+            //$table->text('duracion')->nullable();
             $table->unsignedBigInteger('estado_id');
             $table->unsignedBigInteger('solicitud_id');
             $table->foreign('solicitud_id')->references('id')->on('solicituds')->onDelete('cascade');

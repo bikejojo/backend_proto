@@ -20,7 +20,6 @@ class Cita extends Model
         'solicitud_id',
         'fecha_hora_registrada',
         'fecha_hora_fin',
-        'duracion',
     ];
 
     public function solicitudes(){
