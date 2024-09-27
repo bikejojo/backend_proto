@@ -39,7 +39,7 @@ class CertificacionMutations{
             $certificado->foto_url = str_replace('public/','',$certificacion);
         }
         $certificado->save();
-        //return $certificado;
+        return $certificado;
     }
     public function update($root,array $args){
         $id=Certificacion::find($args['id']);
