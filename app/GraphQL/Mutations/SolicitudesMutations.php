@@ -24,7 +24,7 @@ class SolicitudesMutations
 
         $tecnico_id = $solicitudData['tecnico_id'];
         $cliente_id = $solicitudData['cliente_id'];
-
+        /*
         $numSolicitud= Solicitud::where('cliente_id',$cliente_id)
         ->whereDate('fecha_tiempo_registrado',$hoy)
         ->count();
@@ -32,8 +32,8 @@ class SolicitudesMutations
         if ($numSolicitud >= 3) {
             return ['message'=>'No puedes enviar más de 3 solicitudes por día.',
                     'solicitud'=> null ];
-        }
-        
+        }*/
+
         $fecha_programada = $solicitudData['fecha_tiempo_registrado'];
         $fecha_carbon = Carbon::createFromFormat('Y-m-d', $fecha_programada);
         if ($fecha_carbon->isSameDay($fecha_programada)) {

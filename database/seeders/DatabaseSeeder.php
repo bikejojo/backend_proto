@@ -66,9 +66,10 @@ class DatabaseSeeder extends Seeder
         Tipo_Actividad::create(['descripcion'=>'finalizado']);
         #solicitud
         Tipo_Estado::create(['descripcion'=>'pendiente por aceptar']);
-        Tipo_Estado::create(['descripcion'=>'cancelada por tiempo de espera']);
-        Tipo_Estado::create(['descripcion'=>'rechazada']);
+        Tipo_Estado::create(['descripcion'=>'rechazada por tiempo de espera']);
         Tipo_Estado::create(['descripcion'=>'en conversacion']);
+        Tipo_Estado::create(['descripcion'=>'rechazada por tiempo']);
+        Tipo_Estado::create(['descripcion'=>'rechazada por tecnico']);
         Tipo_Estado::create(['descripcion'=>'aceptada']);
         #cita
         Tipo_Estado::create(['descripcion'=>'en progreso']);
