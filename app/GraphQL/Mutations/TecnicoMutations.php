@@ -137,11 +137,15 @@ public function create($root,array $args){
         });
         $imagenBi = $image->toPng();
         $encode = $image->toPng(interlaced: true);
-        $encodee = $image->toPng()
-        $imagen64 = base64_encode($imagenBi);
-        $fullPath = storage_path("app/public/{$path}_v_imageRegene.png");
-        Storage::disk('public')->put("{$path}_v_imageRegene2.txt", $imagen64);
-        return $fullPath;
+        $encodee = $image->toPng(indexed:true);
+        $fullPath = "{$path}_v_imageRegene.png"; // El nombre final del archivo
+        $storagePath = "app/public/{$fullPath}"; // Ruta en el almacenamiento público
+
+        // Guardar la imagen PNG en el disco virtual
+        Storage::disk('public')->put($fullPath, $imagenBi);
+
+        // Retornar la ruta completa de la imagen guardada
+        return $storagePath;
     }
 
 
