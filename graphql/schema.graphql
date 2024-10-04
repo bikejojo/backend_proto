@@ -277,7 +277,7 @@ updateCita(citaRequest:JSON!):Cita! @field(resolver:"CitaMutations@update")
 #CRUD notas
 createNote(notesRequest:JSON!):Note! @field(resolver:"NoteMutatios@create")
 #CUD agenda
-indexAgenda(tecnico_id:ID!):[Agenda_Tecnico] @field(resolver:"AgendaMutations@index")
+indexAgenda(agendaRequest:JSON!):[Agenda_Tecnico] @field(resolver:"AgendaMutations@index")
 
 #CRUD preferencia habilidades
 createPreferenciaHabilidad(habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@create")

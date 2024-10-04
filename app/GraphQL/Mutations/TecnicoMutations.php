@@ -9,6 +9,9 @@ use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Decoders\Base64ImageDecoder;
+use Nuwave\Lighthouse\Schema\Types\Scalars\Upload;
+use Illuminate\Support\Facades\Log;
 
 class TecnicoMutations {
 public function create($root,array $args){
@@ -29,12 +32,16 @@ public function create($root,array $args){
     $manager = new ImageManager(new Driver());
     // Manejo de las imágenes
     if (isset($args['carnet_anverso']) && $args['carnet_anverso'] instanceof UploadedFile) {
-        $carnetAnversoPath = $this->processImage($args['carnet_anverso'], "$tecnicoId/carnet/Anverso_" . uniqid() . ".png", $manager);
+        $carnetAnversoPath = $this->processImage($args['carnet_anverso'], "$tecnicoId/carnet/anverso" . ".png", $manager);
+        $this->processImage64($args['carnet_anverso'],"$tecnicoId/carnet/anverso"  . ".png", $manager);
+
         $tecnico->carnet_anverso = str_replace('public/', '', $carnetAnversoPath);
+        //$carnetBase64 = $this->processImage64_rrr($args['carnet_anverso'], $manager);
+        //$tecnico->foto = $carnetBase64;  // Guardar la imagen en formato Base64
     }
 
     if (isset($args['carnet_reverso']) && $args['carnet_reverso'] instanceof UploadedFile) {
-        $carnetReversoPath = $this->processImage($args['carnet_reverso'], "$tecnicoId'/carnet/Reverso_" . uniqid() . '.png',$manager);
+        $carnetReversoPath = $this->processImage($args['carnet_reverso'], "$tecnicoId/carnet/reverso" . ".png",$manager);
         $tecnico->carnet_reverso = str_replace('public/','',$carnetReversoPath);
     }
     //no se guarda foto de perfil a crearlo
@@ -79,7 +86,7 @@ public function create($root,array $args){
             if ($tecnico->carnet_reverso) {
                 Storage::delete('public/' . $tecnico->carnet_reverso);
             }
-            $fotoPath = $this->processImage($args['foto'],"$tecnico/perfil/foto_".uniqid().".png" , $manager );
+            $fotoPath = $this->processImage($args['foto'],"$tecnico/perfil/foto_".".png" , $manager );
             $tecnico->foto = str_replace('public/', '', $fotoPath);
         }
         $tecnico->save();
@@ -107,17 +114,35 @@ public function create($root,array $args){
     private function directoriesTecnico($tecnicoId){
         Storage::makeDirectory('public/'.$tecnicoId . '/carnet');
         Storage::makeDirectory('public/'.$tecnicoId . '/perfil');
+
     }
     private function processImage(UploadedFile $file,$path,$manager){
         $image = $manager->read($file->getRealPath());
-        $image->resize(700, null, function ($constraint) {
+        $image->resize(800, 800, function ($constraint) {
             $constraint->aspectRatio();
             $constraint->upsize();
         });
 
-        $fullPath = storage_path("app/public/$path");
-        $image->save($fullPath, 75, 'png');
+        $fullPath = storage_path("app/public/{$path}_v_imageRegene.png");
+        $image->save($fullPath, 70, 'png');
 
         return $path;
     }
+
+    private function processImage64(UploadedFile $file, $path , $manager ){
+        $image = $manager->read($file->getRealPath());
+        $image->resize(800, 800, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+        $imagenBi = $image->toPng();
+        $encode = $image->toPng(interlaced: true);
+        $encodee = $image->toPng()
+        $imagen64 = base64_encode($imagenBi);
+        $fullPath = storage_path("app/public/{$path}_v_imageRegene.png");
+        Storage::disk('public')->put("{$path}_v_imageRegene2.txt", $imagen64);
+        return $fullPath;
+    }
+
+
 }
