@@ -65,15 +65,17 @@ class SolicitudesMutations
         // Manejar las fotos
         $fotoUrls = [];
         $manager = new ImageManager(new Driver());
+        $contador = 0;
         foreach ($args['solicitud']['fotos_url'] as $foto) {
             if ($foto instanceof UploadedFile) {
                 // Procesar la imagen
+                $contador = $contador + 1;
                 $image = $manager->read($foto->getRealPath());
-                $image->resize(700, null, function ($constrain) {
+                $image->resize(800, 800, function ($constrain) {
                     $constrain->aspectRatio();
                     $constrain->upsize();
                 });
-                $foto_trabajo = $solicitudData['cliente_id'] . '/foto_solicitud/' . uniqid() . '.png';
+                $foto_trabajo = $solicitudData['cliente_id'] . '/foto_solicitud/' . 'solicitud'. $contador . '.png';
                 $fullPath = storage_path('app/public/' . $foto_trabajo);
                 $image->save($fullPath, 75, 'png');
                 // Guardar la URL en la base de datos

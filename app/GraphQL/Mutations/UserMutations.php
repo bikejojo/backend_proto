@@ -26,8 +26,8 @@ class UserMutations{
             'tipo_usuario' =>$userData['tipo_usuario'],
         ]);
 
-        $token= $user->createToken('token'.$user['ci'])->plainTextToken;
-        $user->token = $token;
+        //$token= $user->createToken('token'.$user['ci'])->plainTextToken;
+        //$user->token = $token;
         $user->save();
 
         return $user;
@@ -43,6 +43,7 @@ class UserMutations{
         $user->tipo_usuario=$userData['tipo_usuario']??$user->tipo_usuario;
         $user->email=$userData['email']??$user->email;
         $user->contrasenia=isset($userData['contrasenia']) ? Hash::make($userData['contrasenia']): $user->contrasenia;
+        $user->save();
         return $user;
     }
 
@@ -59,14 +60,32 @@ class UserMutations{
     public function login($root, array $args)
     {
         $user = User::where('ci', $args['ci'])->first();
-
+        if (!$user) {
+            return [
+                'message' => "El usuario con CI no existe",
+                'user' => null,
+                'tecnico' => null
+            ];
+        }
+        $tecnico = $user->tecnicos()->first();
         if (!$user || !Hash::check($args['contrasenia'], $user->contrasenia)) {
-            throw new \Exception('Credenciales inválidas');
+            return [
+                'message' => "No existe Usuario y/o contrasenia invalida" ,
+                'user' => null,
+                'tecnico' => null
+
+            ];
         }
 
    // Crear un token con Sanctum
-        return $user->createToken('authToken')->plainTextToken;
+        $tokens = $user->createToken('authToken')->plainTextToken;
+        $user->token = $tokens;
+
+        return [
+            'message' => 'Login exitoso',
+            'user' => $user,
+            'tecnico' => $tecnico
+        ];
     }
 
-    public function logout(){}
 }

@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'email' => 'test@example.com',
-            'contrasenia' => '123',
+            'contrasenia' => bcrypt('123'),
             'ci' => '123',
             'tipo_usuario' => 1,
             'token' => "1"
