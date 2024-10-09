@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('ci')->unique();
             $table->string('email')->nullable();
-            $table->bigInteger('tipo_usuario')->nullable();
+            $table->bigInteger('type_user')->nullable();
             $table->text('token')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('contrasenia');
+            $table->string('password');
             $table->rememberToken();
             $table->timestamps();
         });

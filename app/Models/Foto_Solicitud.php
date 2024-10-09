@@ -8,15 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class Foto_Solicitud extends Model
 {
     use HasFactory;
-    protected $table = 'foto_solicituds';
-    protected $PrimaryKey = 'id';
+    protected $table = 'request_photos';  // Traducción de 'foto_solicituds'
+
+    protected $primaryKey = 'id';
+
     protected $fillable = [
-        'descripcion',
-        'fotos_url',
-        'solicitud_id',
+        'description',  // Traducción de 'descripcion'
+        'photoUrls',  // Traducción de 'fotos_url'
+        'requestId'  // Traducción de 'solicitud_id'
     ];
 
-    public function solicituds(){
-        return $this->belongsTo(Solicitud::class,'solicitud_id');
+    // Relación con Request (Solicitud)
+    public function request()
+    {
+        return $this->belongsTo(Solicitud::class, 'requestId');  // Traducción de 'solicituds'
     }
 }

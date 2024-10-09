@@ -9,13 +9,16 @@ class Solicitud_Detalle extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $table = 'solicitud_detalles';
+    protected $table = 'request_details';  // Traducción de 'solicitud_detalles'
+
     protected $fillable = [
-        'solicitud_id',
-        'habilidades_solicitadas',
+        'requestId',  // Traducción de 'solicitud_id'
+        'requestedSkills'  // Traducción de 'habilidades_solicitadas'
     ];
 
-    public function solicitudes(){
-        return $this->belongsTo(Solicitud::class,'solicitud_id');
+    // Relación con Request (Solicitud)
+    public function request()
+    {
+        return $this->belongsTo(Solicitud::class, 'requestId');  // Traducción de 'solicitudes'
     }
 }

@@ -9,15 +9,16 @@ class Foto_Trabajo extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $table = 'foto_trabajos';
+    protected $table = 'work_photos';
+
     protected $fillable = [
-        'descripcion',
-        'tecnicos_id',
-        'fotos_url',
+        'description',  // descripcion
+        'photoUrls'  // fotos_url
     ];
 
-    public function tecnicos(){
-        return $this->belongsTo(Tecnico::class,'tecnico_id');
+    // Relación con Technician (Tecnico)
+    public function technician()
+    {
+        return $this->belongsTo(Tecnico::class, 'technicianId');
     }
-
 }

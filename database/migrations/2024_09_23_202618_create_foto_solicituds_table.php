@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('foto_solicituds', function (Blueprint $table) {
+        Schema::create('request_photos', function (Blueprint $table) {
             $table->id();
-            $table->String('descripcion')->nullable();
-            $table->text('fotos_url')->nullable();
-            $table->unsignedBigInteger('solicitud_id');
-            $table->foreign('solicitud_id')->references('id')->on('solicituds')->onDelete('cascade');
+            $table->string('description')->nullable();  // Traducción de 'descripcion'
+            $table->text('photoUrls')->nullable();  // Traducción de 'fotos_url'
+            $table->unsignedBigInteger('requestId');  // Traducción de 'solicitud_id'
+            $table->foreign('requestId')->references('id')->on('requests')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('foto_solicituds');
+        Schema::dropIfExists('request_photos');
     }
 };

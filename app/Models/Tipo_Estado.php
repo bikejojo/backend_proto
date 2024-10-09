@@ -8,9 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Tipo_Estado extends Model
 {
     use HasFactory;
-    protected $PrimaryKey = 'id';
-    protected $table = 'tipo_estados';
+    protected $primaryKey = 'id';
+
+    protected $table = 'state_types';  // Traducción de 'tipo_estados'
+
     protected $fillable = [
-        'descripcion',
+        'description'  // Traducción de 'descripcion'
     ];
 }

@@ -11,22 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('agenda_tecnicos', function (Blueprint $table) {
+        Schema::create('technician_schedules', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tecnico_id');
-            $table->unsignedBigInteger('cliente_id');
-            $table->unsignedBigInteger('note_id')->nullable();
-            $table->unsignedBigInteger('cita_id');
-            $table->unsignedBigInteger('tipo_actividad_id');
-            $table->date('fecha_creada');
-            $table->date('fecha_proxima');
-            //$table->string('duracion');
-            $table->text('descripcion_proxima');
-            $table->foreign('cliente_id')->references('id')->on('cliente_externos')->onDelete('cascade');
-            $table->foreign('tecnico_id')->references('id')->on('tecnicos')->onDelete('cascade');
-            $table->foreign('note_id')->references('id')->on('notes')->onDelete('cascade');
-            $table->foreign('cita_id')->references('id')->on('citas')->onDelete('cascade');
-            $table->foreign('tipo_actividad_id')->references('id')->on('tipo_actividades')->onDelete('cascade');
+            $table->unsignedBigInteger('technicianId');  // Traducción de 'tecnico_id'
+            $table->unsignedBigInteger('clientId');  // Traducción de 'cliente_id'
+            $table->unsignedBigInteger('noteId')->nullable();  // Traducción de 'note_id'
+            $table->unsignedBigInteger('appointmentId');  // Traducción de 'cita_id'
+            $table->unsignedBigInteger('activityTypeId');  // Traducción de 'tipo_actividad_id'
+            $table->date('createdDate');  // Traducción de 'fecha_creada'
+            $table->date('nextDate');  // Traducción de 'fecha_proxima'
+            $table->text('nextDescription');  // Traducción de 'descripcion_proxima'
+            $table->foreign('clientId')->references('id')->on('external_clients')->onDelete('cascade');
+            $table->foreign('technicianId')->references('id')->on('technicians')->onDelete('cascade');
+            $table->foreign('noteId')->references('id')->on('notes')->onDelete('cascade');
+            $table->foreign('appointmentId')->references('id')->on('appointments')->onDelete('cascade');
+            $table->foreign('activityTypeId')->references('id')->on('activity_types')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -36,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('agenda_tecnicos');
+        Schema::dropIfExists('technician_schedules');
     }
 };

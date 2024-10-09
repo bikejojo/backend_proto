@@ -9,10 +9,14 @@ class Note extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $table = 'notes';
-    protected $fillable = ['descripcion'];
 
-    public function agenda_act(){
-        return $this->hasMany(Agenda_Tecnico::class,'note_id');
+    protected $table = 'notes';
+
+    protected $fillable = ['description'];  // Traducción de 'descripcion'
+
+    // Relación con TechnicianSchedule (Agenda_Tecnico)
+    public function technicianSchedules()
+    {
+        return $this->hasMany(Agenda_Tecnico::class, 'noteId');  // Traducción de 'agenda_act'
     }
 }

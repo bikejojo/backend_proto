@@ -40,7 +40,7 @@ class FotoTrabajoMutations{
 
                 $fotoTrabajo = new Foto_Trabajo([
                     'tecnicos_id' => $tecnicoId,
-                    'descripcion' => $fotoData['descripcion'],
+                    'descripcion' => trim($fotoData['descripcion']),
                     'fotos_url' =>  $url,
                 ]);
                 $fotoTrabajo->save();
@@ -64,5 +64,4 @@ class FotoTrabajoMutations{
             return ['message' => 'borrado exitoso'];
         }
     }
-
 }

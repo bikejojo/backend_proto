@@ -9,26 +9,33 @@ class Cita extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $table = 'citas';
+    protected $table = 'appointments';
+
     protected $fillable = [
-        'descripcion_cita',
-        'latitud',
-        'longitud',
-        'descripcion_ubicacion',
-        'resultado',
-        'estado_id',
-        'solicitud_id',
-        'fecha_hora_registrada',
-        'fecha_hora_fin',
+        'appointmentDescription',  // descripcion_cita
+        'latitude',  // latitud
+        'longitude',  // longitud
+        'locationDescription',  // descripcion_ubicacion
+        'result',  // resultado
+        'registrationDateTime',  // fecha_hora_registrada
+        'endDateTime'  // fecha_hora_fin
     ];
 
-    public function solicitudes(){
-        return $this->belongsTo(Solicitud::class,'solicitud_id');
+    // Relación con Request (Solicitud)
+    public function request()
+    {
+        return $this->belongsTo(Solicitud::class, 'requestId');
     }
-    public function estados(){
-        return $this->belongsTo(Tipo_Estado::class,'estado_id');
+
+    // Relación con StateType (Tipo_Estado)
+    public function state()
+    {
+        return $this->belongsTo(Tipo_Estado::class, 'stateId');
     }
-    public function agendas(){
-        return $this->belongsTo(Agenda_Tecnico::class,'cita_id');
+
+    // Relación con TechnicianSchedule (Agenda_Tecnico)
+    public function schedule()
+    {
+        return $this->hasMany(Agenda_Tecnico::class, 'appointmentId');
     }
 }

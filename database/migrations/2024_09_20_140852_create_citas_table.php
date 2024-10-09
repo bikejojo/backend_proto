@@ -11,20 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('citas', function (Blueprint $table) {
+        Schema::create('appointments', function (Blueprint $table) {
             $table->id();
-            $table->text('descripcion_solicitud')->nullable();
-            $table->decimal('latitud',10,7);
-            $table->decimal('longitud',10,7);
-            $table->text('descripcion_ubicacion');
-            $table->text('resultado')->nullable();
-            $table->datetime('fecha_hora_registrada');
-            $table->datetime('fecha_hora_fin');
-            //$table->text('duracion')->nullable();
-            $table->unsignedBigInteger('estado_id');
-            $table->unsignedBigInteger('solicitud_id');
-            $table->foreign('solicitud_id')->references('id')->on('solicituds')->onDelete('cascade');
-            $table->foreign('estado_id')->references('id')->on('tipo_estados')->onDelete('cascade');
+            $table->text('appointmentDescription')->nullable();  // Traducción de 'descripcion_cita'
+            $table->decimal('latitude', 10, 7);  // Traducción de 'latitud'
+            $table->decimal('longitude', 10, 7);  // Traducción de 'longitud'
+            $table->text('locationDescription');  // Traducción de 'descripcion_ubicacion'
+            $table->text('result')->nullable();  // Traducción de 'resultado'
+            $table->datetime('registrationDateTime');  // Traducción de 'fecha_hora_registrada'
+            $table->datetime('endDateTime');  // Traducción de 'fecha_hora_fin'
+            $table->unsignedBigInteger('stateId');  // Traducción de 'estado_id'
+            $table->unsignedBigInteger('requestId');  // Traducción de 'solicitud_id'
+            $table->foreign('requestId')->references('id')->on('requests')->onDelete('cascade');
+            $table->foreign('stateId')->references('id')->on('state_types')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -34,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('citas');
+        Schema::dropIfExists('appointments');
     }
 };

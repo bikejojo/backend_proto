@@ -21,60 +21,60 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'email' => 'test@example.com',
-            'contrasenia' => bcrypt('123'),
+            'password' => bcrypt('123'),
             'ci' => '123',
-            'tipo_usuario' => 1,
+            'type_user' => 1,
             'token' => "1"
         ]);
         #ciudad para tecnicos y clientes
-        Ciudad::create(['descripcion'=>'Santa Cruz']);
-        Ciudad::create(['descripcion'=>'Cochabamba']);
-        Ciudad::create(['descripcion'=>'Chuquisaca']);
-        Ciudad::create(['descripcion'=>'Tarija']);
-        Ciudad::create(['descripcion'=>'Beni']);
-        Ciudad::create(['descripcion'=>'Pando']);
-        Ciudad::create(['descripcion'=>'La Paz']);
-        Ciudad::create(['descripcion'=>'El Alto']);
-        Ciudad::create(['descripcion'=>'Oruro']);
-        Ciudad::create(['descripcion'=>'Potosi']);
+        Ciudad::create(['description'=>'Santa Cruz']);
+        Ciudad::create(['description'=>'Cochabamba']);
+        Ciudad::create(['description'=>'Chuquisaca']);
+        Ciudad::create(['description'=>'Tarija']);
+        Ciudad::create(['description'=>'Beni']);
+        Ciudad::create(['description'=>'Pando']);
+        Ciudad::create(['description'=>'La Paz']);
+        Ciudad::create(['description'=>'El Alto']);
+        Ciudad::create(['description'=>'Oruro']);
+        Ciudad::create(['description'=>'Potosi']);
 
 
         #habilidades para tecnicos
-        Habilidad::create(['nombre' => 'Plomeria']);
-        Habilidad::create(['nombre' => 'Electricista']);
-        Habilidad::create(['nombre' => 'Carpinteria']);
-        Habilidad::create(['nombre' => 'Pintor']);
-        Habilidad::create(['nombre' => 'Mecanico automotriz']);
-        Habilidad::create(['nombre' => 'Soldador']);
-        Habilidad::create(['nombre' => 'Jardineria']);
-        Habilidad::create(['nombre' => 'Albanileria']);
-        Habilidad::create(['nombre' => 'Cocinero']);
-        Habilidad::create(['nombre' => 'Cerrajero']);
-        Habilidad::create(['nombre' => 'Pintor de obras']);
-        Habilidad::create(['nombre' => 'Fumigador']);
-        Habilidad::create(['nombre' => 'Vidriero']);
-        Habilidad::create(['nombre' => 'Tecnico en computacion']);
-        Habilidad::create(['nombre' => 'Tecnico en redes electricas']);
-        Habilidad::create(['nombre' => 'Tecnico en electrodomesticos']);
-        Habilidad::create(['nombre' => 'Limpieza General']);
-        Habilidad::create(['nombre' => 'Tecnico en telefonia movil']);
+        Habilidad::create(['name' => 'Plomeria']);
+        Habilidad::create(['name' => 'Electricista']);
+        Habilidad::create(['name' => 'Carpinteria']);
+        Habilidad::create(['name' => 'Pintor']);
+        Habilidad::create(['name' => 'Mecanico automotriz']);
+        Habilidad::create(['name' => 'Soldador']);
+        Habilidad::create(['name' => 'Jardineria']);
+        Habilidad::create(['name' => 'Albanileria']);
+        Habilidad::create(['name' => 'Cocinero']);
+        Habilidad::create(['name' => 'Cerrajero']);
+        Habilidad::create(['name' => 'Pintor de obras']);
+        Habilidad::create(['name' => 'Fumigador']);
+        Habilidad::create(['name' => 'Vidriero']);
+        Habilidad::create(['name' => 'Tecnico en computacion']);
+        Habilidad::create(['name' => 'Tecnico en redes electricas']);
+        Habilidad::create(['name' => 'Tecnico en electrodomesticos']);
+        Habilidad::create(['name' => 'Limpieza General']);
+        Habilidad::create(['name' => 'Tecnico en telefonia movil']);
         #agenda
-        Tipo_Actividad::create(['descripcion'=>'mantenimiento']);
-        Tipo_Actividad::create(['descripcion'=>'reparacion']);
-        Tipo_Actividad::create(['descripcion'=>'seguimiento']);
-        Tipo_Actividad::create(['descripcion'=>'visita']);
-        Tipo_Actividad::create(['descripcion'=>'finalizado']);
+        Tipo_Actividad::create(['description'=>'mantenimiento']);
+        Tipo_Actividad::create(['description'=>'reparacion']);
+        Tipo_Actividad::create(['description'=>'seguimiento']);
+        Tipo_Actividad::create(['description'=>'visita']);
+        Tipo_Actividad::create(['description'=>'finalizado']);
         #solicitud
-        Tipo_Estado::create(['descripcion'=>'pendiente por aceptar']);
-        Tipo_Estado::create(['descripcion'=>'rechazada por tiempo de espera']);
-        Tipo_Estado::create(['descripcion'=>'en conversacion']);
-        Tipo_Estado::create(['descripcion'=>'rechazada por tiempo']);
-        Tipo_Estado::create(['descripcion'=>'rechazada por tecnico']);
-        Tipo_Estado::create(['descripcion'=>'aceptada']);
+        Tipo_Estado::create(['description'=>'pendiente por aceptar']);
+        Tipo_Estado::create(['description'=>'rechazada por tiempo de espera']);
+        Tipo_Estado::create(['description'=>'en conversacion']);
+        Tipo_Estado::create(['description'=>'rechazada por tiempo']);
+        Tipo_Estado::create(['description'=>'rechazada por tecnico']);
+        Tipo_Estado::create(['description'=>'aceptada']);
         #cita
-        Tipo_Estado::create(['descripcion'=>'en progreso']);
-        Tipo_Estado::create(['descripcion'=>'cliente ausente']);
-        Tipo_Estado::create(['descripcion'=>'reprogramada']);
-        Tipo_Estado::create(['descripcion'=>'completada']);
+        Tipo_Estado::create(['description'=>'en progreso']);
+        Tipo_Estado::create(['description'=>'cliente ausente']);
+        Tipo_Estado::create(['description'=>'reprogramada']);
+        Tipo_Estado::create(['description'=>'completada']);
     }
 }

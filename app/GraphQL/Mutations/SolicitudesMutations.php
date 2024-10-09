@@ -18,24 +18,12 @@ class SolicitudesMutations
         // Extraer datos del request dentro de solicitudRequest
         $solicitudData = $args['solicitud']['solicitudRequest'];
         $hoy= Carbon::today();
-        #para la cantidad de solicitudes que puede hacer el cliente
-        /*
-        $numSolicitud= Solicitud::where('cliente_id',$cliente_id)
-        ->whereDate('fecha_tiempo_registrado',$hoy)
-        ->count();
-
-        if ($numSolicitud >= 3) {
-            return ['message'=>'No puedes enviar más de 3 solicitudes por día.',
-                    'solicitud'=> null ];
-        }*/
-
         $fecha_programada = $solicitudData['fecha_tiempo_registrado'];
         //validar fecha programada
         if(!$this->validarFechaProgramada($fecha_programada)){
             return $this->errorResponse('Fechas No Coinciden');
         }
         #cambiar el timepo de fecha fin;
-        #$fecha_fin = $fecha_hoy->addMinutes(2);
         $solicitud = new Solicitud();
         $fecha_hoy = Carbon::now();
         $fecha_fin = $fecha_hoy->addMinutes(10);
@@ -46,10 +34,16 @@ class SolicitudesMutations
         $solicitud->fecha_tiempo_actualizado = Carbon::now();
         $solicitud->fecha_tiempo_vencimiento = $fecha_fin;
         $solicitud->estado_id = 1;
-        $solicitud->descripcion_servicio = $solicitudData['descripcion_servicio'];
-        $solicitud->latitud = $solicitudData['latitud'];
-        $solicitud->longitud = $solicitudData['longitud'];
-        $solicitud->descripcion_ubicacion = $solicitudData['descripcion_ubicacion'];
+
+        $descripcion_servicio = trim($solicitudData['descripcion_servicio']);
+        $latitud = trim($solicitudData['latitud']);
+        $longitud = trim($solicitudData['longitud']);
+        $descripcion_servicio = trim($solicitudData['descripcion_ubicacion']);
+
+        $solicitud->descripcion_servicio = $descripcion_servicio;
+        $solicitud->latitud = $latitud;
+        $solicitud->longitud = $longitud;
+        $solicitud->descripcion_ubicacion = $descripcion_servicio;
         $solicitud->save();
         // Guardar detalles de la solicitud
         $habilidades_ids = $solicitudData['habilidades_solicitadas'];
@@ -92,16 +86,17 @@ class SolicitudesMutations
             'solicitud' => Solicitud::where('id', $solicitud->id)->with('solicituds')->first()
         ];
    }
-    public function technicianModify($root,array $args){
+    public function modifyState($root,array $args){
         $solicitudData = $args['solicitudRequest'];
+
         $tecnico_id = $solicitudData['tecnico_id'];
         $cliente_id = $solicitudData['cliente_id'];
         $solicitud_id = $solicitudData['solicitud_id'];
         $solicitudActual = new Solicitud();
         $solicitudActual = Solicitud::where('tecnico_id',$tecnico_id)
-                            ->where('cliente_id',$cliente_id)
-                            ->where('id',$solicitud_id)
-                            ->first();
+                        ->where('cliente_id',$cliente_id)
+                        ->where('id',$solicitud_id)
+                        ->first();
         if($solicitudActual){
             switch($solicitudData['estado_id']){
                 case 3:
@@ -122,7 +117,7 @@ class SolicitudesMutations
             #$solicitudActual->fecha_tiempo_vencimiento = Carbon::now();
             $solicitudActual->save();
             return [
-                'messge'=> 'actualizacion de solicitud hecha ',
+                'message'=> 'actualizacion de solicitud hecha ',
                 'solicitud'=> $solicitudActual
             ];
         }else{

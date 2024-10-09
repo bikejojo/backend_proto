@@ -9,12 +9,12 @@ class Tipo_Actividad extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $table = 'tipo_actividades';
+    protected $table = 'activity_types';
     protected $fillable =[
         'descripcion'
     ];
 
-    public function agenda_tecnicos(){
-        return $this->belongsTo(Agenda_Tecnico::class,'tipo_actividad_id');
+    public function technicianSchedules(){
+        return $this->hasMany(Agenda_Tecnico::class,'tipo_actividad_id');
     }
 }

@@ -29,11 +29,11 @@ class CertificacionMutations{
 
         if(isset($args['foto_url'])&&$args['foto_url'] instanceof UploadedFile){
             $image = $manager->read($args['foto_url']->getRealPath());
-            $image->resize(750,null,function($constrain){
+            $image->resize(750,750,function($constrain){
                 $constrain->aspectRatio();
                 $constrain->upsize();
             });
-            $certificacion =$certificadoId. '/certificados'.'/'. uniqid() . '.png';
+            $certificacion =$certificadoId. '/certificados'.'/'. 'certificado' . '.png';
             $fullPath = storage_path('app/public/'.$certificacion);
             $image->save($fullPath,78,'png');
             $certificado->foto_url = str_replace('public/','',$certificacion);

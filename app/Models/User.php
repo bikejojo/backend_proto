@@ -14,9 +14,9 @@ class User extends Authenticatable
 
     protected $fillable = [
         'email',
-        'contrasenia',
+        'password',
         'ci',
-        'tipo_usuario',
+        'type_user',
         'token',
     ];
     protected $appends = ['token'];
@@ -26,11 +26,11 @@ class User extends Authenticatable
         return $this->attributes['token'] ?? null;
     }
 
-    public function clientes_externos(){
-        return $this->hasMany(Cliente_Externo::class,'users_id');
+    public function clientsExterns(){
+        return $this->hasMany(Cliente_Externo::class,'userId');
     }
-    public function tecnicos(){
-        return $this->hasMany(Tecnico::class,'users_id');
+    public function technicians(){
+        return $this->hasMany(Tecnico::class,'userId');
     }
 
     /**

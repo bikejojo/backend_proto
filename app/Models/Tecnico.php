@@ -9,42 +9,59 @@ class Tecnico extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $table = 'tecnicos';
+    protected $table = 'technicians';
+
     protected $fillable = [
-        'nombre',
-        'apellido',
-        'carnet_anverso',
-        'carnet_reverso',
+        'firstName',  // nombre en el esquema GraphQL
+        'lastName',   // apellido en el esquema GraphQL
+        'frontIdCard',  // carnet_anverso
+        'backIdCard',   // carnet_reverso
         'email',
-        'telefono',
-        'contrasenia',
-        'foto',
-        'users_id',
-        'ciudades_id',
+        'phoneNumber',  // telefono
+        'password',     // contrasenia
+        'photo',
+        'userId',         // foto
     ];
 
-    public function users() {
-        return $this->belongsTo(User::class,'users_id');
-    }
-    public function ciudades() {
-        return $this->belongsTo(Ciudad::class,'ciudades_id');
-    }
-    public function certificaciones(){
-        return $this->hasMany(Certificacion::class,'tecnico_id');
+    // Relación con User (Usuario)
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'userId');
     }
 
-    public function fotoTrabajos() {
-        return $this->hasMany(Foto_Trabajo::class, 'tecnicos_id');
+    // Relación con City (Ciudad)
+    public function city()
+    {
+        return $this->belongsTo(Ciudad::class, 'cityId');
     }
 
-    public function tecnicoHabilidades(){
-        return $this->hasMany(Tecnico_Habilidad::class,'tecnico_id');
+    // Relación con Certification (Certificación)
+    public function certifications()
+    {
+        return $this->hasMany(Certificacion::class, 'technicianId');
     }
 
-    public function solicitudes(){
-        return $this->hasMany(Solicitud::class,'tecnico_id');
+    // Relación con WorkPhoto (Foto_Trabajo)
+    public function workPhotos()
+    {
+        return $this->hasMany(Foto_Trabajo::class, 'technicianId');
     }
-    public function agendas(){
-        return $this->hasMany(Agenda_Tecnico::class,'tecnico_id');
+
+    // Relación con TechnicianSkill (Tecnico_Habilidad)
+    public function technicianSkills()
+    {
+        return $this->hasMany(Tecnico_Habilidad::class, 'technicianId');
+    }
+
+    // Relación con Request (Solicitud)
+    public function requests()
+    {
+        return $this->hasMany(Solicitud::class, 'technicianId');
+    }
+
+    // Relación con TechnicianSchedule (Agenda_Tecnico)
+    public function schedules()
+    {
+        return $this->hasMany(Agenda_Tecnico::class, 'technicianId');
     }
 }

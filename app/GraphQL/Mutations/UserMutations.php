@@ -19,17 +19,18 @@ class UserMutations{
      */
     public function create($root , array $args){
         $userData = $args['userRequest'];
+        $email = strtolower(trim($userData['email']));
+        if (strlen($userData['ci']) != 7) {
+            throw new \Exception('El CI debe tener exactamente 7 dígitos.');
+        }
         $user = User::create([
-            'email' => $userData['email'],
-            'contrasenia' => Hash::make($userData['contrasenia']),
+            'email' => $email,
+            'password' => Hash::make($userData['password']),
             'ci' => $userData['ci'],
-            'tipo_usuario' =>$userData['tipo_usuario'],
+            'type_user' =>$userData['type_user'],
         ]);
 
-        //$token= $user->createToken('token'.$user['ci'])->plainTextToken;
-        //$user->token = $token;
         $user->save();
-
         return $user;
     }
 
@@ -40,9 +41,9 @@ class UserMutations{
             throw new \Exception('Usuario no encontrado');
         }
         $user->ci=$userData['ci']??$user->ci;
-        $user->tipo_usuario=$userData['tipo_usuario']??$user->tipo_usuario;
+        $user->type_user=$userData['type_user']??$user->tipo_usuario;
         $user->email=$userData['email']??$user->email;
-        $user->contrasenia=isset($userData['contrasenia']) ? Hash::make($userData['contrasenia']): $user->contrasenia;
+        $user->password=isset($userData['password']) ? Hash::make($userData['password']): $user->contrasenia;
         $user->save();
         return $user;
     }
@@ -67,8 +68,10 @@ class UserMutations{
                 'tecnico' => null
             ];
         }
-        $tecnico = $user->tecnicos()->first();
-        if (!$user || !Hash::check($args['contrasenia'], $user->contrasenia)) {
+
+        $tecnico = $user->technicians()->first();
+        //dd($tecnico);
+        if (!$user || !Hash::check($args['password'], $user->password)) {
             return [
                 'message' => "No existe Usuario y/o contrasenia invalida" ,
                 'user' => null,
@@ -84,7 +87,7 @@ class UserMutations{
         return [
             'message' => 'Login exitoso',
             'user' => $user,
-            'tecnico' => $tecnico
+            'technician' => $tecnico
         ];
     }
 

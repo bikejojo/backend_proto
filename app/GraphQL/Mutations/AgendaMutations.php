@@ -15,15 +15,34 @@ class AgendaMutations
 
     $fecha = $args['agendaRequest']['fecha_creada'];
     $id = $args['agendaRequest']['tecnico_id'];
-        $agenda = Agenda_Tecnico::where('tecnico_id',$id)
+    $agenda = Agenda_Tecnico::where('tecnico_id',$id)
         ->where('fecha_creada',$fecha)
         ->get();
+    if ($agenda->isEmpty()) {
+        throw new \GraphQL\Error\Error('No se encontró ninguna agenda para este técnico.');
+    }
+     //return $agenda;
+     return [
+        'message' => 'listado de citas',
+        'agenda_tecnico' => $agenda,
+     ];
+    }
+
+    public function indexTecnico($root ,array $args){
+        $id = $args['agendaRequest']['tecnico_id'];
+    /*    $agenda = Agenda_Tecnico::where('tecnico_id',$id)
+            ->get();*/
+        $agenda = Agenda_Tecnico::with('tecnicos', //,'citas' ,'citas' , 'citas.solicitudes.solicituds','actividads'
+        'clientes','actividads','citas','citas.solicitudes','citas.solicitudes.solicituds')->where('tecnico_id',$id)->get();
         if ($agenda->isEmpty()) {
             throw new \GraphQL\Error\Error('No se encontró ninguna agenda para este técnico.');
         }
-        return $agenda;
-    }
-
+         //return $agenda;
+         return [
+            'message' => 'listado de citas',
+            'agenda_tecnico' => $agenda,
+         ];
+        }
     public function create($root , array $args){
         $estadoFin=5; // numero se requiere saber si poner en null fecha proxima !
 
@@ -35,7 +54,8 @@ class AgendaMutations
 
         if($args['estado_id']!==$estadoFin){
             $fechaProxima = $args['fecha_proxima'];
-            $descripcion_proxima = $args['descripcio_proxima'];
+            $descripcion_ = trim($args['descripcio_proxima']);
+            $descripcion_proxima = $descripcion_;
             $agenda->fecha_hora_proxima  = $fechaProxima;
             $agenda->descripcion_proxima = $descripcion_proxima;
         }else{

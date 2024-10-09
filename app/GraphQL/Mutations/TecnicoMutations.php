@@ -51,14 +51,16 @@ public function create($root,array $args){
 
         if(!$tecnico)
             throw new \Exception('Tecnico no encontrado');
-
-        $tecnico->nombre = $tecnicoData['nombre']??$tecnico->nombre;
-        $tecnico->apellido = $tecnicoData['apellido']??$tecnico->apellido;
-        $tecnico->email = $tecnicoData['email']??$tecnico->email;
+        $nombre =  trim($tecnicoData['nombre']);
+        $apellido =  trim($tecnicoData['apellido']);
+        $email =  trim($tecnicoData['email']);
+        $tecnico->nombre = $nombre;
+        $tecnico->apellido = $apellido;
+        $tecnico->email = $email;
         $tecnico->telefono = $tecnicoData['telefono'] ?? $tecnico->telefono;
         $tecnico->contrasenia = isset($tecnicoData['contrasenia']) ? Hash::make($tecnicoData['contrasenia']): $tecnico->contrasenia;
         $tecnico->foto = $tecnicoData['foto'] ?? $tecnico->foto;
-        $tecnico->users_id = $tecnicoData['users_id'] ?? $tecnico->users_id;
+        $tecnico->users_id = $tecnicoData['usuario_id'] ?? $tecnico->users_id;
         $tecnico->ciudades_id = $tecnicoData['ciudades_id'] ?? $tecnico->ciudades_id;
         $manager = new ImageManager(new Driver());
         if(isset($args['foto']) && $args['foto'] instanceof UploadedFile){

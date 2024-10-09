@@ -10,31 +10,41 @@ class Agenda_Tecnico extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $table = 'agenda_tecnicos';
+    protected $table = 'technician_schedules';
+
     protected $fillable = [
-        'tecnico_id',
-        'cliente_id',
-        'note_id',
-        'cita_id',
-        'fecha_creada',
-        'fecha_proxima',
-        'descripcion_proxima',
-        'tipo_actividad_id',
+        'createdDate',  // fecha_creada
+        'nextDate',  // fecha_proxima
+        'nextDescription'  // descripcion_proxima
     ];
 
-    public function tecnicos(){
-        return $this->belongsTo(Tecnico::class,'tecnico_id');
+    // Relación con Technician (Tecnico)
+    public function technician()
+    {
+        return $this->belongsTo(Tecnico::class, 'technicianId');
     }
-    public function clientes(){
-        return $this->belongsTo(Cliente_Externo::class,'cliente_id');
+
+    // Relación con ExternalClient (Cliente Externo)
+    public function client()
+    {
+        return $this->belongsTo(Cliente_Externo::class, 'clientId');
     }
-    public function notes(){
-        return $this->belongsTo(Note::class,'note_id');
+
+    // Relación con Appointment (Cita)
+    public function appointment()
+    {
+        return $this->belongsTo(Cita::class, 'appointmentId');
     }
-    public function citas(){
-        return $this->belongsTo(Cita::class,'cita_id');
+
+    // Relación con ActivityType (Tipo_Actividad)
+    public function activityType()
+    {
+        return $this->belongsTo(Tipo_Actividad::class, 'activityTypeId');
     }
-    public function actividads(){
-        return $this->hasMany(Tipo_Actividad::class,'tipo_actividad_id');
+
+    // Relación con Note (Nota)
+    public function note()
+    {
+        return $this->belongsTo(Note::class, 'noteId');
     }
 }

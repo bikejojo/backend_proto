@@ -11,20 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tecnicos', function (Blueprint $table) {
+        Schema::create('technicians', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('apellido');
-            $table->string('carnet_anverso')->nullable();
-            $table->string('carnet_reverso')->nullable();
+            $table->string('firstName');  // Traducción de 'nombre'
+            $table->string('lastName');   // Traducción de 'apellido'
+            $table->string('frontIdCard')->nullable();  // Traducción de 'carnet_anverso'
+            $table->string('backIdCard')->nullable();   // Traducción de 'carnet_reverso'
             $table->string('email')->nullable();
-            $table->string('telefono');
-            $table->string('contrasenia');
-            $table->string('foto')->nullable();
-            $table->unsignedBigInteger("users_id");
-            $table->unsignedBigInteger("ciudades_id");
-            $table->foreign("users_id")->references("id")->on("users")->onDelete("cascade");
-            $table->foreign("ciudades_id")->references("id")->on("ciudades")->onDelete("cascade");
+            $table->string('phoneNumber');  // Traducción de 'telefono'
+            $table->string('password');     // Traducción de 'contrasenia'
+            $table->string('photo')->nullable();  // Traducción de 'foto'
+            $table->unsignedBigInteger('userId');  // Traducción de 'users_id'
+            $table->unsignedBigInteger('cityId');  // Traducción de 'ciudades_id'
+            $table->foreign('userId')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('cityId')->references('id')->on('cities')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tecnicos');
+        Schema::dropIfExists('technicians');
     }
 };

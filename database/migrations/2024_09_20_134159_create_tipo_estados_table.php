@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tipo_estados', function (Blueprint $table) {
+        Schema::create('state_types', function (Blueprint $table) {
             $table->id();
-            $table->text('descripcion');
+            $table->text('description');  // Traducción de 'descripcion'
             $table->timestamps();
         });
     }
@@ -23,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tipo_estados');
+        Schema::dropIfExists('state_types');
     }
 };

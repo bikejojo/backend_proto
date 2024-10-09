@@ -9,30 +9,42 @@ class Cliente_Externo extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $table = 'cliente_externos';
+    protected $table = 'external_clients';
     protected $fillable = [
-        'nombre',
-        'apellido',
+        'firstName',      // nombre
+        'lastName',       // apellido
         'email',
-        'metodo_login',
-        'foto',
-        'users_id',
-        'ciudades_id',
+        'loginMethod',    // metodo_login
+        'photo',          // foto
     ];
-    public function users() {
-        return $this->belongsTo(User::class,'users_id');
-    }
-    public function ciudades() {
-        return $this->belongsTo(Ciudad::class,'ciudades_id');
-    }
-    public function preferencia_habilidades(){
-        return $this->hasMany(Preferencia_Habilidad::class,'cliente_id');
-    }
-    public function solicitud(){
-        return $this->hasMany(Solicitud::class,'solicitud_id');
+
+    // Relación con User (Usuario)
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'userId');
     }
 
-    public function agendas(){
-        return $this->hasMany(Agenda_Tecnico::class,'cliente_id');
+    // Relación con City (Ciudad)
+    public function city()
+    {
+        return $this->belongsTo(Ciudad::class, 'cityId');
+    }
+
+    // Relación con SkillPreference (Preferencia_Habilidad)
+    public function skillPreferences()
+    {
+        return $this->hasMany(Preferencia_Habilidad::class, 'clientId');
+    }
+
+    // Relación con Request (Solicitud)
+    public function requests()
+    {
+        return $this->hasMany(Solicitud::class, 'clientId');
+    }
+
+    // Relación con TechnicianSchedule (Agenda_Tecnico)
+    public function schedules()
+    {
+        return $this->hasMany(Agenda_Tecnico::class, 'clientId');
     }
 }

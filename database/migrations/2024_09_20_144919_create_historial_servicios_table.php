@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('historial_servicios', function (Blueprint $table) {
+        Schema::create('service_history', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('cliente_id');
-            $table->unsignedBigInteger('tecnico_id');
-            $table->unsignedBigInteger('solicitud_id');
-            $table->unsignedBigInteger('agenda_tecnico_id');
-            $table->datetime('fecha_realizada');
-            $table->datetime('fecha_acabado');
-            $table->unsignedBigInteger('descripcion');
-            $table->text('duracion');
+            $table->unsignedBigInteger('clientId');  // Traducción de 'cliente_id'
+            $table->unsignedBigInteger('technicianId');  // Traducción de 'tecnico_id'
+            $table->unsignedBigInteger('requestId');  // Traducción de 'solicitud_id'
+            $table->unsignedBigInteger('technicianScheduleId');  // Traducción de 'agenda_tecnico_id'
+            $table->datetime('performedDate');  // Traducción de 'fecha_realizada'
+            $table->datetime('finishedDate');  // Traducción de 'fecha_acabado'
+            $table->unsignedBigInteger('description');  // Traducción de 'descripcion'
+            $table->text('duration');  // Traducción de 'duracion'
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('historial_servicios');
+        Schema::dropIfExists('service_history');
     }
 };

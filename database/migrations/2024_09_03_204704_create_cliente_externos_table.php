@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cliente_externos', function (Blueprint $table) {
+        Schema::create('external_clients', function (Blueprint $table) {
             $table->id();
-            $table->String("nombre");
-            $table->String("apellido");
-            $table->String("email");
-            $table->String("metodo_login")->nullable();
-            $table->String("foto")->nullable();
-            $table->unsignedBigInteger("users_id");
-            $table->unsignedBigInteger("ciudades_id");
-            $table->foreign("users_id")->references("id")->on("users")->onDelete("cascade");
-            $table->foreign("ciudades_id")->references("id")->on("ciudades")->onDelete("cascade");
+            $table->string('firstName');  // Traducción de 'nombre'
+            $table->string('lastName');   // Traducción de 'apellido'
+            $table->string('email');
+            $table->string('loginMethod')->nullable();  // Traducción de 'metodo_login'
+            $table->string('photo')->nullable();
+            $table->unsignedBigInteger('userId');  // Traducción de 'users_id'
+            $table->unsignedBigInteger('cityId');  // Traducción de 'ciudades_id'
+            $table->foreign('userId')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('cityId')->references('id')->on('cities')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cliente_externos');
+        Schema::dropIfExists('external_clients');
     }
 };
