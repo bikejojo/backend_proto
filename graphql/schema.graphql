@@ -231,7 +231,7 @@ type RequestPhoto {
 type Mutation {
     createUser(userRequest: JSON!): User @field(resolver:"UserMutations@create")
     updateUser(id: ID!, userRequest: JSON!): User @field(resolver:"UserMutations@update")
-    #deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
+    deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
     login(ci: String! ,password:String!):responseLogin @field(resolver:"UserMutations@login")
 
 #CRUD tecnicos

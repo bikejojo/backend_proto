@@ -12,94 +12,105 @@ use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Drivers\Gd\Driver;
 
 class TecnicoMutations {
-public function create($root,array $args){
+    public function create($root, array $args)
+    {
+        $technicianData = $args['technicianRequest'];
 
-    $tecnicoData = $args['tecnicoRequest'];
-     // se crea instancia + el driver de gd
-    // Validación de formato de imágenes
-    $validatos = $this->validaImage($args);
-    if ($validatos->fails())
-        throw new \Exception('Archivo de imagen inválido');
+        // Validar formato de imágenes
+        $validators = $this->validateImage($args);
+        if ($validators->fails())
+            throw new \Exception('Invalid image file.');
 
-    // Crear técnico con datos iniciales
-    $tecnico = Tecnico::create($tecnicoData);
-    $tecnicoId = $tecnico->id;
+            // Crear técnico con datos iniciales
+        $technician = Tecnico::create($technicianData);
+        $technicianId = $technician->id;
 
-    // Crear directorios utilizando el tecnico_id para la ruta
-    $this->directoriesTecnico($tecnicoId);
-    $manager = new ImageManager(new Driver());
-    // Manejo de las imágenes
-    if (isset($args['carnet_anverso']) && $args['carnet_anverso'] instanceof UploadedFile) {
-        $carnetAnversoPath = $this->processImage($args['carnet_anverso'], "$tecnicoId/carnet/anverso" . ".png", $manager);
-        $tecnico->carnet_anverso = str_replace('public/', '', $carnetAnversoPath);
+        // Crear directorios utilizando technicianId para la ruta
+        $this->createTechnicianDirectories($technicianId);
+        $manager = new ImageManager(new Driver());
+
+        // Manejo de las imágenes
+        if (isset($args['frontIdCard']) && $args['frontIdCard'] instanceof UploadedFile) {
+            $frontIdCardPath = $this->processImage($args['frontIdCard'], "$technicianId/id_card/front.png", $manager);
+            $technician->frontIdCard = str_replace('public/', '', $frontIdCardPath);
+        }
+
+        if (isset($args['backIdCard']) && $args['backIdCard'] instanceof UploadedFile) {
+            $backIdCardPath = $this->processImage($args['backIdCard'], "$technicianId/id_card/back.png", $manager);
+            $technician->backIdCard = str_replace('public/', '', $backIdCardPath);
+        }
+
+        // Guardar las rutas de las imágenes en el técnico
+        $technician->save();
+        return $technician;
     }
-
-    if (isset($args['carnet_reverso']) && $args['carnet_reverso'] instanceof UploadedFile) {
-        $carnetReversoPath = $this->processImage($args['carnet_reverso'], "$tecnicoId/carnet/reverso" . ".png",$manager);
-        $tecnico->carnet_reverso =  str_replace('public/', '', $carnetReversoPath);
-    }
-    //no se guarda foto de perfil a crearlo
-    // Guardar las rutas de las imágenes en el técnico
-    $tecnico->save();
-    return $tecnico;
-}
-
-    public function update($root,array $args){
-        $tecnicoData = $args['tecnicoRequest'];
-        $tecnico = Tecnico::find($args['id']);
+    public function update($root, array $args){
+        $technicianData = $args['technicianRequest'];
+        $technician = Tecnico::find($args['id']);
+        $technicianId = $technician->id;
         $user = User::find($args['id']);
 
-        if(!$tecnico)
-            throw new \Exception('Tecnico no encontrado');
-        $nombre =  trim($tecnicoData['nombre']);
-        $apellido =  trim($tecnicoData['apellido']);
-        $email =  trim($tecnicoData['email']);
-        $tecnico->nombre = $nombre;
-        $tecnico->apellido = $apellido;
-        $tecnico->email = $email;
-        $tecnico->telefono = $tecnicoData['telefono'] ?? $tecnico->telefono;
-        $tecnico->contrasenia = isset($tecnicoData['contrasenia']) ? Hash::make($tecnicoData['contrasenia']): $tecnico->contrasenia;
-        $tecnico->foto = $tecnicoData['foto'] ?? $tecnico->foto;
-        $tecnico->users_id = $tecnicoData['usuario_id'] ?? $tecnico->users_id;
-        $tecnico->ciudades_id = $tecnicoData['ciudades_id'] ?? $tecnico->ciudades_id;
+        if (!$technician)
+            throw new \Exception('Technician not found.');
+
+        // Actualización de los datos del técnico
+        $firstName = trim($technicianData['firstName']);
+        $lastName = trim($technicianData['lastName']);
+        $email = trim($technicianData['email']);
+        $technician->firstName = $firstName;
+        $technician->lastName = $lastName;
+        $technician->email = $email;
+        $technician->phoneNumber = $technicianData['phoneNumber'] ?? $technician->phoneNumber;
+        $technician->password = isset($technicianData['password']) ? Hash::make($technicianData['password']) : $technician->password;
+        $technician->photo = $technicianData['photo'] ?? $technician->photo;
+        $technician->userId = $technicianData['userId'] ?? $technician->userId;
+        $technician->cityId = $technicianData['cityId'] ?? $technician->cityId;
+
+        // Manejo de la imagen de perfil
         $manager = new ImageManager(new Driver());
-        if(isset($args['foto']) && $args['foto'] instanceof UploadedFile){
-            if ($tecnico->carnet_reverso) {
-                Storage::delete('public/' . $tecnico->carnet_reverso);
+        if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
+            if ($technician->photo) {
+                Storage::delete('public/' . $technician->photo);
             }
-            $fotoPath = $this->processImage($args['foto'],"$tecnico/perfil/foto_".".png" , $manager );
-            $tecnico->foto = str_replace('public/', '', $fotoPath);
+            $photoPath = $this->processImage($args['photo'], "$technicianId/profile/photo.png", $manager);
+            $technician->photo = str_replace('public/', '', $photoPath);
         }
-        $tecnico->save();
-        $user->email = $tecnicoData['email']??$user->email;
+        // Guardar cambios del técnico
+        $technician->save();
+        // Actualizar datos del usuario relacionado
+        $user->email = $technicianData['email'] ?? $user->email;
         $user->save();
-        return $tecnico;
+
+    return $technician;
     }
 
-    public function delete($root,array $args){
-        $id=Tecnico::find($args['id']);
-        if($id){
-            return ['message' => 'Borrado No exitoso'];
-        }else{
-            $tecnico = Tecnico::where('id',$id)->delete();
-            return ['message' => 'Borrado exitoso'];
-        }
+    public function delete($root, array $args){
+    $technician = Tecnico::find($args['id']);
+    if (!$technician) {
+        throw new \Exception('Technician not found.');
+    }
+    // Borrar técnico
+    $technician->delete();
+
+    return ['message' => 'Eliminacion exitosa del tecnico'];
     }
 
-    private function validaImage($args){
-        return validator::make($args, [
-            'carnet_anverso' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
-            'carnet_reverso' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+// Validación de imágenes
+    private function validateImage($args){
+        return Validator::make($args, [
+            'frontIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'backIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
         ]);
     }
 
-    private function directoriesTecnico($tecnicoId){
-        Storage::makeDirectory('public/'.$tecnicoId . '/carnet');
-        Storage::makeDirectory('public/'.$tecnicoId . '/perfil');
-
+    private function createTechnicianDirectories($technicianId){
+        Storage::makeDirectory('public/' . $technicianId . '/id_card');
+        Storage::makeDirectory('public/' . $technicianId . '/profile');
     }
-    private function processImage(UploadedFile $file,$path,$manager){
+
+    // Procesamiento de imágenes
+    private function processImage(UploadedFile $file, $path, $manager){
         $image = $manager->read($file->getRealPath());
         $image->resize(750, 750, function ($constraint) {
             $constraint->aspectRatio();

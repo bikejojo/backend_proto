@@ -40,7 +40,7 @@ class UserMutations{
         if(!$user){
             throw new \Exception('Usuario no encontrado');
         }
-        $user->ci=$userData['ci']??$user->ci;
+        //$user->ci=$userData['ci']??$user->ci;
         $user->type_user=$userData['type_user']??$user->tipo_usuario;
         $user->email=$userData['email']??$user->email;
         $user->password=isset($userData['password']) ? Hash::make($userData['password']): $user->contrasenia;
@@ -50,7 +50,7 @@ class UserMutations{
 
     public function delete($root,array $args){
         $id= $args['id'];
-        if($id){
+        if(!$id){
             return ['message'=> 'Borrado no existoso'];
         }else{
             $user=User::where('id',$id)->delete();

@@ -21,6 +21,7 @@ class Tecnico extends Model
         'password',     // contrasenia
         'photo',
         'userId',         // foto
+        'cityId'
     ];
 
     // Relación con User (Usuario)
