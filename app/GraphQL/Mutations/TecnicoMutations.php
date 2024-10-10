@@ -18,9 +18,9 @@ class TecnicoMutations {
 
         // Validar formato de imágenes
         $validators = $this->validateImage($args);
-        if ($validators->fails())
+        if ($validators->fails()) {
             throw new \Exception('Invalid image file.');
-
+        }
             // Crear técnico con datos iniciales
         $technician = Tecnico::create($technicianData);
         $technicianId = $technician->id;
@@ -40,27 +40,38 @@ class TecnicoMutations {
             $technician->backIdCard = str_replace('public/', '', $backIdCardPath);
         }
 
+        if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
+            $photoPath = $this->processImage($args['photo'], "$technicianId/profile/photo.png", $manager);
+            $technician->photo = str_replace('public/', '', $photoPath);
+        }
+
         // Guardar las rutas de las imágenes en el técnico
         $technician->save();
-        return $technician;
+        //return $technician;
+        return [
+            'message'=> ' Registro tecnico exitoso!' ,
+            'technician' => $technician
+        ];
     }
     public function update($root, array $args){
         $technicianData = $args['technicianRequest'];
         $technician = Tecnico::find($args['id']);
         $technicianId = $technician->id;
-        $user = User::find($args['id']);
+        $user = User::find($technicianData['userId']);
 
-        if (!$technician)
+        if ($technician==null){
             throw new \Exception('Technician not found.');
-
+        }
         // Actualización de los datos del técnico
         $firstName = trim($technicianData['firstName']);
         $lastName = trim($technicianData['lastName']);
         $email = trim($technicianData['email']);
+        $phoneNumber = trim($technicianData['phoneNumber']);
+        ####################################
         $technician->firstName = $firstName;
         $technician->lastName = $lastName;
         $technician->email = $email;
-        $technician->phoneNumber = $technicianData['phoneNumber'] ?? $technician->phoneNumber;
+        $technician->phoneNumber = $phoneNumber;
         $technician->password = isset($technicianData['password']) ? Hash::make($technicianData['password']) : $technician->password;
         $technician->photo = $technicianData['photo'] ?? $technician->photo;
         $technician->userId = $technicianData['userId'] ?? $technician->userId;
@@ -69,6 +80,7 @@ class TecnicoMutations {
         // Manejo de la imagen de perfil
         $manager = new ImageManager(new Driver());
         if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
+            //dd($technician->photo);
             if ($technician->photo) {
                 Storage::delete('public/' . $technician->photo);
             }
@@ -81,7 +93,11 @@ class TecnicoMutations {
         $user->email = $technicianData['email'] ?? $user->email;
         $user->save();
 
-    return $technician;
+    //return $technician;
+        return [
+            'technician' => $technician ,
+            'message' => 'Tecnico actualizado exitoso!'
+        ];
     }
 
     public function delete($root, array $args){
@@ -94,10 +110,13 @@ class TecnicoMutations {
 
     return ['message' => 'Eliminacion exitosa del tecnico'];
     }
-
 // Validación de imágenes
     private function validateImage($args){
-        return Validator::make($args, [
+        return Validator::make([
+        'frontIdCard' => $args['frontIdCard'] ?? null ,
+        'backIdCard'=> $args['backIdCard'] ?? null ,
+        'photo' => $args['photo'] ?? null ,
+        ], [
             'frontIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'backIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
@@ -108,7 +127,6 @@ class TecnicoMutations {
         Storage::makeDirectory('public/' . $technicianId . '/id_card');
         Storage::makeDirectory('public/' . $technicianId . '/profile');
     }
-
     // Procesamiento de imágenes
     private function processImage(UploadedFile $file, $path, $manager){
         $image = $manager->read($file->getRealPath());
@@ -116,10 +134,8 @@ class TecnicoMutations {
             $constraint->aspectRatio();
             $constraint->upsize();
         });
-
         $fullPath = storage_path("app/public/{$path}");
         $image->save($fullPath, 80, 'png');
-
         return $path;
     }
 }

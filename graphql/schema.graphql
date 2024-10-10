@@ -81,7 +81,7 @@ type TechnicianSkill {
 
 type City {
   id: ID!
-  description: String!
+  name: String!
 
   externalClients: [ExternalClient!]! @hasMany
   technicians: [Technician!]! @hasMany
@@ -128,6 +128,8 @@ type ExternalClient {
   email: String!
   loginMethod: String!
   photo: String!
+  userId:ID!
+  cityId:ID!
 
   user: User! @belongsTo
   city: City! @belongsTo
@@ -236,9 +238,9 @@ type Mutation {
 
 #CRUD tecnicos
 
-    createTechnician(technicianRequest: JSON!, frontIdCard: Upload, backIdCard: Upload, photo: Upload): Technician   @field(resolver:"TecnicoMutations@create")
-    updateTechnician(id: ID!, technicianRequest: JSON!): Technician @field(resolver:"TecnicoMutations@update")
-    #deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
+    createTechnician(technicianRequest: JSON!, frontIdCard: Upload, backIdCard: Upload, photo: Upload): TechnicianResponse   @field(resolver:"TecnicoMutations@create")
+    updateTechnician(id: ID!, technicianRequest: JSON! , photo: Upload): TechnicianResponse @field(resolver:"TecnicoMutations@update")
+    deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
 #@guard(checks: ["sanctum"])
 #CRUD habilidades
 
@@ -249,7 +251,7 @@ type Mutation {
 #CRUD Tecnico habilidad
 
     assignTechnicianSkill(technicianId: ID!, skills: JSON): TechnicianSkill @field(resolver:"TecnicoHabilidadMutations@assign")
-    updateTechnicianSkill(id: ID!, skills: [TechnicianSkillRequest!]!): [TechnicianSkill!]! @field(resolver:"TecnicoHabilidadMutations@update")
+    #updateTechnicianSkill(id: ID!, skills: [TechnicianSkillRequest!]!): [TechnicianSkill!]! @field(resolver:"TecnicoHabilidadMutations@update")
 
 #CRUD ciudad
 
@@ -269,14 +271,14 @@ type Mutation {
 
 #CRUD cliente_externo
 
-    createClient(firstName: String!, email: String!, loginMethod: String!, photo: String!, userId: String!, cityId: String!): ExternalClient @field(resolver:"ClienteExternoMutations@create")
-    updateClient(id: ID!, firstName: String!, email: String!, loginMethod: String!, photo: String!, userId: String!, cityId: String!): ExternalClient @field(resolver:"ClienteExternoMutations@update")
+    createClient(clientRequest:JSON! photo:Upload): ClientResponse @field(resolver:"ClienteExternoMutations@create")
+    updateClient(id: ID!,clientRequest:JSON! photo:Upload ): ClientResponse @field(resolver:"ClienteExternoMutations@update")
     deleteClient(id: ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
 
 #CRUD solicitudes
 
-    createRequest(request: RequestInput!): RequestResponse @field(resolver:"SolicitudesMutations@create")
-    updateRequest(requestRequest: JSON!): RequestResponse! @field(resolver:"SolicitudesMutations@modifyState")
+    #createRequest(request: RequestInput!): RequestResponse @field(resolver:"SolicitudesMutations@create")
+    #updateRequest(requestRequest: JSON!): RequestResponse! @field(resolver:"SolicitudesMutations@modifyState")
 
 #CRUD cita
 
@@ -337,13 +339,12 @@ type RequestResponse {
 
 type TechnicianResponse {
   technician: Technician
-  front_Url: String
-  back_Url: String
+  message: String!
 }
 
 type responseLogin {
-  user: User!
-  technician: Technician!
+  user: User
+  technician: Technician
   message: String
 }
 
@@ -354,7 +355,7 @@ type AppointmentResponse {
 
 type ClientResponse {
   message: String
-  client: ExternalClient
+  client: ExternalClient!
 }
 
 type SkillResponse {

@@ -12,7 +12,7 @@ class Ciudad extends Model
     protected $table = 'cities';  // Traducción de 'ciudades'
 
     protected $fillable = [
-        'description'  // Traducción de 'descripcion'
+        'name'  // Traducción de 'descripcion'
     ];
 
     // Relación con ExternalClient (Cliente Externo)

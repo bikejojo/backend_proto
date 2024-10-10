@@ -15,7 +15,9 @@ class Cliente_Externo extends Model
         'lastName',       // apellido
         'email',
         'loginMethod',    // metodo_login
-        'photo',          // foto
+        'photo',
+        'userId',
+        'cityId',          // foto
     ];
 
     // Relación con User (Usuario)

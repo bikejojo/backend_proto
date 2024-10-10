@@ -10,7 +10,7 @@ class CiudadMutations{
    }
    public function update($root,array $args){
       $id=Ciudad::find($args['id']);
-      $ciudad=Ciudad::where('id',$id)->update(['descripcion'=> $args['descripcion']]);
+      $ciudad=Ciudad::where('id',$id)->update(['name'=> $args['name']]);
       return $ciudad;
    }
    public function delete($root,array $args){

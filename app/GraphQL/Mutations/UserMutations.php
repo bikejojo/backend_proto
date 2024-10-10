@@ -61,7 +61,8 @@ class UserMutations{
     public function login($root, array $args)
     {
         $user = User::where('ci', $args['ci'])->first();
-        if (!$user) {
+
+        if ($user == null ) {
             return [
                 'message' => "El usuario con CI no existe",
                 'user' => null,
@@ -70,13 +71,9 @@ class UserMutations{
         }
 
         $tecnico = $user->technicians()->first();
-        //dd($tecnico);
-        if (!$user || !Hash::check($args['password'], $user->password)) {
+        if (!Hash::check($args['password'], $user->password)) {
             return [
-                'message' => "No existe Usuario y/o contrasenia invalida" ,
-                'user' => null,
-                'tecnico' => null
-
+                'message' => "Credenciales invalidas" ,
             ];
         }
 

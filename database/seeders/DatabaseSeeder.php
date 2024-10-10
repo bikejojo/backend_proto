@@ -27,16 +27,16 @@ class DatabaseSeeder extends Seeder
             'token' => "1"
         ]);
         #ciudad para tecnicos y clientes
-        Ciudad::create(['description'=>'Santa Cruz']);
-        Ciudad::create(['description'=>'Cochabamba']);
-        Ciudad::create(['description'=>'Chuquisaca']);
-        Ciudad::create(['description'=>'Tarija']);
-        Ciudad::create(['description'=>'Beni']);
-        Ciudad::create(['description'=>'Pando']);
-        Ciudad::create(['description'=>'La Paz']);
-        Ciudad::create(['description'=>'El Alto']);
-        Ciudad::create(['description'=>'Oruro']);
-        Ciudad::create(['description'=>'Potosi']);
+        Ciudad::create(['name'=>'Santa Cruz']);
+        Ciudad::create(['name'=>'Cochabamba']);
+        Ciudad::create(['name'=>'Chuquisaca']);
+        Ciudad::create(['name'=>'Tarija']);
+        Ciudad::create(['name'=>'Beni']);
+        Ciudad::create(['name'=>'Pando']);
+        Ciudad::create(['name'=>'La Paz']);
+        Ciudad::create(['name'=>'El Alto']);
+        Ciudad::create(['name'=>'Oruro']);
+        Ciudad::create(['name'=>'Potosi']);
 
 
         #habilidades para tecnicos
