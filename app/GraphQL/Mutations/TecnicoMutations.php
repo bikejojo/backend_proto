@@ -51,7 +51,7 @@ class TecnicoMutations {
         //return $technician;
         return [
             'message'=> ' Registro tecnico exitoso!' ,
-            'upComingMessage' => 'Registre sus habilidades' ,
+            'upcomingmessage' => 'Registre sus habilidades' ,
             'technician' => $technician,
             'user' => $user
         ];

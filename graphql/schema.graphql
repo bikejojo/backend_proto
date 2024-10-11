@@ -357,7 +357,7 @@ type TechnicianResponse {
   user: User
   technician: Technician
   message: String
-  upComingMessage: String
+  upcomingmessage: String
 }
 
 type responseLogin {
