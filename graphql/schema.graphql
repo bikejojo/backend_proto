@@ -23,7 +23,9 @@ type Query {
 
 
 }
-
+########################
+        #models
+#######################
 "Account of a person who utilizes this application."
 type User {
     "Unique primary key."
@@ -250,6 +252,9 @@ type RequestPhoto {
   request: Request @belongsTo
 }
 
+##########################
+     #endpoint de post
+###########3##############
 type Mutation {
 ################
    #CRUD users
@@ -258,7 +263,6 @@ type Mutation {
     updateUser(id: ID!, userRequest: JSON!): User @field(resolver:"UserMutations@update")
     deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
     login(ci: String! ,password:String!):responseLogin @field(resolver:"UserMutations@login")
-
 ####################
     #CRUD tecnicos
 ###################
@@ -266,7 +270,6 @@ type Mutation {
     updateTechnician(id: ID!, technicianRequest: JSON! , photo: Upload): TechnicianResponse @field(resolver:"TecnicoMutations@update")
     deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
 #@guard(checks: ["sanctum"])
-
 #####################
    #CRUD habilidades
 #####################
@@ -275,8 +278,8 @@ type Mutation {
 ###########################
   #CRUD Tecnico habilidad
 ###########################
-    assignTechnicianSkill(technicianId: ID!, skills: JSON): [TechnicianSkill!]! @field(resolver:"TecnicoHabilidadMutations@assign")
-    updateTechnicianSkill(id: ID!, skills: [TechnicianSkillInput!]): [TechnicianSkill!]! @field(resolver:"TecnicoHabilidadMutations@update")
+    assignTechnicianSkill(technicianId: ID!, skills: JSON): SkillResponse @field(resolver:"TecnicoHabilidadMutations@assign")
+    updateTechnicianSkill(id: ID!, skills: [TechnicianSkillInput!]): SkillResponse @field(resolver:"TecnicoHabilidadMutations@update")
 ###########################
       #CRUD ciudad
 ###########################
@@ -296,16 +299,11 @@ type Mutation {
     deleteClients(id: ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
 
 #CRUD solicitudes
-
     #createRequest(request: RequestInput!): RequestResponse @field(resolver:"SolicitudesMutations@create")
     #updateRequest(requestRequest: JSON!): RequestResponse! @field(resolver:"SolicitudesMutations@modifyState")
-
 #CRUD notas
-
     createNote(noteRequest: JSON!): Note! @field(resolver:"NoteMutations@create")
-
 #CUD agenda
-
     indexSchedule(scheduleRequest: JSON!): ScheduleResponse @field(resolver:"AgendaMutations@index")
     indexTechnicianSchedule(scheduleRequest: JSON!): ScheduleResponse @field(resolver:"AgendaMutations@indexTecnico")
 #CRUD preferencia habilidades
@@ -313,6 +311,9 @@ type Mutation {
     updateSkillPreference(id: ID!, skillId: String!, clientId: String!): SkillPreference @field(resolver:"PreferenciaHabilidadMutations@update")
 }
 
+###############################
+        #endpoint de GET
+###############################
 type Query {
   ##########################
             #USER#
@@ -334,16 +335,18 @@ type Query {
   #########################
   getAllSkills: [Skill] @all (model: "App\\Models\\Habilidad")
   getSkillById(id: ID! @whereKey): Skill @find (model: "App\\Models\\Habilidad")
-
-
-  getAllStateTypes: [StateType] @all
-
-  getAllActivityTypes: [ActivityType] @all
-
-  getAllAgendaDetails: [TechnicianAgendaDetail!] @all
+  #########################
+        #TipoEstado
+  #########################
+  getAllStateTypes: [StateType] @all (model: "App\\Models\\Tipo_Estado")
+  #########################
+        #TipoActividad
+  #########################
+  getAllActivityTypes: [ActivityType] @all (model: "App\\Models\\Tipo_Actividad")
 }
-
-#Modo salida de datos
+#############################
+    #Modo salida de datos
+#############################
 type Response {
   message: String
 }
@@ -383,7 +386,8 @@ type ClientsResponse {
 
 type SkillResponse {
   message: String
-  skills: [Skill]
+  technical: Technician
+  skills: [TechnicianSkill]
 }
 
 type ScheduleResponse {
@@ -391,8 +395,9 @@ type ScheduleResponse {
   technicianSchedule: [TechnicianSchedule]
 }
 
-#Modo de entrada de datos
-
+##################################
+    #Modo de entrada de datos
+##################################
 input requestSolicituds {
     solicitudRequest: JSON!
     fotos_url: [Upload!]!

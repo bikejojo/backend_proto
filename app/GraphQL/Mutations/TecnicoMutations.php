@@ -98,8 +98,9 @@ class TecnicoMutations {
 
     //return $technician;
         return [
-            'technician' => $technician ,
-            'message' => 'Tecnico actualizado exitoso!'
+            'message' => 'Tecnico actualizado exitoso!' ,
+            'technician' => $technician
+
         ];
     }
 
