@@ -15,7 +15,8 @@ class TecnicoMutations {
     public function create($root, array $args)
     {
         $technicianData = $args['technicianRequest'];
-
+        $userId = $technicianData['userId'];
+        $user = User::find($userId);
         // Validar formato de imágenes
         $validators = $this->validateImage($args);
         if ($validators->fails()) {
@@ -50,7 +51,9 @@ class TecnicoMutations {
         //return $technician;
         return [
             'message'=> ' Registro tecnico exitoso!' ,
-            'technician' => $technician
+            'upComingMessage' => 'Registre sus habilidades' ,
+            'technician' => $technician,
+            'user' => $user
         ];
     }
     public function update($root, array $args){

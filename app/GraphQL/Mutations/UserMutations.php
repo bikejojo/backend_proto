@@ -29,7 +29,8 @@ class UserMutations{
             'ci' => $userData['ci'],
             'type_user' =>$userData['type_user'],
         ]);
-
+        $tokens = $user->createToken('authToken')->plainTextToken;
+        $user->token = $tokens;
         $user->save();
         return $user;
     }

@@ -262,7 +262,7 @@ type Mutation {
 ####################
     #CRUD tecnicos
 ###################
-    createTechnician(technicianRequest: JSON!, frontIdCard: Upload, backIdCard: Upload, photo: Upload): TechnicianResponse   @field(resolver:"TecnicoMutations@create")
+    createTechnician(technicianRequest: JSON!, frontIdCard: Upload, backIdCard: Upload, photo: Upload): TechnicianResponse @field(resolver:"TecnicoMutations@create")
     updateTechnician(id: ID!, technicianRequest: JSON! , photo: Upload): TechnicianResponse @field(resolver:"TecnicoMutations@update")
     deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
 #@guard(checks: ["sanctum"])
@@ -354,8 +354,10 @@ type RequestResponse {
 }
 
 type TechnicianResponse {
+  user: User
   technician: Technician
-  message: String!
+  message: String
+  upComingMessage: String
 }
 
 type responseLogin {
