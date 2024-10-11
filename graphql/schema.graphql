@@ -41,7 +41,7 @@ type User {
     ci:String!
     type_user:Int!
     token: String!
-    clientsExterns:[ExternalClient!]! @hasMany
+    clientsExterns:[InternalClient!]! @hasMany
     technicians:[Technician!]! @hasMany
 
 }
@@ -63,9 +63,10 @@ type Technician {
   user: User! @belongsTo
   certifications: [Certification!]! @hasMany
   workPhotos: [WorkPhoto!] @hasMany
-  technicianSkills: [TechnicianSkill!]! @hasMany
+  technician: [TechnicianSkill!]! @hasMany
   requests: [Request!] @hasMany
   schedules: [TechnicianSchedule!] @hasMany
+  associantions: [AssociationTechnClient!] @belongsTo
 }
 
 type TechnicianSkill {
@@ -75,7 +76,7 @@ type TechnicianSkill {
   experience: String
   description: String
 
-  technician: [Technician!]! @belongsTo
+  technician: Technician! @belongsTo
   skill: [Skill!]! @belongsTo
 }
 
@@ -83,7 +84,7 @@ type City {
   id: ID!
   name: String!
 
-  externalClients: [ExternalClient!]! @hasMany
+  externalClients: [InternalClient!]! @hasMany
   technicians: [Technician!]! @hasMany
 }
 
@@ -118,10 +119,10 @@ type SkillPreference {
   clientId: String!
 
   skill: Skill! @belongsTo
-  externalClient: ExternalClient! @belongsTo
+  externalClient: InternalClient! @belongsTo
 }
 
-type ExternalClient {
+type InternalClient {
   id: ID!
   firstName: String!
   lastName: String!
@@ -136,6 +137,25 @@ type ExternalClient {
   skillPreferences: [SkillPreference!]! @hasMany
   requests: [Request!]! @hasMany
   schedules: [TechnicianSchedule!]! @hasMany
+}
+
+type ExternalClient {
+    id: ID!
+    firstName: String! @trim
+    lastName: String! @trim
+    phoneNumber: String! @trim
+
+    associantions: AssociationTechnClient @belongsTo
+}
+
+type AssociationTechnClient {
+    id:ID!
+    clientId:ID!
+    technicalId:ID!
+    dateTimeCreated:String!
+
+    technicals: Technician @hasMany
+    clients: ExternalClient @hasMany
 }
 
 type ActivityType {
@@ -171,7 +191,7 @@ type Request {
   locationDescription: String!
 
   technician: Technician! @belongsTo
-  client: ExternalClient! @belongsTo
+  client: InternalClient! @belongsTo
   requestDetails: [RequestDetail!]! @hasMany
   state: StateType! @belongsTo
   requestPhotos: [RequestPhoto!]! @hasMany
@@ -215,7 +235,7 @@ type TechnicianSchedule {
   nextDescription: String!
 
   technician: Technician! @belongsTo
-  client: ExternalClient! @belongsTo
+  client: InternalClient! @belongsTo
   note: Note @belongsTo
   appointment: Appointment! @belongsTo
   activityType: ActivityType! @belongsTo
@@ -229,61 +249,56 @@ type RequestPhoto {
 
   request: Request @belongsTo
 }
-#CRUD users
+
 type Mutation {
+################
+   #CRUD users
+################
     createUser(userRequest: JSON!): User @field(resolver:"UserMutations@create")
     updateUser(id: ID!, userRequest: JSON!): User @field(resolver:"UserMutations@update")
     deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
     login(ci: String! ,password:String!):responseLogin @field(resolver:"UserMutations@login")
 
-#CRUD tecnicos
-
+####################
+    #CRUD tecnicos
+###################
     createTechnician(technicianRequest: JSON!, frontIdCard: Upload, backIdCard: Upload, photo: Upload): TechnicianResponse   @field(resolver:"TecnicoMutations@create")
     updateTechnician(id: ID!, technicianRequest: JSON! , photo: Upload): TechnicianResponse @field(resolver:"TecnicoMutations@update")
     deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
 #@guard(checks: ["sanctum"])
-#CRUD habilidades
 
+#####################
+   #CRUD habilidades
+#####################
     createSkill(name: String!): Skill @field(resolver:"HabilidadMutations@create")
     updateSkill(id: ID!, name: String!): Skill @field(resolver:"HabilidadMutations@create")
-    #deleteHabilidad(id:ID! @whereKey):Habilidad @field(resolver:"HabilidadMutations@create")
-
-#CRUD Tecnico habilidad
-
-    assignTechnicianSkill(technicianId: ID!, skills: JSON): TechnicianSkill @field(resolver:"TecnicoHabilidadMutations@assign")
-    #updateTechnicianSkill(id: ID!, skills: [TechnicianSkillRequest!]!): [TechnicianSkill!]! @field(resolver:"TecnicoHabilidadMutations@update")
-
-#CRUD ciudad
-
+###########################
+  #CRUD Tecnico habilidad
+###########################
+    assignTechnicianSkill(technicianId: ID!, skills: JSON): [TechnicianSkill!]! @field(resolver:"TecnicoHabilidadMutations@assign")
+    updateTechnicianSkill(id: ID!, skills: [TechnicianSkillInput!]): [TechnicianSkill!]! @field(resolver:"TecnicoHabilidadMutations@update")
+###########################
+      #CRUD ciudad
+###########################
     createCity(description: String!): City @field(resolver:"CiudadMutations@create")
     updateCity(id: ID!, description: String!): City @field(resolver:"CiudadMutations@create")
-    #deleteCiudad(id:ID! @whereKey):Ciudad @field(resolver:"CiudadMutations@create")
-
-#CRUD Certificacion
-
-    createCertification(certificationRequest: JSON, photoUrl: Upload): Certification @field(resolver:"CertificacionMutations@create")
-    updateCertification(id: ID!, name: String!, photoUrl: String!, certificationDate: String!): Certification  @field(resolver:"CertificacionMutations@update")
-    #deleteCertificacion(id:ID! @whereKey):Response @field(resolver:"CertificacionMutations@delete")
-
-#CRUD Foto Trabajo
-
-    createWorkPhoto(workPhotoRequest: JSON, photoUrls: [Upload!]!): WorkPhoto @field(resolver:"FotoTrabajoMutations@create")
-
-#CRUD cliente_externo
-
-    createClient(clientRequest:JSON! photo:Upload): ClientResponse @field(resolver:"ClienteExternoMutations@create")
-    updateClient(id: ID!,clientRequest:JSON! photo:Upload ): ClientResponse @field(resolver:"ClienteExternoMutations@update")
-    deleteClient(id: ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
+###########################
+    #CRUD cliente_interno
+###########################
+    createClient(clientRequest:JSON! photo:Upload): ClientResponse @field(resolver:"ClienteInternoMutations@create")
+    updateClient(id: ID!,clientRequest:JSON! photo:Upload ): ClientResponse @field(resolver:"ClienteInternoMutations@update")
+    deleteClient(id: ID! @whereKey): Response @field(resolver:"ClienteInternoMutations@delete")
+############################
+    #CRUD cliente_externo
+############################
+    createClients(clientRequest:JSON!): ClientsResponse @field(resolver:"ClienteExternoMutations@create")
+    updateClients(id: ID!,clientRequest:JSON!): ClientsResponse @field(resolver:"ClienteExternoMutations@update")
+    deleteClients(id: ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
 
 #CRUD solicitudes
 
     #createRequest(request: RequestInput!): RequestResponse @field(resolver:"SolicitudesMutations@create")
     #updateRequest(requestRequest: JSON!): RequestResponse! @field(resolver:"SolicitudesMutations@modifyState")
-
-#CRUD cita
-
-    createAppointment(appointmentRequest: JSON!): Appointment! @field(resolver:"CitaMutations@create")
-    updateAppointment(appointmentRequest: JSON!): AppointmentResponse! @field(resolver:"CitaMutations@update")
 
 #CRUD notas
 
@@ -294,31 +309,32 @@ type Mutation {
     indexSchedule(scheduleRequest: JSON!): ScheduleResponse @field(resolver:"AgendaMutations@index")
     indexTechnicianSchedule(scheduleRequest: JSON!): ScheduleResponse @field(resolver:"AgendaMutations@indexTecnico")
 #CRUD preferencia habilidades
-
     createSkillPreference(skillId: String!, clientId: String!): SkillPreference @field(resolver:"PreferenciaHabilidadMutations@create")
     updateSkillPreference(id: ID!, skillId: String!, clientId: String!): SkillPreference @field(resolver:"PreferenciaHabilidadMutations@update")
 }
 
 type Query {
-  #query de users
+  ##########################
+            #USER#
+  ##########################
   getAllUsers: [User] @all
   getUserById(id: ID! @whereKey): User @find
-  #getTechnicianUser(id: ID!): User!! @field (resolver:"UserQuery@usuarioTecnico")
+  ##########################
+          #TECHNICIAN#
+  ##########################
+  getAllTechnicians: [Technician] @all (model: "App\\Models\\Tecnico")
+  getTechnicianById(id: ID! @whereKey): Technician @find (model: "App\\Models\\Tecnico")
+  ##########################
+           #CIUDAD#
+  ##########################
+  getAllCities: [City] @all (model: "App\\Models\\Ciudad")
+  getCityById(id: ID! @whereKey): City @find (model: "App\\Models\\Ciudad")
+  #########################
+        #HABILIDAD#
+  #########################
+  getAllSkills: [Skill] @all (model: "App\\Models\\Habilidad")
+  getSkillById(id: ID! @whereKey): Skill @find (model: "App\\Models\\Habilidad")
 
-  getAllExternalClients: [ExternalClient!] @all
-  getExternalClientById(id: ID! @whereKey): ExternalClient @find
-
-  getAllTechnicians: [Technician] @all
-  getTechnicianById(id: ID! @whereKey): Technician @find
-
-  getAllCities: [City] @all
-  getCityById(id: ID! @whereKey): City @find
-
-  getAllSkills: [Skill] @all
-  getSkillById(id: ID! @whereKey): Skill @find
-
-  getAllCertifications: [Certification] @all
-  getCertificationById(id: ID! @whereKey): Certification @find
 
   getAllStateTypes: [StateType] @all
 
@@ -355,7 +371,12 @@ type AppointmentResponse {
 
 type ClientResponse {
   message: String
-  client: ExternalClient!
+  client: InternalClient!
+}
+
+type ClientsResponse {
+  message: String
+  clients: ExternalClient!
 }
 
 type SkillResponse {
@@ -369,13 +390,14 @@ type ScheduleResponse {
 }
 
 #Modo de entrada de datos
-input Tecnico_HabilidadRequest {
-  habilidad_id: ID!
-  experiencia: String!
-  descripcion: String!
-}
 
 input requestSolicituds {
     solicitudRequest: JSON!
     fotos_url: [Upload!]!
+}
+
+input TechnicianSkillInput {
+  skillId: ID!
+  experience: String!
+  description: String
 }

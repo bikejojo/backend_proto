@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('external_clients', function (Blueprint $table) {
+        Schema::create('internal_clients', function (Blueprint $table) {
             $table->id();
             $table->string('firstName');  // Traducción de 'nombre'
             $table->string('lastName');   // Traducción de 'apellido'
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('external_clients');
+        Schema::dropIfExists('internal_clients');
     }
 };

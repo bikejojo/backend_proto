@@ -30,7 +30,7 @@ class Solicitud extends Model
     // Relación con ExternalClient (Cliente Externo)
     public function client()
     {
-        return $this->belongsTo(Cliente_Externo::class, 'clientId');
+        return $this->belongsTo(Cliente_Interno::class, 'clientId');
     }
 
     // Relación con StateType (Tipo_Estado)

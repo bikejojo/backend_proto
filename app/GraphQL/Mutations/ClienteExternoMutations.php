@@ -5,11 +5,8 @@ namespace App\GraphQL\Mutations;
 
 use App\Models\User;
 use App\Models\Cliente_Externo;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
-use Intervention\Image\ImageManager;
-use Illuminate\Support\Facades\Validator;
-use Intervention\Image\Drivers\Gd\Driver;
+use App\Models\Asociacion_Cliente_Tecnico;
+use Carbon\Carbon;
 
 class ClienteExternoMutations{
     public function create($root, array $args){
@@ -20,27 +17,22 @@ class ClienteExternoMutations{
         $cliente = Cliente_Externo::create([
             'firstName' => $clienteData['firstName'],
             'lastName' => $clienteData['lastName'],
-            'email' => strtolower(trim($clienteData['email'])),  // Convertir email a minúsculas y eliminar espacios
-            'loginMethod' => $clienteData['loginMethod'] ?? null, // Campo opcional
-            'photo' => $clienteData['photo'] ?? null, // Campo opcional
-            'userId' => $clienteData['userId'],
-            'cityId' => $clienteData['cityId'],
+            'phoneNumber' => $clienteData['phoneNumber']
         ]);
-        $clientId = $cliente->id;
         //dd($clientId);
-        $this->createTechnicianDirectories($clientId);
-        $manager = new ImageManager(new Driver());
-            // Manejo de la imagen del cliente (si se envió una)
-        if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
-            $fotoPath = $this->processImage($args['photo'], "/{$clientId}_client/foto.png",$manager);
-            $cliente->photo = str_replace('public/', '', $fotoPath);  // Guardar la ruta de la imagen
-        }
         $cliente->save();
-        // Retornar el cliente recién creado
-        #return $cliente;
+
+        $asociacion = Asociacion_Cliente_Tecnico::create([
+            'clientId' => $cliente->id,
+            'technicalId' => $clienteData['technicalId'],
+            'dateTimeCreated' => Carbon::now(),
+        ]);
+
+        $asociacion->save();
+
         return [
             'message' => 'Creacion Cliente exitoso!',
-            'client' => $cliente
+            'clients' => $cliente
         ];
     }
     public function update($root ,array $args){
@@ -63,15 +55,7 @@ class ClienteExternoMutations{
         $client->loginMethod=$clientData['loginMethod'];
         $client->userId = $clientData['userId'];
         $client->cityId = $clientData['cityId'];
-        $manager = new ImageManager(new Driver());
-        if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
-            //dd($technician->photo);
-            if ($client->photo) {
-                Storage::delete('public/' . $client->photo);
-            }
-            $photoPath = $this->processImage($args['photo'], "$clientId/profile/photo.png", $manager);
-            $client->photo = str_replace('public/', '', $photoPath);
-        }
+
         $client->save();
         $user->email = $email ?? $user->email;
         $user->save();
@@ -82,27 +66,15 @@ class ClienteExternoMutations{
         ];
     }
     public function delete($root ,array $args){
-            $id=Cliente_Externo::find($args['id']);
-            if($id){
-                return ['message'=> 'Borrado no existoso'];
-            }else{
-                $user=User::where('id',$id)->delete();
-                return ['message'=> 'Borrado existoso'];
-            }
+        $id=Cliente_Externo::find($args['id']);
+        //dd($id);
+        if(!$id){
+            return ['message'=> 'Borrado no existoso'];
+        }else{
+            $id->delete();
+            return ['message'=> 'Borrado existoso'];
+        }
     }
 
-    private function createTechnicianDirectories($clientId){
-        Storage::makeDirectory('public/' . $clientId.'_client' . '/photo');
-    }
-    // Procesamiento de imágenes
-    private function processImage(UploadedFile $file, $path, $manager){
-        $image = $manager->read($file->getRealPath());
-        $image->resize(750, 750, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
-        $fullPath = storage_path("app/public/{$path}");
-        $image->save($fullPath, 80, 'png');
-        return $path;
-    }
+
 }

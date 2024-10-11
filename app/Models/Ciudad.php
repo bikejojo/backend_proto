@@ -18,7 +18,7 @@ class Ciudad extends Model
     // Relación con ExternalClient (Cliente Externo)
     public function externalClients()
     {
-        return $this->hasMany(Cliente_Externo::class, 'cityId');  // Traducción de 'clientes_externos'
+        return $this->hasMany(Cliente_Interno::class, 'cityId');  // Traducción de 'clientes_externos'
     }
 
     // Relación con Technician (Técnico)

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('createdDate');  // Traducción de 'fecha_creada'
             $table->date('nextDate');  // Traducción de 'fecha_proxima'
             $table->text('nextDescription');  // Traducción de 'descripcion_proxima'
-            $table->foreign('clientId')->references('id')->on('external_clients')->onDelete('cascade');
+            $table->foreign('clientId')->references('id')->on('internal_clients')->onDelete('cascade');
             $table->foreign('technicianId')->references('id')->on('technicians')->onDelete('cascade');
             $table->foreign('noteId')->references('id')->on('notes')->onDelete('cascade');
             $table->foreign('appointmentId')->references('id')->on('appointments')->onDelete('cascade');

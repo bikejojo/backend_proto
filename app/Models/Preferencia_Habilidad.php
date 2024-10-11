@@ -26,7 +26,7 @@ class Preferencia_Habilidad extends Model
     // Relación con ExternalClient (Cliente Externo)
     public function externalClient()
     {
-        return $this->belongsTo(Cliente_Externo::class, 'clientId');  // Traducción de 'cliente_externos'
+        return $this->belongsTo(Cliente_Interno::class, 'clientId');  // Traducción de 'cliente_externos'
     }
 }
 

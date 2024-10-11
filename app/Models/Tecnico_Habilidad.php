@@ -13,7 +13,9 @@ class Tecnico_Habilidad extends Model
 
     protected $fillable = [
         'experience',  // experiencia
-        'description'  // descripcion
+        'description',  // descripcion
+        'technicianId',
+        'skillId'
     ];
 
     // Relación con Technician (Tecnico)

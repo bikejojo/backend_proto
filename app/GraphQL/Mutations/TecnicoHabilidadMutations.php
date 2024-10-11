@@ -9,42 +9,44 @@ class TecnicoHabilidadMutations{
 
     public function assign($root,array $args){
         #return $tecnico=Tecnico_Habilidad::create($args);
-        $id = $args['tecnico_id'];
-        $envHabilidades = $args['habilidades'];
+        $id = $args['technicianId'];
+        $envHabilidades = $args['skills'];
         $habilidades=[];
         foreach ($envHabilidades as $recHabilidad) {
             $habilidadTecnico = Tecnico_Habilidad::create([
-                'tecnico_id' => $id,
-                'habilidad_id' => $recHabilidad['habilidad_id'],
-                'experiencia' => $recHabilidad['experiencia'],
-                'descripcion' => $recHabilidad['descripcion'],
+                'technicianId' => $id,
+                'skillId' => $recHabilidad['skillId'],
+                'experience' => $recHabilidad['experience'],
+                'description' => $recHabilidad['description'],
             ]);
+
+            $habilidades[] = $habilidadTecnico;
         }
-        $habilidades = $habilidadTecnico;
         return $habilidades;
+        /*return [
+            'message' => 'habilidades asignadas al tecnico OK'
+            'assings' => $habilidades
+        ];*/
     }
     public function update($root,array $args){
         $tecnicoId = $args['id'];
-        $habilidades = $args['habilidades'];
-
-        // Buscar el técnico primero
-        $tecnico = Tecnico::findOrFail($tecnicoId);
+        $habilidades = $args['skills'];
 
         // Eliminar las habilidades existentes del técnico
-        Tecnico_Habilidad::where('tecnico_id', $tecnicoId)->delete();
+        Tecnico_Habilidad::where('technicianId', $tecnicoId)->delete();
 
         // Guardar las nuevas habilidades
         foreach ($habilidades as $habilidad) {
             Tecnico_Habilidad::create([
-                'tecnico_id' => $tecnicoId,
-                'habilidad_id' => $habilidad['habilidad_id'],
-                'experiencia' => $habilidad['experiencia'],
-                'descripcion' => $habilidad['descripcion'],
+                'technicianId' => $tecnicoId,
+                'skillId' => $habilidad['skillId'],
+                'experience' => $habilidad['experience'],
+                'description' => $habilidad['description'],
             ]);
         }
-
+        $habilidades = Tecnico_Habilidad::where('technicianId', $tecnicoId)->get();
         // Retornar las nuevas habilidades
-        return Tecnico_Habilidad::where('tecnico_id', $tecnicoId)->get();
+        return $habilidades;
     }
 
 }

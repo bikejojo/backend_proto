@@ -27,7 +27,7 @@ class User extends Authenticatable
     }
 
     public function clientsExterns(){
-        return $this->hasMany(Cliente_Externo::class,'userId');
+        return $this->hasMany(Cliente_Interno::class,'userId');
     }
     public function technicians(){
         return $this->hasMany(Tecnico::class,'userId');
