@@ -70,4 +70,7 @@ class Tecnico extends Model
     public function associantions(){
         return $this->belongsTo(Asociacion_Cliente_Tecnico::class,'technicalId');
     }
+    public function contact(){
+        return $this->belongsTo(Contacto::class,'technicalId');
+    }
 }

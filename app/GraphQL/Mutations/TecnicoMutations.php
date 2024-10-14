@@ -12,8 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Drivers\Gd\Driver;
 
 class TecnicoMutations {
-    public function create($root, array $args)
-    {
+    public function create($root, array $args){
         $technicianData = $args['technicianRequest'];
         $userId = $technicianData['userId'];
         $user = User::find($userId);
@@ -22,10 +21,13 @@ class TecnicoMutations {
         if ($validators->fails()) {
             throw new \Exception('Invalid image file.');
         }
-            // Crear técnico con datos iniciales
+        // Encriptar la contraseña antes de crear el técnico
+        if (isset($technicianData['password'])) {
+            $technicianData['password'] = Hash::make($technicianData['password']);
+        }
+        // Crear técnico con datos iniciales
         $technician = Tecnico::create($technicianData);
         $technicianId = $technician->id;
-
         // Crear directorios utilizando technicianId para la ruta
         $this->createTechnicianDirectories($technicianId);
         $manager = new ImageManager(new Driver());
@@ -41,11 +43,10 @@ class TecnicoMutations {
             $technician->backIdCard = str_replace('public/', '', $backIdCardPath);
         }
 
-        if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
+        /*if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
             $photoPath = $this->processImage($args['photo'], "$technicianId/profile/photo.png", $manager);
             $technician->photo = str_replace('public/', '', $photoPath);
-        }
-
+        }*/
         // Guardar las rutas de las imágenes en el técnico
         $technician->save();
         //return $technician;
@@ -100,19 +101,17 @@ class TecnicoMutations {
         return [
             'message' => 'Tecnico actualizado exitoso!' ,
             'technician' => $technician
-
         ];
     }
 
     public function delete($root, array $args){
-    $technician = Tecnico::find($args['id']);
-    if (!$technician) {
-        throw new \Exception('Technician not found.');
-    }
-    // Borrar técnico
-    $technician->delete();
-
-    return ['message' => 'Eliminacion exitosa del tecnico'];
+        $technician = Tecnico::find($args['id']);
+        if (!$technician) {
+            throw new \Exception('Technician not found.');
+        }
+        // Borrar técnico
+        $technician->delete();
+        return ['message' => 'Eliminacion exitosa del tecnico'];
     }
 // Validación de imágenes
     private function validateImage($args){

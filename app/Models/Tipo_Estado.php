@@ -15,4 +15,8 @@ class Tipo_Estado extends Model
     protected $fillable = [
         'description'  // Traducción de 'descripcion'
     ];
+
+    public function contact(){
+        return $this->belongsTo(Tipo_Estado::class,'statusId');
+    }
 }

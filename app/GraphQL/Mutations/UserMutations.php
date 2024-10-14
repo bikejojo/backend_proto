@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
+
 class UserMutations{
 
      /**
@@ -81,12 +82,39 @@ class UserMutations{
    // Crear un token con Sanctum
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
-
+        $user->save();
         return [
             'message' => 'Login exitoso',
             'user' => $user,
             'technician' => $tecnico
         ];
     }
+
+   /* public function logout($root, array $args)
+    {
+        $user = Auth::user(); // Obtener el usuario autenticado
+
+        if ($user) {
+            // Obtén el token actual del usuario y elimínalo
+            $currentToken = $user->currentAccessToken();
+
+            if ($currentToken) {
+                $currentToken->delete(); // Eliminar el token actual
+                $user->token = null;
+                $user->save();
+                return [
+                    'message' => 'Logout exitoso'
+                ];
+            }
+
+            return [
+                'message' => 'No se encontró el token actual'
+            ];
+        }
+
+        return [
+            'message' => 'No se encuentra usuario'
+        ];
+    }*/
 
 }
