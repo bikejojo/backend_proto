@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
+
 class UserMutations{
 
      /**
@@ -19,17 +20,19 @@ class UserMutations{
      */
     public function create($root , array $args){
         $userData = $args['userRequest'];
+        $email = strtolower(trim($userData['email']));
+        if (strlen($userData['ci']) != 7) {
+            throw new \Exception('El CI debe tener exactamente 7 dígitos.');
+        }
         $user = User::create([
-            'email' => $userData['email'],
-            'password' => $userData['password'],
+            'email' => $email,
+            'password' => Hash::make($userData['password']),
             'ci' => $userData['ci'],
-            'tipo_usuario' =>$userData['tipo_usuario'],
+            'type_user' =>$userData['type_user'],
         ]);
-
-        $token= $user->createToken('token'.$user['ci'])->plainTextToken;
-        $user->token = $token;
+        $tokens = $user->createToken('authToken')->plainTextToken;
+        $user->token = $tokens;
         $user->save();
-
         return $user;
     }
 
@@ -39,15 +42,17 @@ class UserMutations{
         if(!$user){
             throw new \Exception('Usuario no encontrado');
         }
-        $user->ci=$userData['ci']??$user->ci;
-        $user->tipo_usuario=$userData['tipo_usuario']??$user->tipo_usuario;
+        //$user->ci=$userData['ci']??$user->ci;
+        $user->type_user=$userData['type_user']??$user->tipo_usuario;
         $user->email=$userData['email']??$user->email;
-        $user->password=isset($userData['password']) ? Hash::make($userData['password']): $user->password;
+        $user->password=isset($userData['password']) ? Hash::make($userData['password']): $user->contrasenia;
+        $user->save();
+        return $user;
     }
 
     public function delete($root,array $args){
         $id= $args['id'];
-        if($id){
+        if(!$id){
             return ['message'=> 'Borrado no existoso'];
         }else{
             $user=User::where('id',$id)->delete();
@@ -59,13 +64,57 @@ class UserMutations{
     {
         $user = User::where('ci', $args['ci'])->first();
 
-        if (!$user || !Hash::check($args['password'], $user->password)) {
-            throw new \Exception('Credenciales inválidas');
+        if ($user == null ) {
+            return [
+                'message' => "El usuario con CI no existe",
+                'user' => null,
+                'tecnico' => null
+            ];
+        }
+
+        $tecnico = $user->technicians()->first();
+        if (!Hash::check($args['password'], $user->password)) {
+            return [
+                'message' => "Credenciales invalidas" ,
+            ];
         }
 
    // Crear un token con Sanctum
-        return $user->createToken('authToken')->plainTextToken;
+        $tokens = $user->createToken('authToken')->plainTextToken;
+        $user->token = $tokens;
+        $user->save();
+        return [
+            'message' => 'Login exitoso',
+            'user' => $user,
+            'technician' => $tecnico
+        ];
     }
 
-    public function logout(){}
+   /* public function logout($root, array $args)
+    {
+        $user = Auth::user(); // Obtener el usuario autenticado
+
+        if ($user) {
+            // Obtén el token actual del usuario y elimínalo
+            $currentToken = $user->currentAccessToken();
+
+            if ($currentToken) {
+                $currentToken->delete(); // Eliminar el token actual
+                $user->token = null;
+                $user->save();
+                return [
+                    'message' => 'Logout exitoso'
+                ];
+            }
+
+            return [
+                'message' => 'No se encontró el token actual'
+            ];
+        }
+
+        return [
+            'message' => 'No se encuentra usuario'
+        ];
+    }*/
+
 }

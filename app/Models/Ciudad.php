@@ -9,15 +9,21 @@ class Ciudad extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $table = 'ciudades';
+    protected $table = 'cities';  // Traducción de 'ciudades'
+
     protected $fillable = [
-        'descripcion',
+        'name'  // Traducción de 'descripcion'
     ];
 
-    public function clientes_externos(){
-        return $this->hasMany(Cliente_Externo::class,'ciudades_id');
+    // Relación con ExternalClient (Cliente Externo)
+    public function externalClients()
+    {
+        return $this->hasMany(Cliente_Interno::class, 'cityId');  // Traducción de 'clientes_externos'
     }
-    public function tecnicos(){
-        return $this->hasMany(Tecnico::class,'ciudades_id');
+
+    // Relación con Technician (Técnico)
+    public function technicians()
+    {
+        return $this->hasMany(Tecnico::class, 'cityId');  // Traducción de 'tecnicos'
     }
 }

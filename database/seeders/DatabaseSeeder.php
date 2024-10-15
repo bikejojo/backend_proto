@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\User;
 use App\Models\Ciudad;
 use App\Models\Habilidad;
+use App\Models\Tipo_Estado;
+use App\Models\Tipo_Actividad;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -19,66 +21,60 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'email' => 'test@example.com',
-            'password' => '123',
+            'password' => bcrypt('123'),
             'ci' => '123',
-            'tipo_usuario' => 1,
+            'type_user' => 1,
             'token' => "1"
         ]);
         #ciudad para tecnicos y clientes
-        Ciudad::create(['descripcion'=>'Santa Cruz']);
-        Ciudad::create(['descripcion'=>'Cochabamba']);
-        Ciudad::create(['descripcion'=>'Chuquisaca']);
-        Ciudad::create(['descripcion'=>'Tarija']);
-        Ciudad::create(['descripcion'=>'Beni']);
-        Ciudad::create(['descripcion'=>'Pando']);
-        Ciudad::create(['descripcion'=>'La Paz']);
-        Ciudad::create(['descripcion'=>'El Alto']);
-        Ciudad::create(['descripcion'=>'Oruro']);
-        Ciudad::create(['descripcion'=>'Potosi']);
+        Ciudad::create(['name'=>'Santa Cruz']);
+        Ciudad::create(['name'=>'Cochabamba']);
+        Ciudad::create(['name'=>'Chuquisaca']);
+        Ciudad::create(['name'=>'Tarija']);
+        Ciudad::create(['name'=>'Beni']);
+        Ciudad::create(['name'=>'Pando']);
+        Ciudad::create(['name'=>'La Paz']);
+        Ciudad::create(['name'=>'El Alto']);
+        Ciudad::create(['name'=>'Oruro']);
+        Ciudad::create(['name'=>'Potosi']);
+
+
         #habilidades para tecnicos
-        Habilidad::create(['nombre' => 'Plomeria']);
-        Habilidad::create(['nombre' => 'Electricista']);
-        Habilidad::create(['nombre' => 'Carpinteria']);
-        Habilidad::create(['nombre' => 'Pintor']);
-        Habilidad::create(['nombre' => 'Mecanico automotriz']);
-        Habilidad::create(['nombre' => 'Soldador']);
-        Habilidad::create(['nombre' => 'Jardineria']);
-        Habilidad::create(['nombre' => 'Albanileria']);
-        Habilidad::create(['nombre' => 'Cocinero']);
-        Habilidad::create(['nombre' => 'Pastelero']);
-        Habilidad::create(['nombre' => 'Costurero']);
-        Habilidad::create(['nombre' => 'Repostero']);
-        Habilidad::create(['nombre' => 'Sastre']);
-        Habilidad::create(['nombre' => 'Peluquero']);
-        Habilidad::create(['nombre' => 'Manicurista']);
-        Habilidad::create(['nombre' => 'Maquillador']);
-        Habilidad::create(['nombre' => 'Panadero']);
-        Habilidad::create(['nombre' => 'Cerrajero']);
-        Habilidad::create(['nombre' => 'Pintor de obras']);
-        Habilidad::create(['nombre' => 'Fumigador']);
-        Habilidad::create(['nombre' => 'Ninera']);
-        Habilidad::create(['nombre' => 'Cuidador de ancianos']);
-        Habilidad::create(['nombre' => 'Tapicero']);
-        Habilidad::create(['nombre' => 'Vidriero']);
-        Habilidad::create(['nombre' => 'Tecnico en computacion']);
-        Habilidad::create(['nombre' => 'Tecnico en redes electricas']);
-        Habilidad::create(['nombre' => 'Tecnico en electrodomesticos']);
-        Habilidad::create(['nombre' => 'Empleado de limpieza']);
-        Habilidad::create(['nombre' => 'Vigilante']);
-        Habilidad::create(['nombre' => 'Secretariado']);
-        Habilidad::create(['nombre' => 'Ayudante de obra']);
-        Habilidad::create(['nombre' => 'Agricultor']);
-        Habilidad::create(['nombre' => 'Vendedor']);
-        Habilidad::create(['nombre' => 'Mecanico industrial']);
-        Habilidad::create(['nombre' => 'Tornero']);
-        Habilidad::create(['nombre' => 'Confeccionista']);
-        Habilidad::create(['nombre' => 'Electricista automotriz']);
-        Habilidad::create(['nombre' => 'Fotografo']);
-        Habilidad::create(['nombre' => 'Disenador grafico']);
-        Habilidad::create(['nombre' => 'Tecnico en telefonia movil']);
-        Habilidad::create(['nombre' => 'Chofer']);
-        Habilidad::create(['nombre' => 'Operador de maquinaria pesada']);
-
-
+        Habilidad::create(['name' => 'Plomeria']);
+        Habilidad::create(['name' => 'Electricista']);
+        Habilidad::create(['name' => 'Carpinteria']);
+        Habilidad::create(['name' => 'Pintor']);
+        Habilidad::create(['name' => 'Mecanico automotriz']);
+        Habilidad::create(['name' => 'Soldador']);
+        Habilidad::create(['name' => 'Jardineria']);
+        Habilidad::create(['name' => 'Albanileria']);
+        Habilidad::create(['name' => 'Cocinero']);
+        Habilidad::create(['name' => 'Cerrajero']);
+        Habilidad::create(['name' => 'Pintor de obras']);
+        Habilidad::create(['name' => 'Fumigador']);
+        Habilidad::create(['name' => 'Vidriero']);
+        Habilidad::create(['name' => 'Tecnico en computacion']);
+        Habilidad::create(['name' => 'Tecnico en redes electricas']);
+        Habilidad::create(['name' => 'Tecnico en electrodomesticos']);
+        Habilidad::create(['name' => 'Limpieza General']);
+        Habilidad::create(['name' => 'Tecnico en telefonia movil']);
+        #agenda
+        Tipo_Actividad::create(['description'=>'mantenimiento']);
+        Tipo_Actividad::create(['description'=>'reparacion']);
+        Tipo_Actividad::create(['description'=>'seguimiento']);
+        Tipo_Actividad::create(['description'=>'visita']);
+        Tipo_Actividad::create(['description'=>'finalizado']);
+        #solicitud
+        Tipo_Estado::create(['description'=>'pendiente por aceptar']);
+        Tipo_Estado::create(['description'=>'rechazada por tiempo de espera']);
+        Tipo_Estado::create(['description'=>'en conversacion']);
+        Tipo_Estado::create(['description'=>'rechazada por tiempo']);
+        Tipo_Estado::create(['description'=>'rechazada por tecnico']);
+        Tipo_Estado::create(['description'=>'aceptada']);
+        #cita
+        Tipo_Estado::create(['description'=>'en progreso']);
+        Tipo_Estado::create(['description'=>'cliente ausente']);
+        Tipo_Estado::create(['description'=>'reprogramada']);
+        Tipo_Estado::create(['description'=>'completada']);
     }
 }

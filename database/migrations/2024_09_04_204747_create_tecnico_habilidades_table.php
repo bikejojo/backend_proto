@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tecnico_habilidades', function (Blueprint $table) {
+        Schema::create('technician_skills', function (Blueprint $table) {
             $table->id();
-            $table->string('experiencia');
-            $table->text('descripcion');
-            $table->unsignedBigInteger('tecnico_id');
-            $table->unsignedBigInteger('habilidades_id');
-            $table->foreign("habilidades_id")->references("id")->on("habilidades")->onDelete("cascade");
-            $table->foreign("tecnico_id")->references("id")->on("tecnicos")->onDelete("cascade");
+            $table->string('experience')->nullable();  // Traducción de 'experiencia'
+            $table->text('description')->nullable();  // Traducción de 'descripcion'
+            $table->unsignedBigInteger('technicianId');  // Traducción de 'tecnico_id'
+            $table->unsignedBigInteger('skillId');  // Traducción de 'habilidad_id'
+            $table->foreign('skillId')->references('id')->on('skills')->onDelete('cascade');
+            $table->foreign('technicianId')->references('id')->on('technicians')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tecnico_habilidades');
+        Schema::dropIfExists('technician_skills');
     }
 };

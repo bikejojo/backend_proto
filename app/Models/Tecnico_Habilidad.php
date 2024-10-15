@@ -9,18 +9,24 @@ class Tecnico_Habilidad extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $table = 'tecnico_habilidades';
+    protected $table = 'technician_skills';
+
     protected $fillable = [
-        'tecnico_id',
-        'habilidad_id',
-        'experiencia',
-        'descripcion',
+        'experience',  // experiencia
+        'description',  // descripcion
+        'technicianId',
+        'skillId'
     ];
-    public function tecnicos(){
-        return $this->belongsTo(Tecnico::class,'tecnico_id');
+
+    // Relación con Technician (Tecnico)
+    public function technician()
+    {
+        return $this->belongsTo(Tecnico::class, 'technicianId');
     }
 
-    public function habilidades(){
-        return $this->belongsTo(Habilidad::class,'habilidad_id');
+    // Relación con Skill (Habilidad)
+    public function skill()
+    {
+        return $this->belongsTo(Habilidad::class, 'skillId');
     }
 }

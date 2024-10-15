@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('certificaciones', function (Blueprint $table) {
+        Schema::create('certifications', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre')->nullable();
-            $table->date('fecha_certificacion')->nullable();
-            $table->string('foto_url')->nullable();
-            $table->unsignedBigInteger('tecnico_id')->nullable();
-            $table->foreign('tecnico_id')->references('id')->on('tecnicos')->onDelete('cascade');
+            $table->string('name')->nullable();  // Traducción de 'nombre'
+            $table->date('certificationDate')->nullable();  // Traducción de 'fecha_certificacion'
+            $table->string('photoUrl')->nullable();  // Traducción de 'foto_url'
+            $table->unsignedBigInteger('technicianId')->nullable();  // Traducción de 'tecnico_id'
+            $table->foreign('technicianId')->references('id')->on('technicians')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('certficaciones');
+        Schema::dropIfExists('certifications');
     }
 };

@@ -18,3 +18,5 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+prueba1.bat
+/graphql/schema.graphql.old

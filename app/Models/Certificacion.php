@@ -9,14 +9,17 @@ class Certificacion extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $table = 'certificaciones';
+    protected $table = 'certifications';
+
     protected $fillable = [
-        'nombre',
-        'fecha_certificacion',
-        'tecnico_id',
-        'foto_url',
+        'name',  // nombre
+        'photoUrl',  // foto_url
+        'certificationDate'  // fecha_certificacion
     ];
-    public function tecnicos(){
-        return $this->belongsTo(Tecnico::class,'tecnico_id');
+
+    // Relación con Technician (Tecnico)
+    public function technician()
+    {
+        return $this->belongsTo(Tecnico::class, 'technicianId');
     }
-}   
+}

@@ -1,5 +1,8 @@
+"A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 scalar JSON
+#import ../vendor/marqant-lab/lighthouse-json/graphql/*.graphql
+scalar Upload @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload")
 
 "Indicates what fields are available at the top level of a query operation."
 type Query {
@@ -43,76 +46,37 @@ type User {
 
 }
 
-input UserRequest {
-  email:String
-  password:String!
-  ci:String!
-  tipo_usuario:Int!
-}
-
-type Cliente_Externo {
-  id: ID!
-  nombre:String!
-  email:String!
-  metodo_login:String!
-  foto:String!
-
-  users:User! @belongsTo
-  ciudades:Ciudad! @belongsTo
-  preferencia_habilidades:[Preferencia_Habilidad!]! @hasMany
-}
-
-#input Cliente_Externo(
-#
-#)
-
 type Tecnico {
   id: ID!
   nombre: String!
   apellido: String!
-  carnet_anverso: String!
-  carnet_reverso: String!
+  carnet_anverso: String
+  carnet_reverso: String
   email: String
   telefono:String!
   contrasenia: String!
-  foto: String!
-  users_id:String!
+  foto: String
+  usuarios_id:String!
   ciudades_id:String!
 
   ciudades:Ciudad! @belongsTo
-  users:User! @belongsTo
+  usuarios:User! @belongsTo
   certificaciones:[Certificacion!]! @hasMany
   fotoTrabajos:[Foto_Trabajo!] @hasMany
   tecnicoHabilidades:[Tecnico_Habilidad!]! @hasMany
-}
-
-input TecnicoRequest {
-  nombre: String!
-  apellido: String!
-  carnet_anverso: String!
-  carnet_reverso: String!
-  email: String
-  telefono:String!
-  contrasenia: String!
-  foto: String!
-  users_id:ID!
-  ciudades_id:ID!
+  solicitud:[Solicitud!] @hasMany
+  agendas:[Agenda_Tecnico!] @hasMany
 }
 
 type Tecnico_Habilidad{
+  id:ID!
   tecnico_id:ID!
   habilidad_id:ID!
-  experiencia:String!
-  descripcion:String!
+  experiencia:String
+  descripcion:String
 
-  tecnicos: [Tecnico!]! @hasMany
-  habilidades: [Habilidad!]! @hasMany
-}
-
-input Tecnico_HabilidadRequest{
-  habilidad_id:ID!
-  experiencia:String!
-  descripcion:String!
+  tecnicos: [Tecnico!]! @belongsTo
+  habilidades: [Habilidad!]! @belongsTo
 }
 
 type Ciudad {
@@ -131,13 +95,6 @@ type Habilidad {
   tecnico_habilidades:[Tecnico_Habilidad!]! @hasMany
 }
 
-type Preferencia_Habilidad{
-  habilidades_id:String!
-  cliente_id:String!
-
-  habilidades: Habilidad! @belongsTo
-  cliente_externos: Cliente_Externo! @belongsTo
-}
 
 type Certificacion{
   id:ID
@@ -151,89 +108,276 @@ type Certificacion{
 type Foto_Trabajo{
   id:ID!
   descripcion:String!
-  tecnico_id:String!
+  tecnicos_id:ID!
+  fotos_url:String
 
   tecnicos: Tecnico! @belongsTo
 }
 
-type Mutation {
+type Preferencia_Habilidad{
+  habilidades_id:String!
+  cliente_id:String!
+
+  habilidades: Habilidad! @belongsTo
+  cliente_externos: Cliente_Externo! @belongsTo
+}
+
+type Cliente_Externo {
+  id: ID!
+  nombre:String!
+  apellido:String!
+  email:String!
+  metodo_login:String!
+  foto:String!
+
+  usuarios:User! @belongsTo
+  ciudades:Ciudad! @belongsTo
+  preferencia_habilidades:[Preferencia_Habilidad!]! @hasMany
+  solicitud:Solicitud! @hasMany
+  agendas:Agenda_Tecnico @hasMany
+}
+
+type Tipo_Actividad {
+    id:ID!
+    descripcion: String!
+
+    detalle_agenda_tecnicos:Detalle_Agenda_Tecnico! @belongsTo
+}
+
+type Tipo_Estado {
+    id:ID!
+    descripcion:String!
+}
+
+type Nota {
+    id:ID!
+    descripcion:String
+
+    agenda_act:Agenda_Tecnico! @hasMany
+}
+
+type Solicitud {
+    id:ID!
+    fecha_tiempo_registrado:String!
+    fecha_tiempo_actualizado:String!
+    fecha_tiempo_vencimiento:String
+    estado_id:ID!
+    cliente_id:ID!
+    tecnico_id:ID!
+    descripcion_solicitud:String
+    latitud:String!
+    longitud:String!
+    descripcion_ubicacion:String!
+
+    tecnicos:Tecnico! @belongsTo
+    clientes:Cliente_Externo! @belongsTo
+    solicitud_detalles:[Solicitud_Detalle!]! @hasMany
+    estados:Tipo_Estado! @belongsTo
+    solicituds:[Foto_Solicitud!]! @hasMany
+}
+
+type Solicitud_Detalle {
+    id:ID!
+    habilidades_solicitadas:String!
+    solicitud_id:ID!
+
+    solicitudes:Solicitud @belongsTo
+}
+
+type Cita {
+    id:ID!
+    solicitud_id:ID!
+    estado_id:ID!
+    descripcion_cita:String
+    latitud:String!
+    longitud:String!
+    descripcion_ubicacion:String!
+    resultado:String!
+    fecha_hora_registrada:String!
+    fecha_hora_fin:String!
+    duracion:String!
+
+    solicitudes:Solicitud! @belongsTo
+    estados:Tipo_Estado! @belongsTo
+    agendas:Agenda_Tecnico! @belongsTo
+}
+
+type Agenda_Tecnico {
+    id:ID!
+    tecnico_id:ID!
+    cliente_id:ID!
+    nota_id:ID!
+    cita_id:ID!
+    tipo_actividad_id:ID!
+    fecha_creada:String!
+    fecha_proxima:String!
+    descripcion_proxima:String!
+
+    tecnicos:Tecnico! @belongsTo
+    clientes:Cliente_Externo! @belongsTo
+    notes:Note @belongsTo
+    citas:Cita! @belongsTo
+    actividads:Tipo_Actividad! @belongsTo
+}
+
+type Foto_Solicitud {
+    id:ID!
+    descripcion:String!
+    fotos_url:String
+    solicitud_id:ID!
+
+    solicituds:Solicitud @belongsTo
+}
 #CRUD users
-#createUser(userRequest: UserRequest!):User @field(resolver:"UserMutations@create")
-#updateUser(id:ID! ,userRequest: UserRequest!): User @field(resolver:"UserMutations@update")
-#deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
-
-createUser(userRequest: JSON!):User @field(resolver:"UserMutations@create")
-updateUser(id:ID! ,userRequest: JSON!): User @field(resolver:"UserMutations@update")
-deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
-
-login(ci: String!,password:String!):String! @field(resolver:"UserMutations@login")
+type Mutation {
+    crearUsuario(userRequest: JSON!):User @field(resolver:"UserMutations@create")
+    actualizarUsuario(id:ID! ,userRequest: JSON!): User @field(resolver:"UserMutations@update")
+    #deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
+    login(ci: String!,contrasenia:String!):responseLogin @field(resolver:"UserMutations@login")
 
 #CRUD tecnicos
-#createTecnico(tecnicoRequest:TecnicoRequest): Tecnico @field(resolver:"TecnicoMutations@create")
-#updateTecnico(id:ID!,tecnicoRequest:TecnicoRequest!): Tecnico @field(resolver:"TecnicoMutations@update")
-#deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
-createTecnico(tecnicoRequest:JSON): Tecnico @field(resolver:"TecnicoMutations@create")
-updateTecnico(id:ID!,tecnicoRequest:JSON!): Tecnico @field(resolver:"TecnicoMutations@update")
-deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
 
+    crearTecnico(tecnicoRequest:JSON!,carnet_anverso: Upload,carnet_reverso: Upload, foto: Upload):Tecnico  @field(resolver:"TecnicoMutations@create")
+    actulizarTecnico(id:ID!,tecnicoRequest:JSON!): Tecnico @field(resolver:"TecnicoMutations@update")
+    #deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
+#@guard(checks: ["sanctum"])
 #CRUD habilidades
-createHabilidad(nombre:String!):Habilidad @field(resolver:"HabilidadMutations@create")
-updateHabilidad(id:ID!,nombre:String!):Habilidad @field(resolver:"HabilidadMutations@create")
-#deleteHabilidad(id:ID! @whereKey):Habilidad @field(resolver:"HabilidadMutations@create")
+
+    crearHabilidad(nombre:String!):Habilidad @field(resolver:"HabilidadMutations@create")
+    actualizarHabilidad(id:ID!,nombre:String!):Habilidad @field(resolver:"HabilidadMutations@create")
+    #deleteHabilidad(id:ID! @whereKey):Habilidad @field(resolver:"HabilidadMutations@create")
 
 #CRUD Tecnico habilidad
-assignTecnicoHabilidad(tecnico_id:ID!,habilidades: [Tecnico_HabilidadRequest!]!):[Tecnico_Habilidad!]! @field(resolver:"TecnicoHabilidadMutations@assign")
-updateTecnicoHabilidad(id:ID!,habilidades: [Tecnico_HabilidadRequest!]!):[Tecnico_Habilidad!]! @field(resolver:"TecnicoHabilidadMutations@update")
 
+    asignarTecnicoHabilidad(tecnico_id:ID!,habilidades:JSON):Tecnico_Habilidad @field(resolver:"TecnicoHabilidadMutations@assign")
+    actualizarTecnicoHabilidad(id:ID!,habilidades: [Tecnico_HabilidadRequest!]!):[Tecnico_Habilidad!]! @field(resolver:"TecnicoHabilidadMutations@update")
 
- #CRUD cliente_externo
-  createCliente(nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!,ciudades_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@create")
-  updateCliente(id:ID!,nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!,ciudades_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@update")
-  deleteCliente(id:ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
+#CRUD ciudad
 
+    crearCiudad(descripcion:String! ):Ciudad @field(resolver:"CiudadMutations@create")
+    actualizarCiudad(id:ID!,descripcion:String!):Ciudad @field(resolver:"CiudadMutations@create")
+    #deleteCiudad(id:ID! @whereKey):Ciudad @field(resolver:"CiudadMutations@create")
 
+#CRUD Certificacion
 
-  #CRUD ciudad
-  createCiudad(descripcion:String! ):Ciudad @field(resolver:"CiudadMutations@create")
-  updateCiudad(id:ID!,descripcion:String!):Ciudad @field(resolver:"CiudadMutations@create")
-  deleteCiudad(id:ID! @whereKey):Ciudad @field(resolver:"CiudadMutations@create")
+    crearCertificacion(certificacionRequest:JSON , foto_url:Upload):Certificacion @field(resolver:"CertificacionMutations@create")
+    actualizarCertificacion(id:ID!,nombre:String!,foto_url:String!,fecha_certificacion:String!):Certificacion @field(resolver:"CertificacionMutations@update")
+    #deleteCertificacion(id:ID! @whereKey):Response @field(resolver:"CertificacionMutations@delete")
 
-  #CRUD preferencia habilidades
-  createPreferenciaHabilidad(habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@create")
-  updatePreferenciaHabilidad(id:ID!,habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@update")
+#CRUD Foto Trabajo
 
-  #CRUD Certificacion
-  createCertificacion(nombre:String,foto_url:String,fecha_certificacion:String,tecnico_id:String):Certificacion @field(resolver:"CertificacionMutations@create")
-  updateCertificacion(id:ID!,nombre:String!,foto_url:String!,fecha_certificacion:String!):Certificacion @field(resolver:"CertificacionMutations@update")
-  deleteCertificacion(id:ID! @whereKey):Response @field(resolver:"CertificacionMutations@delete")
-  #CRUD Foto Trabajo
+    crearFotoTrabajo(fotoTrabajoRequest:JSON , fotos_url:[Upload!]!):Foto_Trabajo @field(resolver:"FotoTrabajoMutations@create")
 
+#CRUD cliente_externo
 
+    crearCliente(nombre:String!,email:String!,metodo_login:String!,foto:String!,usuario_id:String!,ciudades_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@create")
+    actualizarCliente(id:ID!,nombre:String!,email:String!,metodo_login:String!,foto:String!,users_id:String!,ciudades_id:String!): Cliente_Externo @field(resolver:"ClienteExternoMutations@update")
+    eliminarCliente(id:ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
+
+#CRUD solicitudes
+
+    crearSolicitudes(solicitud:requestSolicituds!):RespuestSolicitud @field(resolver:"SolicitudesMutations@create")
+    actualizarSolicitudes(solicitudRequest:JSON!):RespuestSolicitud! @field(resolver:"SolicitudesMutations@modifyState")
+
+#CRUD cita
+
+    crearCita(citaRequest:JSON!):Cita! @field(resolver:"CitaMutations@create")
+    actualizarCita(citaRequest:JSON!):responseCita! @field(resolver:"CitaMutations@update")
+
+#CRUD notas
+
+    crearNota(notesRequest:JSON!):Note! @field(resolver:"NoteMutations@create")
+
+#CUD agenda
+
+    indexAgenda(agendaRequest:JSON!):responseAgenda @field(resolver:"AgendaMutations@index")
+    indexAgendaTecnico(agendaRequest:JSON!):responseAgenda @field(resolver:"AgendaMutations@indexTecnico")
+#CRUD preferencia habilidades
+
+    crearPreferenciaHabilidad(habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@create")
+    actualizarPreferenciaHabilidad(id:ID!,habilidades_id:String!,cliente_id:String!):Preferencia_Habilidad @field(resolver:"PreferenciaHabilidadMutations@update")
 }
 
 type Query {
   #query de users
-  getAllUser: [User] @all
-  getUserById(id:ID! @whereKey): User @find
-  #query de cliente
-  getAllClienteExterno:[Cliente_Externo!] @all
-  getClienteExternoById(id:ID! @whereKey): Cliente_Externo @find
-  #Query de tecnicos
-  getAllTecnico:[Tecnico]@all
-  getTecnicoById(id:ID! @whereKey): Tecnico @find
-  #Query de cuidades
-  getAllCiudad: [Ciudad] @all
-  getCiudadById(id:ID! @whereKey): Ciudad @find
-  #Query de Habilidades
-  habilidades:[Habilidad] @all
-  habilidad(id:ID! @whereKey): Habilidad @find
+  obtenerTodosUsuarios: [Usuario] @all
+  obtenerUsuarioPorId(id: ID! @whereKey): Usuario @find
+  usuarioTecnico(id:ID!): User! @field (resolver:"UserQuery@usuarioTecnico")
+    # Consultas de clientes externos
+  obtenerTodosClientesExternos: [ClienteExterno!] @all
+  obtenerClienteExternoPorId(id: ID! @whereKey): ClienteExterno @find
+
+  # Consultas de técnicos
+  obtenerTodosTecnicos: [Tecnico] @all
+  obtenerTecnicoPorId(id: ID! @whereKey): Tecnico @find
+
+  # Consultas de ciudades
+  obtenerTodasCiudades: [Ciudad] @all
+  obtenerCiudadPorId(id: ID! @whereKey): Ciudad @find
+
+  # Consultas de habilidades
+  obtenerTodasHabilidades: [Habilidad] @all
+  obtenerHabilidadPorId(id: ID! @whereKey): Habilidad @find
+
+  # Consultas de certificaciones
+  obtenerTodasCertificaciones: [Certificacion] @all
+  obtenerCertificacionPorId(id: ID! @whereKey): Certificacion @find
+
+  # Consultas de tipos de estado
+  obtenerTodosTiposEstado: [TipoEstado] @all
+
+  # Consultas de tipos de actividad
+  obtenerTodosTiposActividad: [TipoActividad] @all
+
+  # Consultas de detalles de agenda técnico
+  obtenerTodosDetallesAgenda: [DetalleAgendaTecnico!] @all
 }
 
+#Modo salida de datos
 type Response {
   message: String
 }
 
-type AuthPayload {
-  user: User!
-  token: String!
+type RespuestSolicitud {
+    message:String
+    solicitud:Solicitud
+}
+type tecnico{
+    tecnico: Tecnico
+    url_anv: String
+    url_rev: String
+}
+type responseLogin{
+    user: User
+    tecnico: Tecnico
+    message: String
+}
+type responseCita{
+    cita:Cita
+    message: String
+}
+type responseCliente{
+    message: String
+    cliente:Cliente_Externo
+}
+
+type responseHabilidad{
+    message: String
+    habilidads: [Habilidad]
+}
+
+type responseAgenda{
+    message: String
+    agenda_tecnico: [Agenda_Tecnico]
+}
+#Modo de entrada de datos
+input Tecnico_HabilidadRequest {
+  habilidad_id: ID!
+  experiencia: String!
+  descripcion: String!
+}
+
+input requestSolicituds {
+    solicitudRequest: JSON!
+    fotos_url: [Upload!]!
 }

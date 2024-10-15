@@ -8,19 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 class Preferencia_Habilidad extends Model
 {
     use HasFactory;
-    protected $table="preferencia_habilidades";
-    protected $PrimaryKey="id";
+    protected $table = 'skill_preferences';  // Traducción de 'preferencia_habilidades'
+
+    protected $primaryKey = 'id';
+
     protected $fillable = [
-        'habilidades_id',
-        'cliente_id',
+        'skillId',  // Traducción de 'habilidades_id'
+        'clientId'  // Traducción de 'cliente_id'
     ];
 
-    public function habilidades(){
-        return $this->belongsTo(Habilidad::class,'habilidades_id');
+    // Relación con Skill (Habilidad)
+    public function skill()
+    {
+        return $this->belongsTo(Habilidad::class, 'skillId');  // Traducción de 'habilidades'
     }
 
-    public function cliente_externos(){
-        return $this->belongsTo(Cliente_Externo::class,'cliente_id');
+    // Relación con ExternalClient (Cliente Externo)
+    public function externalClient()
+    {
+        return $this->belongsTo(Cliente_Interno::class, 'clientId');  // Traducción de 'cliente_externos'
     }
 }
 

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\GraphQL\Scalars;
-
 
 use Exception;
 use JsonException;
@@ -16,7 +14,7 @@ use GraphQL\Utils\Utils as GraphQLUtils;
 class JSON extends ScalarType{
 
     public string  $name = 'JSON';
-    public ?string $description = 'A custom scalar type for JSON data';
+    public ?string $description = 'The `JSON` scalar type represents JSON values as specified by ECMA-404.';
 
     public function serialize($value): string
     {

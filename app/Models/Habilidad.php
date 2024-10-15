@@ -8,17 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class Habilidad extends Model
 {
     use HasFactory;
-    protected $table="habilidades";
+    protected $table = 'skills';
     protected $PrimaryKey="id";
     protected $fillable = [
-        'nombre',
+        'name'  // nombre
     ];
 
-    public function prefencia_habilidades(){
-        return $this->hasMany(Preferencia_Habilidad::class,'habilidad_id');
+    // Relación con TechnicianSkill (Tecnico_Habilidad)
+    public function technicianSkills()
+    {
+        return $this->hasMany(Tecnico_Habilidad::class, 'skillId');
     }
 
-    public function tecnico_habilidades(){
-        return $this->hasMany(Tecnico_Habilidad::class,'habilidad_id');
+    // Relación con SkillPreference (Preferencia_Habilidad)
+    public function skillPreferences()
+    {
+        return $this->hasMany(Preferencia_Habilidad::class, 'skillId');
     }
 }
