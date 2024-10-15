@@ -5,6 +5,7 @@ namespace App\GraphQL\Mutations;
 
 use App\Models\User;
 use App\Models\Cliente_Interno;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
@@ -16,15 +17,28 @@ class ClienteInternoMutations{
     //dd($args['clientRequest']);
         $clienteData = $args['clientRequest'];
         // Crear el cliente en la base de datos
-
+        $email = strtolower(trim($clienteData['email']));
+        if (strlen($clienteData['ci']) != 7) {
+            throw new \Exception('El CI debe tener exactamente 7 dígitos.');
+        }
+        $user = User::create([
+            'email' => $email,
+            'password' => Hash::make($clienteData['password']),
+            'ci' => $clienteData['ci'],
+            'type_user' => 1,
+        ]);
+        $tokens = $user->createToken('authToken')->plainTextToken;
+        $user->token = $tokens;
+        $user->save();
+        $userId = $user->id;
         $cliente = Cliente_Interno::create([
             'firstName' => $clienteData['firstName'],
             'lastName' => $clienteData['lastName'],
             'email' => strtolower(trim($clienteData['email'])),  // Convertir email a minúsculas y eliminar espacios
             'loginMethod' => $clienteData['loginMethod'] ?? null, // Campo opcional
             'photo' => $clienteData['photo'] ?? null, // Campo opcional
-            'userId' => $clienteData['userId'],
-            'cityId' => $clienteData['cityId'],
+            'userId' => $userId,
+            
         ]);
         $clientId = $cliente->id;
         //dd($clientId);
@@ -40,7 +54,8 @@ class ClienteInternoMutations{
         #return $cliente;
         return [
             'message' => 'Creacion Cliente exitoso!',
-            'client' => $cliente
+            'client' => $cliente,
+            'user' => $user
         ];
     }
     public function update($root ,array $args){

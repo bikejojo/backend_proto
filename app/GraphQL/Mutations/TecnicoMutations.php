@@ -14,8 +14,23 @@ use Intervention\Image\Drivers\Gd\Driver;
 class TecnicoMutations {
     public function create($root, array $args){
         $technicianData = $args['technicianRequest'];
-        $userId = $technicianData['userId'];
-        $user = User::find($userId);
+        // Crear usuario internamente
+        $email = strtolower(trim($technicianData['email']));
+        if (strlen($technicianData['ci']) != 7) {
+            throw new \Exception('El CI debe tener exactamente 7 dígitos.');
+        }
+        // Crear el usuario
+        $user = User::create([
+            'email' => $email,
+            'password' => Hash::make($technicianData['password']),
+            'ci' => $technicianData['ci'],
+            'type_user' => 1,
+        ]);
+        $tokens = $user->createToken('authToken')->plainTextToken;
+        $user->token = $tokens;
+        $user->save();
+        $userId = $user->id;
+        $technicianData['userId'] = $userId;
         // Validar formato de imágenes
         $validators = $this->validateImage($args);
         if ($validators->fails()) {
@@ -27,6 +42,7 @@ class TecnicoMutations {
         }
         // Crear técnico con datos iniciales
         $technician = Tecnico::create($technicianData);
+        //dd($technician);
         $technicianId = $technician->id;
         // Crear directorios utilizando technicianId para la ruta
         $this->createTechnicianDirectories($technicianId);
@@ -42,14 +58,10 @@ class TecnicoMutations {
             $backIdCardPath = $this->processImage($args['backIdCard'], "$technicianId/id_card/back.png", $manager);
             $technician->backIdCard = str_replace('public/', '', $backIdCardPath);
         }
-
-        /*if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
-            $photoPath = $this->processImage($args['photo'], "$technicianId/profile/photo.png", $manager);
-            $technician->photo = str_replace('public/', '', $photoPath);
-        }*/
         // Guardar las rutas de las imágenes en el técnico
         $technician->save();
-        //return $technician;
+        $technician=Tecnico::find($technician->id);
+        //dd($technician);
         return [
             'message'=> ' Registro tecnico exitoso!' ,
             'upcomingmessage' => 'Registre sus habilidades' ,

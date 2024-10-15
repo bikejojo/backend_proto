@@ -267,7 +267,7 @@ type Mutation {
 ####################
     #CRUD tecnicos
 ###################
-createTechnician(technicianRequest: JSON!, frontIdCard: Upload, backIdCard: Upload ): TechnicianResponse @field(resolver:"TecnicoMutations@create")
+    createTechnician(technicianRequest: JSON!, frontIdCard: Upload, backIdCard: Upload ): TechnicianResponse @field(resolver:"TecnicoMutations@create")
     #createTechnician(technicianRequest: JSON!, frontIdCard: Upload, backIdCard: Upload, photo: Upload): TechnicianResponse @field(resolver:"TecnicoMutations@create")
     updateTechnician(id: ID!, technicianRequest: JSON! , photo: Upload): TechnicianResponse @field(resolver:"TecnicoMutations@update")
     deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
@@ -379,6 +379,7 @@ type AppointmentResponse {
 type ClientResponse {
   message: String
   client: InternalClient!
+  user: User!
 }
 
 type ClientsResponse {

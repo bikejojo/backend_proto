@@ -18,9 +18,9 @@ return new class extends Migration
             $table->unsignedBigInteger('statusId');
             $table->date('dateRegistered');
             $table->text('issue');
-            $table->foreign('clientInternalId')->references('id')->on('clientInternal')->onDelete('cascade');
+            $table->foreign('clientInternalId')->references('id')->on('internal_clients')->onDelete('cascade');
             $table->foreign('technicalId')->references('id')->on('technicians')->onDelete('cascade');
-            $table->foreign('statusId')->references('id')->on('typeStatus')->onDelete('cascade');
+            $table->foreign('statusId')->references('id')->on('state_types')->onDelete('cascade');
             $table->timestamps();
         });
     }
