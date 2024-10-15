@@ -313,9 +313,9 @@ type Mutation {
     updateSkillPreference(id: ID!, skillId: String!, clientId: String!): SkillPreference @field(resolver:"PreferenciaHabilidadMutations@update")
 }
 
-###############################
+##############################
         #endpoint de GET
-###############################
+##############################
 type Query {
   ##########################
             #USER#
