@@ -50,12 +50,11 @@ class TecnicoMutations {
 
         // Manejo de las imágenes
         if (isset($args['frontIdCard']) && $args['frontIdCard'] instanceof UploadedFile) {
-            $frontIdCardPath = $this->processImage($args['frontIdCard'], "$technicianId/id_card/front.png", $manager);
+            $frontIdCardPath = $this->processImage($args['frontIdCard'], "/{$technicianId}/id_card/front.png", $manager);
             $technician->frontIdCard = str_replace('public/', '', $frontIdCardPath);
         }
-
         if (isset($args['backIdCard']) && $args['backIdCard'] instanceof UploadedFile) {
-            $backIdCardPath = $this->processImage($args['backIdCard'], "$technicianId/id_card/back.png", $manager);
+            $backIdCardPath = $this->processImage($args['backIdCard'], "/{$technicianId}/id_card/back.png", $manager);
             $technician->backIdCard = str_replace('public/', '', $backIdCardPath);
         }
         // Guardar las rutas de las imágenes en el técnico
@@ -74,7 +73,6 @@ class TecnicoMutations {
         $technician = Tecnico::find($args['id']);
         $technicianId = $technician->id;
         $user = User::find($technicianData['userId']);
-
         if ($technician==null){
             throw new \Exception('Technician not found.');
         }
@@ -108,8 +106,6 @@ class TecnicoMutations {
         // Actualizar datos del usuario relacionado
         $user->email = $technicianData['email'] ?? $user->email;
         $user->save();
-
-    //return $technician;
         return [
             'message' => 'Tecnico actualizado exitoso!' ,
             'technician' => $technician

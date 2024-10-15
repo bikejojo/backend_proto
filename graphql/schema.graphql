@@ -130,7 +130,7 @@ type InternalClient {
   lastName: String!
   email: String!
   loginMethod: String!
-  photo: String!
+  photo: String
   userId:ID!
   cityId:ID!
 

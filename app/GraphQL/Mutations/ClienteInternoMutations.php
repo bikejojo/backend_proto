@@ -31,15 +31,8 @@ class ClienteInternoMutations{
         $user->token = $tokens;
         $user->save();
         $userId = $user->id;
-        $cliente = Cliente_Interno::create([
-            'firstName' => $clienteData['firstName'],
-            'lastName' => $clienteData['lastName'],
-            'email' => strtolower(trim($clienteData['email'])),  // Convertir email a minúsculas y eliminar espacios
-            'loginMethod' => $clienteData['loginMethod'] ?? null, // Campo opcional
-            'photo' => $clienteData['photo'] ?? null, // Campo opcional
-            'userId' => $userId,
-            
-        ]);
+        $clienteData['userId'] = $userId;
+        $cliente = Cliente_Interno::create($clienteData);
         $clientId = $cliente->id;
         //dd($clientId);
         $this->createTechnicianDirectories($clientId);
@@ -50,8 +43,7 @@ class ClienteInternoMutations{
             $cliente->photo = str_replace('public/', '', $fotoPath);  // Guardar la ruta de la imagen
         }
         $cliente->save();
-        // Retornar el cliente recién creado
-        #return $cliente;
+        $cliente=Cliente_Interno::find($clientId);
         return [
             'message' => 'Creacion Cliente exitoso!',
             'client' => $cliente,
