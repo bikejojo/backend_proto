@@ -12,23 +12,28 @@ class ClientQuery{
     }
 
     public function searchByName($root,array $args){
-        $client = $args['namet'];
-        dd($client);
+        $client = $args['name'];
+        //dd($client);
         $client_internal = Cliente_Interno::where('firstName','like',"%{$client}%")
         ->orwhere('lastname','like',"%{$client}%")
         ->get();
+        dd($client_internal);
         $client_external = Cliente_Externo::where('firstName','like',"%{$client}%")
         ->orwhere('lastname','like',"%{$client}%")
         ->get();
+        
         $result = $client_internal->merge($client_external);
-        if($result){
+        //$result->all();
+        //dd($result);
+        if($result->isEmpty()){
             return [
-                'message' => 'No se encontro ninguna semejanza'
+                'message' => 'No se encontro ninguna semejanza.'
             ];
         }
         return [
-            'message' => 'Busqueda Completada',
-            'client' => [$result]
+            'message' => "Busqueda Completada",
+            'client_i' => $client_internal,
+            'cliente_e' => $client_external
         ];
     }
 }
