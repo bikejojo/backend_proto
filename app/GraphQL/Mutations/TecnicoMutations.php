@@ -9,22 +9,30 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 use Intervention\Image\Drivers\Gd\Driver;
 
 class TecnicoMutations {
     public function create($root, array $args){
         $technicianData = $args['technicianRequest'];
+        if (User::where('ci',$technicianData['ci'])->exists()) {
+           return [
+                'message'=> 'Esta celula de identidad ya esta en uso, por favor intenta con otro.'
+           ];
+        }
         // Crear usuario internamente
         $email = strtolower(trim($technicianData['email']));
         if (strlen($technicianData['ci']) != 7) {
-            throw new \Exception('El CI debe tener exactamente 7 dígitos.');
+            return [
+                'message'=> ' El CI debe tener exactamente 7 dígitos.!',
+            ];
         }
         // Crear el usuario
         $user = User::create([
             'email' => $email,
             'password' => Hash::make($technicianData['password']),
             'ci' => $technicianData['ci'],
-            'type_user' => 1,
+            'type_user' => $technicianData['type_user'],
         ]);
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
@@ -34,7 +42,10 @@ class TecnicoMutations {
         // Validar formato de imágenes
         $validators = $this->validateImage($args);
         if ($validators->fails()) {
-            throw new \Exception('Invalid image file.');
+            return [
+                'message' => 'Archivo de imagen inválido.',
+                'upcomingmessage' => 'Registre su usuario'
+            ];
         }
         // Encriptar la contraseña antes de crear el técnico
         if (isset($technicianData['password'])) {
@@ -62,10 +73,10 @@ class TecnicoMutations {
         $technician=Tecnico::find($technician->id);
         //dd($technician);
         return [
-            'message'=> ' Registro tecnico exitoso!' ,
-            'upcomingmessage' => 'Registre sus habilidades' ,
+            'message' => 'Registro técnico exitoso',
+            'upcomingmessage' => 'Registre sus habilidades',
             'technician' => $technician,
-            'user' => $user
+            'user' => $user,
         ];
     }
     public function update($root, array $args){

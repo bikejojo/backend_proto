@@ -11,15 +11,19 @@ class Contacto extends Model
     protected $PrimaryKey = 'id';
     protected $table = 'contact';
     protected $fillable = [
-        'clientInternalId',
+        'clientId',
         'technicalId',
         'statusId',
-        'dateRegistered',
+        'typeContact',
         'issue',
+        'dateRegistered',
     ];
 
     public function clients(){
-        return $this->hasMany(Cliente_Interno::class,'clientInternalId');
+        return $this->hasMany(Cliente_Interno::class,'clientId');
+    }
+    public function clientse(){
+        return $this->hasMany(Cliente_Externo::class,'clientId');
     }
     public function technicals(){
         return $this->hasMany(Tecnico::class,'technicalId');

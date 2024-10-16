@@ -6,6 +6,7 @@ namespace App\GraphQL\Mutations;
 use App\Models\User;
 use App\Models\Cliente_Externo;
 use App\Models\Asociacion_Cliente_Tecnico;
+use App\Models\Tecnico;
 use Carbon\Carbon;
 
 class ClienteExternoMutations{
@@ -29,10 +30,12 @@ class ClienteExternoMutations{
         ]);
 
         $asociacion->save();
+        $tecnico = Tecnico::find($clienteData['technicalId']);
 
         return [
             'message' => 'Creacion Cliente exitoso!',
-            'clients' => $cliente
+            'clients' => $cliente,
+            'technical' => $tecnico
         ];
     }
     public function update($root ,array $args){

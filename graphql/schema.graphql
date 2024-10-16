@@ -148,6 +148,7 @@ type ExternalClient {
     phoneNumber: String! @trim
 
     associantions: AssociationTechnClient @belongsTo
+    contacts: Contact @belongsTo
 }
 
 type AssociationTechnClient {
@@ -170,13 +171,6 @@ type ActivityType {
 type StateType {
   id: ID!
   description: String!
-}
-
-type Note {
-  id: ID!
-  description: String
-
-  technicianSchedules: [TechnicianSchedule!]! @hasMany
 }
 
 type Request {
@@ -243,13 +237,19 @@ type TechnicianSchedule {
   activityType: ActivityType! @belongsTo
 }
 
-type RequestPhoto {
-  id: ID!
-  description: String!
-  photoUrls: String
-  requestId: ID!
+type Contact {
+    id: ID!
+    clientInternalId: ID!
+    technicalId: ID!
+    statusId: ID!
+    typeContact: String!
+    issue: String!
+    dateRegistered: String!
 
-  request: Request @belongsTo
+    clients: InternalClient! @hasMany
+    clientse: ExternalClient! @hasMany
+    technicals: Technician! @hasMany
+    status: StateType! @hasMany
 }
 
 ##########################
@@ -268,7 +268,6 @@ type Mutation {
     #CRUD tecnicos
 ###################
     createTechnician(technicianRequest: JSON!, frontIdCard: Upload, backIdCard: Upload ): TechnicianResponse @field(resolver:"TecnicoMutations@create")
-    #createTechnician(technicianRequest: JSON!, frontIdCard: Upload, backIdCard: Upload, photo: Upload): TechnicianResponse @field(resolver:"TecnicoMutations@create")
     updateTechnician(id: ID!, technicianRequest: JSON! , photo: Upload): TechnicianResponse @field(resolver:"TecnicoMutations@update")
     deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
 #@guard(checks: ["sanctum"])
@@ -299,20 +298,18 @@ type Mutation {
     createClients(clientRequest:JSON!): ClientsResponse @field(resolver:"ClienteExternoMutations@create")
     updateClients(id: ID!,clientRequest:JSON!): ClientsResponse @field(resolver:"ClienteExternoMutations@update")
     deleteClients(id: ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
-
 #CRUD solicitudes
     #createRequest(request: RequestInput!): RequestResponse @field(resolver:"SolicitudesMutations@create")
     #updateRequest(requestRequest: JSON!): RequestResponse! @field(resolver:"SolicitudesMutations@modifyState")
-#CRUD notas
-    createNote(noteRequest: JSON!): Note! @field(resolver:"NoteMutations@create")
 #CUD agenda
     indexSchedule(scheduleRequest: JSON!): ScheduleResponse @field(resolver:"AgendaMutations@index")
     indexTechnicianSchedule(scheduleRequest: JSON!): ScheduleResponse @field(resolver:"AgendaMutations@indexTecnico")
 #CRUD preferencia habilidades
-    createSkillPreference(skillId: String!, clientId: String!): SkillPreference @field(resolver:"PreferenciaHabilidadMutations@create")
-    updateSkillPreference(id: ID!, skillId: String!, clientId: String!): SkillPreference @field(resolver:"PreferenciaHabilidadMutations@update")
+    #createSkillPreference(skillId: String!, clientId: String!): SkillPreference @field(resolver:"PreferenciaHabilidadMutations@create")
+    #updateSkillPreference(id: ID!, skillId: String!, clientId: String!): SkillPreference @field(resolver:"PreferenciaHabilidadMutations@update")
+#CRUD de contactos
+    createContact(contactRequest:JSON!): Contact @field(resolver:"ContactoMutations@create")
 }
-
 ##############################
         #endpoint de GET
 ##############################
@@ -349,6 +346,10 @@ type Query {
 #############################
     #Modo salida de datos
 #############################
+#type n_response{
+ #   content: TechnicianResponse
+#}
+
 type Response {
   message: String
 }
@@ -365,6 +366,12 @@ type TechnicianResponse {
   upcomingmessage: String
 }
 
+type ClientResponse {
+  message: String
+  client: InternalClient
+  user: User
+}
+
 type responseLogin {
   user: User
   technician: Technician
@@ -376,15 +383,12 @@ type AppointmentResponse {
   message: String
 }
 
-type ClientResponse {
-  message: String
-  client: InternalClient!
-  user: User!
-}
+
 
 type ClientsResponse {
   message: String
   clients: ExternalClient!
+  technical: Technician
 }
 
 type SkillResponse {

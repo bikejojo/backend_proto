@@ -17,15 +17,22 @@ class ClienteInternoMutations{
     //dd($args['clientRequest']);
         $clienteData = $args['clientRequest'];
         // Crear el cliente en la base de datos
-        $email = strtolower(trim($clienteData['email']));
+        if (User::where('ci',$clienteData['ci'])->exists()) {
+            return [
+                 'message'=> 'Esta celula de identidad ya esta en uso, por favor intenta con otro.'
+            ];
+         }
         if (strlen($clienteData['ci']) != 7) {
-            throw new \Exception('El CI debe tener exactamente 7 dígitos.');
+            return [
+                'message' => 'Tu CI debe tener 7 digitos!',
+            ];
         }
+        $email = strtolower(trim($clienteData['email']));
         $user = User::create([
             'email' => $email,
             'password' => Hash::make($clienteData['password']),
             'ci' => $clienteData['ci'],
-            'type_user' => 1,
+            'type_user' => $clienteData['type_user'],
         ]);
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
@@ -34,7 +41,6 @@ class ClienteInternoMutations{
         $clienteData['userId'] = $userId;
         $cliente = Cliente_Interno::create($clienteData);
         $clientId = $cliente->id;
-        //dd($clientId);
         $this->createTechnicianDirectories($clientId);
         $manager = new ImageManager(new Driver());
             // Manejo de la imagen del cliente (si se envió una)
@@ -55,9 +61,6 @@ class ClienteInternoMutations{
         $client = Cliente_Interno::find($args['id']);
         $clientId = $client->id;
         $user = User::find($client['userId']);
-        /*$cliente = Cliente_Externo::where('id',$id)
-        ->update(['nombre'=>$args['nombre'],'email'=>$args['email'],'metodo_login'=>$args['metodo_login'],'foto'=>$args['foto'],'users_id'=>$args['users_id']]);*/
-        //return Cliente_Externo::find($id);
         if ($client==null){
             throw new \Exception('Client not found.');
         }
