@@ -11,24 +11,52 @@ class ClientQuery{
         // TODO implement the resolver
     }
 
-    public function searchByName($root,array $args){
-        $client = $args['namet'];
-        dd($client);
-        $client_internal = Cliente_Interno::where('firstName','like',"%{$client}%")
-        ->orwhere('lastname','like',"%{$client}%")
-        ->get();
-        $client_external = Cliente_Externo::where('firstName','like',"%{$client}%")
-        ->orwhere('lastname','like',"%{$client}%")
-        ->get();
-        $result = $client_internal->merge($client_external);
-        if($result){
+    public function searchExternalByName($root, array $args)
+    {
+        $clientName = $args['name'];
+
+        $clientExterno = Cliente_Externo::where('firstName', 'ILIKE', "%{$clientName}%")
+            ->orWhere('lastName', 'like', "%{$clientName}%")
+            ->get();
+
+
+        $filteredClientExterno = $clientExterno->filter(function($client) {
+            return !is_null($client->id);  // Asegurarse de que el id no es null
+        });
+        //dd($clientInterno);
+        if ($clientExterno->isEmpty()) {
             return [
-                'message' => 'No se encontro ninguna semejanza'
+                'message' => 'No se encontraron resultados',
+                'client_i' => null
             ];
         }
         return [
-            'message' => 'Busqueda Completada',
-            'client' => [$result]
+            'message' => 'Resultados encontrados',
+            'client_e' => $clientExterno
+        ];
+    }
+
+    public function searchInternalByName($root, array $args){
+        $clientName = $args['name'];
+
+        // Buscar en ambas tablas (ClienteInterno y ClienteExterno)
+        $clientInterno = Cliente_Interno::where('firstName', 'ILIKE', "%{$clientName}%")
+            ->orWhere('lastName', 'like', "%{$clientName}%")
+            ->get();
+            //dd($clientInterno);
+        $filteredClientInterno = $clientInterno->filter(function($client) {
+            return !is_null($client->id);  // Asegurarse de que el id no es null
+        });
+
+        if ($clientInterno->isEmpty()) {
+            return [
+                'message' => 'No se encontraron resultados',
+                'client_i' => null
+            ];
+        }
+        return [
+            'message' => 'Resultados encontrados',
+            'client_i' => $clientInterno
         ];
     }
 }

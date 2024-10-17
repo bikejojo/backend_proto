@@ -190,7 +190,6 @@ type Request {
   client: InternalClient! @belongsTo
   requestDetails: [RequestDetail!]! @hasMany
   state: StateType! @belongsTo
-  requestPhotos: [RequestPhoto!]! @hasMany
 }
 
 type RequestDetail {
@@ -232,7 +231,6 @@ type TechnicianSchedule {
 
   technician: Technician! @belongsTo
   client: InternalClient! @belongsTo
-  note: Note @belongsTo
   appointment: Appointment! @belongsTo
   activityType: ActivityType! @belongsTo
 }
@@ -263,7 +261,7 @@ type Mutation {
     updateUser(id: ID!, userRequest: JSON!): User @field(resolver:"UserMutations@update")
     deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
     login(ci: String! ,password:String!):responseLogin @field(resolver:"UserMutations@login")
-    logout:responseLogin @field(resolver:"UserMutations@logout")
+    #logout:responseLogin @field(resolver:"UserMutations@logout")
 ####################
     #CRUD tecnicos
 ###################
@@ -345,17 +343,27 @@ type Query {
   ######################################
         #query de cliente en general
   ######################################
-
-  searchClientByName:(name: String!):[responseClientSearch] @field(resolver: "ClientQuery@searchByName")
+  searchClientInternalByName(name:String):responseClientInternalSearch @field(resolver: "ClientQuery@searchInternalByName")
+  searchClientExternalByName(name:String):responseClientExternalSearch @field(resolver: "ClientQuery@searchExternalByName")
+  ###################################
+    #cliente
+        #cliente interno
+        #cliente externo
+  ####################################
+  clientInternalById(id:ID! @whereKey):InternalClient @find(model: "App\\Models\\Cliente_Interno")
+  clientExternalById(id:ID! @whereKey):ExternalClient @find(model: "App\\Models\\Cliente_Externo")
+  ####################################
 }
 #############################
     #Modo salida de datos
 #############################
-union clientResult = InternalClient | ExternalClient
-
-type responseClientSearch{
-    message: String!
-    client: [clientResult]
+type responseClientInternalSearch{
+    message: String
+    client_i: [InternalClient]
+}
+type responseClientExternalSearch{
+    message: String
+    client_e: [ExternalClient]
 }
 
 type Response {
