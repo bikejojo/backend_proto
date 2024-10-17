@@ -302,13 +302,13 @@ type Mutation {
     #createRequest(request: RequestInput!): RequestResponse @field(resolver:"SolicitudesMutations@create")
     #updateRequest(requestRequest: JSON!): RequestResponse! @field(resolver:"SolicitudesMutations@modifyState")
 #CUD agenda
-    indexSchedule(scheduleRequest: JSON!): ScheduleResponse @field(resolver:"AgendaMutations@index")
+    indexSchedule(scheduleRequest: JSON!): ScheduleResponse @field(resolver: "AgendaMutations@index")
     indexTechnicianSchedule(scheduleRequest: JSON!): ScheduleResponse @field(resolver:"AgendaMutations@indexTecnico")
 #CRUD preferencia habilidades
     #createSkillPreference(skillId: String!, clientId: String!): SkillPreference @field(resolver:"PreferenciaHabilidadMutations@create")
     #updateSkillPreference(id: ID!, skillId: String!, clientId: String!): SkillPreference @field(resolver:"PreferenciaHabilidadMutations@update")
 #CRUD de contactos
-    createContact(contactRequest:JSON!): Contact @field(resolver:"ContactoMutations@create")
+    createContact(contactRequest:JSON!): Contact @field(resolver: "ContactoMutations@create")
 }
 ##############################
         #endpoint de GET
@@ -342,13 +342,21 @@ type Query {
         #TipoActividad
   #########################
   getAllActivityTypes: [ActivityType] @all (model: "App\\Models\\Tipo_Actividad")
+  ######################################
+        #query de cliente en general
+  ######################################
+
+  searchClientByName:(name: String!):[responseClientSearch] @field(resolver: "ClientQuery@searchByName")
 }
 #############################
     #Modo salida de datos
 #############################
-#type n_response{
- #   content: TechnicianResponse
-#}
+union clientResult = InternalClient | ExternalClient
+
+type responseClientSearch{
+    message: String!
+    client: [clientResult]
+}
 
 type Response {
   message: String
