@@ -4,6 +4,7 @@ namespace App\GraphQL\Mutations;
 
 use App\Models\Tecnico_Habilidad;
 use App\Models\Tecnico;
+use App\Models\User;
 
 class TecnicoHabilidadMutations{
 
@@ -60,5 +61,25 @@ class TecnicoHabilidadMutations{
             'skills' => $habilidades
         ];
     }
+    public function userSkilsById($root , array $args){
+        $userId = $args['id'];
+        #dd($userId);
+        $user = User::find($userId);
+        #dd($user);
+        $tecnico = Tecnico::where('userId',$user->id )->first();
+        #dd($tecnico->id);
+        $skills = Tecnico_Habilidad::where('technicianId', $tecnico->id)->get();
+        //dd($skills);
+        if($skills->isEmpty()){
+            return [
+                'message' => 'No tiene habilidades asignadas a este usuario',
+                'skills' => null
+            ];
+        }
 
+        return [
+            'message' => 'Tiene habilidades asignadas a este usuario',
+            'skills' => $skills
+        ];
+    }
 }
