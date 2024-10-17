@@ -143,8 +143,7 @@ type InternalClient {
 
 type ExternalClient {
     id: ID!
-    firstName: String! @trim
-    lastName: String! @trim
+    fullName: String! @trim
     phoneNumber: String! @trim
 
     associantions: AssociationTechnClient @belongsTo

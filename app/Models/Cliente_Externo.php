@@ -11,8 +11,7 @@ class Cliente_Externo extends Model
     protected $PrimaryKey = 'id';
     protected $table = 'external_clients';
     protected $fillable = [
-        'firstName',      // nombre
-        'lastName',       // apellido
+        'fullName',      // apellido
         'phoneNumber'
     ];
 

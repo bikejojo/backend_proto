@@ -16,8 +16,7 @@ class ClienteExternoMutations{
         // Crear el cliente en la base de datos
 
         $cliente = Cliente_Externo::create([
-            'firstName' => $clienteData['firstName'],
-            'lastName' => $clienteData['lastName'],
+            'fullName' => $clienteData['fullName'],
             'phoneNumber' => $clienteData['phoneNumber']
         ]);
         //dd($clientId);
@@ -49,12 +48,8 @@ class ClienteExternoMutations{
         if ($client==null){
             throw new \Exception('Client not found.');
         }
-        $firstName = trim($client['firstName']);
-        $lastName = trim($client['lastName']);
-        $email = trim($client['email']);
-        $client->firstName=$firstName;
-        $client->lastName=$lastName;
-        $client->email=$email;
+        $firstName = ($client['fullName']);
+        $email = ($client['email']);
         $client->loginMethod=$clientData['loginMethod'];
         $client->userId = $clientData['userId'];
         $client->cityId = $clientData['cityId'];

@@ -3,6 +3,7 @@
 namespace App\GraphQL\Queries;
 use App\Models\Cliente_Externo;
 use App\Models\Cliente_Interno;
+use Illuminate\Support\Facades\DB;
 
 class ClientQuery{
     /** @param  array{}  $args */
@@ -13,13 +14,9 @@ class ClientQuery{
 
     public function searchExternalByName($root, array $args)
     {
-        $clientName = $args['name'];
-
-        $clientExterno = Cliente_Externo::where('firstName', 'ILIKE', "%{$clientName}%")
-            ->orWhere('lastName', 'like', "%{$clientName}%")
+        $clientName = strtolower($args['name']);
+        $clientExterno = Cliente_Externo::where(DB::raw('LOWER("fullName")'), 'LIKE', "%{$clientName}%")
             ->get();
-
-
         $filteredClientExterno = $clientExterno->filter(function($client) {
             return !is_null($client->id);  // Asegurarse de que el id no es null
         });
@@ -37,11 +34,9 @@ class ClientQuery{
     }
 
     public function searchInternalByName($root, array $args){
-        $clientName = $args['name'];
-
-        // Buscar en ambas tablas (ClienteInterno y ClienteExterno)
-        $clientInterno = Cliente_Interno::where('firstName', 'ILIKE', "%{$clientName}%")
-            ->orWhere('lastName', 'like', "%{$clientName}%")
+        $clientName = strtolower($args['name']);
+        $clientInterno = Cliente_Interno::where(DB::raw('LOWER("firstName")'), 'LIKE', "%{$clientName}%")
+            ->orWhere(DB::raw('LOWER("lastName")'), 'LIKE', "%{$clientName}%")
             ->get();
             //dd($clientInterno);
         $filteredClientInterno = $clientInterno->filter(function($client) {
