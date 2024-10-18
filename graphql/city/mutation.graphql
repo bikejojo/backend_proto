@@ -1,4 +1,4 @@
-type Mutation {
+extend type Mutation {
     createCity(description: String!): City @field(resolver:"CiudadMutations@create")
     updateCity(id: ID!, description: String!): City @field(resolver:"CiudadMutations@create")
 }

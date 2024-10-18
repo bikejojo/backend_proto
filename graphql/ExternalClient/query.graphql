@@ -1,4 +1,4 @@
-type Query {
+extend type Query {
     searchClientExternalByName(name:String):responseClientExternalSearch @field(resolver: "ClientQuery@searchExternalByName")
     clientExternalById(id:ID! @whereKey):ExternalClient @find(model: "App\\Models\\Cliente_Externo")
 }

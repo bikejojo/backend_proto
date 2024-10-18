@@ -1,0 +1,4 @@
+type StateType {
+  id: ID!
+  description: String!
+}

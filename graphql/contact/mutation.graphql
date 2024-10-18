@@ -1,0 +1,11 @@
+extend type Mutation {
+    createContact(contactRequest:JSON!): Contact @field(resolver: "ContactoMutations@create")
+    listContact(contactRequest:JSON!): responseContact @field(resolver: "ContactoMutations@list")
+}
+
+type responseContact{
+    message: String!
+    contacts: Contact
+}
+
+#import contact.graphql

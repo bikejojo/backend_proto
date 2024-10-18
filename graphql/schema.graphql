@@ -1,7 +1,6 @@
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 scalar JSON
-#import ../vendor/marqant-lab/lighthouse-json/graphql/*.graphql
 scalar Upload @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload")
 
 #import user/*.graphql
@@ -11,5 +10,4 @@ scalar Upload @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload
 #import skill/*.graphql
 #import city/*.graphql
 #import skillTechnician/*.graphql
-
-
+#import typeState/*.graphql
