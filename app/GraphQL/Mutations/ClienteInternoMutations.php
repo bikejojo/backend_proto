@@ -59,20 +59,25 @@ class ClienteInternoMutations{
     public function update($root ,array $args){
         $clientData = $args['clientRequest'];
         $client = Cliente_Interno::find($args['id']);
+        //dd($client);
         $clientId = $client->id;
-        $user = User::find($client['userId']);
+        $user = User::find($client->userId);
+        //dd($user);
         if ($client==null){
             throw new \Exception('Client not found.');
         }
-        $firstName = trim($client['firstName']);
-        $lastName = trim($client['lastName']);
-        $email = trim($client['email']);
+        $firstName = trim($clientData['firstName']);
+
+        $lastName = trim($clientData['lastName']);
+        $email = trim($clientData['email']);
+        $phone = trim($clientData['phoneNumber']);
         $client->firstName=$firstName;
         $client->lastName=$lastName;
         $client->email=$email;
+        $client->phoneNumber=$phone;
         $client->loginMethod=$clientData['loginMethod'];
-        $client->userId = $clientData['userId'];
         $client->cityId = $clientData['cityId'];
+
         $manager = new ImageManager(new Driver());
         if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
             //dd($technician->photo);

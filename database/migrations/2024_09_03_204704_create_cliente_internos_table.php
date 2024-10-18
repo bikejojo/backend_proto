@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('firstName');  // Traducción de 'nombre'
             $table->string('lastName');   // Traducción de 'apellido'
             $table->string('email');
+            $table->string('phoneNumber');
             $table->string('loginMethod')->nullable();  // Traducción de 'metodo_login'
             $table->string('photo')->nullable();
             $table->unsignedBigInteger('userId');  // Traducción de 'users_id'

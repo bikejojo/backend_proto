@@ -15,6 +15,7 @@ class Cliente_Interno extends Model
         'lastName',       // apellido
         'email',
         'loginMethod',    // metodo_login
+        'phoneNumber',
         'photo',
         'userId',
         'cityId',          // foto

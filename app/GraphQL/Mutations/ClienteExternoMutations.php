@@ -15,6 +15,7 @@ class ClienteExternoMutations{
         $clienteData = $args['clientRequest'];
         // Crear el cliente en la base de datos
 
+        $tecnico = Tecnico::find($clienteData['technicalId']);
         $cliente = Cliente_Externo::create([
             'fullName' => $clienteData['fullName'],
             'phoneNumber' => $clienteData['phoneNumber']
@@ -29,7 +30,6 @@ class ClienteExternoMutations{
         ]);
 
         $asociacion->save();
-        $tecnico = Tecnico::find($clienteData['technicalId']);
 
         return [
             'message' => 'Creacion Cliente exitoso!',
