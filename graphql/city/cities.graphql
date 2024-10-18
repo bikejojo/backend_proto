@@ -1,0 +1,7 @@
+type City {
+  id: ID!
+  name: String!
+
+  externalClients: [InternalClient!]! @hasMany
+  technicians: [Technician!]! @hasMany
+}

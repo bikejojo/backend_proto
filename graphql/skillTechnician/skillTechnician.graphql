@@ -1,0 +1,10 @@
+type TechnicianSkill {
+  id: ID!
+  technicianId: ID!
+  skillId: ID!
+  experience: String
+  description: String
+
+  technician: Technician! @belongsTo
+  skill: [Skill!]! @belongsTo
+}

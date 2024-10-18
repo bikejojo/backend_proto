@@ -1,0 +1,23 @@
+type Technician {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  frontIdCard: String
+  backIdCard: String
+  email: String
+  phoneNumber: String!
+  password: String!
+  photo: String
+  userId: String!
+  cityId: String!
+
+  city: City! @belongsTo
+  user: User! @belongsTo
+  certifications: [Certification!]! @hasMany
+  workPhotos: [WorkPhoto!] @hasMany
+  technician: [TechnicianSkill!]! @hasMany
+  requests: [Request!] @hasMany
+  schedules: [TechnicianSchedule!] @hasMany
+  associantions: [AssociationTechnClient!] @belongsTo
+}
+

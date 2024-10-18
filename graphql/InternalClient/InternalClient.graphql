@@ -1,0 +1,16 @@
+type InternalClient {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  loginMethod: String!
+  photo: String
+  userId:ID!
+  cityId:ID!
+
+  user: User! @belongsTo
+  city: City! @belongsTo
+  skillPreferences: [SkillPreference!]! @hasMany
+  requests: [Request!]! @hasMany
+  schedules: [TechnicianSchedule!]! @hasMany
+}

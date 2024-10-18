@@ -1,0 +1,10 @@
+type Query {
+    searchClientInternalByName(name:String):responseClientInternalSearch @field(resolver: "ClientQuery@searchInternalByName")
+    clientInternalById(id:ID! @whereKey):InternalClient @find(model: "App\\Models\\Cliente_Interno")
+}
+
+type responseClientInternalSearch{
+    message: String
+    client_i: [InternalClient]
+}
+#import InternalClient.graphql

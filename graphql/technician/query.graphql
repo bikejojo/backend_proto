@@ -1,0 +1,6 @@
+extend type Query {
+    getAllTechnicians: [Technician] @all (model: "App\\Models\\Tecnico")
+    getTechnicianById(id: ID! @whereKey): Technician @find (model: "App\\Models\\Tecnico")
+}
+
+#import technician.graphql

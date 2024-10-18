@@ -1,0 +1,11 @@
+type Query {
+    searchClientExternalByName(name:String):responseClientExternalSearch @field(resolver: "ClientQuery@searchExternalByName")
+    clientExternalById(id:ID! @whereKey):ExternalClient @find(model: "App\\Models\\Cliente_Externo")
+}
+
+type responseClientExternalSearch{
+    message: String
+    client_e: [ExternalClient]
+}
+
+#import ExternalClient.graphql
