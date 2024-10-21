@@ -16,6 +16,11 @@ class ClienteExternoMutations{
         // Crear el cliente en la base de datos
 
         $tecnico = Tecnico::find($clienteData['technicalId']);
+        if($tecnico == null){
+            return [
+                'message'=>'Usuario tecnico no encontrado'
+            ];
+        }
         $cliente = Cliente_Externo::create([
             'fullName' => $clienteData['fullName'],
             'phoneNumber' => $clienteData['phoneNumber']

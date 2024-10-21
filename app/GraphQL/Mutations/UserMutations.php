@@ -73,6 +73,7 @@ class UserMutations{
         }
 
         $tecnico = $user->technicians()->first();
+        $client = $user->clientsExterns()->first();
         if (!Hash::check($args['password'], $user->password)) {
             return [
                 'message' => "Credenciales invalidas" ,
@@ -83,11 +84,21 @@ class UserMutations{
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
         $user->save();
-        return [
-            'message' => 'Login exitoso',
-            'user' => $user,
-            'technician' => $tecnico
-        ];
+        if($tecnico){
+            return [
+                'message' => 'Login exitoso',
+                'user' => $user,
+               #'type' => $tecnico
+                'technician' => $tecnico
+            ];
+        }else{
+            return [
+                'message' => 'Login exitoso',
+                'user' => $user,
+                #'type' => $client
+                'client' => $client
+            ];
+        }
     }
 
    /* public function logout($root, array $args)

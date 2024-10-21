@@ -23,9 +23,9 @@ return new class extends Migration
             $table->unsignedBigInteger('stateId');  // Traducción de 'estado_id'
             $table->unsignedBigInteger('clientId');  // Traducción de 'cliente_id'
             $table->unsignedBigInteger('technicianId');  // Traducción de 'tecnico_id'
-            $table->foreign('technicianId')->references('id')->on('technicians')->onDelete('cascade');
-            $table->foreign('clientId')->references('id')->on('internal_clients')->onDelete('cascade');
-            $table->foreign('stateId')->references('id')->on('state_types')->onDelete('cascade');
+            // $table->foreign('technicianId')->references('id')->on('technicians')->onDelete('cascade');
+            // $table->foreign('clientId')->references('id')->on('internal_clients')->onDelete('cascade');
+            // $table->foreign('stateId')->references('id')->on('state_types')->onDelete('cascade');
             $table->timestamps();
         });
     }

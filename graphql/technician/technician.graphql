@@ -1,4 +1,4 @@
-type Technician {
+type Technician @model(class: "App\\Models\\Tecnico"){
   id: ID!
   firstName: String!
   lastName: String!
@@ -13,11 +13,8 @@ type Technician {
 
   city: City! @belongsTo
   user: User! @belongsTo
-  certifications: [Certification!]! @hasMany
-  workPhotos: [WorkPhoto!] @hasMany
+
   technician: [TechnicianSkill!]! @hasMany
-  requests: [Request!] @hasMany
-  schedules: [TechnicianSchedule!] @hasMany
   associantions: [AssociationTechnClient!] @belongsTo
 }
 

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Cliente_Externo;
 
 class ClienteInternoMutations{
@@ -27,6 +28,13 @@ class ClienteInternoMutations{
                 'message' => 'Tu CI debe tener 7 digitos!',
             ];
         }
+        $validators = $this->validateImage($args);
+        if ($validators->fails()) {
+            return [
+                'message' => 'Archivo de imagen inválido.',
+                'upcomingmessage' => 'Registre su usuario'
+            ];
+        }
         $email = strtolower(trim($clienteData['email']));
         $user = User::create([
             'email' => $email,
@@ -41,7 +49,7 @@ class ClienteInternoMutations{
         $clienteData['userId'] = $userId;
         $cliente = Cliente_Interno::create($clienteData);
         $clientId = $cliente->id;
-        $this->createTechnicianDirectories($clientId);
+
         $manager = new ImageManager(new Driver());
             // Manejo de la imagen del cliente (si se envió una)
         if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
@@ -84,7 +92,6 @@ class ClienteInternoMutations{
             if ($client->photo) {
                 Storage::delete('public/' . $client->photo);
             }
-            $this->createTechnicianDirectories($clientId);
             $photoPath = $this->processImage($args['photo'], "/{$clientId}_client/foto.png",$manager);
             $client->photo = str_replace('public/', '', $photoPath);
         }
@@ -107,10 +114,6 @@ class ClienteInternoMutations{
             return ['message'=> 'Borrado existoso'];
         }
     }
-
-    private function createTechnicianDirectories($clientId){
-        Storage::makeDirectory('public/' . $clientId.'_client' . '/photo');
-    }
     // Procesamiento de imágenes
     private function processImage(UploadedFile $file, $path, $manager){
         $image = $manager->read($file->getRealPath());
@@ -121,5 +124,15 @@ class ClienteInternoMutations{
         $fullPath = storage_path("app/public/{$path}");
         $image->save($fullPath, 80, 'png');
         return $path;
+    }
+
+    // Validación de imágenes
+    private function validateImage($args){
+        return Validator::make([
+        'photo' => $args['photo'] ?? null ,
+        ], [
+
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+        ]);
     }
 }

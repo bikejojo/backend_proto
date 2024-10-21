@@ -15,9 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('description')->nullable();  // Traducción de 'descripcion'
             $table->text('photoUrls')->nullable();  // Traducción de 'fotos_url'
-            $table->unsignedBigInteger('requestId');  // Traducción de 'solicitud_id'
-            $table->foreign('requestId')->references('id')->on('requests')->onDelete('cascade');
-            $table->timestamps();
+             $table->timestamps();
         });
     }
 

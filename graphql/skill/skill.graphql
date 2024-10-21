@@ -2,6 +2,6 @@ type Skill {
   id: ID!
   name: String!
 
-  skillPreferences: [SkillPreference!]! @hasMany
+
   technicianSkills: [TechnicianSkill!]! @hasMany
 }

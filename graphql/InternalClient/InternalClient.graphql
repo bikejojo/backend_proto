@@ -1,8 +1,8 @@
-type InternalClient {
+type InternalClient @model(class: "App\\Models\\Cliente_Interno"){
   id: ID!
   firstName: String!
   lastName: String!
-  email: String!
+  email: String
   phoneNumber: String!
   loginMethod: String!
   photo: String
@@ -11,7 +11,5 @@ type InternalClient {
 
   user: User! @belongsTo
   city: City! @belongsTo
-  skillPreferences: [SkillPreference!]! @hasMany
-  requests: [Request!]! @hasMany
-  schedules: [TechnicianSchedule!]! @hasMany
+
 }

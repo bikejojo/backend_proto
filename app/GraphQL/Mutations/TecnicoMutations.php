@@ -3,6 +3,7 @@
 namespace App\GraphQL\Mutations;
 
 use App\Models\Tecnico;
+use App\Models\Tecnico_Habilidad;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
@@ -15,18 +16,27 @@ use Intervention\Image\Drivers\Gd\Driver;
 class TecnicoMutations {
     public function create($root, array $args){
         $technicianData = $args['technicianRequest'];
+        $skill=null;
+
         if (User::where('ci',$technicianData['ci'])->exists()) {
            return [
                 'message'=> 'Esta celula de identidad ya esta en uso, por favor intenta con otro.'
            ];
         }
         // Crear usuario internamente
-        $email = strtolower(trim($technicianData['email']));
         if (strlen($technicianData['ci']) != 7) {
             return [
                 'message'=> ' El CI debe tener exactamente 7 dígitos.!',
             ];
         }
+        $validators = $this->validateImage($args);
+        if ($validators->fails()) {
+            return [
+                'message' => 'Archivo de imagen inválido.',
+                'upcomingmessage' => 'Registre su usuario'
+            ];
+        }
+        $email = strtolower(trim($technicianData['email']));
         // Crear el usuario
         $user = User::create([
             'email' => $email,
@@ -40,20 +50,12 @@ class TecnicoMutations {
         $userId = $user->id;
         $technicianData['userId'] = $userId;
         // Validar formato de imágenes
-        $validators = $this->validateImage($args);
-        if ($validators->fails()) {
-            return [
-                'message' => 'Archivo de imagen inválido.',
-                'upcomingmessage' => 'Registre su usuario'
-            ];
-        }
         // Encriptar la contraseña antes de crear el técnico
         if (isset($technicianData['password'])) {
             $technicianData['password'] = Hash::make($technicianData['password']);
         }
         // Crear técnico con datos iniciales
         $technician = Tecnico::create($technicianData);
-        //dd($technician);
         $technicianId = $technician->id;
         // Crear directorios utilizando technicianId para la ruta
         $this->createTechnicianDirectories($technicianId);
@@ -70,13 +72,14 @@ class TecnicoMutations {
         }
         // Guardar las rutas de las imágenes en el técnico
         $technician->save();
+
         $technician=Tecnico::find($technician->id);
-        //dd($technician);
         return [
             'message' => 'Registro técnico exitoso',
             'upcomingmessage' => 'Registre sus habilidades',
             'technician' => $technician,
             'user' => $user,
+            'skill' => $skill
         ];
     }
     public function update($root, array $args){

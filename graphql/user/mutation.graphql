@@ -7,6 +7,7 @@ extend type Mutation {
     login(ci: String! ,password:String!):responseLogin @field(resolver:"UserMutations@login")
 
 }
+union userRol = Technician | InternalClient
 
 type Response {
   message: String
@@ -15,6 +16,8 @@ type Response {
 type responseLogin {
   user: User
   technician: Technician
+  client: InternalClient
   message: String
 }
 #import user.graphql
+

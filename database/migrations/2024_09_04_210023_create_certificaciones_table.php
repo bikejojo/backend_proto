@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date('certificationDate')->nullable();  // Traducción de 'fecha_certificacion'
             $table->string('photoUrl')->nullable();  // Traducción de 'foto_url'
             $table->unsignedBigInteger('technicianId')->nullable();  // Traducción de 'tecnico_id'
-            $table->foreign('technicianId')->references('id')->on('technicians')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
