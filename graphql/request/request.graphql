@@ -1,0 +1,18 @@
+type Request {
+    id:ID!
+    clientId:ID!
+    technicianId:ID!
+    stateId:ID!
+    requestDescription:String!
+    latitude:String!
+    longitude:String!
+    locationDescription:String!
+    registationDateTime:String!
+    expirationDateTime:String!
+    updatedDateTime:String!
+
+    technician:Technician! @belongsTo
+    client:InternalClient! @belongsTo
+    state:StateType! @belongsTo
+    service:Service @belongsTo
+}

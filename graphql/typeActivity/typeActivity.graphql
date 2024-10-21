@@ -1,0 +1,5 @@
+type ActivityType {
+    description:String!
+
+    activity: Citation! @belongsTo
+}

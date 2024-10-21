@@ -101,7 +101,7 @@ class UserMutations{
         }
     }
 
-   /* public function logout($root, array $args)
+    public function logout($root, array $args)
     {
         $user = Auth::user(); // Obtener el usuario autenticado
 
@@ -126,6 +126,6 @@ class UserMutations{
         return [
             'message' => 'No se encuentra usuario'
         ];
-    }*/
+    }
 
 }

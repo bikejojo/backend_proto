@@ -1,0 +1,15 @@
+type Service {
+    id:ID!
+    stateId:ID!
+    requestsId:ID!
+    technicalId:ID!
+    clientId:ID!
+    typeClient:String!
+    serviceDescription:String!
+    programDate:String!
+    requestsDate:String!
+
+    state:[TypeState!]! @hasMany
+    request:[Request!]! @hasMany
+    service: Citation! @belongsTo
+}

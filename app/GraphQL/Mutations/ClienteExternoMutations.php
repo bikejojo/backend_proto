@@ -47,25 +47,16 @@ class ClienteExternoMutations{
         $client = Cliente_Externo::find($args['id']);
         $clientId = $client->id;
         $user = User::find($client['userId']);
-        /*$cliente = Cliente_Externo::where('id',$id)
-        ->update(['nombre'=>$args['nombre'],'email'=>$args['email'],'metodo_login'=>$args['metodo_login'],'foto'=>$args['foto'],'users_id'=>$args['users_id']]);*/
-        //return Cliente_Externo::find($id);
-        if ($client==null){
-            throw new \Exception('Client not found.');
-        }
-        $firstName = ($client['fullName']);
-        $email = ($client['email']);
-        $client->loginMethod=$clientData['loginMethod'];
-        $client->userId = $clientData['userId'];
-        $client->cityId = $clientData['cityId'];
+        $fullName = trim($clientData['fullName']);
+        $phoneNumber = trim($clientData['phoneNumber']);
 
+        $client->fullName= $fullName;
+        $client->phoneNumber = $phoneNumber;
         $client->save();
-        $user->email = $email ?? $user->email;
-        $user->save();
 
         return[
             'message' => 'Cliente actualizado exitoso!!' ,
-            'client' => $client
+            'clients' => $client
         ];
     }
     public function delete($root ,array $args){

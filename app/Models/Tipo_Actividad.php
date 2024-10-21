@@ -17,4 +17,8 @@ class Tipo_Actividad extends Model
     public function technicianSchedules(){
         return $this->hasMany(Agenda_Tecnico::class,'tipo_actividad_id');
     }
+
+    public function activity(){
+        return $this->belongsTo(Cita::class,'activityId');
+    }
 }

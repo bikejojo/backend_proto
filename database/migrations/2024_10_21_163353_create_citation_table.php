@@ -1,0 +1,39 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('citations', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('technicialId');
+            $table->unsignedBigInteger('clientId');
+            $table->unsignedBigInteger('serviceId');
+            $table->unsignedBigInteger('activityId');
+            $table->unsignedBigInteger('typeClient');
+            $table->text('citationDescription');
+            $table->dateTime('cratedDate');
+            $table->dateTime('nextDate');
+            #$table->foreign('technicialId')->references('id')->on('technicians')->onDelete('cascade');
+            #$table->foreign('clientId')->references('id')->on('internal_clients')->onDelete('cascade');
+            $table->foreign('serviceId')->references('id')->on('services')->onDelete('cascade');
+            $table->foreign('activityId')->references('id')->on('activity_types')->onDelete('cascade');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('citations');
+    }
+};

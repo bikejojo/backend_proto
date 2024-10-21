@@ -19,4 +19,7 @@ class Tipo_Estado extends Model
     public function contact(){
         return $this->belongsTo(Tipo_Estado::class,'statusId');
     }
+    public function state(){
+        return $this->belongsTo(Servicio::class,'stateId');
+    }
 }
