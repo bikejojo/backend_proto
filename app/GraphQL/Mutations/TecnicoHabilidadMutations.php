@@ -9,27 +9,46 @@ use App\Models\User;
 class TecnicoHabilidadMutations{
 
     public function assign($root,array $args){
-        #return $tecnico=Tecnico_Habilidad::create($args);
         $id = $args['technicianId'];
-        //dd($id);
-        $envHabilidades = $args['skills'];
-        $habilidades=[];
-        foreach ($envHabilidades as $recHabilidad) {
-            $habilidadTecnico = Tecnico_Habilidad::create([
-                'technicianId' => $id,
-                'skillId' => $recHabilidad['skillId'],
-                'experience' => $recHabilidad['experience'],
-                'description' => $recHabilidad['description'],
-            ]);
 
-            $habilidades[] = $habilidadTecnico;
+        $envHabilidades = $args['skills'];
+        //valida que el array no venga vacio skills[]
+        if (!isset($envHabilidades) || empty($envHabilidades)) {
+            return [
+                'message' => 'Debe registrar al menos una habilidad'
+            ];
         }
 
+        $habilidades=[];
+        foreach($envHabilidades as $variable){
+            //valida que el array tegna experiencia
+            if (!isset($variable['experience']) || empty($variable['experience'])) {
+                return [
+                    'message' => 'Debe registrar en cada habilidad una experiencia válida'
+                ];
+            }
+            //valida que el array tenga habilidad
+            if (!isset($variable['id_skill']) || empty($variable['id_skill'])) {
+                return [
+                    'message' => 'No escogio la casilla de habilidad'
+                ];
+            }
+        }
+        foreach ($envHabilidades as $recHabilidad) {
+
+            $habilidadTecnico = Tecnico_Habilidad::create([
+                'technicianId' => $id,
+                'skillId' => $recHabilidad['id_skill'],
+                'experience' => $recHabilidad['experience'],
+                //'description' => $recHabilidad['description'],
+            ]);
+            $habilidades[] = $habilidadTecnico;
+        }
+        //dd($habilidades);
         $technician = Tecnico::find($id);
-        //return $habilidades;
         return [
-            'message' => 'habilidades asignadas al tecnico OK' ,
-            'technical' => $technician,
+            'message' => 'habilidades registradas.' ,
+            'technician' => $technician,
             'skills' => $habilidades
         ];
     }
@@ -48,16 +67,16 @@ class TecnicoHabilidadMutations{
         foreach ($habilidades as $habilidad) {
             Tecnico_Habilidad::create([
                 'technicianId' => $tecnicoId,
-                'skillId' => $habilidad['skillId'],
+                'skillId' => $habilidad['id_skill'],
                 'experience' => $habilidad['experience'],
-                'description' => $habilidad['description'],
+                //'description' => $habilidad['description'],
             ]);
         }
-        $habilidades = Tecnico_Habilidad::where('technicianId', $tecnicoId)->get();
+        $habilidades = Tecnico_Habilidad::where('id_technician', $tecnicoId)->get();
         //return $habilidades;
         return [
             'message' => 'habilidades actualizadas al tecnico OK' ,
-            'technical' => $technician,
+            'technician' => $technician,
             'skills' => $habilidades
         ];
     }

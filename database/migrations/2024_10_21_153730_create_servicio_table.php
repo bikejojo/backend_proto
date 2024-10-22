@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('stateId');
-            $table->unsignedInteger('requestsId');
+            $table->unsignedInteger('requestsId')->nullable();
             $table->unsignedInteger('technicalId');
             $table->unsignedInteger('clientId');
             $table->string('typeClient');

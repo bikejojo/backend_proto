@@ -10,29 +10,7 @@ class CitaMutations
 {
 
     public function create($root, array $args){
-        $estadoId=7;
-        #-----------
-        $citaData = $args['citaRequest'];
-        $cita = new Cita();
-        $cita->fecha_hora_registrada = Carbon::now();
-        $cita->fecha_hora_fin = Carbon::now();
-        #-----------
-        $cita->latitud = $citaData['latitud'];
-        $cita->longitud = $citaData['longitud'];
 
-        $descripcion_sol = trim($citaData['descripcion_cita']);
-
-        $cita->descripcion_cita = $descripcion_sol;
-
-        $descripcion_ubi = trim($citaData['descripcion_ubicacion']);
-
-        $cita->descripcion_ubicacion = $descripcion_ubi;
-        $cita->estado_id = $estadoId;
-        $cita->solicitud_id = $citaData['solicitud_id'];
-        $cita->resultado= '';
-        $cita->save();
-
-        return $cita;
     }
     public function update($root , array $args){
         $citaData = $args['citaRequest'];

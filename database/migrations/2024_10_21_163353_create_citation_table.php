@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('citations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('technicialId');
+            $table->unsignedBigInteger('technicianId');
             $table->unsignedBigInteger('clientId');
             $table->unsignedBigInteger('serviceId');
             $table->unsignedBigInteger('activityId');
@@ -21,8 +21,6 @@ return new class extends Migration
             $table->text('citationDescription');
             $table->dateTime('cratedDate');
             $table->dateTime('nextDate');
-            #$table->foreign('technicialId')->references('id')->on('technicians')->onDelete('cascade');
-            #$table->foreign('clientId')->references('id')->on('internal_clients')->onDelete('cascade');
             $table->foreign('serviceId')->references('id')->on('services')->onDelete('cascade');
             $table->foreign('activityId')->references('id')->on('activity_types')->onDelete('cascade');
             $table->timestamps();

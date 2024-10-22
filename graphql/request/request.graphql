@@ -1,8 +1,8 @@
 type Request {
     id:ID!
-    clientId:ID!
-    technicianId:ID!
-    stateId:ID!
+    id_client:ID! @rename(attribute: "clientId")
+    id_technician:ID! @rename(attribute: "technicianId")
+    id_state:ID! @rename(attribute: "stateId")
     requestDescription:String!
     latitude:String!
     longitude:String!

@@ -71,7 +71,7 @@ class DatabaseSeeder extends Seeder
         Tipo_Estado::create(['description'=>'rechazada por tiempo']);
         Tipo_Estado::create(['description'=>'rechazada por tecnico']);
         Tipo_Estado::create(['description'=>'aceptada']);
-        #cita
+        #servicio
         Tipo_Estado::create(['description'=>'en progreso']);
         Tipo_Estado::create(['description'=>'cliente ausente']);
         Tipo_Estado::create(['description'=>'reprogramada']);

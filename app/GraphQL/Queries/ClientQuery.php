@@ -3,6 +3,8 @@
 namespace App\GraphQL\Queries;
 use App\Models\Cliente_Externo;
 use App\Models\Cliente_Interno;
+use App\Models\Asociacion_Cliente_Tecnico;
+use App\Models\Tecnico;
 use Illuminate\Support\Facades\DB;
 
 class ClientQuery{
@@ -52,6 +54,26 @@ class ClientQuery{
         return [
             'message' => 'Resultados encontrados',
             'client_i' => $clientInterno
+        ];
+    }
+
+    public function technicianByclient($root,array $args){
+        $technicianId = $args['id_technician'];
+        $listado=Asociacion_Cliente_Tecnico::where('technicalId',$technicianId)->get();
+        if($listado->isEmpty()){
+            return[
+                'message' => 'El tecnico no tiene una lista de clientes propios',
+                'client_e' => null
+            ];
+        }
+        $client=[];
+        foreach($listado as $cliente){
+            $listadoss=Cliente_Externo::find($cliente->clientId);
+            $client[]=$listadoss;
+        }
+        return[
+            'message' => 'Clientes propios de los tecnicos',
+            'client_e' => $client
         ];
     }
 }

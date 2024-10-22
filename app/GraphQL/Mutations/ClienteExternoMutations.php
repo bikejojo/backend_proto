@@ -21,13 +21,21 @@ class ClienteExternoMutations{
                 'message'=>'Usuario tecnico no encontrado'
             ];
         }
-        $cliente = Cliente_Externo::create([
-            'fullName' => $clienteData['fullName'],
-            'phoneNumber' => $clienteData['phoneNumber']
-        ]);
-        //dd($clientId);
-        $cliente->save();
-
+        $phone=$clienteData['phoneNumber'];
+        $existe = Cliente_Externo::where('phoneNumber',$phone)->first();
+        //dd($existe);
+        if($existe){
+            return [
+                'message' => 'cliente se registro con anterioridad en la lista!'
+            ];
+        }else{
+            $cliente = Cliente_Externo::create([
+                'fullName' => $clienteData['fullName'],
+                'phoneNumber' => $clienteData['phoneNumber']
+            ]);
+            //dd($clientId);
+            $cliente->save();
+        }
         $asociacion = Asociacion_Cliente_Tecnico::create([
             'clientId' => $cliente->id,
             'technicalId' => $clienteData['technicalId'],
@@ -46,22 +54,23 @@ class ClienteExternoMutations{
         $clientData = $args['clientRequest'];
         $client = Cliente_Externo::find($args['id']);
         $clientId = $client->id;
-        $user = User::find($client['userId']);
+        $clientExterTecnic = Asociacion_Cliente_Tecnico::where('clientId',$clientId)->first();
         $fullName = trim($clientData['fullName']);
         $phoneNumber = trim($clientData['phoneNumber']);
-
+        $idTech = $clientExterTecnic->technicalId;
+        $technical = Tecnico::where('id',$idTech)->first();
         $client->fullName= $fullName;
         $client->phoneNumber = $phoneNumber;
         $client->save();
 
         return[
             'message' => 'Cliente actualizado exitoso!!' ,
-            'clients' => $client
+            'clients' => $client,
+            'technical' => $technical
         ];
     }
     public function delete($root ,array $args){
         $id=Cliente_Externo::find($args['id']);
-        //dd($id);
         if(!$id){
             return ['message'=> 'Borrado no existoso'];
         }else{
