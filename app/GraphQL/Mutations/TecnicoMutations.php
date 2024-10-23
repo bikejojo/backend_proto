@@ -3,7 +3,6 @@
 namespace App\GraphQL\Mutations;
 
 use App\Models\Tecnico;
-use App\Models\Tecnico_Habilidad;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;

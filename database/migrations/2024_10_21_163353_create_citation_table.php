@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('typeClient');
             $table->text('citationDescription');
             $table->dateTime('cratedDate');
-            $table->dateTime('nextDate');
+            $table->dateTime('nextDate')->nullable();
             $table->foreign('serviceId')->references('id')->on('services')->onDelete('cascade');
             $table->foreign('activityId')->references('id')->on('activity_types')->onDelete('cascade');
             $table->timestamps();

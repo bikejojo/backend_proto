@@ -1,0 +1,7 @@
+type DetailAgendaTechnical {
+    id:ID!
+    agendaTechnicalId:ID!
+    clientId:String!
+    typeClient:string!
+    createDate:String!
+}

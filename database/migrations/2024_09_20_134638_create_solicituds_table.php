@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('longitude', 10, 7);  // Traducción de 'longitud'
             $table->text('locationDescription');  // Traducción de 'descripcion_ubicacion'
             $table->datetime('registrationDateTime');  // Traducción de 'fecha_tiempo_registrado'
-            $table->datetime('expirationDateTime');  // Traducción de 'fecha_tiempo_vencimiento'
+            $table->datetime('expirationDateTime')->nullable();  // Traducción de 'fecha_tiempo_vencimiento'
             $table->datetime('updatedDateTime')->nullable();  // Traducción de 'fecha_tiempo_actualizado'
             $table->foreign('technicianId')->references('id')->on('technicians')->onDelete('cascade');
             $table->foreign('clientId')->references('id')->on('internal_clients')->onDelete('cascade');

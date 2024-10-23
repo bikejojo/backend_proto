@@ -13,7 +13,7 @@ class TecnicoHabilidadMutations{
 
         $envHabilidades = $args['skills'];
         //valida que el array no venga vacio skills[]
-        if (!isset($envHabilidades) || empty($envHabilidades)) {
+        if (empty($envHabilidades)) {
             return [
                 'message' => 'Debe registrar al menos una habilidad'
             ];
@@ -21,18 +21,19 @@ class TecnicoHabilidadMutations{
 
         $habilidades=[];
         foreach($envHabilidades as $variable){
-            //valida que el array tegna experiencia
-            if (!isset($variable['experience']) || empty($variable['experience'])) {
-                return [
-                    'message' => 'Debe registrar en cada habilidad una experiencia válida'
-                ];
-            }
             //valida que el array tenga habilidad
             if (!isset($variable['id_skill']) || empty($variable['id_skill'])) {
                 return [
                     'message' => 'No escogio la casilla de habilidad'
                 ];
             }
+            //valida que el array tegna experiencia
+            if (!isset($variable['experience']) || empty($variable['experience'])) {
+                return [
+                    'message' => 'Debe registrar en cada habilidad una experiencia válida'
+                ];
+            }
+
         }
         foreach ($envHabilidades as $recHabilidad) {
 
@@ -46,6 +47,7 @@ class TecnicoHabilidadMutations{
         }
         //dd($habilidades);
         $technician = Tecnico::find($id);
+
         return [
             'message' => 'habilidades registradas.' ,
             'technician' => $technician,

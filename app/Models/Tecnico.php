@@ -48,11 +48,12 @@ class Tecnico extends Model
         return $this->hasMany(Solicitud::class, 'technicianId');
     }
 
-
-
     // relacion de tecnico (asociacionclienteTecnico)
     public function associantions(){
         return $this->belongsTo(Asociacion_Cliente_Tecnico::class,'technicalId');
     }
 
+    public function agenda(){
+        return $this->belongsTo(Agenda_Tecnico::class,'technicianId');
+    }
 }

@@ -1,0 +1,7 @@
+type Agenda_Technical {
+    id:ID!
+    id_technician:ID! @rename(atributte: "technicianId")
+    createDate:String!
+}
+
+
