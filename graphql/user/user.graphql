@@ -16,6 +16,7 @@ type User {
     token: String!
     clientsExterns:[InternalClient!]! @hasMany
     technicians:[Technician!]! @hasMany
+    
 }
 
 

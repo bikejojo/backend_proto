@@ -17,6 +17,7 @@ type responseLogin {
   user: User
   technician: Technician
   client: InternalClient
+  skills: [Skill]
   message: String
 }
 #import user.graphql

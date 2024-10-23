@@ -14,7 +14,7 @@ type Technician @model(class: "App\\Models\\Tecnico"){
   city: City! @belongsTo
   user: User! @belongsTo
 
-  technician: [TechnicianSkill!]! @hasMany
+  technicianSkills: [TechnicianSkill!]! @hasMany
   associantions: [AssociationTechnClient!] @belongsTo
 }
 

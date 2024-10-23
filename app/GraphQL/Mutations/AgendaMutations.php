@@ -11,14 +11,8 @@ Use App\Models\Tipo_Estado;
 class AgendaMutations
 {
 
-    public function index($root ,array $args){
-
-    $agendaData = $args['agendaRequest'];
-
-    }
-
     public function indexTecnico($root ,array $args){
-
+        $agendaData = $args['agendaRequest'];
     }
 
 }

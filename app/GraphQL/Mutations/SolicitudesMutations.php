@@ -13,15 +13,17 @@ class SolicitudesMutations
 {
     public function create($root , array $args){
         $requestData = $args['requestRequest'];
+
         $description = trim($requestData['requestDescription']);
         $location = trim($requestData['locationDescription']);
         $now=Carbon::now();
+        $nowA=Carbon::now();
         $clientId =$requestData['id_client'];
-        if($clientId->isEmpity()){
+        if($clientId!== null){
             $client=Cliente_Interno::find($clientId);
         }
-        $technicianId=$requestData['id_technican'];
-        if($technicianId->isEmpity()){
+        $technicianId=$requestData['id_technician'];
+        if($technicianId!==null){
             $technician=Tecnico::find($technicianId);
         }
         ##########################
@@ -33,7 +35,7 @@ class SolicitudesMutations
         $request->latitude = $requestData['latitude'];
         $request->longitude = $requestData['latitude'];
         $request->locationDescription = $location;
-        $request->registationDateTime = $now;
+        $request->registrationDateTime = $now;
         $request->expirationDateTime=$now->addMinutes(10);
         $request->save();
         ##########################
@@ -88,7 +90,7 @@ class SolicitudesMutations
             $service->save();
 
             return[
-                'messageRequest'=>'solicitud confirmada',
+                'message'=>'solicitud confirmada',
                 'request'=>$request,
                 'messageService' => 'Servicio en proceso',
                 'service' => $service
