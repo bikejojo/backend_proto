@@ -13,7 +13,7 @@ class Cita extends Model
     protected $table = 'citations';
 
     protected $fillable = [
-        'technicianId',
+        'technicialId',
         'clientId',
         'serviceId',
         'activityId',

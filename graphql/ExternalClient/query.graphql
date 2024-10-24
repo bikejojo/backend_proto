@@ -1,12 +1,12 @@
 extend type Query {
     searchClientExternalByName(name:String):responseClientExternalSearch @field(resolver: "ClientQuery@searchExternalByName")
-    technicianByclient(id_technician:String):responseClientExternalSearch @field(resolver: "ClientQuery@technicianByclient")
+    getExternalCustomerForIdTechnician(id_technician:String):responseClientExternalSearch @field(resolver: "ClientQuery@technicianByclient")
     clientExternalById(id:ID! @whereKey):ExternalClient @find(model: "App\\Models\\Cliente_Externo")
 }
 
 type responseClientExternalSearch{
     message: String
-    client_e: [ExternalClient]
+    customer_external: [ExternalClient]
 }
 
 #import ExternalClient.graphql

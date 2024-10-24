@@ -1,12 +1,12 @@
 extend type Mutation {
     createClientExternal(clientRequest:JSON!): ClientsResponse @field(resolver:"ClienteExternoMutations@create")
-    updateClients(id: ID!,clientRequest:JSON!): ClientsResponse @field(resolver:"ClienteExternoMutations@update")
-    deleteClients(id: ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
+    updateClientExternal(clientRequest:JSON!): ClientsResponse @field(resolver:"ClienteExternoMutations@update")
+    deleteClientExternal(id: ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
 }
 
 type ClientsResponse {
   message: String
-  clients: ExternalClient
+  customer_external: ExternalClient
   technical: Technician
 }
 

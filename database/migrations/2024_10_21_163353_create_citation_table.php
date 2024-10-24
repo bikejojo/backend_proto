@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('citations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('technicianId');
+            $table->unsignedBigInteger('technicialId');
             $table->unsignedBigInteger('clientId');
             $table->unsignedBigInteger('serviceId');
             $table->unsignedBigInteger('activityId');

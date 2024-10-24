@@ -26,12 +26,12 @@ class ClientQuery{
         if ($clientExterno->isEmpty()) {
             return [
                 'message' => 'No se encontraron resultados',
-                'client_i' => null
+                'customer_internal' => null
             ];
         }
         return [
             'message' => 'Resultados encontrados',
-            'client_e' => $clientExterno
+            'customer_external' => $clientExterno
         ];
     }
 
@@ -59,21 +59,21 @@ class ClientQuery{
 
     public function technicianByclient($root,array $args){
         $technicianId = $args['id_technician'];
-        $listado=Asociacion_Cliente_Tecnico::where('technicalId',$technicianId)->get();
+
+        $listado=Asociacion_Cliente_Tecnico::where('technicalId',$technicianId)
+        ->leftjoin('external_clients','external_clients.id','=','clientId')
+        ->orderBy('external_clients.id', 'desc')
+        ->get();
         if($listado->isEmpty()){
             return[
                 'message' => 'El tecnico no tiene una lista de clientes propios',
-                'client_e' => null
+                'customer_external' => null
             ];
         }
-        $client=[];
-        foreach($listado as $cliente){
-            $listadoss=Cliente_Externo::find($cliente->clientId);
-            $client[]=$listadoss;
-        }
+
         return[
             'message' => 'Clientes propios de los tecnicos',
-            'client_e' => $client
+            'customer_external' => $listado
         ];
     }
 }

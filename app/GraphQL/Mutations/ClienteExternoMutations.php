@@ -11,10 +11,8 @@ use Carbon\Carbon;
 
 class ClienteExternoMutations{
     public function create($root, array $args){
-    //dd($args['clientRequest']);
         $clienteData = $args['clientRequest'];
         // Crear el cliente en la base de datos
-
         $tecnico = Tecnico::find($clienteData['technicalId']);
         if($tecnico == null){
             return [
@@ -23,7 +21,6 @@ class ClienteExternoMutations{
         }
         $phone=$clienteData['phoneNumber'];
         $existe = Cliente_Externo::where('phoneNumber',$phone)->first();
-        //dd($existe);
         if($existe){
             return [
                 'message' => 'cliente se registro con anterioridad en la lista!'
@@ -46,26 +43,24 @@ class ClienteExternoMutations{
 
         return [
             'message' => 'Creacion Cliente exitoso!',
-            'clients' => $cliente,
+            'customer_external' => $cliente,
             'technical' => $tecnico
         ];
     }
     public function update($root ,array $args){
         $clientData = $args['clientRequest'];
-        $client = Cliente_Externo::find($args['id']);
-        $clientId = $client->id;
-        $clientExterTecnic = Asociacion_Cliente_Tecnico::where('clientId',$clientId)->first();
+        $client = Cliente_Externo::find($clientData['id_client']);
         $fullName = trim($clientData['fullName']);
         $phoneNumber = trim($clientData['phoneNumber']);
-        $idTech = $clientExterTecnic->technicalId;
-        $technical = Tecnico::where('id',$idTech)->first();
         $client->fullName= $fullName;
         $client->phoneNumber = $phoneNumber;
         $client->save();
-
+        $technical=Asociacion_Cliente_Tecnico::where('clientId',$client->id)
+        ->join('technicians','technicalId','=','technicians.id')
+        ->first();
         return[
             'message' => 'Cliente actualizado exitoso!!' ,
-            'clients' => $client,
+            'customer_external' => $client,
             'technical' => $technical
         ];
     }

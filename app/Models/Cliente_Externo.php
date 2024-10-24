@@ -17,7 +17,7 @@ class Cliente_Externo extends Model
 
     // asociacionTecnicoClients
     public function associantions(){
-        return $this->belongsTo(Asociacion_Cliente_Tecnico::class,'clientId');
+        return $this->belongsTo(Asociacion_Cliente_Tecnico::class,'id');
     }
     public function contacts(){
         return $this->belongsTo(Contacto::class,'clientId');

@@ -1,10 +1,11 @@
 type Citation {
     id: ID!
-    id_technician:ID! @rename(attribute: "technicianId")
+    id_technician:ID! @rename(attribute: "technicialId")
+    id_client:ID! @rename(attribute: "clientId")
     id_service:ID! @rename(attribute: "serviceId")
     id_activity:ID! @rename(attribute: "activityId")
     typeClient:String!
-    citationDescription:String!
+    citationDescription:String
     createdDate:String!
     nextDate:String!
 

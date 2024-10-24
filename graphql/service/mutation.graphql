@@ -1,0 +1,20 @@
+extend type Mutation {
+    createService(requestService:JSON!):responseService @field(resolver:"ServicioMutations@create")
+    updateService(requestService:JSON!):responseServiceClient @field(resolver:"ServicioMutations@update")
+}
+
+type responseService {
+    message:String
+    service:Service
+    customer_external:ExternalClient
+}
+
+type responseServiceClient {
+    message:String
+    messageN:String
+    cita:Citation
+    service:Service
+    customer_external:ExternalClient
+    customer_internal:InternalClient
+}
+#import service.graphql

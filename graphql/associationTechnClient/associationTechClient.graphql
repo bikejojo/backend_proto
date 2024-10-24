@@ -5,5 +5,5 @@ type AssociationTechnClient {
     dateTimeCreated:String!
 
     technicals: Technician @hasMany
-    clients: ExternalClient @hasMany
+    clients: [ExternalClient] @hasMany
 }

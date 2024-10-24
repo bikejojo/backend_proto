@@ -54,51 +54,63 @@ class SolicitudesMutations
         $client = 1;
         $process = 7;
         $requestData = $args['requestRequest'];
-        $requestId = $requestData['id_request'];
+        $requestId = $requestData['id_requests'];
+
         $request = Solicitud::find($requestId);
-        $state = $request->stateId;
+        $clientId = $request->clientId;
+        //dd($clientId);
+        $cliente = Cliente_Interno::find($clientId);
+        $tecnicoId=$request->technicianId;
+        //dd($tecnicoId);
+        $tecnico = Tecnico::find($tecnicoId);
+        $state = $requestData['id_state'];
         switch($state){
             case 3:
                 $request->stateId =$converciotion;
-                $request->updateDateTime = Carbon::now();
+                $request->updatedDateTime = Carbon::now();
                 break;
             case 4:
                 $request->stateId =$rejectTime;
-                $request->updateDateTime = Carbon::now();
+                $request->updatedDateTime = Carbon::now();
                 break;
             case 5:
                 $request->stateId =$rejectTechn;
-                $request->updateDateTime = Carbon::now();
+                $request->updatedDateTime = Carbon::now();
                 break;
             case 6:
                 $request->stateId =$accepted;
                 $program=$requestData['programDate'];
-                $request->updateDateTime = Carbon::now();
+                $request->expirationDateTime=null;
+                $request->updatedDateTime = Carbon::now();
                 break;
         }
         $request->save();
         if($request->stateId == 6){
             $service = new Servicio();
-            $service->techinicalId=$request->technicianId;
+            $service->technicalId=$request->technicianId;
             $service->clientId=$request->clientId;
             $service->typeClient=$client;
             $service->stateId=$process;
-            $service->requestId=$request->id;
+            $service->requestsId=$request->id;
             $service->programDate = $program;
             $service->serviceDescription=$request->requestDescription;
-            $service->requestDate = Carbon::now();
+            $service->requestsDate = Carbon::now();
             $service->save();
 
             return[
                 'message'=>'solicitud confirmada',
-                'request'=>$request,
+                'requests'=>$request,
                 'messageService' => 'Servicio en proceso',
-                'service' => $service
+                'service' => $service,
+                'client' => $cliente,
+                'technician' => $tecnico
             ];
         }else{
             return[
                 'message'=>'solicitud modificada',
-                'request'=>$request
+                'requests'=>$request,
+                'client' => $cliente,
+                'technician' => $tecnico
             ];
         }
     }
