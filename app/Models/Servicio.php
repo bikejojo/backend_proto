@@ -20,6 +20,7 @@ class Servicio extends Model
         'serviceDescription',
         'programDate',
         'requestsDate',
+        'finishedDate',
     ];
 
     public function state(){

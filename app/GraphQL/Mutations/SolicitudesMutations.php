@@ -17,7 +17,6 @@ class SolicitudesMutations
         $description = trim($requestData['requestDescription']);
         $location = trim($requestData['locationDescription']);
         $now=Carbon::now();
-        $nowA=Carbon::now();
         $clientId =$requestData['id_client'];
         if($clientId!== null){
             $client=Cliente_Interno::find($clientId);
@@ -28,8 +27,8 @@ class SolicitudesMutations
         }
         ##########################
         $request = new Solicitud();
-        $request->clientId = $requestData['id_client'];
-        $request->technicianId = $requestData['id_technician'];
+        $request->clientId = $client->id;
+        $request->technicianId = $technician->id;
         $request->stateId = $requestData['id_state'];
         $request->requestDescription = $description;
         $request->latitude = $requestData['latitude'];
@@ -113,12 +112,5 @@ class SolicitudesMutations
                 'technician' => $tecnico
             ];
         }
-    }
-
-    private function errorResponse($message){
-        return [
-            'message' => $message,
-            'solicitud' => null
-        ];
     }
 }

@@ -1,7 +1,7 @@
 type AssociationTechnClient {
     id:ID!
     clientId:ID!
-    technicalId:ID!
+    technicalId:ID! @rename(attribute: "technicalId")
     dateTimeCreated:String!
 
     technicals: Technician @hasMany

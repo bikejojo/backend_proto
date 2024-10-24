@@ -16,12 +16,17 @@ class ClientQuery{
 
     public function searchExternalByName($root, array $args)
     {
-        $clientName = strtolower($args['name']);
-        $clientExterno = Cliente_Externo::where(DB::raw('LOWER("fullName")'), 'LIKE', "%{$clientName}%")
-            ->get();
-        $filteredClientExterno = $clientExterno->filter(function($client) {
-            return !is_null($client->id);  // Asegurarse de que el id no es null
-        });
+        $clientData = $args['requestClient'];
+        $tecnicoId = $clientData['technicalId'];
+        $clientNamePhone = strtolower($clientData['all']);
+        $clientExterno = Cliente_Externo::whereHas('associantions', function ($query) use ($tecnicoId) {
+            $query->where('technicalId', $tecnicoId);  // Filtrar por ID del técnico
+        })
+        ->where(function($query) use ($clientNamePhone) {
+            $query->where(DB::raw('LOWER("fullName")'), 'LIKE', "%{$clientNamePhone}%")
+                  ->orWhere(DB::raw('LOWER("phoneNumber")'), 'LIKE', "%{$clientNamePhone}%");
+        })
+        ->get();
         //dd($clientInterno);
         if ($clientExterno->isEmpty()) {
             return [

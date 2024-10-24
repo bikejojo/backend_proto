@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('citationDescription');
             $table->dateTime('cratedDate');
             $table->dateTime('nextDate')->nullable();
+            $table->datetime('finishedDate')->nullable();
             $table->foreign('serviceId')->references('id')->on('services')->onDelete('cascade');
             $table->foreign('activityId')->references('id')->on('activity_types')->onDelete('cascade');
             $table->timestamps();

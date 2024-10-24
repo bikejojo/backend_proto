@@ -20,7 +20,8 @@ class Cita extends Model
         'typeClient',
         'citationDescription',
         'cratedDate',
-        'nextDate'
+        'nextDate',
+        'finishedDate'
     ];
 
     public function service(){

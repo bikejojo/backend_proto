@@ -59,7 +59,7 @@ class ServicioMutations
                 break;
             case 10:
                 $service->stateId = $complet;
-                $service->programDate = Carbon::now();
+                $service->finishedDate = Carbon::now();
                 break;
             }
         $service->save();

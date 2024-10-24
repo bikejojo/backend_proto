@@ -2,8 +2,10 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Models\Agenda_Tecnico;
 use App\Models\Tecnico;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\UploadedFile;
@@ -71,7 +73,10 @@ class TecnicoMutations {
         }
         // Guardar las rutas de las imágenes en el técnico
         $technician->save();
-
+        $agenda=Agenda_Tecnico::create([
+            'technicalId'=>$technician->id,
+            'createDate' => Carbon::now()
+        ]);
         $technician=Tecnico::find($technician->id);
         return [
             'message' => 'Registro técnico exitoso',
