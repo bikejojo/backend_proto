@@ -33,4 +33,7 @@ class Servicio extends Model
         return $this->belongsTo(Cita::class,'serviceId');
     }
 
+    public function details(){
+        return $this->belongsTo(Detalle_Agenda_Tecnico::class,'serviceId');
+    }
 }

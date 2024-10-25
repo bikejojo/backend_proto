@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('fullName');
             $table->string('phoneNumber');
+            $table->text('status')->nullable();//1 activo y 0 eliminado
             $table->timestamps();
         });
     }

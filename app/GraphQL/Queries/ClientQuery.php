@@ -18,27 +18,39 @@ class ClientQuery{
     {
         $clientData = $args['requestClient'];
         $tecnicoId = $clientData['technicalId'];
-        if($clientData['searchParameter']!=null){
+
+        // Verificar si existe el parámetro de búsqueda
+        if (!empty($clientData['searchParameter'])) {
             $clientNamePhone = strtolower($clientData['searchParameter']);
+
+            // Aplicar el filtro por nombre o teléfono y también filtrar por estado
             $clientExterno = Cliente_Externo::whereHas('associantions', function ($query) use ($tecnicoId) {
                 $query->where('technicalId', $tecnicoId);  // Filtrar por ID del técnico
             })
             ->where(function($query) use ($clientNamePhone) {
-                $query->where(DB::raw('LOWER("fullName")'), 'LIKE', "%{$clientNamePhone}%")
-                    ->orWhere(DB::raw('LOWER("phoneNumber")'), 'LIKE', "%{$clientNamePhone}%");
+                $query->where(DB::raw('LOWER(external_clients."fullName")'), 'LIKE', "%{$clientNamePhone}%")
+                      ->orWhere(DB::raw('LOWER(external_clients."phoneNumber")'), 'LIKE', "%{$clientNamePhone}%");
             })
+            ->where('external_clients.status', 1)  // Filtrar solo por clientes con estado 1
             ->get();
-        }else{
+        } else {
+            // Si no hay parámetro de búsqueda, solo aplicar el filtro del técnico y estado
             $clientExterno = Cliente_Externo::whereHas('associantions', function ($query) use ($tecnicoId) {
                 $query->where('technicalId', $tecnicoId);  // Filtrar por ID del técnico
-            })->get();
+            })
+            ->where('external_clients.status', 1)  // Filtrar solo por clientes con estado 1
+            ->get();
         }
+
+        // Verificar si no se encontraron resultados
         if ($clientExterno->isEmpty()) {
             return [
                 'message' => 'No se encontraron resultados',
                 'customer_internal' => null
             ];
         }
+
+        // Retornar los resultados encontrados
         return [
             'message' => 'Resultados encontrados',
             'customer_external' => $clientExterno
@@ -71,6 +83,7 @@ class ClientQuery{
         $technicianId = $args['id_technician'];
 
         $listado=Asociacion_Cliente_Tecnico::where('technicalId',$technicianId)
+        ->where('status',1)
         ->leftjoin('external_clients','external_clients.id','=','clientId')
         ->orderBy('external_clients.id', 'desc')
         ->get();

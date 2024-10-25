@@ -30,5 +30,7 @@ class Cita extends Model
     public function activity(){
         return $this->hasMany(Tipo_Actividad::class,'activityId');
     }
-
+    public function details(){
+        return $this->belongsTo(Detalle_Agenda_Tecnico::class,'citationId');
+    }
 }

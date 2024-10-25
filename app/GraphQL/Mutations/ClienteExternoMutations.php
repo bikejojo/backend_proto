@@ -12,6 +12,7 @@ use Carbon\Carbon;
 class ClienteExternoMutations{
     public function create($root, array $args){
         $clienteData = $args['clientRequest'];
+        $valor = 1;
         // Crear el cliente en la base de datos
         $tecnico = Tecnico::find($clienteData['technicalId']);
 
@@ -29,18 +30,18 @@ class ClienteExternoMutations{
         }else{
             $cliente = Cliente_Externo::create([
                 'fullName' => $clienteData['fullName'],
-                'phoneNumber' => $clienteData['phoneNumber']
+                'phoneNumber' => $clienteData['phoneNumber'],
+                'status' => $valor
             ]);
             //dd($clientId);
             $cliente->save();
+            $asociacion = Asociacion_Cliente_Tecnico::create([
+                'clientId' => $cliente->id,
+                'technicalId' => $tecnico->id,
+                'dateTimeCreated' => Carbon::now(),
+            ]);
+                $asociacion->save();
         }
-        $asociacion = Asociacion_Cliente_Tecnico::create([
-            'clientId' => $cliente->id,
-            'technicalId' => $tecnico->id,
-            'dateTimeCreated' => Carbon::now(),
-        ]);
-
-        $asociacion->save();
 
         return [
             'message' => 'Creacion Cliente exitoso!',
@@ -70,7 +71,8 @@ class ClienteExternoMutations{
         if(!$id){
             return ['message'=> 'Borrado no existoso'];
         }else{
-            $id->delete();
+            $id->status=0;
+            $id->save();
             return ['message'=> 'Borrado existoso'];
         }
     }

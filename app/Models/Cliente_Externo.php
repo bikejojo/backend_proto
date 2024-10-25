@@ -12,13 +12,18 @@ class Cliente_Externo extends Model
     protected $table = 'external_clients';
     protected $fillable = [
         'fullName',      // apellido
-        'phoneNumber'
+        'phoneNumber',
+        'status'
     ];
 
     // asociacionTecnicoClients
-    public function associantions(){
+  /*   public function associantions(){
         return $this->belongsTo(Asociacion_Cliente_Tecnico::class,'id');
+    } */
+    public function associantions(){
+        return $this->hasMany(Asociacion_Cliente_Tecnico::class,'clientId', 'id');
     }
+
     public function contacts(){
         return $this->belongsTo(Contacto::class,'clientId');
     }

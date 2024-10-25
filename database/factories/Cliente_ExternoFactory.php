@@ -14,11 +14,13 @@ class Cliente_ExternoFactory extends Factory
 
     public function definition()
     {
+      /*  $valorActive = 1;
         return [
             'fullName' => $this->faker->name,
             'phoneNumber' => $this->faker->phoneNumber,
+            'status' => $valorActive,
             'created_at' => now(),
             'updated_at' => now(),
-        ];
+        ];*/
     }
 }

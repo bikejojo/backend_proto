@@ -3,6 +3,8 @@
 namespace App\GraphQL\Mutations;
 
 use App\Models\Cita;
+use App\Models\Detalle_Agenda_Tecnico;
+use App\Models\Agenda_Tecnico;
 use App\Models\Cliente_Interno;
 use App\Models\Servicio;
 use App\Models\Solicitud;
@@ -21,12 +23,14 @@ class SolicitudesMutations
         if($clientId!== null){
             $client=Cliente_Interno::find($clientId);
         }
+        //dd($client);
         $technicianId=$requestData['id_technician'];
         if($technicianId!==null){
             $technician=Tecnico::find($technicianId);
         }
         ##########################
         $request = new Solicitud();
+
         $request->clientId = $client->id;
         $request->technicianId = $technician->id;
         $request->stateId = $requestData['id_state'];
@@ -51,14 +55,16 @@ class SolicitudesMutations
         $rejectTechn=5;
         $accepted=6;
         $client = 1;
+        $type=1;
         $process = 7;
+
         $requestData = $args['requestRequest'];
         $requestId = $requestData['id_requests'];
-
         $request = Solicitud::find($requestId);
         $clientId = $request->clientId;
         //dd($clientId);
         $cliente = Cliente_Interno::find($clientId);
+        //dd($cliente);
         $tecnicoId=$request->technicianId;
         //dd($tecnicoId);
         $tecnico = Tecnico::find($tecnicoId);
@@ -86,6 +92,7 @@ class SolicitudesMutations
         }
         $request->save();
         if($request->stateId == 6){
+
             $service = new Servicio();
             $service->technicalId=$request->technicianId;
             $service->clientId=$request->clientId;
@@ -97,6 +104,22 @@ class SolicitudesMutations
             $service->requestsDate = Carbon::now();
             $service->save();
 
+            $tecnicoId=$tecnico->id;
+            //dd($cliente->id);
+
+            $agenda=Agenda_Tecnico::where('technicianId',$tecnicoId)->first();
+            
+            $detalleAgenda=Detalle_Agenda_Tecnico::create([
+                'clientId' => $cliente->id,
+                'agendaTechnicalId' => $agenda->id,
+                'citationId'=>null,
+                'serviceId' => $service->id ,
+                'typeClient' => $client,
+                'createDate' => Carbon::now(),
+                'typeJob' => $type ,
+                'serviceDate' => $program ,
+                'citationDate' => null ,
+            ]);
             return[
                 'message'=>'solicitud confirmada',
                 'requests'=>$request,

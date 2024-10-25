@@ -4,4 +4,9 @@ type DetailAgendaTechnical {
     clientId:String!
     typeClient:string!
     createDate:String!
+
+    details:Agenda_Technical @belongsTo
+    citations:[Citation] @hasMany
+    services:[Service] @hasMany
 }
+

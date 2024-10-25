@@ -11,7 +11,6 @@ class Agenda_Tecnico extends Model
     use HasFactory;
     protected $PrimaryKey = 'id';
     protected $table = 'technician_agenda';
-
     protected $fillable = [
         'technicianId',
         'createDate',
@@ -19,5 +18,9 @@ class Agenda_Tecnico extends Model
 
     public function technician(){
         return $this->belongsTo(Tecnico::class,'technicianId');
+    }
+
+    public function details(){
+        return $this->hasMany(Detalle_Agenda_Tecnico::class,'agendaTechnicalId');
     }
 }

@@ -18,13 +18,13 @@ class ExternalClientSeeder extends Seeder
         //
         $tecnico = 10;
                 // Crea 1000 clientes
-        Cliente_Externo::factory(100)->create()->each(function ($client) use ($tecnico) {
+       /* Cliente_Externo::factory(100)->create()->each(function ($client) use ($tecnico) {
             // Asocia cada cliente a un técnico de forma aleatoria
             Asociacion_Cliente_Tecnico::create([
                 'clientId' => $client->id,
                 'technicalId' => $tecnico, // Asocia con un técnico aleatorio
                 'dateTimeCreated' => now(),
             ]);
-        });
+        });*/
     }
 }

@@ -6,6 +6,8 @@ use App\Models\Cita;
 use App\Models\Cliente_Externo;
 use Carbon\Carbon;
 use Nuwave\Lighthouse\Federation\Resolvers\Service;
+use App\Models\Agenda_Tecnico;
+use App\Models\Detalle_Agenda_Tecnico;
 
 class ServicioMutations
 {
@@ -17,6 +19,7 @@ class ServicioMutations
     public function create($root,array $args){
         $client_e = 2;
         $process = 7;
+        $typeJob=1;
 
         $serviceData=$args['requestService'];
         $service = new Servicio();
@@ -31,7 +34,18 @@ class ServicioMutations
         $service->save();
         $clientId = $service->clientId;
         $cliente = Cliente_Externo::find($clientId);
-
+        $agenda=Agenda_Tecnico::where('technicianId',$service->technicalId)->first();
+        $detalleAgenda=Detalle_Agenda_Tecnico::create([
+            'clientId' => $service->clientId,
+            'agendaTechnicalId' => $agenda->id,
+            'citationId'=>null,
+            'serviceId' =>$service->id ,
+            'typeClient' => $service->typeClient,
+            'createDate' => Carbon::now(),
+            'typeJob' => $typeJob ,
+            'serviceDate' => $service->programDate,
+            'citationDate' => null,
+        ]);
         return [
             'message' => 'Servicio creado para cliente.',
             'customer_external' => $cliente,
@@ -39,6 +53,7 @@ class ServicioMutations
         ];
     }
     public function update($root,array $args){
+        $typeJob=2;
         $clientOut=8;
         $ClientProgram=9;
         $complet=10;
@@ -46,7 +61,7 @@ class ServicioMutations
         $serviceId = $serviceData['id_service'];
         $service=Servicio::find($serviceId);
         $stateIds=$serviceData['id_state'];
-        //dd($stateIds);
+
         switch($stateIds){
             case 8:
                 $service->stateId = $clientOut;
@@ -87,6 +102,19 @@ class ServicioMutations
             $cita->cratedDate = Carbon::now();
             $cita->nextDate = $serviceData['nextDate'];
             $cita->save();
+            $tecnicoId = $cita->technicialId;
+            $agenda=Agenda_Tecnico::where('technicianId',$tecnicoId)->first();
+            $detalleAgenda=Detalle_Agenda_Tecnico::create([
+                'clientId' => $service->clientId,
+                'agendaTechnicalId' => $agenda->id,
+                'citationId'=>$cita->id,
+                'serviceId' => null ,
+                'typeClient' => $service->typeClient,
+                'createDate' => Carbon::now(),
+                'typeJob' => $typeJob ,
+                'serviceDate' => null,
+                'citationDate' => $cita->nextDate ,
+            ]);
             return[
                 'message' => 'Servicio Completado',
                 'service' => $service ,

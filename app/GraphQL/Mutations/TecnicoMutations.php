@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Intervention\Image\Drivers\Gd\Driver;
 
 class TecnicoMutations {
-    public function create($root, array $args){
+  /*   public function create($root, array $args){
         $technicianData = $args['technicianRequest'];
         $skill=null;
 
@@ -23,6 +23,7 @@ class TecnicoMutations {
            return [
                 'message'=> 'Esta celula de identidad ya esta en uso, por favor intenta con otro.'
            ];
+
         }
         // Crear usuario internamente
         if (strlen($technicianData['ci']) != 7) {
@@ -57,7 +58,7 @@ class TecnicoMutations {
         }
         // Crear técnico con datos iniciales
         $technician = Tecnico::create($technicianData);
-        $technicianId = $technician->id;
+        $technicianId = $technician["id"];
         // Crear directorios utilizando technicianId para la ruta
         $this->createTechnicianDirectories($technicianId);
         $manager = new ImageManager(new Driver());
@@ -74,18 +75,119 @@ class TecnicoMutations {
         // Guardar las rutas de las imágenes en el técnico
         $technician->save();
         $agenda=Agenda_Tecnico::create([
-            'technicalId'=>$technician->id,
+            'technicalId'=>$technicianId,
             'createDate' => Carbon::now()
         ]);
-        $technician=Tecnico::find($technician->id);
+        $technical=Tecnico::find($technicianId);
         return [
             'message' => 'Registro técnico exitoso',
             'upcomingmessage' => 'Registre sus habilidades',
-            'technician' => $technician,
+            'technician' => $technical,
             'user' => $user,
             'skill' => $skill
         ];
+    } */
+
+    public function create($root, array $args)
+{
+    $technicianData = $args['technicianRequest'];
+    $skill = null;
+
+    // Verificar si el CI ya existe
+    if (User::where('ci', $technicianData['ci'])->exists()) {
+        return [
+            'message' => 'Esta cédula de identidad ya está en uso, por favor intenta con otro.'
+        ];
     }
+
+    // Validar longitud del CI
+    if (strlen($technicianData['ci']) != 7) {
+        return [
+            'message' => 'El CI debe tener exactamente 7 dígitos.'
+        ];
+    }
+
+    // Validar imágenes
+    $validators = $this->validateImage($args);
+    if ($validators->fails()) {
+        return [
+            'message' => 'Archivo de imagen inválido.',
+            'upcomingmessage' => 'Registre su usuario'
+        ];
+    }
+
+    // Crear usuario
+    $email = strtolower(trim($technicianData['email']));
+    $user = User::create([
+        'email' => $email,
+        'password' => Hash::make($technicianData['password']),
+        'ci' => $technicianData['ci'],
+        'type_user' => $technicianData['type_user'],
+    ]);
+
+    // Crear token de acceso y guardar el usuario
+    $tokens = $user->createToken('authToken')->plainTextToken;
+    $user->token = $tokens;
+    $user->save();
+
+    // Asociar el usuario creado al técnico
+    $technicianData['userId'] = $user->id;
+
+    // Crear técnico
+    $technician = Tecnico::create($technicianData);
+
+    // Verificar si el técnico se ha creado correctamente
+    if (!$technician) {
+        return [
+            'message' => 'Error al registrar el técnico.'
+        ];
+    }
+
+    $technicianId = $technician->id;
+
+    // Crear directorios utilizando el ID del técnico
+    $this->createTechnicianDirectories($technicianId);
+
+    // Manejo de imágenes utilizando Intervention Image
+    $manager = new ImageManager(new Driver());
+
+    // Procesar imagen delantera del carnet
+    if (isset($args['frontIdCard']) && $args['frontIdCard'] instanceof UploadedFile) {
+        $frontIdCardPath = $this->processImage($args['frontIdCard'], "/{$technicianId}/id_card/front.png", $manager);
+        $technician->frontIdCard = str_replace('public/', '', $frontIdCardPath);
+    }
+
+    // Procesar imagen trasera del carnet
+    if (isset($args['backIdCard']) && $args['backIdCard'] instanceof UploadedFile) {
+        $backIdCardPath = $this->processImage($args['backIdCard'], "/{$technicianId}/id_card/back.png", $manager);
+        $technician->backIdCard = str_replace('public/', '', $backIdCardPath);
+    }
+
+    // Guardar las rutas de las imágenes en el registro del técnico
+    $technician->save();
+    $id=$technician->id;
+    // Crear la agenda para el técnico
+    $agenda = Agenda_Tecnico::create([
+        'technicianId' => $id,
+        'createDate' => Carbon::now()
+    ]);
+
+    //Verificar si la agenda se ha creado correctamente
+    if (!isset($agenda)) {
+        return [
+            'message' => 'Error al crear la agenda del técnico.'
+        ];
+    }
+    // Retornar los datos de éxito
+    return [
+        'message' => 'Registro técnico exitoso',
+        'upcomingmessage' => 'Registre sus habilidades',
+        'technician' => $technician,
+        'user' => $user,
+        'skill' => $skill
+    ];
+}
+
     public function update($root, array $args){
         $technicianData = $args['technicianRequest'];
         $technician = Tecnico::find($args['id']);
@@ -139,7 +241,9 @@ class TecnicoMutations {
         $technician->delete();
         return ['message' => 'Eliminacion exitosa del tecnico'];
     }
-// Validación de imágenes
+
+
+    // Validación de imágenes
     private function validateImage($args){
         return Validator::make([
         'frontIdCard' => $args['frontIdCard'] ?? null ,

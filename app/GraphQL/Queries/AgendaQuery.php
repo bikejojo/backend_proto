@@ -12,7 +12,7 @@ class AgendaQuery{
         // TODO implement the resolver
     }
 
-    public function agendaAllow($root , array $args){
+    /*public function agendaAllow($root , array $args){
         $agendaData = $args['requestData'];
         $agendaId = $agendaData['id_technician'];
         $agenda = Agenda_Tecnico::where('technicalId',$agendaId)
@@ -46,5 +46,16 @@ class AgendaQuery{
             'message' => 'Listado de la agenda',
             'agenda' => $agendaFormatted
         ];
+    }*/
+    public function getAllowAgenda($root,array $args){
+        $agendaData = $args['requestAgenda'];
+        $tecnicoid = $agendaData['id_technical'];
+        //dd($tecnicoid);
+        $agenda = Agenda_Tecnico::where('technicianId',$tecnicoid)
+        ->leftjoin('detail_technical_agenda','technician_agenda.id','=','detail_technical_agenda.agendaTechnicalId')
+        ->leftjoin('services','detail_technical_agenda.serviceId','=','services.id')
+        ->leftjoin('citations','detail_technical_agenda.citationId','=','citations.id')
+        ->get();
+        dd($agenda);
     }
 }
