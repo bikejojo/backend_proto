@@ -18,16 +18,21 @@ class ClientQuery{
     {
         $clientData = $args['requestClient'];
         $tecnicoId = $clientData['technicalId'];
-        $clientNamePhone = strtolower($clientData['all']);
-        $clientExterno = Cliente_Externo::whereHas('associantions', function ($query) use ($tecnicoId) {
-            $query->where('technicalId', $tecnicoId);  // Filtrar por ID del técnico
-        })
-        ->where(function($query) use ($clientNamePhone) {
-            $query->where(DB::raw('LOWER("fullName")'), 'LIKE', "%{$clientNamePhone}%")
-                  ->orWhere(DB::raw('LOWER("phoneNumber")'), 'LIKE', "%{$clientNamePhone}%");
-        })
-        ->get();
-        //dd($clientInterno);
+        if($clientData['searchParameter']!=null){
+            $clientNamePhone = strtolower($clientData['searchParameter']);
+            $clientExterno = Cliente_Externo::whereHas('associantions', function ($query) use ($tecnicoId) {
+                $query->where('technicalId', $tecnicoId);  // Filtrar por ID del técnico
+            })
+            ->where(function($query) use ($clientNamePhone) {
+                $query->where(DB::raw('LOWER("fullName")'), 'LIKE', "%{$clientNamePhone}%")
+                    ->orWhere(DB::raw('LOWER("phoneNumber")'), 'LIKE', "%{$clientNamePhone}%");
+            })
+            ->get();
+        }else{
+            $clientExterno = Cliente_Externo::whereHas('associantions', function ($query) use ($tecnicoId) {
+                $query->where('technicalId', $tecnicoId);  // Filtrar por ID del técnico
+            })->get();
+        }
         if ($clientExterno->isEmpty()) {
             return [
                 'message' => 'No se encontraron resultados',

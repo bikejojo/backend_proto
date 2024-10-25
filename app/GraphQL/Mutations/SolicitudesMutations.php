@@ -66,20 +66,21 @@ class SolicitudesMutations
         switch($state){
             case 3:
                 $request->stateId =$converciotion;
+                $request->expirationDateTime= Carbon::now()->addMinute(20);
                 $request->updatedDateTime = Carbon::now();
                 break;
             case 4:
                 $request->stateId =$rejectTime;
-                $request->updatedDateTime = Carbon::now();
+                $request->expirationDateTime = Carbon::now();
                 break;
             case 5:
                 $request->stateId =$rejectTechn;
-                $request->updatedDateTime = Carbon::now();
+                $request->expirationDateTime = Carbon::now();
                 break;
             case 6:
                 $request->stateId =$accepted;
                 $program=$requestData['programDate'];
-                $request->expirationDateTime=null;
+                $request->expirationDateTime=Carbon::now();
                 $request->updatedDateTime = Carbon::now();
                 break;
         }

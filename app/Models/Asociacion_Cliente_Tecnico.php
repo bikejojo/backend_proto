@@ -10,12 +10,9 @@ class Asociacion_Cliente_Tecnico extends Model
     protected $PrimaryKey = 'id';
     protected $table = 'associationTechnClient';
     protected $fillable = [
-        'clientId',      // nombre
-        'typeClient',
-        'citationId',
-        'agendaTechnicalId',
-        'serviceId',
-        'createDate'
+        'clientId',
+        'technicalId',
+        'dateTimeCreated'
     ];
 
     //tecnicos

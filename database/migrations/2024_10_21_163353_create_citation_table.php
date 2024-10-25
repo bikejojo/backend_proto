@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('technicialId');
             $table->unsignedBigInteger('clientId');
-            $table->unsignedBigInteger('serviceId');
+            $table->unsignedBigInteger('serviceId')->nullable();
             $table->unsignedBigInteger('activityId');
             $table->unsignedBigInteger('typeClient');
             $table->text('citationDescription');

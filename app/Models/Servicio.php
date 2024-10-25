@@ -14,7 +14,7 @@ class Servicio extends Model
     protected $fillable = [
         'stateId',
         'requestsId',
-        'techinicalId',
+        'technicalId',
         'clientId',
         'typeClient',
         'serviceDescription',

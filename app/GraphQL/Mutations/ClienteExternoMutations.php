@@ -14,6 +14,7 @@ class ClienteExternoMutations{
         $clienteData = $args['clientRequest'];
         // Crear el cliente en la base de datos
         $tecnico = Tecnico::find($clienteData['technicalId']);
+
         if($tecnico == null){
             return [
                 'message'=>'Usuario tecnico no encontrado'
@@ -35,7 +36,7 @@ class ClienteExternoMutations{
         }
         $asociacion = Asociacion_Cliente_Tecnico::create([
             'clientId' => $cliente->id,
-            'technicalId' => $clienteData['technicalId'],
+            'technicalId' => $tecnico->id,
             'dateTimeCreated' => Carbon::now(),
         ]);
 

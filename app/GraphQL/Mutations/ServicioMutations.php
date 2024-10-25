@@ -20,21 +20,21 @@ class ServicioMutations
 
         $serviceData=$args['requestService'];
         $service = new Servicio();
-        $service->techinicalId=$serviceData['id_technician'];
+        $service->technicalId=$serviceData['id_technician'];
         $service->clientId=$serviceData['id_client'];
         $service->typeClient=$client_e;
         $service->stateId=$process;
-        $service->requestId=null;
+        $service->requestsId=null;
         $service->programDate = $serviceData['programDate'];
         $service->serviceDescription=$serviceData['serviceDescription'];
-        $service->requestDate = Carbon::now();
+        $service->requestsDate = Carbon::now();
         $service->save();
         $clientId = $service->clientId;
         $cliente = Cliente_Externo::find($clientId);
 
         return [
             'message' => 'Servicio creado para cliente.',
-            'customer_external' => $client_e,
+            'customer_external' => $cliente,
             'service'=>$service
         ];
     }
@@ -51,7 +51,7 @@ class ServicioMutations
             case 8:
                 $service->stateId = $clientOut;
                 $service->programDate = null;
-
+                $service->finishedDate = Carbon::now();
                 break;
             case 9:
                 $service->stateId = $ClientProgram;
