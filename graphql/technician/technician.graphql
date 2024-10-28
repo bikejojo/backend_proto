@@ -1,15 +1,15 @@
 type Technician @model(class: "App\\Models\\Tecnico"){
   id: ID!
-  firstName: String!
-  lastName: String!
-  frontIdCard: String
-  backIdCard: String
-  email: String
-  phoneNumber: String!
-  password: String!
-  photo: String
-  userId: String!
-  cityId: String!
+  firstName: String! @trim
+  lastName: String! @trim
+  frontIdCard: String @trim
+  backIdCard: String @trim
+  email: String @trim
+  phoneNumber: String! @trim
+  password: String! @trim
+  photo: String @trim
+  userId: String! @trim
+  cityId: String! @trim
 
   city: City! @belongsTo
   user: User! @belongsTo

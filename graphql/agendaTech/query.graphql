@@ -1,5 +1,6 @@
 extend type Query {
    getAllAgenda(requestAgenda:JSON!):responseAgenda @field(resolver: "AgendaQuery@getAllowAgenda")
+   
 }
 
 type responseAgenda {

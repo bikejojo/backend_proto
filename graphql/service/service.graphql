@@ -6,7 +6,9 @@ type Service {
     id_client:ID! @rename(attribute: "clientId")
     typeClient:String!
     serviceDescription:String!
+    status:String
     programDate:String
+    finishedDate:String
     requestsDate:String!
 
     state:[TypeState!]! @hasMany

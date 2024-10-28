@@ -1,8 +1,13 @@
 type DetailAgendaTechnical {
     id:ID!
-    agendaTechnicalId:ID!
-    clientId:String!
-    typeClient:string!
+    id_agendaTechnical:ID @rename (attribute: "agendatechnicalId")
+    id_client:ID @rename (attribute: "clientId")
+    id_service:ID @rename (attribute: "serviceId")
+    id_citation:ID @rename (attribute: "citationId")
+    typeClient:String!
+    typeJob:String!
+    serviceDate:String!
+    citationDate:String!
     createDate:String!
 
     details:Agenda_Technical @belongsTo

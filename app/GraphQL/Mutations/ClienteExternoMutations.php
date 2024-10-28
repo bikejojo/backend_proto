@@ -24,9 +24,17 @@ class ClienteExternoMutations{
         $phone=$clienteData['phoneNumber'];
         $existe = Cliente_Externo::where('phoneNumber',$phone)->first();
         if($existe){
-            return [
-                'message' => 'cliente se registro con anterioridad en la lista!'
-            ];
+            if($existe->status === 1 ){
+                return [
+                    'message' => 'cliente se registro con anterioridad en la lista!'
+                ];
+            }else{
+                $existe->status = 1;
+                $existe->save();
+                return [
+                    'message' => 'cliente se volvio a habilitar!'
+                ];
+            }
         }else{
             $cliente = Cliente_Externo::create([
                 'fullName' => $clienteData['fullName'],

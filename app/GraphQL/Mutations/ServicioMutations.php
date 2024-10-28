@@ -16,41 +16,53 @@ class ServicioMutations
     {
         // TODO implement the resolver
     }
+    // CREAR SERVICIO PARA CLIENTE EXTERNO
     public function create($root,array $args){
         $client_e = 2;
         $process = 7;
         $typeJob=1;
+        $up = 1;
+
 
         $serviceData=$args['requestService'];
-        $service = new Servicio();
-        $service->technicalId=$serviceData['id_technician'];
-        $service->clientId=$serviceData['id_client'];
-        $service->typeClient=$client_e;
-        $service->stateId=$process;
-        $service->requestsId=null;
-        $service->programDate = $serviceData['programDate'];
-        $service->serviceDescription=$serviceData['serviceDescription'];
-        $service->requestsDate = Carbon::now();
-        $service->save();
-        $clientId = $service->clientId;
-        $cliente = Cliente_Externo::find($clientId);
-        $agenda=Agenda_Tecnico::where('technicianId',$service->technicalId)->first();
-        $detalleAgenda=Detalle_Agenda_Tecnico::create([
-            'clientId' => $service->clientId,
-            'agendaTechnicalId' => $agenda->id,
-            'citationId'=>null,
-            'serviceId' =>$service->id ,
-            'typeClient' => $service->typeClient,
-            'createDate' => Carbon::now(),
-            'typeJob' => $typeJob ,
-            'serviceDate' => $service->programDate,
-            'citationDate' => null,
-        ]);
-        return [
-            'message' => 'Servicio creado para cliente.',
-            'customer_external' => $cliente,
-            'service'=>$service
-        ];
+        $clientId = $serviceData['id_client'];
+        $clientIds = Cliente_Externo::find($clientId);
+        //dd($clientIds);
+        if($clientIds != null){
+            $service = new Servicio();
+            $service->technicalId=$serviceData['id_technician'];
+            $service->clientId=$serviceData['id_client'];
+            $service->typeClient=$client_e;
+            $service->stateId=$process;
+            $service->status=$up;
+            $service->requestsId=null;
+            $service->programDate = $serviceData['programDate'];
+            $service->serviceDescription=$serviceData['serviceDescription'];
+            $service->requestsDate = Carbon::now();
+            $service->save();
+            $clientId = $service->clientId;
+            $cliente = Cliente_Externo::find($clientId);
+            $agenda=Agenda_Tecnico::where('technicianId',$service->technicalId)->first();
+            $detalleAgenda=Detalle_Agenda_Tecnico::create([
+                'clientId' => $service->clientId,
+                'agendaTechnicalId' => $agenda->id,
+                'citationId'=>null,
+                'serviceId' =>$service->id ,
+                'typeClient' => $service->typeClient,
+                'createDate' => Carbon::now(),
+                'typeJob' => $typeJob ,
+                'serviceDate' => $service->programDate,
+                'citationDate' => null,
+            ]);
+            return [
+                'message' => 'Servicio creado para cliente.',
+                'customer_external' => $cliente,
+                'service'=>$service
+            ];
+        }else{
+            return[
+            'message' => 'Cliente Externo no existe.'];
+        }
     }
     public function update($root,array $args){
         $typeJob=2;
@@ -127,5 +139,19 @@ class ServicioMutations
             'service' => $service ,
             'messageN' => 'Creacion de cita no necesaria.'
         ];
+    }
+
+    public function delete($root , array $args){
+        $serviceData = $args['requestService'];
+        $serviceId=$serviceData['id_service'];
+        $service = Servicio::find($serviceId);
+        if($service != null){
+            $service->status = 0;
+            $service->save();
+            return[
+                'message' => 'El servicio se elimino.',
+                'service' => $service
+            ];
+        }
     }
 }

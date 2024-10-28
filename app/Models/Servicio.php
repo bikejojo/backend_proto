@@ -21,6 +21,7 @@ class Servicio extends Model
         'programDate',
         'requestsDate',
         'finishedDate',
+        'status'
     ];
 
     public function state(){

@@ -2,6 +2,18 @@ extend type Query {
     searchParameterExternalClient (requestClient:JSON!):responseClientExternalSearch @field(resolver: "ClientQuery@searchExternalByName")
     getExternalCustomerForIdTechnician(id_technician:String):responseClientExternalSearch @field(resolver: "ClientQuery@technicianByclient")
     clientExternalById(id:ID! @whereKey):ExternalClient @find(model: "App\\Models\\Cliente_Externo")
+    quantifyClient(requestClient:JSON!):responseCities @field(resolver: "ClientQuery@quantifyclient")
+}
+
+
+type responseCities{
+    services:[serv]
+}
+
+type serv {
+    fullName:String
+    date:String
+    servicecount:Int
 }
 
 type responseClientExternalSearch{

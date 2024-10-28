@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedInteger('clientId');
             $table->string('typeClient');
             $table->string('serviceDescription');
+            $table->string('status');
             $table->datetime('programDate')->nullable();
             $table->datetime('requestsDate')->nullable();
             $table->datetime('finishedDate')->nullable();

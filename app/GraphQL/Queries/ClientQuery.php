@@ -4,6 +4,9 @@ namespace App\GraphQL\Queries;
 use App\Models\Cliente_Externo;
 use App\Models\Cliente_Interno;
 use App\Models\Asociacion_Cliente_Tecnico;
+use App\Models\Detalle_Agenda_Tecnico;
+use App\Models\Servicio;
+use App\Models\Cita;
 use App\Models\Tecnico;
 use Illuminate\Support\Facades\DB;
 
@@ -31,14 +34,16 @@ class ClientQuery{
                 $query->where(DB::raw('LOWER(external_clients."fullName")'), 'LIKE', "%{$clientNamePhone}%")
                       ->orWhere(DB::raw('LOWER(external_clients."phoneNumber")'), 'LIKE', "%{$clientNamePhone}%");
             })
-            ->where('external_clients.status', 1)  // Filtrar solo por clientes con estado 1
+            ->where('external_clients.status', 1)
+            ->orderBy('external_clients.created_at', 'desc')  // Filtrar solo por clientes con estado 1
             ->get();
         } else {
             // Si no hay parámetro de búsqueda, solo aplicar el filtro del técnico y estado
             $clientExterno = Cliente_Externo::whereHas('associantions', function ($query) use ($tecnicoId) {
                 $query->where('technicalId', $tecnicoId);  // Filtrar por ID del técnico
             })
-            ->where('external_clients.status', 1)  // Filtrar solo por clientes con estado 1
+            ->where('external_clients.status', 1)
+            ->orderBy('external_clients.created_at', 'desc')  // Filtrar solo por clientes con estado 1
             ->get();
         }
 
@@ -85,7 +90,7 @@ class ClientQuery{
         $listado=Asociacion_Cliente_Tecnico::where('technicalId',$technicianId)
         ->where('status',1)
         ->leftjoin('external_clients','external_clients.id','=','clientId')
-        ->orderBy('external_clients.id', 'desc')
+        ->orderBy('external_clients.created_at', 'desc')
         ->get();
         if($listado->isEmpty()){
             return[
@@ -98,5 +103,27 @@ class ClientQuery{
             'message' => 'Clientes propios de los tecnicos',
             'customer_external' => $listado
         ];
+    }
+
+    public function quantifyclient($root , array $args){
+        $clientData = $args['requestClient'];
+        $startDate = $clientData['startDate'];
+        $finishDate = $clientData['finishDate'];
+
+        $services = DB::table('services')
+            ->join('external_clients', 'services.clientId', '=', 'external_clients.id')
+            ->select(
+                'external_clients.fullName',
+                DB::raw('DATE("services"."programDate")'),
+                DB::raw('COUNT(services.id) as serviceCount')
+            )
+            ->whereBetween('services.programDate', [$startDate, $finishDate])
+            ->groupBy('external_clients.fullName',"programDate")
+            ->orderBy("programDate")
+            ->get();
+
+           // dd($services);
+        return [
+        'services'=> $services];
     }
 }
