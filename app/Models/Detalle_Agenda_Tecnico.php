@@ -31,7 +31,7 @@ class Detalle_Agenda_Tecnico extends Model
     public function citations(){
         return $this->hasMany(Cita::class,'citationId');
     }
-    public function services(){
-        return $this->hasMany(Servicio::class,'serviceId');
+    public function service(){
+        return $this->belongsTo(Servicio::class,'serviceId','id');
     }
 }

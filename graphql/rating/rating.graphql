@@ -1,0 +1,10 @@
+type Rating {
+    id:ID!
+    id_technical:ID! @rename (attribute: "technicalId")
+    id_service:ID! @rename (attribute: "serviceId")
+    rating:Int
+    comments:String @rename (attribute: "feedback")
+
+    technician:Technician @belongsTo
+    service:Service @belongsTo
+}

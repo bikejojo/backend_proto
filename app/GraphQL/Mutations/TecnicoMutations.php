@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log;
 use Intervention\Image\Drivers\Gd\Driver;
 
 use function PHPUnit\Framework\isEmpty;
@@ -64,7 +63,21 @@ class TecnicoMutations {
     $technicianData['userId'] = $user->id;
 
     // Crear técnico
-    $technician = Tecnico::create($technicianData);
+    //$technician = Tecnico::create($technicianData);
+
+    $technician = Tecnico::create([
+        'firstName'=>$technicianData['firstName'],
+        'lastName'=>$technicianData['lastName'],
+        'frontIdCard'=>$technicianData['frontIdCard'],
+        'backIdCard'=>$technicianData['backIdCard'],
+        'email'=>$technicianData['email'],
+        'phoneNumber'=>$technicianData['phoneNumber'],
+        'password'=>Hash::make($technicianData['password']),
+        'photo'=>$technicianData['photo'],
+        'userId'=>$technicianData['userId'],
+        'cityId'=>$technicianData['cityId'],
+    ]);
+
 
     // Verificar si el técnico se ha creado correctamente
     if (!$technician) {

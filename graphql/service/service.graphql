@@ -5,13 +5,15 @@ type Service {
     id_technician:ID! @rename(attribute: "technicalId")
     id_client:ID! @rename(attribute: "clientId")
     typeClient:String!
-    serviceDescription:String!
+    serviceDescription:String
     status:String
     programDate:String
     finishedDate:String
     requestsDate:String!
 
-    state:[TypeState!]! @hasMany
+    state:StateType! @belongsTo
     request:[Request!]! @hasMany
     service: Citation! @belongsTo
+
+    ratings:[Rating] @hasOne
 }

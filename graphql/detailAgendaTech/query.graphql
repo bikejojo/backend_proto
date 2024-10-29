@@ -2,6 +2,7 @@ extend type Query{
     getDetailAgenda(requestAgenda:JSON!):responseDetaiAgenda @field(resolver: "AgendaQuery@getAllowAgenda" )
     getAllAgendaByClient(requestAgenda:JSON!):responseAgenda @field(resolver: "AgendaQuery@getAgendaByClient" )
     getAgendaByDate(requestAgenda:JSON!):responseServiceDate @field(resolver: "AgendaQuery@getAgendaByDate")
+    citationContentAgenda(requestAgenda:JSON!):responseContent @field(resolver: "AgendaQuery@getContentServiceId")
 }
 
 type responseDetaiAgenda {
@@ -15,5 +16,9 @@ type responseDetaiAgenda {
 
 type responseServiceDate {
     message:String
-    services:[Service]
+    services:[DetailAgendaTechnical]
+}
+type responseContent {
+    message:String
+    service:Service
 }

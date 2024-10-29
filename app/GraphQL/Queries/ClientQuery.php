@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
 namespace App\GraphQL\Queries;
+
+use App\Models\Agenda_Tecnico;
 use App\Models\Cliente_Externo;
 use App\Models\Cliente_Interno;
 use App\Models\Asociacion_Cliente_Tecnico;
@@ -110,20 +112,69 @@ class ClientQuery{
         $startDate = $clientData['startDate'];
         $finishDate = $clientData['finishDate'];
 
-        $services = DB::table('services')
-            ->join('external_clients', 'services.clientId', '=', 'external_clients.id')
+        $servicesExt = DB::table('services')
+            ->where('typeClient','2')
+            ->leftjoin('external_clients', 'services.clientId', '=', 'external_clients.id')
             ->select(
                 'external_clients.fullName',
                 DB::raw('DATE("services"."programDate")'),
-                DB::raw('COUNT(services.id) as serviceCount')
+                DB::raw('COUNT(services.id) as serviceCount'),
+                DB::raw("'Cliente Externo' as clientType")
             )
             ->whereBetween('services.programDate', [$startDate, $finishDate])
             ->groupBy('external_clients.fullName',"programDate")
             ->orderBy("programDate")
             ->get();
 
-           // dd($services);
+        $servicesInt = DB::table('services')
+        ->where('typeClient','1')
+        ->leftjoin('internal_clients', 'services.clientId', '=', 'internal_clients.id')
+        ->select(
+            DB::raw('CONCAT(internal_clients."firstName", \' \', internal_clients."lastName") as "fullName"'),
+            DB::raw('DATE("services"."programDate")'),
+            DB::raw('COUNT(services.id) as serviceCount'),
+            DB::raw("'Cliente Interno' as clienttype")
+        )
+        ->whereBetween('services.programDate', [$startDate, $finishDate])
+        ->groupBy("fullName","programDate")
+        ->orderBy("programDate")
+        ->get();
+        //dd($servicesInt);
         return [
-        'services'=> $services];
+        'servicesExternal'=> $servicesExt,
+        'servicesInternal' => $servicesInt];
+    }
+
+    public function quantityClient($root, array $args){
+        $technicialId = $args['id_technician']['id'];
+        $agenda = Agenda_Tecnico::where('technicianId',$technicialId)->first();
+        //dd($agenda);
+        $detailAgenda = Detalle_Agenda_Tecnico::where('agendaTechnicalId',$agenda->id)
+        ->select('clientId', 'typeClient')
+        //->distinct()
+        ->get();
+        $clienteExternoCount = $detailAgenda->where('typeClient', 2)
+        ->count();
+        $clienteInternoCount = $detailAgenda->where('typeClient', 1)
+        ->count();
+        $clientSum = $clienteExternoCount + $clienteInternoCount;
+        //dd($clientSum);
+        return [
+            'message' => 'Total de clientes de tecnico',
+            'quantity' => $clientSum
+        ];
+    }
+
+    public function quantityCities($root, array $args){
+        $technicialId = $args['id_technician'];
+        $agenda = Agenda_Tecnico::where('technicianId',$technicialId)->first();
+        //dd($agenda);
+        $detailAgenda = Detalle_Agenda_Tecnico::where('agendaTechnicalId',$agenda->id)
+        ->whereNotNull('serviceDate')
+        ->count();
+        return [
+            'message' => 'Total de citas programas de tecnico',
+            'quantity' => $detailAgenda
+        ];
     }
 }

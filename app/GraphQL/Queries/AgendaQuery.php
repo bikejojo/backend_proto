@@ -84,40 +84,56 @@ class AgendaQuery{
         ];
     }
 
-    public function getAgendaByDate($root , array $args){
+    public function getAgendaByDate($root , array $args)
+    {
         $agendaData = $args['requestAgenda'];
         $tecnicoid = $agendaData['id_technician'];
         $inputDate = isset($agendaData['date']) ? Carbon::parse($agendaData['date']) : null;
-        $agenda = Agenda_Tecnico::where('technicianId', $tecnicoid)->first();
-        $exactDateServices = Detalle_Agenda_Tecnico::where('agendaTechnicalId', $agenda->id)
-        ->whereHas('service', function($query) use ($inputDate) {
-            $query->whereDate('programDate', $inputDate);
-        })
-        ->with('service')
-        ->get();
 
-    // Si no hay servicios en la fecha exacta, buscar los más cercanos
-    if ($exactDateServices->isEmpty()) {
-        $closestServices = Detalle_Agenda_Tecnico::where('agendaTechnicalId', $agenda->id)
+        $agenda = Agenda_Tecnico::where('technicianId', $tecnicoid)->first();
+
+        // Obtener servicios en la fecha exacta
+        $exactDateServices = Detalle_Agenda_Tecnico::where('agendaTechnicalId', $agenda->id)
             ->whereHas('service', function($query) use ($inputDate) {
-                $query->where('programDate', '>', $inputDate);
+                $query->whereDate('programDate', $inputDate);
             })
-            ->with(['service' => function($query) {
-                $query->orderBy('programDate', 'asc');
-            }])
-            ->limit(5)
+            ->with('service')  // Cargar los datos de Service
             ->get();
+            //->pluck('service'); // Extraer solo los servicios para simplificar el resultado
+
+        // Si no hay servicios en la fecha exacta, buscar los más cercanos
+        if ($exactDateServices->isEmpty()) {
+            $closestServices = Detalle_Agenda_Tecnico::where('agendaTechnicalId', $agenda->id)
+                ->whereHas('service', function($query) use ($inputDate) {
+                    $query->where('programDate', '>', $inputDate);
+                })
+                ->with(['service' => function($query) {
+                    $query->orderBy('programDate', 'asc');
+                }])
+                ->limit(5)
+                ->get();
+                //->pluck('service'); // Extraer solo los servicios para simplificar el resultado
+               //dd($closestServices);
+            return [
+                'message' => 'Servicios más cercanos a la fecha proporcionada.',
+                'services' => $closestServices
+            ];
+        }
 
         return [
-            'message' => 'Servicios más cercanos a la fecha proporcionada.',
-            'services' => $closestServices
+            'message' => 'Servicios en la fecha especificada.',
+            'services' => $exactDateServices
         ];
     }
 
-    return [
-        'message' => 'Servicios en la fecha especificada.',
-        'services' => $exactDateServices
-    ];
+    public function getContentServiceId($root , array $args){
+        $serviceDate = $args['requestAgenda'];
+        $serviceId = $serviceDate['id'];
+        $service = Servicio::find($serviceId);
+        return [
+            'message' => 'contenido de la agenda.',
+            'service' => $service
+        ];
     }
     public function getAgendaByClient($root , array $args){
         $agendaData = $args['requestAgenda'];

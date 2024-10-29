@@ -25,7 +25,7 @@ class Servicio extends Model
     ];
 
     public function state(){
-        return $this->hasMany(Tipo_Estado::class,'stateId');
+        return $this->belongsTo(Tipo_Estado::class,'stateId','id');
     }
     public function resquest(){
         return $this->hasMany(Solicitud::class,'requestsId');
@@ -36,5 +36,9 @@ class Servicio extends Model
 
     public function details(){
         return $this->belongsTo(Detalle_Agenda_Tecnico::class,'serviceId');
+    }
+
+    public function rating(){
+        return $this->hasOne(Calificacion::class , 'serviceId');
     }
 }

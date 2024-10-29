@@ -56,4 +56,16 @@ class Tecnico extends Model
     public function agenda(){
         return $this->belongsTo(Agenda_Tecnico::class,'technicianId');
     }
+
+    public function ratings(){
+        return $this->hasMany(Calificacion::class,'technicialId');
+    }
+
+    public function averageRating(){
+        return $this->ratings()->avg('rating');
+    }
+
+    public function totalRarings(){
+        return $this->ratings()->count();
+    }
 }

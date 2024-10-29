@@ -16,5 +16,7 @@ type Technician @model(class: "App\\Models\\Tecnico"){
 
   technicianSkills: [TechnicianSkill!]! @hasMany
   associantions: [AssociationTechnClient!] @belongsTo
+
+  ratings: [Rating] @hasMany
 }
 
