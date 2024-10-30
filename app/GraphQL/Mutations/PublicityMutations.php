@@ -31,15 +31,19 @@ final readonly class PublicityMutations
             'commercialName' =>       $publicityDate['commercialName'],
             'link'=>                  $publicityDate['link'],
             'createdDate'=>           $publicityDate['createdDate'],
+            'startDate' =>            $publicityDate['startDate'],
             'finishDate' =>           $publicityDate['finishDate'],
             'status'=>                1
         ]);
+        $publicityName = $publicity->commercialName;
         $publicityId = $publicity->id;
-
-        $this->createDirectories($publicityId);
+        $publicityComplete = $publicityName."_".$publicityId;
+        $this->createDirectories($publicityComplete);
         $manager = new ImageManager(new Driver());
+        //']);
         if (isset($args['logo']) && $args['logo'] instanceof UploadedFile) {
-            $frontIdPath = $this->processImage($args['logo'], "/publicity_{$publicityId}/front.png", $manager);
+            $frontIdPath = $this->processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/publicidad.png", $manager);
+            //dd($frontIdPath);
             $publicity->logo = str_replace('public/', '', $frontIdPath);
         }
         $publicity->save();
@@ -49,7 +53,7 @@ final readonly class PublicityMutations
             'publicity' => $publicity
         ];
     }
-    public function update($root,array $args){
+    public function updateExpiration($root , array $args){
         $publicityDate = $args['requestPublicity'];
         $publicityId = $publicityDate['id_publicity'];
         $publicity = Publicidad::find($publicityId);
@@ -58,23 +62,65 @@ final readonly class PublicityMutations
                 'message' => 'No se encontró la publicidad con el ID proporcionado.'
             ];
         }
-            $publicity->descriptionPublicity = $publicityDate['descriptionPublicity'];
-            $publicity->commercialName = $publicityDate['commercialName'];
-            $publicity->link = $publicityDate['link'];
-            $publicity->createdDate = $publicityDate['createdDate'];
-            $publicity->finishDate = $publicityDate['finishDate'];
-        $publicity->save();
 
+        $publicity->status = $publicityDate['status'];
+        $publicity->save();
+        return [
+            'message' => 'Publicidad expirada.',
+            'publicity' => $publicity
+        ];
+    }
+
+    public function update($root,array $args){
+        $publicityDate = $args['requestPublicity'];
+        $publicityId = $args['id'];
+        $publicity = Publicidad::find($publicityId);
+        $publicityNameOld = $publicity->commercialName;
+        $publicityIdOld = $publicity->id;
+        $publicityCompleteOld = $publicityNameOld. "_" . $publicityIdOld;
+        if (!$publicity) {
+            return [
+                'message' => 'No se encontró la publicidad con el ID proporcionado.'
+            ];
+        }
+        ########################################################
+        $publicity->descriptionPublicity = $publicityDate['descriptionPublicity'];
+        $publicity->commercialName = $publicityDate['commercialName'];
+        $publicity->link = $publicityDate['link'];
+        $publicity->startDate = $publicityDate['startDate'];
+        $publicity->createdDate = $publicityDate['createdDate'];
+        $publicity->finishDate = $publicityDate['finishDate'];
+        $publicity->save();
+        #######################################################
+        $publicityName = $publicity->commercialName;
+        $publicityId = $publicity->id;
+        $publicityComplete = $publicityName. "_" . $publicityId;
+        //dd($publicityCompleteOld);
+        $isLogoPublicity = isset($args['logo']) && $args['logo'] instanceof UploadedFile;
+        $manager = new ImageManager(new Driver());
+        if ($publicityCompleteOld !== $publicityComplete) {
+            Storage::deleteDirectory('public/publicidad/'.$publicityCompleteOld);
+            $this->createDirectories($publicityComplete);
+        }
+
+        // Verifica si hay un logo para procesar
+        if ($isLogoPublicity) {
+            // Elimina el logo anterior
+            Storage::disk('public')->delete($publicity->logo);
+
+            // Procesa y guarda la nueva imagen en el nuevo directorio
+            $logoPath = $this->processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/publicidad.png", $manager);
+            $publicity->logo = str_replace('public/', '', $logoPath);
+            $publicity->save();
+        }
         return [
             'message' => 'Publicidad actualizada',
             'publicity' => $publicity
         ];
     }
     public function delete($root,array $args){
-        $publicityDate = $args['requestPublicity'];
-        $publicityId = $publicityDate['id'];
+        $publicityId = $args['requestPublicity']['id'];
         $publicity = Publicidad::find($publicityId);
-        // Verificar si la publicidad existe
         if (!$publicity) {
             return [
                 'message' => 'No se encontró la publicidad'
@@ -98,7 +144,7 @@ final readonly class PublicityMutations
     }
 
     private function createDirectories($publicityId){
-        Storage::makeDirectory('public/' . $publicityId . '/logo');
+        Storage::makeDirectory('public/publicidad/' . $publicityId . '/logo');
     }
 
     private function processImage(UploadedFile $file, $path, $manager){

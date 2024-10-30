@@ -18,6 +18,7 @@ class Publicidad extends Model
         'commercialName',
         'link',
         'createdDate',
+        'startDate',
         'finishDate',
         'status',
     ];

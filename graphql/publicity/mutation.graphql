@@ -1,9 +1,10 @@
 extend type Mutation {
-    createPublicity(requestPublicity:JSON,logo:Upload!):responsePublicity @field (resolver: "PublicityMutations@create")
-    deletePublicity(requestPublicity:JSON):responsePublicity @field (resolver: "PublicityMutations@delete")
+    createPublicity(requestPublicity:JSON,logo:Upload):responsePublicit @field (resolver: "PublicityMutations@create")
+    updatePublicity(id:ID!,requestPublicity:JSON,logo:Upload):responsePublicit @field (resolver: "PublicityMutations@update")
+    deletePublicity(requestPublicity:JSON):responsePublicit @field (resolver: "PublicityMutations@delete")
 }
 
-type responsePublicity {
+type responsePublicit {
     message:String
     publicity: Publicity
 }

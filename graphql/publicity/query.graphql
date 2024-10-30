@@ -1,8 +1,14 @@
 extend type Query {
-    getPubliciy(requestPublicity:JSON):responsePublicity @field (resolver: "PublicityQuery@")
+    getPublicityAll:responsePublicity @field (resolver: "PublicityQuery@getAllowPublicity")
+    getPublicityId(id:ID!):responsePublicit @field (resolver: "PublicityQuery@getIdPublicity")
 }
 
 type responsePublicity {
+    message:String
+    publicity:[Publicity]
+}
+
+type responsePublicit {
     message:String
     publicity:Publicity
 }

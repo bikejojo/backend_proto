@@ -1,10 +1,11 @@
 type Publicity {
     id:ID!
     descriptionPublicity:String @trim
-    logo:String! @trim
+    logo:String @trim
     commercialName:String @trim
     link:String @trim
     createdDate:String @trim
+    startDate:String! @trim
     finishDate:String @trim
     status:String @trim
 }
