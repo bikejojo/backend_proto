@@ -68,12 +68,9 @@ class TecnicoMutations {
     $technician = Tecnico::create([
         'firstName'=>$technicianData['firstName'],
         'lastName'=>$technicianData['lastName'],
-        'frontIdCard'=>$technicianData['frontIdCard'],
-        'backIdCard'=>$technicianData['backIdCard'],
         'email'=>$technicianData['email'],
         'phoneNumber'=>$technicianData['phoneNumber'],
         'password'=>Hash::make($technicianData['password']),
-        'photo'=>$technicianData['photo'],
         'userId'=>$technicianData['userId'],
         'cityId'=>$technicianData['cityId'],
     ]);
@@ -133,16 +130,16 @@ class TecnicoMutations {
 
     public function update($root , array $args){
         $technicianData = $args['technicianRequest'];
-        $skillsData = $args['skills'];
+        //$skillsData = $args['skills'];
         //dd($technicianData);
-        if(!isset($technicianData)|| !isEmpty($skillsData)){
+        if(!isset($technicianData)){
             return[
                 'message' => 'No existe datos de tecnico'];
         }
-        if(!isset($skillsData)|| !isEmpty($skillsData)){
+        /*if(!isset($skillsData)|| !isEmpty($skillsData)){
             return [
                 'message' => 'no contienen habilidades'];
-        }
+        }*/
          // Validar imágenes
         $validators = $this->validateImage($args);
         if ($validators->fails()) {
@@ -173,13 +170,13 @@ class TecnicoMutations {
         $technicianId = $technician->id;
         // Crear directorios utilizando el ID del técnico
         $this->createTechnicianDirectories($technicianId);
-        $isPhotoUploaded = isset($args['photo']) && $args['photo'] instanceof UploadedFile;
+        //$isPhotoUploaded = isset($args['photo']) && $args['photo'] instanceof UploadedFile;
         $isFrontIdCardUploaded = isset($args['frontIdCard']) && $args['frontIdCard'] instanceof UploadedFile;
         $isBackIdCardUploaded = isset($args['backIdCard']) && $args['backIdCard'] instanceof UploadedFile;
         $manager = new ImageManager(new Driver());
-        if ($isPhotoUploaded || $isFrontIdCardUploaded || $isBackIdCardUploaded) {
+        if ($isFrontIdCardUploaded || $isBackIdCardUploaded) {
             // Procesar cada archivo solo si fue enviado en la solicitud
-
+/*
             if ($isPhotoUploaded) {
                 // Eliminar foto anterior
                 if ($technician->photo) {
@@ -187,7 +184,7 @@ class TecnicoMutations {
                 }
                 $photoCardPath = $this->processImage($args['photo'], "/{$technicianId}/profile/photo.png", $manager);
                 $technician->photo = str_replace('public/', '', $photoCardPath);
-            }
+            }*/
 
             if ($isFrontIdCardUploaded) {
                 // Eliminar frente del carnet anterior
@@ -211,7 +208,7 @@ class TecnicoMutations {
             $technician->save();
         }
         // HABILIDADES DEL TECNICO
-        $habilidades=[];
+        /*$habilidades=[];
         foreach($skillsData as $skill){
                 $existSkill = Tecnico_Habilidad::where('technicianId',$technicianId)
                 ->where('skillId',$skill['skillId'])
@@ -229,17 +226,55 @@ class TecnicoMutations {
                     ]);
                     $habilidades[] = $newSkill;
                 }
-        }
+        }*/
 
+        $skillsData = Tecnico_Habilidad::where('technicianId',$technicianId)
+        ->leftjoin('skills','technician_skills.skillId','=','skills.id')
+        ->get();
+        //dd($skillsData);
         return[
             'message' => 'Tecnico actualizado exitoso',
             'upcomingmessage' => 'Actualizacion de sus habilidades',
             'technician' => $technician,
             'user' => $user,
-            'skill' => $habilidades
+            'skill' => $skillsData
         ];
     }
 
+    public function photoUpdate($root ,array $args){
+        $photoTechnicialId = $args['id'];
+        $technicial = Tecnico::find($photoTechnicialId);
+        $validators = $this->validateImagePhoto($args);
+        if ($validators->fails()) {
+            return [
+                'message' => 'Archivo de imagen inválido.'
+            ];
+        }
+        $technicialId = $technicial->id;
+        $userId = $technicial->userId;
+        $user = User::find($userId);
+        $manager = new ImageManager(new Driver());
+        $this->createTechnicianDirectoriesPhoto($technicialId);
+        $isPhotoUploaded = isset($args['photo']) && $args['photo'] instanceof UploadedFile;
+        if ($isPhotoUploaded) {
+            // Eliminar foto anterior
+            if ($technicial->photo) {
+                Storage::disk('public')->delete($technicial->photo);
+            }
+            $photoCardPath = $this->processImage($args['photo'], "/{$technicialId}/profile/photo.png", $manager);
+            $technicial->photo = str_replace('public/', '', $photoCardPath);
+        }
+        $technicial->save();
+        $skillsData = Tecnico_Habilidad::where('technicianId',$technicialId)
+        ->leftjoin('skills','technician_skills.skillId','=','skills.id')
+        ->get();
+        return[
+            'message' => 'Foto de tecnico actualizado exitoso',
+            'technician' => $technicial,
+            'user' => $user,
+            'skill' => $skillsData
+        ];
+    }
     public function delete($root, array $args){
         $technician = Tecnico::find($args['id']);
         if (!$technician) {
@@ -263,9 +298,19 @@ class TecnicoMutations {
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
         ]);
     }
-
+    // Validación de imágenes
+    private function validateImagePhoto($args){
+        return Validator::make([
+        'photo' => $args['photo'] ?? null ,
+        ], [
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+        ]);
+    }
     private function createTechnicianDirectories($technicianId){
         Storage::makeDirectory('public/' . $technicianId . '/id_card');
+        Storage::makeDirectory('public/' . $technicianId . '/profile');
+    }
+    private function createTechnicianDirectoriesPhoto($technicianId){
         Storage::makeDirectory('public/' . $technicianId . '/profile');
     }
     // Procesamiento de imágenes

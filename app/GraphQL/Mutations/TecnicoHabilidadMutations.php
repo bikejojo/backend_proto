@@ -63,18 +63,18 @@ class TecnicoHabilidadMutations{
                 'message' => 'No existe tecnico'
             ];
         }
+
         // Eliminar las habilidades existentes del técnico
         Tecnico_Habilidad::where('technicianId', $tecnicoId)->delete();
         // Guardar las nuevas habilidades
         foreach ($habilidades as $habilidad) {
             Tecnico_Habilidad::create([
                 'technicianId' => $tecnicoId,
-                'skillId' => $habilidad['id_skill'],
+                'skillId' => $habilidad['skillId'],
                 'experience' => $habilidad['experience'],
-                //'description' => $habilidad['description'],
             ]);
         }
-        $habilidades = Tecnico_Habilidad::where('id_technician', $tecnicoId)->get();
+        $habilidades = Tecnico_Habilidad::where('technicianId', $tecnicoId)->get();
         //return $habilidades;
         return [
             'message' => 'habilidades actualizadas al tecnico OK' ,

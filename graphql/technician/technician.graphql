@@ -9,7 +9,7 @@ type Technician @model(class: "App\\Models\\Tecnico"){
   password: String! @trim
   photo: String @trim
   userId: String! @trim
-  cityId: String! @trim
+  id_city: String! 
 
   city: City! @belongsTo
   user: User! @belongsTo

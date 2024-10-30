@@ -33,11 +33,6 @@ class Cliente_Interno extends Model
         return $this->belongsTo(Ciudad::class, 'cityId');
     }
 
-    // Relación con SkillPreference (Preferencia_Habilidad)
-    public function skillPreferences()
-    {
-        return $this->hasMany(Preferencia_Habilidad::class, 'clientId');
-    }
 
     // Relación con Request (Solicitud)
     public function requests()
