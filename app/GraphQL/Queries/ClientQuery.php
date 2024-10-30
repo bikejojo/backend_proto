@@ -141,8 +141,9 @@ class ClientQuery{
         ->get();
         //dd($servicesInt);
         return [
-        'servicesExternal'=> $servicesExt,
-        'servicesInternal' => $servicesInt];
+            'servicesExternal'=> $servicesExt,
+            'servicesInternal' => $servicesInt
+        ];
     }
 
     public function quantityClient($root, array $args){

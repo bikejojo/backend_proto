@@ -1,0 +1,9 @@
+extend type Query {
+    requestTechnicalAll(id:ID!):responseTechnicalId @field (resolver: "RequestQuery@technicalId")
+}
+
+type responseTechnicalId {
+    message:String
+    request:[Request]
+    technical:Technician
+}

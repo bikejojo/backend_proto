@@ -1,7 +1,8 @@
 extend type Mutation {
     createTechnician(technicianRequest: JSON!, frontIdCard: Upload, backIdCard: Upload ): TechnicianResponse @field(resolver:"TecnicoMutations@create")
-    updateTechnician(id: ID!, technicianRequest: JSON!,skills:JSON! , photo: Upload, frontIdCard: Upload, backIdCard: Upload): TechnicianResponse @field(resolver:"TecnicoMutations@update")
+    updateTechnician(id: ID!, technicianRequest: JSON!, frontIdCard: Upload, backIdCard: Upload): TechnicianResponse @field(resolver:"TecnicoMutations@update")
     deleteTecnico(id:ID! @whereKey): Response @field(resolver:"TecnicoMutations@delete")
+    updatePhotoTechnician(id:ID!,photo:Upload):TechnicianResponse @field(resolver: "TecnicoMutations@photoUpdate")
 }
 
 type Response {
