@@ -110,7 +110,6 @@ class TecnicoMutations {
 
             // Guardar las rutas de las imágenes en el registro del técnico
             $technician->save();
-
             // Crear la agenda para el técnico
             $agenda = Agenda_Tecnico::create([
                 'technicianId' => $technicianId,
@@ -122,7 +121,6 @@ class TecnicoMutations {
                     'message' => 'Error al crear la agenda del técnico.'
                 ];
             }
-
             // Retornar los datos de éxito
             return [
                 'message' => 'Registro técnico exitoso',
@@ -137,7 +135,6 @@ class TecnicoMutations {
             ];
         }
     }
-
 
     public function update($root , array $args){
         $technicianData = $args['technicianRequest'];
@@ -205,15 +202,25 @@ class TecnicoMutations {
             $technician->save();
         }
         $skillsData = Tecnico_Habilidad::where('technicianId',$technicianId)
-        ->leftjoin('skills','technician_skills.skillId','=','skills.id')
         ->get();
+        $ha=[];
+            foreach($skillsData as $habilidad_tec) {
+                if ($habilidad_tec->skill) {
+                    // Añadimos los detalles de la habilidad al array
+                    $ha[] = [
+                        'id_skill' => $habilidad_tec->skill->id,
+                        'name' => $habilidad_tec->skill->name,
+                        'experience' => $habilidad_tec->experience,
+                    ];
+                }
+            }
         //dd($skillsData);
         return[
             'message' => 'Tecnico actualizado exitoso',
             'upcomingmessage' => 'Actualizacion de sus habilidades',
             'technician' => $technician,
             'user' => $user,
-            'skill' => $skillsData
+            'skill' => $ha
         ];
     }
 
@@ -242,13 +249,24 @@ class TecnicoMutations {
         }
         $technicial->save();
         $skillsData = Tecnico_Habilidad::where('technicianId',$technicialId)
-        ->leftjoin('skills','technician_skills.skillId','=','skills.id')
+        //->leftjoin('skills','technician_skills.skillId','=','skills.id')
         ->get();
+        $ha=[];
+        foreach($skillsData as $habilidad_tec) {
+            if ($habilidad_tec->skill) {
+                // Añadimos los detalles de la habilidad al array
+                $ha[] = [
+                    'id_skill' => $habilidad_tec->skill->id,
+                    'name' => $habilidad_tec->skill->name,
+                    'experience' => $habilidad_tec->experience,
+                ];
+            }
+        }
         return[
             'message' => 'Foto de tecnico actualizado exitoso',
             'technician' => $technicial,
             'user' => $user,
-            'skill' => $skillsData
+            'skill' => $ha
         ];
     }
     public function delete($root, array $args){

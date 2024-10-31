@@ -12,8 +12,14 @@ type Response {
 type TechnicianResponse {
   user: User
   technician: Technician
-  skill: [TechnicianSkill]
+  skill: [technicianskills]
   message: String
   upcomingmessage: String
+}
+
+type technicianskills {
+    id_skill:ID
+    name:String
+    experience:String
 }
 #import technician.graphql

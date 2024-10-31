@@ -91,8 +91,9 @@ class UserMutations{
                 if ($habilidad_tec->skill) {
                     // Añadimos los detalles de la habilidad al array
                     $ha[] = [
-                        'id' => $habilidad_tec->skill->id,
+                        'id_skill' => $habilidad_tec->skill->id,
                         'name' => $habilidad_tec->skill->name,
+                        'experience' => $habilidad_tec->experience,
                     ];
                 }
             }
@@ -121,7 +122,6 @@ class UserMutations{
             return [
                 'message' => 'Login exitoso',
                 'user' => $user,
-                'client' => $client,
                 'skills' => null
             ];
         }

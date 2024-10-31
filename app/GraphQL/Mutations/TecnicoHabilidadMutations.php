@@ -46,12 +46,14 @@ class TecnicoHabilidadMutations{
             $habilidades[] = $habilidadTecnico;
         }
         //dd($habilidades);
+        $skill = Tecnico_Habilidad::where('technicianId',$id)
+        ->leftjoin('skills','technician_skills.skillId','=','skills.id')->get();
         $technician = Tecnico::find($id);
 
         return [
             'message' => 'habilidades registradas.' ,
             'technician' => $technician,
-            'skills' => $habilidades
+            'skills' => $skill
         ];
     }
     public function update($root,array $args){
@@ -70,12 +72,14 @@ class TecnicoHabilidadMutations{
         foreach ($habilidades as $habilidad) {
             Tecnico_Habilidad::create([
                 'technicianId' => $tecnicoId,
-                'skillId' => $habilidad['skillId'],
+                'skillId' => $habilidad['id_skill'],
                 'experience' => $habilidad['experience'],
             ]);
         }
-        $habilidades = Tecnico_Habilidad::where('technicianId', $tecnicoId)->get();
+        $habilidades = Tecnico_Habilidad::where('technicianId', $tecnicoId)
+        ->leftjoin('skills','technician_skills.skillId','=','skills.id')->get();
         //return $habilidades;
+        //dd($habilidades);
         return [
             'message' => 'habilidades actualizadas al tecnico OK' ,
             'technician' => $technician,

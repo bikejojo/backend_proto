@@ -7,7 +7,13 @@ extend type Mutation {
 type SkillResponse {
   message: String
   technician: Technician
-  skills: [TechnicianSkill]
+  skills: [technicianskill]
+}
+
+type technicianskill {
+    id_skill:ID @rename (attribute: "skillId")
+    name:String
+    experience:String
 }
 
 type responseSkillsUser {
@@ -16,8 +22,7 @@ type responseSkillsUser {
 }
 
 input TechnicianSkillInput {
-  skillId: ID!
+  id_skill: ID!
   experience: String
-  description: String
 }
 #import skillTechnician.graphql
