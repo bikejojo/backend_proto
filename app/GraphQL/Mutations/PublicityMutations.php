@@ -9,13 +9,15 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
 
-final readonly class PublicityMutations
-{
-    /** @param  array{}  $args */
-    public function __invoke(null $_, array $args)
+final class PublicityMutations{
+
+    protected $app;
+
+    public function __construct()
     {
-        // TODO implement the resolver
+        $this->app = env('APP_URL').':'.env('SERVER_PORT');
     }
+
 
     public function create($root,array $args){
         $publicityDate = $args['requestPublicity'];
@@ -44,7 +46,7 @@ final readonly class PublicityMutations
         if (isset($args['logo']) && $args['logo'] instanceof UploadedFile) {
             $frontIdPath = $this->processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/publicidad.png", $manager);
             //dd($frontIdPath);
-            $publicity->logo = str_replace('public/', '', $frontIdPath);
+            $publicity->logo =$this->app . '/storage' . str_replace('public/', '', $frontIdPath);
         }
         $publicity->save();
 
@@ -110,7 +112,7 @@ final readonly class PublicityMutations
 
             // Procesa y guarda la nueva imagen en el nuevo directorio
             $logoPath = $this->processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/publicidad.png", $manager);
-            $publicity->logo = str_replace('public/', '', $logoPath);
+            $publicity->logo =$this->app . '/storage' . str_replace('public/', '', $logoPath);
             $publicity->save();
         }
         return [
