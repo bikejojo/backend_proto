@@ -18,8 +18,6 @@ class SolicitudesMutations
         $stateValue = 1;
 
         $description = trim($requestData['requestDescription']);
-        $location = trim($requestData['locationDescription']);
-        $now=Carbon::now();
         $clientId =$requestData['id_client'];
         if($clientId!== null){
             $client=Cliente_Interno::find($clientId);
@@ -36,12 +34,7 @@ class SolicitudesMutations
         $request->technicianId = $technician->id;
         $request->stateId = $requestData['id_state'];
         $request->requestDescription = $description;
-        $request->latitude = $requestData['latitude'];
-        $request->longitude = $requestData['latitude'];
-        $request->locationDescription = $location;
-        $request->registrationDateTime = $now;
         $request->status = $stateValue;
-        $request->expirationDateTime=$now->addMinutes(10);
         $request->save();
         ##########################
         return [
@@ -52,91 +45,52 @@ class SolicitudesMutations
         ];
    }
     public function modifyState($root,array $args){
-        $converciotion = 3;
-        $rejectTime = 4;
-        $rejectTechn=5;
-        $accepted=6;
-        $client = 1;
-        $type=1;
-        $process = 7;
+        $reject = 2;
+        $accept = 3;
 
         $requestData = $args['requestRequest'];
         $requestId = $requestData['id_requests'];
+        $state = $requestData['id_state'];
         $request = Solicitud::find($requestId);
         $clientId = $request->clientId;
-        //dd($clientId);
-        $cliente = Cliente_Interno::find($clientId);
-        //dd($cliente);
         $tecnicoId=$request->technicianId;
-        //dd($tecnicoId);
+        $cliente = Cliente_Interno::find($clientId);
         $tecnico = Tecnico::find($tecnicoId);
-        $state = $requestData['id_state'];
-        switch($state){
-            case 3:
-                $request->stateId =$converciotion;
-                $request->expirationDateTime= Carbon::now()->addMinute(20);
-                $request->updatedDateTime = Carbon::now();
-                break;
-            case 4:
-                $request->stateId =$rejectTime;
-                $request->expirationDateTime = Carbon::now();
-                break;
-            case 5:
-                $request->stateId =$rejectTechn;
-                $request->expirationDateTime = Carbon::now();
-                break;
-            case 6:
-                $request->stateId =$accepted;
-                $program=$requestData['programDate'];
-                $request->expirationDateTime=Carbon::now();
-                $request->updatedDateTime = Carbon::now();
-                break;
+        if($state === $reject){
+            $request->stateId = $state;
+            $request->status= 0;
+            $request->save();
+            return[
+                'message'=>'Solicitud rechazada por el tecnico',
+                'requests'=>$request,
+                'client' => $cliente,
+                'technician' => $tecnico
+            ];
         }
+
+        $request->stateId = $state;
         $request->save();
-        if($request->stateId == 6){
 
-            $service = new Servicio();
-            $service->technicalId=$request->technicianId;
-            $service->clientId=$request->clientId;
-            $service->typeClient=$client;
-            $service->stateId=$process;
-            $service->requestsId=$request->id;
-            $service->programDate = $program;
-            $service->serviceDescription=$request->requestDescription;
-            $service->requestsDate = Carbon::now();
-            $service->save();
+        $service = new Servicio();
 
-            $tecnicoId=$tecnico->id;
-            //dd($cliente->id);
+        $service->save();
 
-            $agenda=Agenda_Tecnico::where('technicianId',$tecnicoId)->first();
+        $tecnicoId=$tecnico->id;
+        //dd($cliente->id);
 
-            $detalleAgenda=Detalle_Agenda_Tecnico::create([
-                'clientId' => $cliente->id,
-                'agendaTechnicalId' => $agenda->id,
-                'citationId'=>null,
-                'serviceId' => $service->id ,
-                'typeClient' => $client,
-                'createDate' => Carbon::now(),
-                'typeJob' => $type ,
-                'serviceDate' => $program ,
-                'citationDate' => null ,
-            ]);
-            return[
-                'message'=>'solicitud confirmada',
-                'requests'=>$request,
-                'messageService' => 'Servicio en proceso',
-                'service' => $service,
-                'client' => $cliente,
-                'technician' => $tecnico
-            ];
-        }else{
-            return[
-                'message'=>'solicitud modificada',
-                'requests'=>$request,
-                'client' => $cliente,
-                'technician' => $tecnico
-            ];
-        }
+        $agenda=Agenda_Tecnico::where('technicianId',$tecnicoId)->first();
+
+        $detalleAgenda=Detalle_Agenda_Tecnico::create([
+
+        ]);
+        return[
+            'message'=>'solicitud confirmada',
+            'requests'=>$request,
+            'messageService' => 'Servicio en proceso',
+            'service' => $service,
+            'client' => $cliente,
+            'technician' => $tecnico
+        ];
+
     }
 }

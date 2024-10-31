@@ -20,9 +20,9 @@ return new class extends Migration
             $table->string('typeClient');
             $table->string('serviceDescription');
             $table->string('status');
-            $table->datetime('programDate')->nullable();
-            $table->datetime('requestsDate')->nullable();
-            $table->datetime('finishedDate')->nullable();
+            $table->datetime('createdDateTime')->nullable();
+            $table->datetime('updatedDateTime')->nullable();
+            $table->datetime('finishedDateTime')->nullable();
             $table->foreign('stateId')->references('id')->on('state_types')->onDelete('cascade');
             $table->foreign('requestsId')->references('id')->on('requests')->onDelete('cascade');
             #$table->foreign('technicalId')->references('id')->on('technicians')->onDelete('cascade');
