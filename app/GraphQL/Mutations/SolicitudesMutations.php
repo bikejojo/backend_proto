@@ -15,6 +15,7 @@ class SolicitudesMutations
 {
     public function create($root , array $args){
         $requestData = $args['requestRequest'];
+        $stateValue = 1;
 
         $description = trim($requestData['requestDescription']);
         $location = trim($requestData['locationDescription']);
@@ -39,6 +40,7 @@ class SolicitudesMutations
         $request->longitude = $requestData['latitude'];
         $request->locationDescription = $location;
         $request->registrationDateTime = $now;
+        $request->status = $stateValue;
         $request->expirationDateTime=$now->addMinutes(10);
         $request->save();
         ##########################
@@ -108,7 +110,7 @@ class SolicitudesMutations
             //dd($cliente->id);
 
             $agenda=Agenda_Tecnico::where('technicianId',$tecnicoId)->first();
-            
+
             $detalleAgenda=Detalle_Agenda_Tecnico::create([
                 'clientId' => $cliente->id,
                 'agendaTechnicalId' => $agenda->id,

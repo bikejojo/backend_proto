@@ -19,6 +19,7 @@ class Solicitud extends Model
         'latitude',
         'longitude',
         'locationDescription',
+        'status',
         'registrationDateTime',
         'expirationDateTime',
         'updatedDateTime',

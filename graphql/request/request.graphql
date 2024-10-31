@@ -7,6 +7,7 @@ type Request {
     latitude:String!
     longitude:String!
     locationDescription:String!
+    status:String!
     registrationDateTime:String!
     expirationDateTime:String!
     updatedDateTime:String!
