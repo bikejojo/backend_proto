@@ -4,13 +4,10 @@ type Request {
     id_technician:ID! @rename(attribute: "technicianId")
     id_state:ID! @rename(attribute: "stateId")
     requestDescription:String!
-    latitude:String!
-    longitude:String!
-    locationDescription:String!
     status:String!
-    registrationDateTime:String!
-    expirationDateTime:String!
+    createdDateTime:String!
     updatedDateTime:String!
+    finishDateTime:String!
 
     technician:Technician! @belongsTo
     client:InternalClient! @belongsTo

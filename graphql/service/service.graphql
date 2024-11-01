@@ -7,9 +7,9 @@ type Service {
     typeClient:String!
     serviceDescription:String
     status:String
-    programDate:String
-    finishedDate:String
-    requestsDate:String!
+    createdDateTime:String
+    updatedDateTime:String
+    finishDateTime:String
 
     state:StateType! @belongsTo
     request:[Request!]! @hasMany

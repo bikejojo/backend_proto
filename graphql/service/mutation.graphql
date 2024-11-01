@@ -1,5 +1,6 @@
 extend type Mutation {
-    createService(requestService:JSON!):responseService @field(resolver:"ServicioMutations@create")
+    createServiceInternal(requestService:JSON!):responseServiceClient @field(resolver:"ServicioMutations@createInternal")
+    createServiceExternal(requestService:JSON!):responseService @field(resolver:"ServicioMutations@createExternal")
     updateService(requestService:JSON!):responseServiceClient @field(resolver:"ServicioMutations@update")
     deleteService(requestService:JSON!):responseServiceDelete @field(resolver:"ServicioMutations@delete")
 }
@@ -13,9 +14,7 @@ type responseService {
 type responseServiceClient {
     message:String
     messageN:String
-    cita:Citation
     service:Service
-    customer_external:ExternalClient
     customer_internal:InternalClient
 }
 

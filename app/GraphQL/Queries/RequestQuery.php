@@ -13,9 +13,10 @@ final readonly class RequestQuery
         // TODO implement the resolver
     }
 
-    public function technicalId($root , array $args){
+    public function requestsTechnicalId($root , array $args){
         $technicalId = $args['id'];
         $technical = Tecnico::find($technicalId);
+        //dd($technical);
         if(!isset($technical)){
             return [
                 'message' => 'No existe tecnico'
@@ -30,9 +31,9 @@ final readonly class RequestQuery
             ];
         }
         return [
-            'message' => 'No existe solicitudes del tecnico.',
+            'message' => 'Solicitudes del tecnico.',
             'request' => $request,
-            'technicial' =>  $technical
+            'technical' =>  $technical
         ];
     }
 }

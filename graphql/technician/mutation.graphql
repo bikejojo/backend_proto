@@ -12,7 +12,7 @@ type Response {
 type TechnicianResponse {
   user: User
   technician: Technician
-  skill: [technicianskills]
+  skills: [technicianskills]
   message: String
   upcomingmessage: String
 }

@@ -18,9 +18,9 @@ class Servicio extends Model
         'clientId',
         'typeClient',
         'serviceDescription',
-        'programDate',
-        'requestsDate',
-        'finishedDate',
+        'createdDateTime',
+        'updatedDateTime',
+        'finishDateTime',
         'status'
     ];
 

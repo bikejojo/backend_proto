@@ -127,7 +127,7 @@ class TecnicoMutations {
                 'upcomingmessage' => 'Registre sus habilidades',
                 'technician' => $technician,
                 'user' => $user,
-                'skill' => $skill
+                'skills' => $skill
             ];
         } catch (\Exception $e) {
             return [
@@ -155,6 +155,11 @@ class TecnicoMutations {
         $technician = Tecnico::find($technicianId);
         $userId = $technician->userId;
         $user = User::find($userId);
+
+        if(!isset($technicianData['password'])){
+            //dd(1);
+            $technicianData['password'] = $user->password;
+        }
         //actualizar user para todo
         $email = strtolower(trim($technicianData['email']));
         $user->email = $email;
@@ -220,7 +225,7 @@ class TecnicoMutations {
             'upcomingmessage' => 'Actualizacion de sus habilidades',
             'technician' => $technician,
             'user' => $user,
-            'skill' => $ha
+            'skills' => $ha
         ];
     }
 
@@ -266,7 +271,7 @@ class TecnicoMutations {
             'message' => 'Foto de tecnico actualizado exitoso',
             'technician' => $technicial,
             'user' => $user,
-            'skill' => $ha
+            'skills' => $ha
         ];
     }
     public function delete($root, array $args){

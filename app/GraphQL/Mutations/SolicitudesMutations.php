@@ -16,20 +16,20 @@ class SolicitudesMutations
     public function create($root , array $args){
         $requestData = $args['requestRequest'];
         $stateValue = 1;
-
         $description = trim($requestData['requestDescription']);
         $clientId =$requestData['id_client'];
-        if($clientId!== null){
-            $client=Cliente_Interno::find($clientId);
+        $client=Cliente_Interno::find($clientId);
+
+        if(!$client){
+            return [ 'message' => 'Cliente no encontrado.'];
         }
-        //dd($client);
         $technicianId=$requestData['id_technician'];
-        if($technicianId!==null){
-            $technician=Tecnico::find($technicianId);
+        $technician=Tecnico::find($technicianId);
+        if(!$technician){
+            return [ 'message' => 'Tecnico no encontrado.'];
         }
         ##########################
         $request = new Solicitud();
-
         $request->clientId = $client->id;
         $request->technicianId = $technician->id;
         $request->stateId = $requestData['id_state'];
@@ -66,31 +66,18 @@ class SolicitudesMutations
                 'client' => $cliente,
                 'technician' => $tecnico
             ];
+        }elseif($state === $accept ){
+            $request->stateId = $state;
+            $request->status= 1;
+            $request->save();
+            return[
+                'message'=>'solicitud confirmada',
+                'requests'=>$request,
+                'messageService' => 'Se agendara el servico en un momento',
+                'client' => $cliente,
+                'technician' => $tecnico
+            ];
         }
-
-        $request->stateId = $state;
-        $request->save();
-
-        $service = new Servicio();
-
-        $service->save();
-
-        $tecnicoId=$tecnico->id;
-        //dd($cliente->id);
-
-        $agenda=Agenda_Tecnico::where('technicianId',$tecnicoId)->first();
-
-        $detalleAgenda=Detalle_Agenda_Tecnico::create([
-
-        ]);
-        return[
-            'message'=>'solicitud confirmada',
-            'requests'=>$request,
-            'messageService' => 'Servicio en proceso',
-            'service' => $service,
-            'client' => $cliente,
-            'technician' => $tecnico
-        ];
 
     }
 }

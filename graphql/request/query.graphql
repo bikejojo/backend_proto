@@ -1,5 +1,5 @@
 extend type Query {
-    requestTechnicalAll(id:ID!):responseTechnicalId @field (resolver: "RequestQuery@technicalId")
+    requestTechnicalAll(id:ID!):responseTechnicalId @field (resolver: "RequestQuery@requestsTechnicalId")
 }
 
 type responseTechnicalId {
