@@ -3,6 +3,7 @@
 namespace App\GraphQL\Mutations;
 
 use App\Models\Publicidad;
+use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Validator;
@@ -41,10 +42,11 @@ final class PublicityMutations{
         $publicityId = $publicity->id;
         $publicityComplete = $publicityName."_".$publicityId;
         $this->createDirectories($publicityComplete);
+        $now = Carbon::now()->format('Ymd_His');
         $manager = new ImageManager(new Driver());
         //']);
         if (isset($args['logo']) && $args['logo'] instanceof UploadedFile) {
-            $frontIdPath = $this->processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/publicidad.png", $manager);
+            $frontIdPath = $this->processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/". "{$now}.png", $manager);
             //dd($frontIdPath);
             $publicity->logo =$this->app . '/storage' . str_replace('public/', '', $frontIdPath);
         }
@@ -111,7 +113,8 @@ final class PublicityMutations{
             Storage::disk('public')->delete($publicity->logo);
 
             // Procesa y guarda la nueva imagen en el nuevo directorio
-            $logoPath = $this->processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/publicidad.png", $manager);
+            $now = Carbon::now()->format('Ymd_His');
+            $logoPath = $this->processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/"."{$now}.png", $manager);
             $publicity->logo =$this->app . '/storage' . str_replace('public/', '', $logoPath);
             $publicity->save();
         }
