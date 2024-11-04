@@ -17,16 +17,18 @@ return new class extends Migration
             $table->unsignedInteger('requestsId')->nullable();
             $table->unsignedInteger('technicalId');
             $table->unsignedInteger('clientId');
+            $table->unsignedInteger('activityId');
             $table->string('typeClient');
+            $table->text('titleService');
             $table->string('serviceDescription');
+            $table->text('serviceLocation');
             $table->string('status');
             $table->datetime('createdDateTime')->nullable();
             $table->datetime('updatedDateTime')->nullable();
             $table->datetime('finishedDateTime')->nullable();
             $table->foreign('stateId')->references('id')->on('state_types')->onDelete('cascade');
             $table->foreign('requestsId')->references('id')->on('requests')->onDelete('cascade');
-            #$table->foreign('technicalId')->references('id')->on('technicians')->onDelete('cascade');
-            #$table->foreign('clientId')->references('id')->on('internal_clients')->onDelete('cascade');
+            $table->foreign('activityId')->references('id')->on('activity_types')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -2,11 +2,12 @@
 
 namespace App\GraphQL\Mutations;
 use App\Models\Servicio;
-use App\Models\Cita;
 use App\Models\Cliente_Externo;
 use Carbon\Carbon;
 use Nuwave\Lighthouse\Federation\Resolvers\Service;
+use Illuminate\Support\Facades\DB;
 use App\Models\Agenda_Tecnico;
+use App\Models\Asociacion_Cliente_Tecnico;
 use App\Models\Cliente_Interno;
 use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Tecnico;
@@ -32,7 +33,7 @@ class ServicioMutations
         $clientId = Cliente_Interno::find($serviceData['id_client']);
         if(is_null($clientId)){
             return [
-                'message' => 'Tecnico no existe'
+                'message' => 'Cliente no existe'
             ];
         }
         $service = Servicio::create([
@@ -89,43 +90,93 @@ class ServicioMutations
                 'message' => 'Cliente no existe'
             ];
         }
-        $service = Servicio::create([
-            'stateId' => $state,
-            'technicalId' => $serviceData['id_technician'],
-            'clientId' => $serviceData['id_client'],
-            'typeClient' => $typeClient,
-            'serviceDescription' => $serviceData['serviceDescription'],
-            'createdDateTime' => $now,
-            'updatedDateTime' => $serviceData['updatedDateTime'],
-            'status' => 1
-        ]);
+        $associant = Asociacion_Cliente_Tecnico::where('clientId',$serviceData['id_client'])
+        ->where('technicalId',$serviceData['id_technician'])->first();
+        //dd($associant);
+        if(is_null($associant)){
+            return [
+                'message' => 'No existe relacion entre tecnico y cliente externo.'
+            ];
+        }
+        DB::beginTransaction();
+        try{
+            $service = Servicio::create([
+                'stateId' => $state,
+                'technicalId' => $serviceData['id_technician'],
+                'clientId' => $serviceData['id_client'],
+                'activityId' => $serviceData['id_activity'],
+                'typeClient' => $typeClient,
+                'titleService' => trim($serviceData['titleService']),
+                'serviceDescription' => trim($serviceData['serviceDescription']),
+                'serviceLocation' => trim($serviceData['serviceLocation']),
+                'createdDateTime' => $now,
+                'updatedDateTime' => $serviceData['updatedDateTime'],
+                'status' => 1
+            ]);
 
-        $agenda = Agenda_Tecnico::where('technicianId',$technicalId->id)->first();
+            $agenda = Agenda_Tecnico::where('technicianId',$technicalId->id)->first();
 
-        if(!$agenda){
-            $agenda = Agenda_Tecnico::create([
-                'technicianId' => $technicalId->id,
+            if(!$agenda){
+                $agenda = Agenda_Tecnico::create([
+                    'technicianId' => $technicalId->id,
+                    'createDate' => Carbon::now()
+                ]);
+            }
+
+            $agendaId = $agenda->id;
+            $detailAgenda = Detalle_Agenda_Tecnico::create([
+                'agendaTechnicalId' => $agendaId,
+                'clientId' => $serviceData['id_client'],
+                'serviceId' => $service->id,
+                'typeClient' => $typeClient,
+                'serviceDate' => $service->updatedDateTime,
                 'createDate' => Carbon::now()
             ]);
+            DB::commit();
+            return[
+                'message'=>'Servicio registrado para cliente externo',
+                'service'=>$service,
+                'customer_external' => $clientId
+            ];
+        }catch(\Exception $e){
+            DB::rollBack();
+            return [
+                'message' => 'Fallas al momento de interactuar con la base de datos.' . $e->getMessage()
+            ];
         }
 
-        $agendaId = $agenda->id;
-        $detailAgenda = Detalle_Agenda_Tecnico::create([
-            'agendaTechnicalId' => $agendaId,
-            'clientId' => $serviceData['id_client'],
-            'serviceId' => $service->id,
-            'typeClient' => $typeClient,
-            'serviceDate' => $service->updatedDateTime,
-            'createDate' => Carbon::now()
-        ]);
-        return[
-            'message'=>'Servicio registrado para cliente externo',
-            'service'=>$service,
-            'customer_external' => $clientId
-        ];
     }
-    public function update($root,array $args){
-
+    public function finishServiceClientExternal($root,array $args){
+        $serviceData = $args['requestService'];
+        $serviceId = $serviceData['id_service'];
+        $serviceDateTime = $serviceData['finishDateTime'];
+        $finish = 5;
+        DB::beginTransaction();
+        try{
+            $service = Servicio::find($serviceId);
+            if(is_null($service->id)){
+                return [
+                    'message' => 'Servicio no encontrado.'
+                ];
+            }
+            $client = Cliente_Externo::find($service->clientId);
+            $technician = Tecnico::find($service->technicianId);
+            $service->stateId = $finish;
+            $service->finishDateTime = $serviceDateTime;
+            $service->updatedDateTime = Carbon::now();
+            $service->save();
+            return [
+                'message' => 'Servicio terminado',
+                'customer_external' => $client ,
+                'technician' => $technician ,
+                'service' => $service
+            ];
+        }catch(\Exception $e){
+            DB::rollBack();
+            return [
+                'message' => 'Error en la actualizacion de datos.' . $e->getMessage()
+            ];
+        }
     }
 
     public function delete($root , array $args){

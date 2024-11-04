@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Queries;
 
+use App\Models\Cliente_Interno;
 use App\Models\Tecnico;
 use App\Models\Solicitud;
 
@@ -24,16 +25,45 @@ final readonly class RequestQuery
         }
 
         $technicaId = $technical->id;
-        $request = Solicitud::where('technicianId',$technicaId)->get();
-        if(!isset($request)){
+        $request = Solicitud::where('technicianId',$technicaId)
+        ->orderBy('registrationDateTime','DESC')
+        ->get();
+        if(isset($request)){
             return [
-                'message' => 'No existe solicitudes del tecnico.'
+                'message' => 'No existe solicitudes del tecnico.',
+                'technical' => $technical
             ];
         }
         return [
             'message' => 'Solicitudes del tecnico.',
             'request' => $request,
             'technical' =>  $technical
+        ];
+    }
+
+    public function requestsClientId($root , array $args){
+        $clientId = $args['id'];
+        $client = Cliente_Interno::find($clientId);
+        //dd($technical);
+        if(!isset($client)){
+            return [
+                'message' => 'No existe cliente'
+            ];
+        }
+
+        $technicaId = $client->id;
+        $request = Solicitud::where('clientId',$clientId)
+        ->orderBy('registrationDateTime','DESC')
+        ->get();
+        if(!isset($request)){
+            return [
+                'message' => 'No existe solicitudes del cliente.'
+            ];
+        }
+        return [
+            'message' => 'Solicitudes del clientes',
+            'request' => $request,
+            'client' =>  $client
         ];
     }
 }

@@ -4,8 +4,11 @@ type Service {
     id_requests:ID @rename(attribute: "requestsId")
     id_technician:ID! @rename(attribute: "technicalId")
     id_client:ID! @rename(attribute: "clientId")
+    id_activity: ID! @rename(attribute: "activityId")
     typeClient:String!
+    titleService: String
     serviceDescription:String
+    serviceLocation:String
     status:String
     createdDateTime:String
     updatedDateTime:String

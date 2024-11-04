@@ -1,6 +1,6 @@
 extend type Mutation {
-  registerRequest(requestRequest:JSON!):requestResponse @field(resolver:"SolicitudesMutations@create")
-  updateRequest(requestRequest:JSON!):requestResponseService @field(resolver:"SolicitudesMutations@modifyState")
+  registerRequest(requestRequest:JSON!):requestResponse @field(resolver: "SolicitudesMutations@create")
+  updateRequest(requestRequest:JSON!):requestResponseService @field(resolver: "SolicitudesMutations@modifyState")
 }
 
 type requestResponse {

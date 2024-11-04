@@ -61,16 +61,14 @@ class DatabaseSeeder extends Seeder
         #agenda
         Tipo_Actividad::create(['description'=>'mantenimiento']);
         Tipo_Actividad::create(['description'=>'reparacion']);
-        Tipo_Actividad::create(['description'=>'seguimiento']);
-        Tipo_Actividad::create(['description'=>'visita']);
-        Tipo_Actividad::create(['description'=>'finalizado']);
+        Tipo_Actividad::create(['description'=>'instalacion']);
+        Tipo_Actividad::create(['description'=>'inspeccion']);
         #solicitud
         Tipo_Estado::create(['description'=>'pendiente por aceptar']);
         Tipo_Estado::create(['description'=>'rechazado por tecnico']);
         Tipo_Estado::create(['description'=>'aceptado']);
         #servicio
-        Tipo_Estado::create(['description'=>'en progreso']);
-        Tipo_Estado::create(['description'=>'reprogramada']);
+        Tipo_Estado::create(['description'=>'pendiente']);
         Tipo_Estado::create(['description'=>'terminado']);
     }
 }

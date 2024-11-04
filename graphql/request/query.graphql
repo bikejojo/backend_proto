@@ -1,9 +1,16 @@
 extend type Query {
     requestTechnicalAll(id:ID!):responseTechnicalId @field (resolver: "RequestQuery@requestsTechnicalId")
+    requestClientAll(id:ID!):responseClientId @field (resolver: "RequestQuery@requestsClientId")
 }
 
 type responseTechnicalId {
     message:String
     request:[Request]
     technical:Technician
+}
+
+type responseClientId {
+    message:String
+    request:[Request]
+    client: InternalClient
 }

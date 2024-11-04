@@ -6,8 +6,6 @@ type Request {
     requestDescription:String!
     status:String!
     createdDateTime:String!
-    updatedDateTime:String!
-    finishDateTime:String!
 
     technician:Technician! @belongsTo
     client:InternalClient! @belongsTo

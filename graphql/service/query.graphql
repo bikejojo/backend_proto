@@ -1,0 +1,16 @@
+extend type Query {
+    getListClientExternalAll(id:ID!):responseClientExternal @field (resolver: "ServiceQuery@getExternalClient")
+    getListClientExternalEarring(id:ID!):responseClientExternal @field (resolver: "ServiceQuery@getExternalClientEarring")
+    getListClientExternalOver(id:ID!):responseClientExternal @field (resolver: "ServiceQuery@getExternalClientOver")
+}
+
+type responseClientExternal {
+    message:String
+    service:[services]
+    technician:Technician
+}
+type services {
+    _service:Service
+    customer_external:ExternalClient
+}
+#import service.graphql
