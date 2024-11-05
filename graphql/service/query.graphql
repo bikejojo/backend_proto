@@ -2,6 +2,7 @@ extend type Query {
     getListClientExternalAll(id:ID!):responseClientExternal @field (resolver: "ServiceQuery@getExternalClient")
     getListClientExternalEarring(id:ID!):responseClientExternal @field (resolver: "ServiceQuery@getExternalClientEarring")
     getListClientExternalOver(id:ID!):responseClientExternal @field (resolver: "ServiceQuery@getExternalClientOver")
+    getListClientExternalActivity(requestService:JSON):responseClientExternal @field (resolver: "ServiceQuery@getExternalClientActivity")
 }
 
 type responseClientExternal {

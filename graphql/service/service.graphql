@@ -16,7 +16,6 @@ type Service {
 
     state:StateType! @belongsTo
     request:[Request!]! @hasMany
-    service: Citation! @belongsTo
 
     ratings:[Rating] @hasOne
 }

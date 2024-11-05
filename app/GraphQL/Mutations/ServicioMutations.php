@@ -24,6 +24,7 @@ class ServicioMutations
         $serviceData = $args['requestService'];
         $state = 4;
         $typeClient = 1;
+        $now=Carbon::now();
         $technicalId = Tecnico::find($serviceData['id_technician']);
         if(is_null($technicalId)){
             return [
@@ -37,13 +38,16 @@ class ServicioMutations
             ];
         }
         $service = Servicio::create([
-            'stateId' => $state,
             'requestsId' => $serviceData['id_requests'],
+            'stateId' => $state,
             'technicalId' => $serviceData['id_technician'],
             'clientId' => $serviceData['id_client'],
+            'activityId' => $serviceData['id_activity'],
             'typeClient' => $typeClient,
-            'serviceDescription' => $serviceData['serviceDescription'],
-            'createdDateTime' => Carbon::now(),
+            'titleService' => trim($serviceData['titleService']),
+            'serviceDescription' => trim($serviceData['serviceDescription']),
+            'serviceLocation' => trim($serviceData['serviceLocation']),
+            'createdDateTime' => $now,
             'updatedDateTime' => $serviceData['updatedDateTime'],
             'status' => 1
         ]);

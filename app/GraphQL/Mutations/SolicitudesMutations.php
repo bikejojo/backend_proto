@@ -88,12 +88,13 @@ class SolicitudesMutations
         $requestId = $requestData['id_requests'];
         $state = $requestData['id_state'];
         $request = Solicitud::find($requestId);
+        ###################################3
         $clientId = $request->clientId;
         $tecnicoId=$request->technicianId;
         $cliente = Cliente_Interno::find($clientId);
         $tecnico = Tecnico::find($tecnicoId);
         $request->stateId = $state;
-        $request->status= 0;
+        $request->status= 1;
         $request->save();
         return[
             'message'=>'Solicitud rechazada por el tecnico',

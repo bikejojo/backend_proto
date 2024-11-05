@@ -14,3 +14,5 @@ type responseClientId {
     request:[Request]
     client: InternalClient
 }
+
+#import request.graphql

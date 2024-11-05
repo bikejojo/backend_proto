@@ -131,4 +131,51 @@ final readonly class ServiceQuery
             'technician' => $technician
         ];
     }
+    ## Actividad que se realizo
+    public function getExternalClientActivity($root , array $args){
+        $serviceData = $args['requestService'];
+        $technicianId = $serviceData['id_technician'];
+        $activityId = $serviceData['id_activity'];
+        //dd($serviceData);
+        $technician = Tecnico::find($technicianId);
+        if(is_null($technician)){
+            return [ 'message'=>'No existe tecnico'];
+        }
+        $query = Servicio::where('technicalId', $technician->id)
+        ->where('typeClient', 2)
+        ->leftJoin('external_clients', 'services.clientId', '=', 'external_clients.id')
+        ->select('services.*', 'external_clients.fullName', 'external_clients.phoneNumber')
+        ->orderBy('updatedDateTime', 'DESC');
+
+        // Filtrar por actividad si se proporciona un activityId
+        if (in_array($activityId, [1, 2, 3, 4])) {
+            $query->where('activityId', $activityId);
+        }
+
+        // Obtener los resultados
+        $service = $query->get();
+        //dd($service);
+        if($service->isEmpty()){
+            return [
+                'message' => 'No existen servicios en esta actividad.'
+            ];
+        }
+        $servic = $service->map(function ($service) {
+            $serviceAttributes = $service->getAttributes();
+            return [
+                '_service' => $serviceAttributes,
+                'customer_external' => [
+                    'fullName' => $service->fullName,
+                    'phoneNumber' => $service->phoneNumber,
+                ]
+            ];
+        });
+
+        return [
+            'message' => 'Listado de servicios de clientes externos',
+            'service' => $servic,
+            'technician' => $technician
+        ];
+    }
+
 }
