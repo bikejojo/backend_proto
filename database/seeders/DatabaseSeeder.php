@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\categoria_publicidad;
 use App\Models\User;
 use App\Models\Ciudad;
 use App\Models\Habilidad;
@@ -70,5 +71,10 @@ class DatabaseSeeder extends Seeder
         #servicio
         Tipo_Estado::create(['description'=>'pendiente']);
         Tipo_Estado::create(['description'=>'terminado']);
+
+        categoria_Publicidad::create(['description'=>'']);
+        categoria_Publicidad::create(['description'=>'']);
+        categoria_Publicidad::create(['description'=>'']);
+        categoria_Publicidad::create(['description'=>'']);
     }
 }
