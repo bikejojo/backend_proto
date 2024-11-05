@@ -64,7 +64,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-     public function up(): void
+    /* public function up(): void
         {
             Schema::table('detail_technical_agenda', function (Blueprint $table) {
                 $table->dropColumn('citationId')->nullable();
@@ -78,5 +78,20 @@ return new class extends Migration
             Schema::table('detail_technical_agenda', function (Blueprint $table) {
 
             });
+        }*/
+        public function up(): void
+        {
+           Schema::table('publicity', function (Blueprint $table) {
+                $table->unsignedBigInteger('categoryId')->nullable();
+                $table->foreign('categoryId')->references('id')->on('category_publicity')->onDelete('cascade');
+            });
         }
+
+        //public function down(): void
+        //{
+          ///  Schema::table('publicity', function (Blueprint $table) {
+                //$table->unsignedBigInteger('categoryId')->nullable();
+                //$table->foreign('categoryId')->references('id')->on('category_publicity')->onDelete('cascade');
+            // });
+       //S }
 };
