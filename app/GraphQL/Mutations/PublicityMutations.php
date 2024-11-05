@@ -36,6 +36,7 @@ final class PublicityMutations{
             'createdDate'=>           $publicityDate['createdDate'],
             'startDate' =>            $publicityDate['startDate'],
             'finishDate' =>           $publicityDate['finishDate'],
+            'categoryId' =>           $publicityDate['id_category'],
             'status'=>                1
         ]);
         $publicityName = $publicity->commercialName;
@@ -96,6 +97,7 @@ final class PublicityMutations{
         $publicity->startDate = $publicityDate['startDate'];
         $publicity->createdDate = $publicityDate['createdDate'];
         $publicity->finishDate = $publicityDate['finishDate'];
+        $publicity->categoryId = $publicityDate['id_category'];
         $publicity->save();
         #######################################################
         $publicityName = $publicity->commercialName;

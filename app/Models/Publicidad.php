@@ -21,5 +21,10 @@ class Publicidad extends Model
         'startDate',
         'finishDate',
         'status',
+        'categoryId'
     ];
+
+    public function categoria(){
+        return $this->belongsTo(categoria_publicidad::class,'categoryId');
+    }
 }

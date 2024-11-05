@@ -40,4 +40,33 @@ final readonly class PublicityQuery
             ];
         }
     }
+
+    public function getDateExpiration($root , array $args){
+        $public  = Publicidad::orderBy('finishDate','ASC')->get();
+        //dd($public);
+        return [
+            'message' => 'Listado de publicidad con fecha de expiracion',
+            'publicity' => $public
+        ];
+    }
+
+    public function getStatusPublicity($root,array $args){
+        $publicData = $args['requestPublicity'];
+        $id_status = $publicData['id_status'];
+        //dd($id_status);
+        $query = Publicidad::orderBy('finishDate','ASC');
+        if (!is_null($id_status) && in_array($id_status, [0, 1, 2])) {
+            $query->where('status', $id_status);
+        }
+        $publicity = $query->get();
+        if($publicity->isEmpty()){
+            return [
+                'message' => 'No existen servicios en esta actividad.'
+            ];
+        }
+        return [
+            'message' => 'Listado de publicidad por estado',
+            'publicity' => $publicity
+        ];
+    }
 }

@@ -8,4 +8,7 @@ type Publicity {
     startDate:String! @trim
     finishDate:String @trim
     status:String @trim
+    id_category:ID @rename(attribute: "categoryId")
+
+    categoria:CategoryPublicity @belongsTo
 }

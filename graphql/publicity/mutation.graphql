@@ -8,3 +8,5 @@ type responsePublicit {
     message:String
     publicity: Publicity
 }
+
+#import publicity.graphql
