@@ -22,3 +22,5 @@ type responseContent {
     message:String
     service:Service
 }
+
+#import detailAgendaTechnical.graphql

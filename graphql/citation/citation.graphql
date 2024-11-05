@@ -9,6 +9,4 @@ type Citation {
     createdDate:String!
     nextDate:String!
 
-    service:[Service!]!
-    activity:[typeActivity!]!
 }

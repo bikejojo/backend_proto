@@ -3,7 +3,7 @@ type Agenda_Technical @model(class: "App\\Models\\Agenda_Tecnico") {
     id_technician:ID! @rename(attribute: "technicianId")
     createDate:String!
 
-    technician:Tecnico! @belongsTo
+    technician:Technician! @belongsTo
     details:[DetailAgendaTechnical] @hasMany
 }
 

@@ -1,0 +1,6 @@
+type CategoryPublicity {
+    id:ID
+    description:String
+
+    categorias:[Publicity] @hasMany
+}
