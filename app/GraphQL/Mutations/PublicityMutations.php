@@ -9,6 +9,7 @@ use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
+use App\Helpers\ImageHelper;
 
 final class PublicityMutations{
 
@@ -19,10 +20,9 @@ final class PublicityMutations{
         $this->app = env('APP_URL').':'.env('SERVER_PORT');
     }
 
-
     public function create($root,array $args){
         $publicityDate = $args['requestPublicity'];
-        $validators = $this->validateImage($args);
+        $validators = ImageHelper::validateImage($args);
         if ($validators->fails()) {
             return [
                 'message' => 'Archivo de imagen inválido.'
@@ -41,12 +41,14 @@ final class PublicityMutations{
         $publicityName = $publicity->commercialName;
         $publicityId = $publicity->id;
         $publicityComplete = $publicityName."_".$publicityId;
-        $this->createDirectories($publicityComplete);
+        $value=0;
+        ImageHelper::createDirectorie($publicityComplete,$value);
+
         $now = Carbon::now()->format('Ymd_His');
         $manager = new ImageManager(new Driver());
         //']);
         if (isset($args['logo']) && $args['logo'] instanceof UploadedFile) {
-            $frontIdPath = $this->processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/". "{$now}.png", $manager);
+            $frontIdPath = ImageHelper::processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/". "{$now}.png", $manager);
             //dd($frontIdPath);
             $publicity->logo =$this->app . '/storage' . str_replace('public/', '', $frontIdPath);
         }
@@ -114,7 +116,7 @@ final class PublicityMutations{
 
             // Procesa y guarda la nueva imagen en el nuevo directorio
             $now = Carbon::now()->format('Ymd_His');
-            $logoPath = $this->processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/"."{$now}.png", $manager);
+            $logoPath = ImageHelper::processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/"."{$now}.png", $manager);
             $publicity->logo =$this->app . '/storage' . str_replace('public/', '', $logoPath);
             $publicity->save();
         }
@@ -140,26 +142,7 @@ final class PublicityMutations{
         ];
     }
 
-    private function validateImage($args){
-        return Validator::make([
-        'logo' => $args['logo'] ?? null ,
-        ], [
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
-        ]);
-    }
-
     private function createDirectories($publicityId){
         Storage::makeDirectory('public/publicidad/' . $publicityId . '/logo');
-    }
-
-    private function processImage(UploadedFile $file, $path, $manager){
-        $image = $manager->read($file->getRealPath());
-        $image->resize(750, 750, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
-        $fullPath = storage_path("app/public/{$path}");
-        $image->save($fullPath, 80, 'png');
-        return $path;
     }
 }

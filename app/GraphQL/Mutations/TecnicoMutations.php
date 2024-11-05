@@ -14,6 +14,7 @@ use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Drivers\Gd\Driver;
+use App\Helpers\ImageHelper;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -45,7 +46,8 @@ class TecnicoMutations {
         }
 
         // Validar imágenes
-        $validators = $this->validateImage($args);
+        //$validators = $this->validateImage($args);
+        $validators = ImageHelper::validateImage($args);
         if ($validators->fails()) {
             return [
                 'message' => 'Archivo de imagen inválido.',
@@ -90,10 +92,9 @@ class TecnicoMutations {
             }
 
             $technicianId = $technician->id;
-
-            // Crear directorios utilizando el ID del técnico
-            $this->createTechnicianDirectories($technicianId);
-
+            $value = $user->type_user;
+            //$this->createTechnicianDirectories($technicianId);
+            ImageHelper::createDirectorie($technicianId,$value);
             // Manejo de imágenes utilizando Intervention Image
             $manager = new ImageManager(new Driver());
 
@@ -102,13 +103,13 @@ class TecnicoMutations {
             $nowBack=Carbon::now()->addMinute(1);
             $nowBack=$nowBack->format('Ymd_His');
             if (isset($args['frontIdCard']) && $args['frontIdCard'] instanceof UploadedFile) {
-                $frontIdCardPath = $this->processImage($args['frontIdCard'], "/{$technicianId}/id_card/"."{$nowFront}.png", $manager);
+                $frontIdCardPath = ImageHelper::processImage($args['frontIdCard'], "/{$technicianId}/id_card/"."{$nowFront}.png", $manager);
                 $technician->frontIdCard = $this->app . '/storage' . str_replace('public/', '', $frontIdCardPath);
             }
 
             // Procesar imagen trasera del carnet
             if (isset($args['backIdCard']) && $args['backIdCard'] instanceof UploadedFile) {
-                $backIdCardPath = $this->processImage($args['backIdCard'], "/{$technicianId}/id_card/"."{$nowBack}.png", $manager);
+                $backIdCardPath = ImageHelper::processImage($args['backIdCard'], "/{$technicianId}/id_card/"."{$nowBack}.png", $manager);
                 $technician->backIdCard = $this->app . '/storage' . str_replace('public/', '', $backIdCardPath);
             }
 
@@ -149,7 +150,7 @@ class TecnicoMutations {
                 'message' => 'No existe datos de tecnico'];
         }
 
-        $validators = $this->validateImage($args);
+        $validators = ImageHelper::validateImage($args);
         if ($validators->fails()) {
             return [
                 'message' => 'Archivo de imagen inválido.'
@@ -181,8 +182,10 @@ class TecnicoMutations {
         $technician->save();
 
         $technicianId = $technician->id;
+        $value = $user->type_user;
         // Crear directorios utilizando el ID del técnico
-        $this->createTechnicianDirectories($technicianId);
+        ImageHelper::deleteDirectoryIdCard($technicianId);
+        ImageHelper::createDirectorie($technicianId,$value);
         $nowFront=Carbon::now()->format('Ymd_His');
             $nowBack=Carbon::now()->addMinute(1);
             $nowBack=$nowBack->format('Ymd_His');
@@ -193,19 +196,19 @@ class TecnicoMutations {
             // Procesar cada archivo solo si fue enviado en la solicitud
             if ($isFrontIdCardUploaded) {
                 // Eliminar frente del carnet anterior
-                if ($technician->frontIdCard) {
+                /*if ($technician->frontIdCard) {
                     Storage::disk('public')->delete($technician->frontIdCard);
-                }
-                $frontIdCardPath = $this->processImage($args['frontIdCard'], "/{$technicianId}/id_card/"."{$nowFront}.png", $manager);
+                }*/
+                $frontIdCardPath = ImageHelper::processImage($args['frontIdCard'], "/{$technicianId}/id_card/"."{$nowFront}.png", $manager);
                 $technician->frontIdCard =$this->app.'/storage' . str_replace('public/', '', $frontIdCardPath);
             }
 
             if ($isBackIdCardUploaded) {
                 // Eliminar reverso del carnet anterior
-                if ($technician->backIdCard) {
+                /*if ($technician->backIdCard) {
                     Storage::disk('public')->delete($technician->backIdCard);
-                }
-                $backIdCardPath = $this->processImage($args['backIdCard'], "/{$technicianId}/id_card/"."{$nowBack}.png", $manager);
+                }*/
+                $backIdCardPath = ImageHelper::processImage($args['backIdCard'], "/{$technicianId}/id_card/"."{$nowBack}.png", $manager);
                 $technician->backIdCard =$this->app.'/storage' . str_replace('public/', '', $backIdCardPath);
             }
 
@@ -225,7 +228,7 @@ class TecnicoMutations {
                     ];
                 }
             }
-        //dd($skillsData);
+
         return[
             'message' => 'Tecnico actualizado exitoso',
             'upcomingmessage' => 'Actualizacion de sus habilidades',
@@ -238,7 +241,7 @@ class TecnicoMutations {
     public function photoUpdate($root ,array $args){
         $photoTechnicialId = $args['id'];
         $technicial = Tecnico::find($photoTechnicialId);
-        $validators = $this->validateImagePhoto($args);
+        $validators = ImageHelper::validateImagePhoto($args);
         if ($validators->fails()) {
             return [
                 'message' => 'Archivo de imagen inválido.'
@@ -248,15 +251,13 @@ class TecnicoMutations {
         $userId = $technicial->userId;
         $user = User::find($userId);
         $manager = new ImageManager(new Driver());
-        $this->createTechnicianDirectoriesPhoto($technicialId);
         $isPhotoUploaded = isset($args['photo']) && $args['photo'] instanceof UploadedFile;
         $now=Carbon::now()->format('Ymd_His');
         if ($isPhotoUploaded) {
             // Eliminar foto anterior
-            if ($technicial->photo) {
-                Storage::disk('public')->delete($technicial->photo);
-            }
-            $photoCardPath = $this->processImage($args['photo'], "/{$technicialId}/profile/"."{$now}.png", $manager);
+            ImageHelper::deleteDirectoryProfile($technicialId);
+
+            $photoCardPath = ImageHelper::processImage($args['photo'], "/{$technicialId}/profile/"."{$now}.png", $manager);
             $technicial->photo =$this->app.'/storage' . str_replace('public/', '', $photoCardPath);
         }
         $technicial->save();
@@ -293,7 +294,7 @@ class TecnicoMutations {
 
 
     // Validación de imágenes
-    private function validateImage($args){
+    /*private function validateImage($args){
         return Validator::make([
         'frontIdCard' => $args['frontIdCard'] ?? null ,
         'backIdCard'=> $args['backIdCard'] ?? null ,
@@ -302,9 +303,9 @@ class TecnicoMutations {
             'frontIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
             'backIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp'
         ]);
-    }
+    }*/
     // Validación de imágenes
-    private function validateImagePhoto($args){
+    /*private function validateImagePhoto($args){
         return Validator::make([
         'photo' => $args['photo'] ?? null ,
         ], [
@@ -327,5 +328,5 @@ class TecnicoMutations {
         $fullPath = storage_path("app/public/{$path}");
         $image->save($fullPath, 80, 'png');
         return $path;
-    }
+    }*/
 }
