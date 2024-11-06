@@ -81,8 +81,9 @@ return new class extends Migration
         }*/
         public function up(): void
         {
-           Schema::table('activity_types', function (Blueprint $table) {
+           Schema::table('category_publicity', function (Blueprint $table) {
                 $table->text('entity_type')->nullable();
+                $table->text('code')->nullable();
             });
         }
 
