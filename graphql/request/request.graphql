@@ -5,10 +5,10 @@ type Request {
     id_state:ID @rename(attribute: "stateId")
     requestDescription:String!
     status:String!
-    registrationDateTime:String!
+    registrationDateTime:String
 
     technician:Technician! @belongsTo
     client:InternalClient! @belongsTo
-    state:StateType! @belongsTo
+    state:StateType @belongsTo
     service:Service @belongsTo
 }

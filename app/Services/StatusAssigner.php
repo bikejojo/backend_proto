@@ -50,6 +50,28 @@ class StatusAssigner{
         }
     }
 
+    public static function allowState($entity_type){
+        try{
+            if($entity_type === 'request' ){
+                $states = Tipo_Estado::where('entity_type',$entity_type)
+                ->whereIn('description',[self::REQUEST_REJECTED,self::REQUEST_PENDING,self::REQUEST_ACCEPTED])
+                ->pluck('id')
+                ->toArray();
+                return $states;
+            }
+
+            if($entity_type === 'service'){
+                $states = Tipo_Estado::where('entity_type',$entity_type)
+                ->whereIn('description',[self::SERVICE_PENDING,self::SERVICE_COMPLETED])
+                ->pluck('id')
+                ->toArray();
+                return $states;
+            }
+        } catch (\Exception $e){
+                return ['message' => 'error.'.$e->getMessage()
+            ];
+        }
+    }
     public static function assignActivity($service, $state){
 
     }
