@@ -6,6 +6,8 @@ use App\Models\Cliente_Interno;
 use App\Models\Tecnico;
 use App\Models\Solicitud;
 
+use function PHPUnit\Framework\isEmpty;
+
 final readonly class RequestQuery
 {
     /** @param  array{}  $args */
@@ -64,6 +66,28 @@ final readonly class RequestQuery
             'message' => 'Solicitudes del clientes',
             'request' => $request,
             'client' =>  $client
+        ];
+    }
+
+    public function listStatusPendingComplet($root,array $args){
+        $requestData = $args['requestRequest'];
+        $statusId = $requestData['id_status'];
+        $technicianId = $requestData['id_technician'];
+        if(is_null(Tecnico::find($technicianId))){
+            return [
+                'message' => 'No existe tecnico.'
+            ];
+        }
+        
+        $query = Solicitud::where('technicianId',$technicianId)
+        ->orderBy('registrationDateTime','ASC');
+        if(in_array($statusId,[1,2,3])){
+            $query->where('stateId',$statusId);
+        }
+        $request = $query->get();
+        return [
+            'message'=>'Listado de solicitudes del tecnico.',
+            'request' => $request
         ];
     }
 }

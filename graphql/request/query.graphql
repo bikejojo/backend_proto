@@ -1,6 +1,7 @@
 extend type Query {
     requestTechnicalAll(id:ID!):responseTechnicalId @field (resolver: "RequestQuery@requestsTechnicalId")
     requestClientAll(id:ID!):responseClientId @field (resolver: "RequestQuery@requestsClientId")
+    getListStatusRequest(requestRequest:JSON):responseTechnicalId @field (resolver: "RequestQuery@listStatusPendingComplet")
 }
 
 type responseTechnicalId {
