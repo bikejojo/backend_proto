@@ -1,5 +1,5 @@
 type ActivityType {
     id:ID!
     description:String!
-
+    entity_type: String
 }

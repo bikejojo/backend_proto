@@ -13,7 +13,8 @@ class Tipo_Estado extends Model
     protected $table = 'state_types';  // Traducción de 'tipo_estados'
 
     protected $fillable = [
-        'description'  // Traducción de 'descripcion'
+        'description',  // Traducción de 'descripcion'
+        'entity_type'
     ];
 
     public function contact(){

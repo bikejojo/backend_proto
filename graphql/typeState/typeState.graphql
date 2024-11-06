@@ -1,6 +1,7 @@
 type StateType {
   id: ID!
   description: String!
+  entity_type: String
 
   state:Service @belongsTo
 }

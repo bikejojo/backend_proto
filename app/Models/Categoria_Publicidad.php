@@ -13,7 +13,9 @@ class categoria_Publicidad extends Model
     protected $table = 'category_publicity';
 
     protected $fillable = [
-        'description'
+        'description',
+        'entity_type',
+        'code'
     ];
 
     public function categorias(){
