@@ -14,16 +14,15 @@ use App\Models\Tecnico;
 
 class ServicioMutations
 {
-    /** @param  array{}  $args */
-    public function __invoke(null $_, array $args)
-    {
-        // TODO implement the resolver
-    }
+    public static $entity_type = "service";
+    const status_cancel = 0;
+    const status_accept = 1;
+    const clientExternal= 2;
+    const clientInternal= 1;
     // CREAR SERVICIO PARA CLIENTE INTERNO
     public function createInternal($root,array $args){
         $serviceData = $args['requestService'];
         $state = 4;
-        $typeClient = 1;
         $now=Carbon::now();
         $technicalId = Tecnico::find($serviceData['id_technician']);
         if(is_null($technicalId)){
@@ -43,7 +42,7 @@ class ServicioMutations
             'technicalId' => $serviceData['id_technician'],
             'clientId' => $serviceData['id_client'],
             'activityId' => $serviceData['id_activity'],
-            'typeClient' => $typeClient,
+            'typeClient' => self::clientInternal,
             'titleService' => trim($serviceData['titleService']),
             'serviceDescription' => trim($serviceData['serviceDescription']),
             'serviceLocation' => trim($serviceData['serviceLocation']),
@@ -65,7 +64,7 @@ class ServicioMutations
             'agendaTechnicalId' => $agendaId,
             'clientId' => $serviceData['id_client'],
             'serviceId' => $service->id,
-            'typeClient' => $typeClient,
+            'typeClient' => self::clientInternal,
             'serviceDate' => $service->createdDateTime,
             'createDate' => Carbon::now()
         ]);
@@ -109,7 +108,7 @@ class ServicioMutations
                 'technicalId' => $serviceData['id_technician'],
                 'clientId' => $serviceData['id_client'],
                 'activityId' => $serviceData['id_activity'],
-                'typeClient' => $typeClient,
+                'typeClient' => self::clientExternal,
                 'titleService' => trim($serviceData['titleService']),
                 'serviceDescription' => trim($serviceData['serviceDescription']),
                 'serviceLocation' => trim($serviceData['serviceLocation']),
@@ -132,7 +131,7 @@ class ServicioMutations
                 'agendaTechnicalId' => $agendaId,
                 'clientId' => $serviceData['id_client'],
                 'serviceId' => $service->id,
-                'typeClient' => $typeClient,
+                'typeClient' => self::clientExternal,
                 'serviceDate' => $service->updatedDateTime,
                 'createDate' => Carbon::now()
             ]);

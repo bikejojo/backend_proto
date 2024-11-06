@@ -10,5 +10,5 @@ type Publicity {
     status:String @trim
     id_category:ID @rename(attribute: "categoryId")
 
-    categoria:CategoryPublicity @belongsTo
+    category:CategoryPublicity @belongsTo
 }

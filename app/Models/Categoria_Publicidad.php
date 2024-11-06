@@ -18,7 +18,7 @@ class categoria_Publicidad extends Model
         'code'
     ];
 
-    public function categorias(){
+    public function categories(){
         return $this->hasMany(Publicidad::class,'categoryId');
     }
 }

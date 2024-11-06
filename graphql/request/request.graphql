@@ -2,7 +2,7 @@ type Request {
     id:ID!
     id_client:ID! @rename(attribute: "clientId")
     id_technician:ID! @rename(attribute: "technicianId")
-    id_state:ID! @rename(attribute: "stateId")
+    id_state:ID @rename(attribute: "stateId")
     requestDescription:String!
     status:String!
     registrationDateTime:String!

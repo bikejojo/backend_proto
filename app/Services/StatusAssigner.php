@@ -5,8 +5,19 @@ namespace App\Services;
 use App\Models\Solicitud;
 use App\Models\Servicio;
 use App\Models\Tipo_Estado; // Asegúrate de que este es el modelo correcto para la tabla de estados
+use App\Models\Tipo_Actividad;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class StatusAssigner{
+    /**
+     * Asignar un estado a una entidad específica (servicio o solicitud).
+     *
+     * @param  string  $entityType  Tipo de entidad ('solicitud' o 'servicio')
+     * @param  int     $entityId    ID de la entidad (ID del servicio o solicitud)
+     * @param  int     $stateId     ID del estado a asignar
+     * @return bool
+     */
+
     // Constantes para los estados de solicitud
     const REQUEST_PENDING = 'pendiente por aceptar';
     const REQUEST_REJECTED = 'rechazado por tecnico';
@@ -16,26 +27,30 @@ class StatusAssigner{
     const SERVICE_PENDING = 'pendiente';
     const SERVICE_COMPLETED = 'terminado';
 
-    public static function assignRequest($request, $state){
-        $validStates = [
-            self::REQUEST_PENDING,
-            self::REQUEST_REJECTED,
-            self::REQUEST_ACCEPTED
-        ];
-        if(in_array($state,$validStates)){
-            $status = Tipo_Estado::where('description',$state)->first();
-            if($status){
-                $request->stateId = $status->id;
-                return $request->save();
+    public static function assignState($objeto, $state,$entity_type){
+
+        try{
+            $status = Tipo_Estado::where('entity_type',$entity_type)
+            ->where('description',$state)
+            ->first();
+            //dd($status);
+            if($entity_type === 'request'){
+                $entity = Solicitud::find($objeto->id);
             }
+            if($entity_type === 'service'){
+                $entity = Servicio::find($objeto->id);
+            }
+            $entity->stateId = $status->id;
+            return $entity->save();
         }
-        return false;
+        catch (\Exception $e){
+            return [
+                'message'=> 'fallas en la inserccion.' . $e->getMessage()
+            ];
+        }
     }
 
-    public static function assignService($service, $state){
-        $validStates = [
-            self::SERVICE_PENDING,
-            self::SERVICE_COMPLETED
-        ];
+    public static function assignActivity($service, $state){
+
     }
 }

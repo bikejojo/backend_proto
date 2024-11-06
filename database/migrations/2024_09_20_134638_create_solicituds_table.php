@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('stateId');  // Traducción de 'estado_id'
+            $table->unsignedBigInteger('stateId')->nullable();  // Traducción de 'estado_id'
             $table->unsignedBigInteger('clientId');  // Traducción de 'cliente_id'
             $table->unsignedBigInteger('technicianId');  // Traducción de 'tecnico_id'
             $table->text('requestDescription');  // Traducción de 'descripcion_solicitud'

@@ -46,7 +46,6 @@ class TecnicoMutations {
         }
 
         // Validar imágenes
-        //$validators = $this->validateImage($args);
         $validators = ImageHelper::validateImage($args);
         if ($validators->fails()) {
             return [
@@ -93,7 +92,6 @@ class TecnicoMutations {
 
             $technicianId = $technician->id;
             $value = $user->type_user;
-            //$this->createTechnicianDirectories($technicianId);
             ImageHelper::createDirectorie($technicianId,$value);
             // Manejo de imágenes utilizando Intervention Image
             $manager = new ImageManager(new Driver());
@@ -162,7 +160,6 @@ class TecnicoMutations {
         $user = User::find($userId);
 
         if(!isset($technicianData['password'])){
-            //dd(1);
             $technicianData['password'] = $user->password;
         }
         //actualizar user para todo
@@ -195,19 +192,13 @@ class TecnicoMutations {
         if ($isFrontIdCardUploaded || $isBackIdCardUploaded) {
             // Procesar cada archivo solo si fue enviado en la solicitud
             if ($isFrontIdCardUploaded) {
-                // Eliminar frente del carnet anterior
-                /*if ($technician->frontIdCard) {
-                    Storage::disk('public')->delete($technician->frontIdCard);
-                }*/
+
                 $frontIdCardPath = ImageHelper::processImage($args['frontIdCard'], "/{$technicianId}/id_card/"."{$nowFront}.png", $manager);
                 $technician->frontIdCard =$this->app.'/storage' . str_replace('public/', '', $frontIdCardPath);
             }
 
             if ($isBackIdCardUploaded) {
-                // Eliminar reverso del carnet anterior
-                /*if ($technician->backIdCard) {
-                    Storage::disk('public')->delete($technician->backIdCard);
-                }*/
+
                 $backIdCardPath = ImageHelper::processImage($args['backIdCard'], "/{$technicianId}/id_card/"."{$nowBack}.png", $manager);
                 $technician->backIdCard =$this->app.'/storage' . str_replace('public/', '', $backIdCardPath);
             }
@@ -262,7 +253,6 @@ class TecnicoMutations {
         }
         $technicial->save();
         $skillsData = Tecnico_Habilidad::where('technicianId',$technicialId)
-        //->leftjoin('skills','technician_skills.skillId','=','skills.id')
         ->get();
         $ha=[];
         foreach($skillsData as $habilidad_tec) {
@@ -293,40 +283,4 @@ class TecnicoMutations {
     }
 
 
-    // Validación de imágenes
-    /*private function validateImage($args){
-        return Validator::make([
-        'frontIdCard' => $args['frontIdCard'] ?? null ,
-        'backIdCard'=> $args['backIdCard'] ?? null ,
-        'photo' => $args['photo'] ?? null ,
-        ], [
-            'frontIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
-            'backIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp'
-        ]);
-    }*/
-    // Validación de imágenes
-    /*private function validateImagePhoto($args){
-        return Validator::make([
-        'photo' => $args['photo'] ?? null ,
-        ], [
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
-        ]);
-    }
-    private function createTechnicianDirectories($technicianId){
-        Storage::makeDirectory('public/' . $technicianId . '/id_card');
-    }
-    private function createTechnicianDirectoriesPhoto($technicianId){
-        Storage::makeDirectory('public/' . $technicianId . '/profile');
-    }
-    // Procesamiento de imágenes
-    private function processImage(UploadedFile $file, $path, $manager){
-        $image = $manager->read($file->getRealPath());
-        $image->resize(750, 750, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
-        $fullPath = storage_path("app/public/{$path}");
-        $image->save($fullPath, 80, 'png');
-        return $path;
-    }*/
 }

@@ -24,7 +24,7 @@ class Publicidad extends Model
         'categoryId'
     ];
 
-    public function categoria(){
+    public function category(){
         return $this->belongsTo(categoria_publicidad::class,'categoryId');
     }
 }

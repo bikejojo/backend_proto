@@ -13,6 +13,9 @@ use App\Helpers\ImageHelper;
 
 final class PublicityMutations{
 
+    const status_on =1;
+    const status_off = 0;
+
     protected $app;
 
     public function __construct()
@@ -37,20 +40,17 @@ final class PublicityMutations{
             'startDate' =>            $publicityDate['startDate'],
             'finishDate' =>           $publicityDate['finishDate'],
             'categoryId' =>           $publicityDate['id_category'],
-            'status'=>                1
+            'status'=>                self::status_on
         ]);
-        $publicityName = $publicity->commercialName;
+
         $publicityId = $publicity->id;
-        $publicityComplete = $publicityName."_".$publicityId;
+        $publicityComplete = $publicityId;
         $value=0;
         ImageHelper::createDirectorie($publicityComplete,$value);
-
         $now = Carbon::now()->format('Ymd_His');
         $manager = new ImageManager(new Driver());
-        //']);
         if (isset($args['logo']) && $args['logo'] instanceof UploadedFile) {
             $frontIdPath = ImageHelper::processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/". "{$now}.png", $manager);
-            //dd($frontIdPath);
             $publicity->logo =$this->app . '/storage' . str_replace('public/', '', $frontIdPath);
         }
         $publicity->save();
@@ -82,9 +82,8 @@ final class PublicityMutations{
         $publicityDate = $args['requestPublicity'];
         $publicityId = $args['id'];
         $publicity = Publicidad::find($publicityId);
-        $publicityNameOld = $publicity->commercialName;
         $publicityIdOld = $publicity->id;
-        $publicityCompleteOld = $publicityNameOld. "_" . $publicityIdOld;
+        $publicityCompleteOld = $publicityIdOld;
         if (!$publicity) {
             return [
                 'message' => 'No se encontró la publicidad con el ID proporcionado.'
@@ -100,10 +99,8 @@ final class PublicityMutations{
         $publicity->categoryId = $publicityDate['id_category'];
         $publicity->save();
         #######################################################
-        $publicityName = $publicity->commercialName;
         $publicityId = $publicity->id;
-        $publicityComplete = $publicityName. "_" . $publicityId;
-        //dd($publicityCompleteOld);
+        $publicityComplete =  $publicityId;
         $isLogoPublicity = isset($args['logo']) && $args['logo'] instanceof UploadedFile;
         $manager = new ImageManager(new Driver());
         if ($publicityCompleteOld !== $publicityComplete) {
@@ -136,7 +133,7 @@ final class PublicityMutations{
             ];
         }
         // Realizar baja lógica
-        $publicity->status = 0;
+        $publicity->status = self::status_off;
         $publicity->save();
         return [
             'message' => 'La publicidad se dio de baja.',
