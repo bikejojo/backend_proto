@@ -6,6 +6,7 @@ use App\Models\Solicitud;
 use App\Models\Servicio;
 use App\Models\Tipo_Estado; // Asegúrate de que este es el modelo correcto para la tabla de estados
 use App\Models\Tipo_Actividad;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class StatusAssigner{
@@ -71,8 +72,5 @@ class StatusAssigner{
                 return ['message' => 'error.'.$e->getMessage()
             ];
         }
-    }
-    public static function assignActivity($service, $state){
-
     }
 }

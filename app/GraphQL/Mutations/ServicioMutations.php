@@ -4,25 +4,23 @@ namespace App\GraphQL\Mutations;
 use App\Models\Servicio;
 use App\Models\Cliente_Externo;
 use Carbon\Carbon;
-use Nuwave\Lighthouse\Federation\Resolvers\Service;
 use Illuminate\Support\Facades\DB;
 use App\Models\Agenda_Tecnico;
 use App\Models\Asociacion_Cliente_Tecnico;
 use App\Models\Cliente_Interno;
 use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Tecnico;
+use App\Services\StatusAssigner;
 
 class ServicioMutations
 {
     public static $entity_type = "service";
-    const status_cancel = 0;
-    const status_accept = 1;
+    //state
     const clientExternal= 2;
     const clientInternal= 1;
     // CREAR SERVICIO PARA CLIENTE INTERNO
     public function createInternal($root,array $args){
         $serviceData = $args['requestService'];
-        $state = 4;
         $now=Carbon::now();
         $technicalId = Tecnico::find($serviceData['id_technician']);
         if(is_null($technicalId)){
@@ -36,49 +34,58 @@ class ServicioMutations
                 'message' => 'Cliente no existe'
             ];
         }
-        $service = Servicio::create([
-            'requestsId' => $serviceData['id_requests'],
-            'stateId' => $state,
-            'technicalId' => $serviceData['id_technician'],
-            'clientId' => $serviceData['id_client'],
-            'activityId' => $serviceData['id_activity'],
-            'typeClient' => self::clientInternal,
-            'titleService' => trim($serviceData['titleService']),
-            'serviceDescription' => trim($serviceData['serviceDescription']),
-            'serviceLocation' => trim($serviceData['serviceLocation']),
-            'createdDateTime' => $now,
-            'updatedDateTime' => $serviceData['updatedDateTime'],
-            'status' => 1
-        ]);
+        DB::beginTransaction();
+        try{
+            $service = Servicio::create([
+                'requestsId' => $serviceData['id_requests'],
+                'technicalId' => $serviceData['id_technician'],
+                'clientId' => $serviceData['id_client'],
+                'activityId' => $serviceData['id_activity'],
+                'typeClient' => self::clientInternal,
+                'titleService' => trim($serviceData['titleService']),
+                'serviceDescription' => trim($serviceData['serviceDescription']),
+                'serviceLocation' => trim($serviceData['serviceLocation']),
+                'createdDateTime' => $now,
+                'updatedDateTime' => $serviceData['updatedDateTime'],
+                'status' => 1
+            ]);
+            StatusAssigner::assignState($service,StatusAssigner::REQUEST_PENDING,self::$entity_type);
 
-        $agenda = Agenda_Tecnico::where('technicianId',$technicalId->id)->first();
-        if(!$agenda){
-            $agenda = Agenda_Tecnico::create([
-                'technicianId' => $technicalId,
+            $_service = Servicio::find($service->id);
+            $agenda = Agenda_Tecnico::where('technicianId',$technicalId->id)->first();
+            if(!$agenda){
+                $agenda = Agenda_Tecnico::create([
+                    'technicianId' => $technicalId,
+                    'createDate' => Carbon::now()
+                ]);
+            }
+
+            $agendaId = $agenda->id;
+            $detailAgenda = Detalle_Agenda_Tecnico::create([
+                'agendaTechnicalId' => $agendaId,
+                'clientId' => $serviceData['id_client'],
+                'serviceId' => $_service->id,
+                'typeClient' => self::clientInternal,
+                'serviceDate' => $_service->createdDateTime,
                 'createDate' => Carbon::now()
             ]);
+            DB::commit();
+            return[
+                'message' => 'Servicio creado para cliente interno',
+                'service' => $_service,
+                'customer_internal' => $clientId
+            ];
+            DB::rollBack();
+        }catch(\Exception $e){
+            return [
+                'message' => 'Se presento un error en.' . $e->getMessage()
+            ];
         }
-
-        $agendaId = $agenda->id;
-        $detailAgenda = Detalle_Agenda_Tecnico::create([
-            'agendaTechnicalId' => $agendaId,
-            'clientId' => $serviceData['id_client'],
-            'serviceId' => $service->id,
-            'typeClient' => self::clientInternal,
-            'serviceDate' => $service->createdDateTime,
-            'createDate' => Carbon::now()
-        ]);
-        return[
-            'message' => 'Servicio creado para cliente interno',
-            'service' => $service,
-            'customer_internal' => $clientId
-        ];
     }
     // CREAR SERVICIO PARA CLIENTE EXTERNO
     public function createExternal($root,array $args){
         $serviceData = $args['requestService'];
         $state = 4;
-        $typeClient =2;
         $now=Carbon::now();
 
         $technicalId = Tecnico::find($serviceData['id_technician']);
@@ -95,7 +102,6 @@ class ServicioMutations
         }
         $associant = Asociacion_Cliente_Tecnico::where('clientId',$serviceData['id_client'])
         ->where('technicalId',$serviceData['id_technician'])->first();
-        //dd($associant);
         if(is_null($associant)){
             return [
                 'message' => 'No existe relacion entre tecnico y cliente externo.'
@@ -104,7 +110,6 @@ class ServicioMutations
         DB::beginTransaction();
         try{
             $service = Servicio::create([
-                'stateId' => $state,
                 'technicalId' => $serviceData['id_technician'],
                 'clientId' => $serviceData['id_client'],
                 'activityId' => $serviceData['id_activity'],
@@ -116,7 +121,9 @@ class ServicioMutations
                 'updatedDateTime' => $serviceData['updatedDateTime'],
                 'status' => 1
             ]);
+            StatusAssigner::assignState($service,StatusAssigner::REQUEST_PENDING,self::$entity_type);
 
+            $_service = Servicio::find($service->id);
             $agenda = Agenda_Tecnico::where('technicianId',$technicalId->id)->first();
 
             if(!$agenda){
@@ -130,15 +137,15 @@ class ServicioMutations
             $detailAgenda = Detalle_Agenda_Tecnico::create([
                 'agendaTechnicalId' => $agendaId,
                 'clientId' => $serviceData['id_client'],
-                'serviceId' => $service->id,
+                'serviceId' => $_service->id,
                 'typeClient' => self::clientExternal,
-                'serviceDate' => $service->updatedDateTime,
+                'serviceDate' => $_service->updatedDateTime,
                 'createDate' => Carbon::now()
             ]);
             DB::commit();
             return[
                 'message'=>'Servicio registrado para cliente externo',
-                'service'=>$service,
+                'service'=>$_service,
                 'customer_external' => $clientId
             ];
         }catch(\Exception $e){
@@ -153,7 +160,6 @@ class ServicioMutations
         $serviceData = $args['requestService'];
         $serviceId = $serviceData['id_service'];
         $serviceDateTime = $serviceData['finishDateTime'];
-        $finish = 5;
         DB::beginTransaction();
         try{
             $service = Servicio::find($serviceId);
@@ -164,15 +170,17 @@ class ServicioMutations
             }
             $client = Cliente_Externo::find($service->clientId);
             $technician = Tecnico::find($service->technicianId);
-            $service->stateId = $finish;
             $service->finishDateTime = $serviceDateTime;
             $service->updatedDateTime = Carbon::now();
             $service->save();
+            StatusAssigner::assignState($service,StatusAssigner::REQUEST_ACCEPTED,self::$entity_type);
+
+            $_service = Servicio::find($service->id);
             return [
                 'message' => 'Servicio terminado',
                 'customer_external' => $client ,
                 'technician' => $technician ,
-                'service' => $service
+                'service' => $_service
             ];
         }catch(\Exception $e){
             DB::rollBack();

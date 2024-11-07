@@ -1,6 +1,8 @@
 extend type Mutation {
   registerRequest(requestRequest:JSON!):requestResponse @field(resolver: "SolicitudesMutations@create")
-  updateRequest(requestRequest:JSON!):requestResponseService @field(resolver: "SolicitudesMutations@modifyState")
+  acceptRequestTechnician(id:ID):requestResponseService @field(resolver: "SolicitudesMutations@acceptRequest")
+  cancelRequestTechnician(id:ID):requestResponse @field(resolver: "SolicitudesMutations@cancelRequestTechnician")
+  #cancelRequestClient(id:ID):requestResponse @field(resolver: "SolicitudesMutations@cancelRequestClient")
 }
 
 type requestResponse {

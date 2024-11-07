@@ -1,6 +1,6 @@
 type Service {
     id:ID!
-    id_state:ID! @rename(attribute: "stateId")
+    id_state:ID @rename(attribute: "stateId")
     id_requests:ID @rename(attribute: "requestsId")
     id_technician:ID! @rename(attribute: "technicalId")
     id_client:ID! @rename(attribute: "clientId")

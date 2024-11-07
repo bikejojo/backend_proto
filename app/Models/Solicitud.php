@@ -16,13 +16,8 @@ class Solicitud extends Model
         'clientId',
         'technicianId',
         'requestDescription',
-        'latitude',
-        'longitude',
-        'locationDescription',
         'status',
         'registrationDateTime',
-        'expirationDateTime',
-        'updatedDateTime',
     ];
 
     // Relación con Technician (Tecnico)
