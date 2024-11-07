@@ -2,7 +2,8 @@ type Rating {
     id:ID!
     id_technical:ID! @rename (attribute: "technicalId")
     id_service:ID! @rename (attribute: "serviceId")
-    rating:Int
+    id_client:ID! @rename (attribute: "clientId")
+    rating:String
     comments:String @rename (attribute: "feedback")
 
     technician:Technician @belongsTo

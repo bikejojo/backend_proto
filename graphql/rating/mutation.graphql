@@ -4,7 +4,10 @@ extend type Mutation {
 
 type responseRate {
     message:String
+    service:Service
     rating:Rating
+    client:InternalClient
+    technician:Technician
 }
 
 #import rating.graphql
