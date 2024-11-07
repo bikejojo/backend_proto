@@ -5,6 +5,7 @@ namespace App\GraphQL\Mutations;
 use App\Models\Tecnico_Habilidad;
 use App\Models\Tecnico;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class TecnicoHabilidadMutations{
 
@@ -18,7 +19,8 @@ class TecnicoHabilidadMutations{
                 'message' => 'Debe registrar al menos una habilidad'
             ];
         }
-
+    DB::beginTransaction();
+    try{
         $habilidades=[];
         foreach($envHabilidades as $variable){
             //valida que el array tenga habilidad
@@ -49,12 +51,18 @@ class TecnicoHabilidadMutations{
         $skill = Tecnico_Habilidad::where('technicianId',$id)
         ->leftjoin('skills','technician_skills.skillId','=','skills.id')->get();
         $technician = Tecnico::find($id);
-
+        DB::commit();
         return [
             'message' => 'habilidades registradas.' ,
             'technician' => $technician,
             'skills' => $skill
         ];
+        DB::rollBack();
+    }catch(\Exception $e){
+        return [
+            'message' => 'Existe un error en.' . $e->getMessage()
+        ];
+    }
     }
     public function update($root,array $args){
         $tecnicoId = $args['id'];

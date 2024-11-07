@@ -12,6 +12,7 @@ use App\Services\StatusAssigner;
 use App\Services\GetValidation;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class SolicitudesMutations
 {
@@ -35,29 +36,34 @@ class SolicitudesMutations
         if(!$technician){
             return [ 'message' => 'Tecnico no encontrado.'];
         }
-        ##########################
-        $request = new Solicitud();
-        $request->clientId = $client->id;
-        $request->technicianId = $technician->id;
-        $request->requestDescription = $description;
-        $request->status = self::status_accept;
-        $request->registrationDateTime = $now;
-        $request->save();
-        ##########################
-        $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_PENDING, self::$entity_type);
-        $_request = Solicitud::find($request->id);
-        return [
-            'message' => 'Solicitud registrada',
-            'requests' => $_request,
-            'client' => $client,
-            'technician' => $technician
-        ];
+        DB::beginTransaction();
+            try{
+            ##########################
+            $request = new Solicitud();
+            $request->clientId = $client->id;
+            $request->technicianId = $technician->id;
+            $request->requestDescription = $description;
+            $request->status = self::status_accept;
+            $request->registrationDateTime = $now;
+            $request->save();
+            ##########################
+            $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_PENDING, self::$entity_type);
+            $_request = Solicitud::find($request->id);
+            DB::commit();
+            return [
+                'message' => 'Solicitud registrada',
+                'requests' => $_request,
+                'client' => $client,
+                'technician' => $technician
+            ];
+            DB::rollBack();
+        }catch (\Exception $e){return ['message' => 'El error es.'. $e->getMessage()];}
     }
 
-    public function cancelRequest($root,array $args){
+    public function cancelRequestTechnician($root,array $args){
         // tipo 2
-        $requestData = $args['requestRequest'];
-        $requestId = $requestData['id_requests'];
+        //$requestData = $args['requestRequest'];
+        $requestId = $args['id'];
         $request = Solicitud::find($requestId);
         ###################################3
         $clientId = $request->clientId;
@@ -65,7 +71,29 @@ class SolicitudesMutations
         $cliente = Cliente_Interno::find($clientId);
         $tecnico = Tecnico::find($tecnicoId);
         $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_REJECTED, self::$entity_type);
-        $request->status= self::status_cancel;
+        //$request->status= self::status_cancel;
+        $_request = Solicitud::find($request->id);
+        $request->save();
+        return[
+            'message'=>'Solicitud rechazada por el tecnico',
+            'requests'=>$_request,
+            'client' => $cliente,
+            'technician' => $tecnico
+        ];
+    }
+
+    public function cancelRequestClient($root,array $args){
+        // tipo 2
+        //$requestData = $args['requestRequest'];
+        $requestId = $args['id'];
+        $request = Solicitud::find($requestId);
+        ###################################3
+        $clientId = $request->clientId;
+        $tecnicoId=$request->technicianId;
+        $cliente = Cliente_Interno::find($clientId);
+        $tecnico = Tecnico::find($tecnicoId);
+        $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_REJECTED, self::$entity_type);
+        //$request->status= self::status_cancel;
         $_request = Solicitud::find($request->id);
         $request->save();
         return[
@@ -78,15 +106,14 @@ class SolicitudesMutations
 
     public function acceptRequest($root,array $args){
         // tipo 3
-        $requestData = $args['requestRequest'];
-        $requestId = $requestData['id_requests'];
+        $requestId = $args['id'];
         $request = Solicitud::find($requestId);
         $clientId = $request->clientId;
         $tecnicoId=$request->technicianId;
         $cliente = Cliente_Interno::find($clientId);
         $tecnico = Tecnico::find($tecnicoId);
         $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_ACCEPTED, self::$entity_type);
-        $request->status= self::status_accept;
+        //$request->status= self::status_accept;
         $request->save();
         $_request = Solicitud::find($request->id);
         return[

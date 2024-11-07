@@ -12,6 +12,7 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Cliente_Externo;
+use Illuminate\Support\Facades\DB;
 
 class ClienteInternoMutations{
     public function create($root, array $args){
@@ -35,6 +36,8 @@ class ClienteInternoMutations{
                 'upcomingmessage' => 'Registre su usuario'
             ];
         }
+        DB::transaction();
+        try{
         $email = strtolower(trim($clienteData['email']));
         $user = User::create([
             'email' => $email,
@@ -58,11 +61,16 @@ class ClienteInternoMutations{
         }
         $cliente->save();
         $cliente=Cliente_Interno::find($clientId);
+        DB::commit();
         return [
             'message' => 'Creacion Cliente exitoso!',
             'client' => $cliente,
             'user' => $user
         ];
+        DB::rollBack();
+    }catch (\Exception $e){
+        return ['message' => 'El error es.'. $e->getMessage()];
+    }
     }
     public function update($root ,array $args){
         $clientData = $args['clientRequest'];

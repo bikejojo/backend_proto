@@ -5,16 +5,16 @@ namespace App\GraphQL\Queries;
 use App\Models\Servicio;
 use App\Models\Tecnico;
 use Illuminate\Support\Facades\DB;
+use app\Helpers\StatusHelper;
+use app\Services\StatusAssigner;
 
 use function PHPUnit\Framework\isEmpty;
 
 final readonly class ServiceQuery
 {
-    /** @param  array{}  $args */
-    public function __invoke(null $_, array $args)
-    {
-        // TODO implement the resolver
-    }
+    #tipos de clientes
+    const client_internal = 1;
+    const client_external = 2;
 
     public function getExternalClient($root , array $args){
         $serviceData = $args['id'];
@@ -25,7 +25,7 @@ final readonly class ServiceQuery
         }
 
         $service = Servicio::where('technicalId',$technician->id)
-        ->where('typeClient',2)
+        ->where('typeClient',self::client_external)
         ->select('services.*','external_clients.*')
         ->leftjoin('external_clients','services.clientId','=','external_clients.id')
         ->orderBy('updatedDateTime','DESC')
@@ -63,7 +63,7 @@ final readonly class ServiceQuery
         }
 
         $service = Servicio::where('technicalId',$technician->id)
-        ->where('typeClient',2)
+        ->where('typeClient',self::client_external)
         ->where('stateId', 4)
         ->select('services.*','external_clients.*')
         ->leftjoin('external_clients','services.clientId','=','external_clients.id')
@@ -102,7 +102,7 @@ final readonly class ServiceQuery
         }
 
         $service = Servicio::where('technicalId',$technician->id)
-        ->where('typeClient',2)
+        ->where('typeClient',self::client_external)
         ->where('stateId',5)
         ->select('services.*','external_clients.*')
         ->leftjoin('external_clients','services.clientId','=','external_clients.id')
@@ -142,7 +142,7 @@ final readonly class ServiceQuery
             return [ 'message'=>'No existe tecnico'];
         }
         $query = Servicio::where('technicalId', $technician->id)
-        ->where('typeClient', 2)
+        ->where('typeClient', self::client_external)
         ->leftJoin('external_clients', 'services.clientId', '=', 'external_clients.id')
         ->select('services.*', 'external_clients.fullName', 'external_clients.phoneNumber')
         ->orderBy('updatedDateTime', 'DESC');

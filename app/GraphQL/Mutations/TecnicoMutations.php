@@ -56,7 +56,6 @@ class TecnicoMutations {
         DB::beginTransaction();
         // Si pasa todas las validaciones, crear usuario y técnico
         try {
-            // Crear usuario
             $email = strtolower(trim($technicianData['email']));
             $user = User::create([
                 'email' => $email,
@@ -133,8 +132,8 @@ class TecnicoMutations {
                 'user' => $user,
                 'skills' => $skill
             ];
-        } catch (\Exception $e) {
             DB::rollBack();
+        } catch (\Exception $e) {
             return [
                 'message' => 'Ocurrió un error al crear el técnico: ' . $e->getMessage()
             ];
