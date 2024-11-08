@@ -15,22 +15,16 @@ class Detalle_Agenda_Tecnico extends Model
     protected $fillable = [
         'clientId',
         'typeClient',
-        'typeJob',
         'serviceId',
-        'citationId',
         'agendaTechnicalId',
         'createDate',
         'serviceDate',
-        'citationDate'
     ];
 
     public function details(){
         return $this->belongsTo(Agenda_Tecnico::class,'agendaTechnicalId');
     }
 
-    public function citations(){
-        return $this->hasMany(Cita::class,'citationId');
-    }
     public function service(){
         return $this->belongsTo(Servicio::class,'serviceId','id');
     }

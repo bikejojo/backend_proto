@@ -21,12 +21,12 @@ class SolicitudFactory extends Factory
     public function definition()
     {
         return [
-            'stateId' => 3,
-            'clientId' => 10,
-            'technicianId' => 40,
+            'stateId' => rand(1,3),
+            'clientId' => rand(2,11),
+            'technicianId' => 60,
             'requestDescription' => $this->faker->sentence, // Utiliza $this->faker para acceder al generador de Faker
             'status' => 1,
-            'registrationDateTime' => now()->addDays(rand(0, 16)),
+            'registrationDateTime' => now()->addDays(rand(0,2))->addMinutes(rand(2, 40)),
         ];
     }
 }

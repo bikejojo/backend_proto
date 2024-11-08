@@ -97,7 +97,7 @@ class RequestQuery
         $technicianId = $requestData['id_technician'];
         $dateFilter = $requestData['date_filter'] ?? StatusHelper::DATE_ALL; // Filtro de fecha: "hoy", "esta_semana", "este_mes", "todas"
         $orderFilter = $requestData['order_filter'] ?? StatusHelper::ORDER_BY_RECENT;  // Orden: "mas_recientes", "mas_antiguas"
-
+        //dd($orderFilter);
         if(is_null(Tecnico::find($technicianId))){
             return [
                 'message' => 'No existe tecnico.'

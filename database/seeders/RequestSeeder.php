@@ -14,6 +14,6 @@ class RequestSeeder extends Seeder
     public function run(): void
     {
         //
-        Solicitud::factory()->count(390)->create();
+        Solicitud::factory()->count(1610)->create();
     }
 }
