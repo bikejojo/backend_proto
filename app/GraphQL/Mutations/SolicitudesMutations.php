@@ -58,7 +58,7 @@ class SolicitudesMutations
     }
 
     public function cancelRequestTechnician($root,array $args){
-        // tipo 2
+        // tipo 3
         //$requestData = $args['requestRequest'];
         $requestId = $args['id'];
         /*$requestId = $args['id_request'];
@@ -109,7 +109,7 @@ class SolicitudesMutations
     }
 
     public function acceptRequest($root,array $args){
-        // tipo 3
+        // tipo 2
         $requestId = $args['id'];
         $request = Solicitud::find($requestId);
         $clientId = $request->clientId;

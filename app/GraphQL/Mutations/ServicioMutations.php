@@ -49,9 +49,9 @@ class ServicioMutations
                 'updatedDateTime' => $serviceData['updatedDateTime'],
                 'status' => 1
             ]);
-            StatusAssigner::assignState($service,StatusAssigner::REQUEST_PENDING,self::$entity_type);
-
+            $stateId = StatusAssigner::assignState($service, StatusAssigner::SERVICE_PENDING, self::$entity_type);
             $_service = Servicio::find($service->id);
+            $_service->save();
             $agenda = Agenda_Tecnico::where('technicianId',$technicalId->id)->first();
             if(!$agenda){
                 $agenda = Agenda_Tecnico::create([
@@ -121,8 +121,8 @@ class ServicioMutations
                 'updatedDateTime' => $serviceData['updatedDateTime'],
                 'status' => 1
             ]);
-            StatusAssigner::assignState($service,StatusAssigner::REQUEST_PENDING,self::$entity_type);
-
+            StatusAssigner::assignState($service,StatusAssigner::SERVICE_PENDING,self::$entity_type);
+            $service->save();
             $_service = Servicio::find($service->id);
             $agenda = Agenda_Tecnico::where('technicianId',$technicalId->id)->first();
 
@@ -160,21 +160,26 @@ class ServicioMutations
         $serviceData = $args['requestService'];
         $serviceId = $serviceData['id_service'];
         $serviceDateTime = $serviceData['finishDateTime'];
+
+        $service = Servicio::find($serviceId);
+        if(is_null($service->id)){
+            return [
+                'message' => 'Servicio no encontrado.'
+            ];
+        }
+
+
+
         DB::beginTransaction();
         try{
-            $service = Servicio::find($serviceId);
-            if(is_null($service->id)){
-                return [
-                    'message' => 'Servicio no encontrado.'
-                ];
-            }
             $client = Cliente_Externo::find($service->clientId);
             $technician = Tecnico::find($service->technicianId);
             $service->finishDateTime = $serviceDateTime;
             $service->updatedDateTime = Carbon::now();
-            $service->save();
-            StatusAssigner::assignState($service,StatusAssigner::REQUEST_ACCEPTED,self::$entity_type);
 
+            StatusAssigner::assignState($service,StatusAssigner::SERVICE_COMPLETED,self::$entity_type);
+
+            $service->save();
             $_service = Servicio::find($service->id);
             return [
                 'message' => 'Servicio terminado',
@@ -189,7 +194,52 @@ class ServicioMutations
             ];
         }
     }
+    public function finishServiceClientInternal($root,array $args){
+        $serviceData = $args['requestService'];
+        $serviceId = $serviceData['id_service'];
+        $clientId = $serviceData['id_client'];
+        $technicianId = $serviceData['id_tecnico'];
+        $serviceDateTime = $serviceData['finishDateTime'];
 
+        $service = Servicio::find($serviceId);
+        if(is_null($service->id)){
+            return [
+                'message' => 'Servicio no encontrado.'
+            ];
+        }
+        $client = Cliente_Interno::find($clientId);
+        if(is_null($client->id)){
+            return [
+                'message' => 'Cliente no encontrado.'
+            ];
+        }
+        $technician = Tecnico::find($technicianId);
+        if(is_null($technician->id)){
+            return [
+                'message' => 'Tecnico no encontrado.'
+            ];
+        }
+        DB::beginTransaction();
+        try{
+            $service->finishDateTime = $serviceDateTime;
+            $service->updatedDateTime = Carbon::now();
+
+            StatusAssigner::assignState($service,StatusAssigner::SERVICE_COMPLETED,self::$entity_type);
+            $service->save();
+            $_service = Servicio::find($service->id);
+            return [
+                'message' => 'Servicio terminado',
+                'customer_internal' => $client ,
+                'technician' => $technician ,
+                'service' => $_service
+            ];
+        }catch(\Exception $e){
+            DB::rollBack();
+            return [
+                'message' => 'Error en la actualizacion de datos.' . $e->getMessage()
+            ];
+        }
+    }
     public function delete($root , array $args){
         $serviceData = $args['requestService'];
         $serviceId=$serviceData['id_service'];

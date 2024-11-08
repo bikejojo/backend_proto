@@ -11,20 +11,18 @@ type responseDetaiAgendaInternal {
 
 type responseDetaiAgendaExternal {
     message:String!
-    agenda:[contentExternal]
-}
-
-type contentInternal {
-    agenda:Service
-    technician:technician
-    client:InternalClient
+    content:[contentExternal]
 }
 
 type contentExternal {
-    agenda:Service
-    technician:technician
+    agenda:DetailAgendaTechnical
+    technician:Technician
     client:ExternalClient
 }
 
-
+type contentInternal {
+    agenda:DetailAgendaTechnical
+    technician:technician
+    client:InternalClient
+}
 #import detailAgendaTechnical.graphql

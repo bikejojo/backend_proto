@@ -35,12 +35,9 @@ class StatusAssigner{
             $status = Tipo_Estado::where('entity_type',$entity_type)
             ->where('description',$state)
             ->first();
-            //dd($status);
+            //dd($state);
             if($entity_type === 'request'){
                 $entity = Solicitud::find($objeto->id);
-                /*if($objetoprior->id === $objeto->technicalId){
-                    $entity = Solicitud::find($objeto->id);
-                }*/
             }
             if($entity_type === 'service'){
                 $entity = Servicio::find($objeto->id);
@@ -49,7 +46,9 @@ class StatusAssigner{
                 }*/
             }
             //DB::commit();
+
             $entity->stateId = $status->id;
+
             return $entity->save();
         }
         //DB::rollback();

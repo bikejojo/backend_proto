@@ -1,6 +1,6 @@
 type DetailAgendaTechnical {
     id:ID!
-    id_agendaTechnical:ID @rename (attribute: "agendatechnicalId")
+    id_agendaTechnical:ID @rename (attribute: "agendaTechnicalId")
     id_client:ID @rename (attribute: "clientId")
     id_service:ID @rename (attribute: "serviceId")
     typeClient:String!
