@@ -7,4 +7,3 @@ type ResponseCitation {
     citation:Citation
 }
 
-# @import citation.graphql

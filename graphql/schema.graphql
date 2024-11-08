@@ -16,7 +16,6 @@ scalar Upload @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload
 #import request/*.graphql
 #import service/*.graphql
 #import typeActivity/*.graphql
-#import citation/*.graphql
 #import agendaTech/*.graphql
 #import detailAgendaTech/*.graphql
 #import rating/*.graphql
