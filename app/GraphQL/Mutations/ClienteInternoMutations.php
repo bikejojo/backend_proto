@@ -11,7 +11,6 @@ use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Validator;
-use App\Models\Cliente_Externo;
 use Illuminate\Support\Facades\DB;
 
 class ClienteInternoMutations{

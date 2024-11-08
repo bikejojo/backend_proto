@@ -10,8 +10,8 @@ use App\Models\Servicio;
 
 
 class ValidationModels{
-    public static function validationTechnician(){}
-    public static function validationclientInternal(){}
-    public static function validationclientExternal(){}
-    public static function validationclientService(){}
+    public static function validationTechnician($objeto,$state){}
+    public static function validationclientInternal($objeto,$state){}
+    public static function validationclientExternal($objeto,$state){}
+    public static function validationclientService($objeto,$state){}
 }

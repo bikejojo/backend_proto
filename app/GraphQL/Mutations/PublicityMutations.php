@@ -6,7 +6,6 @@ use App\Models\Publicidad;
 use Carbon\Carbon;
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Helpers\ImageHelper;

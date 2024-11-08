@@ -7,7 +7,7 @@ use App\Models\Agenda_Tecnico;
 
 class NoteMutations
 {
-    public function create($root,array $args){
+ /*   public function create($root,array $args){
         $noteData = $args['requestNote'];
         $note = new Note();
         $note->descripcion = $noteData['descripcion'];
@@ -25,5 +25,5 @@ class NoteMutations
         $note = Note::find($note_id);
         $note->descripcion = $args['descripcion'];
         $note->save();
-    }
+    }*/
 }

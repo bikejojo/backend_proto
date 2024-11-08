@@ -8,11 +8,9 @@ use App\Models\Tecnico;
 use App\Models\Tecnico_Habilidad;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
-use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Helpers\ImageHelper;
 

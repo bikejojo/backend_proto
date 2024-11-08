@@ -9,7 +9,7 @@ use App\Models\Servicio;
 use App\Models\Calificacion;
 use App\Services\StatusAssigner;
 
-final readonly class RatingMutations
+class RatingMutations
 {
     /** @param  array{}  $args */
     public function __invoke(null $_, array $args)
