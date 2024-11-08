@@ -2,14 +2,11 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Models\Detalle_Agenda_Tecnico;
-use App\Models\Agenda_Tecnico;
 use App\Models\Cliente_Interno;
 use App\Models\Servicio;
 use App\Models\Solicitud;
 use App\Models\Tecnico;
 use App\Services\StatusAssigner;
-use App\Services\GetValidation;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -64,13 +61,20 @@ class SolicitudesMutations
         // tipo 2
         //$requestData = $args['requestRequest'];
         $requestId = $args['id'];
+        /*$requestId = $args['id_request'];
+        $technicianId = $args['id_technician'];*/
         $request = Solicitud::find($requestId);
         ###################################3
         $clientId = $request->clientId;
         $tecnicoId=$request->technicianId;
+        //$tecnico = Tecnico::find($technicianId);
         $cliente = Cliente_Interno::find($clientId);
+        /*if($tecnico){
+            return ['message'=> 'No existe tecnico']
+        }*/
         $tecnico = Tecnico::find($tecnicoId);
         $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_REJECTED, self::$entity_type);
+        //$stateAssign = StatusAssigner::assignState($tecnico,$request,StatusAssigner::REQUEST_REJECTED, self::$entity_type);
         //$request->status= self::status_cancel;
         $_request = Solicitud::find($request->id);
         $request->save();

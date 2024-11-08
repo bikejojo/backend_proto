@@ -7,7 +7,7 @@ use App\Models\Servicio;
 use App\Models\Tipo_Estado; // Asegúrate de que este es el modelo correcto para la tabla de estados
 use App\Models\Tipo_Actividad;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 class StatusAssigner{
     /**
@@ -29,7 +29,8 @@ class StatusAssigner{
     const SERVICE_COMPLETED = 'terminado';
 
     public static function assignState($objeto, $state,$entity_type){
-
+    //public static function assignState ($objetoprev,$objeto,$state,$entity_type){
+        //DB::beginTransccion();
         try{
             $status = Tipo_Estado::where('entity_type',$entity_type)
             ->where('description',$state)
@@ -37,13 +38,21 @@ class StatusAssigner{
             //dd($status);
             if($entity_type === 'request'){
                 $entity = Solicitud::find($objeto->id);
+                /*if($objetoprior->id === $objeto->technicalId){
+                    $entity = Solicitud::find($objeto->id);
+                }*/
             }
             if($entity_type === 'service'){
                 $entity = Servicio::find($objeto->id);
+                /*if($objetoprior->id === $objeto->technicalId){
+                    $entity = Servicio::find($objeto->id);
+                }*/
             }
+            //DB::commit();
             $entity->stateId = $status->id;
             return $entity->save();
         }
+        //DB::rollback();
         catch (\Exception $e){
             return [
                 'message'=> 'fallas en la inserccion.' . $e->getMessage()

@@ -1,26 +1,30 @@
 extend type Query{
-    getDetailAgenda(requestAgenda:JSON!):responseDetaiAgenda @field(resolver: "AgendaQuery@getAllowAgenda" )
-    getAllAgendaByClient(requestAgenda:JSON!):responseAgenda @field(resolver: "AgendaQuery@getAgendaByClient" )
-    getAgendaByDate(requestAgenda:JSON!):responseServiceDate @field(resolver: "AgendaQuery@getAgendaByDate")
-    citationContentAgenda(requestAgenda:JSON!):responseContent @field(resolver: "AgendaQuery@getContentServiceId")
+    getAgendaInternal(requestAgenda:JSON!):responseDetaiAgendaInternal @field(resolver: "AgendaQuery@listAgendaInternalClient" )
+    getAgendaExternal(requestAgenda:JSON!):responseDetaiAgendaExternal @field(resolver: "AgendaQuery@listAgendaExternalClient" )
+
 }
 
-type responseDetaiAgenda {
+type responseDetaiAgendaInternal {
     message:String!
-
-    agenda:Agenda_Technical
-    detailAgenda:[DetailAgendaTechnical!]!
-    citation: [Citation]
-    service: [Service]
+    agenda:[contentInternal]
 }
 
-type responseServiceDate {
-    message:String
-    services:[DetailAgendaTechnical]
+type responseDetaiAgendaExternal {
+    message:String!
+    agenda:[contentExternal]
 }
-type responseContent {
-    message:String
-    service:Service
+
+type contentInternal {
+    agenda:Service
+    technician:technician
+    client:InternalClient
 }
+
+type contentExternal {
+    agenda:Service
+    technician:technician
+    client:ExternalClient
+}
+
 
 #import detailAgendaTechnical.graphql
