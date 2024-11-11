@@ -1,4 +1,4 @@
-type DetailAgendaTechnical {
+type DetailAgendaTechnical  @model(class: "App\\Models\\Detalle_Agenda_Tecnico"){
     id:ID!
     id_agendaTechnical:ID @rename (attribute: "agendaTechnicalId")
     id_client:ID @rename (attribute: "clientId")
@@ -8,6 +8,6 @@ type DetailAgendaTechnical {
     createDate:String!
 
     details:Agenda_Technical @belongsTo
-    services:[Service] @hasMany
+    services:Service @belongsTo
 }
 

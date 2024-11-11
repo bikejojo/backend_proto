@@ -19,13 +19,9 @@ use function PHPUnit\Framework\isEmpty;
 class TecnicoMutations {
     protected $app;
 
-    public function __construct()
-    {
-        $this->app = env('APP_URL').':'.env('SERVER_PORT');
-    }
-
     public function create($root, array $args)
     {
+        $this->app = env('FULL_URL');
         $technicianData = $args['technicianRequest'];
         $skill = null;
 

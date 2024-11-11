@@ -3,7 +3,7 @@ extend type Mutation {
     createServiceExternal(requestService:JSON!):responseService @field(resolver: "ServicioMutations@createExternal")
 
     completServiceInternal(requestService:JSON):responseServiceClient @field(resolver: "ServicioMutations@finishServiceClientInternal")
-    completServiceExternal(requestService:JSON)responseService @field(resolver: "ServicioMutations@finishServiceClientExternal")
+    #completServiceExternal(requestService:JSON)responseService @field(resolver: "ServicioMutations@finishServiceClientExternal")
     deleteService(requestService:JSON!):responseServiceDelete @field(resolver: "ServicioMutations@delete")
 }
 

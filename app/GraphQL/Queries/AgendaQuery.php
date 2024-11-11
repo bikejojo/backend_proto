@@ -8,7 +8,6 @@ use App\Models\Agenda_Tecnico;
 USE App\Models\Cliente_Externo;
 USE App\Models\Cliente_Interno;
 use App\Models\Detalle_Agenda_Tecnico;
-use App\Models\Servicio;
 use App\Models\Tecnico;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -23,28 +22,62 @@ class AgendaQuery{
     const servicioInternal = ServicioMutations::clientInternal;
     const servicioExternal = ServicioMutations::clientExternal;
 
-    public function listAgendaInternalClient($root , array $args){
+    public function listAgendaInternalClient($root, array $args) {
         $agendaData = $args['requestAgenda'];
         $technicianId = $agendaData['technicianId'];
         $dateFilter = $agendaData['entryDate'] ?? StatusHelper::ORDER_NAME_RECENT;
+
         $tecnico = Tecnico::find($technicianId);
-        if(!$tecnico){
-            return[
+        if (!$tecnico) {
+            return [
                 'message' => 'No existe tecnico.'
             ];
         }
-        $agenda = Agenda_Tecnico::where('technicianId',$tecnico->id)->first();
-        if(!$agenda){
-            return[
+
+        $agenda = Agenda_Tecnico::where('technicianId', $tecnico->id)->first();
+        if (!$agenda) {
+            return [
                 'message' => 'El tecnico no tiene una agenda.'
             ];
         }
-        $query = Detalle_Agenda_Tecnico::where('agendaTechnicalId',$agenda->id)
-        ->where('typeClient',self::servicioInternal)->get();
-        if($dateFilter){
-            $_query = self::dateHelper($dateFilter,$query,'serviceDate');
+
+        $query = Detalle_Agenda_Tecnico::where('agendaTechnicalId', $agenda->id)
+            ->where('typeClient', 1); // Cliente interno
+        //dd($query->get());
+        if ($dateFilter) {
+            $query = $this->dateHelper($dateFilter, $query, 'serviceDate');
         }
-        $service = $_query->get();
+
+        $serviceDetails = $query->get();
+        if ($serviceDetails->isEmpty()) {
+            return [
+                'message' => 'No hay servicios en la agenda',
+                'content' => null
+            ];
+        }
+
+        $agendaContent = $serviceDetails->map(function ($detail) use ($tecnico) {
+            // Obtener cliente interno asociado
+            $client = DB::table('internal_clients')
+                ->where('id', $detail->clientId)
+                ->select('internal_clients.*')
+                ->first();
+
+            return [
+                'agenda' => $detail,
+                'technician' => $tecnico,
+                'client' => $client,
+                'service' => [
+                    'title' => $detail->service_title,
+                    'description' => $detail->service_description,
+                ],
+            ];
+        });
+
+        return [
+            'message' => 'Listado de agenda',
+            'content' => $agendaContent
+        ];
     }
     public function listAgendaExternalClient($root , array $args){
         $agendaData = $args['requestAgenda'];
@@ -68,7 +101,6 @@ class AgendaQuery{
         if($dateFilter){
             $_query = self::dateHelper($dateFilter,$query,'serviceDate');
         }
-
         $service = $_query->get();
         if ($service->isEmpty()) {
             return [
@@ -90,14 +122,14 @@ class AgendaQuery{
             ->where('external_clients.id', $request->clientId)
             ->select('external_clients.*')
             ->first();
-            //dd($request);
+            //dd($agenda);
             return [
                 'agenda' => $request ,
                 'technician' => $tecnico ,
                 'client'=> $client
             ];
         });
-        //dd($agenda);
+
         return [
             'message' => 'Listado de agenda',
             'content' => $agenda
@@ -105,11 +137,12 @@ class AgendaQuery{
     }
 
     private function dateHelper($dateFilter,$query,$nameAttribute){
-        $now = Carbon::now();
+        $now = Carbon::now()->toDateTimeString();
+
         if($dateFilter ==='mas reciente'){
-            return $query->where('serviceDate','<=',$now)->orderByDesc('serviceDate');
+            return ($query->where('serviceDate','<=',$now)->orderBy('serviceDate','desc'));
         }
 
-        return $query->whereDate('serviceDate',$dateFilter);
+        return ($query->whereDate('serviceDate',$dateFilter));
     }
 }

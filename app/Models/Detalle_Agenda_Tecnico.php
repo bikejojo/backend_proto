@@ -11,21 +11,20 @@ class Detalle_Agenda_Tecnico extends Model
     use HasFactory;
     protected $PrimaryKey = 'id';
     protected $table = 'detail_technical_agenda';
-
     protected $fillable = [
         'clientId',
-        'typeClient',
-        'serviceId',
         'agendaTechnicalId',
+        'serviceId',
+        'typeClient',
         'createDate',
-        'serviceDate',
+        'serviceDate'
     ];
 
     public function details(){
         return $this->belongsTo(Agenda_Tecnico::class,'agendaTechnicalId');
     }
 
-    public function service(){
-        return $this->belongsTo(Servicio::class,'serviceId','id');
+    public function services(){
+        return $this->belongsTo(Servicio::class,'serviceId');
     }
 }

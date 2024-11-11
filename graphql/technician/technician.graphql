@@ -1,7 +1,7 @@
 type Technician @model(class: "App\\Models\\Tecnico"){
-  id: ID!
-  firstName: String! @trim
-  lastName: String! @trim
+  id: ID
+  firstName: String @trim
+  lastName: String @trim
   frontIdCard: String @trim
   backIdCard: String @trim
   email: String @trim

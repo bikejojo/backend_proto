@@ -1,5 +1,5 @@
 type InternalClient @model(class: "App\\Models\\Cliente_Interno"){
-  id: ID!
+  id: ID
   firstName: String!
   lastName: String!
   email: String

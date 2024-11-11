@@ -6,7 +6,7 @@ extend type Query{
 
 type responseDetaiAgendaInternal {
     message:String!
-    agenda:[contentInternal]
+    content:[contentInternal]
 }
 
 type responseDetaiAgendaExternal {
@@ -22,7 +22,7 @@ type contentExternal {
 
 type contentInternal {
     agenda:DetailAgendaTechnical
-    technician:technician
+    technician:Technician
     client:InternalClient
 }
 #import detailAgendaTechnical.graphql
