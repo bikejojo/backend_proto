@@ -2,20 +2,22 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Models\Agenda_Tecnico;
 use App\Models\Cliente_Interno;
+use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Servicio;
 use App\Models\Solicitud;
 use App\Models\Tecnico;
+use App\Services\StateCatalog;
 use App\Services\StatusAssigner;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Services\ValidationModels;
 
 class SolicitudesMutations
 {
     public static  $entity_type = 'request';
-    const status_cancel = 0;
-    const status_accept = 1;
 
     public function create($root , array $args){
         $requestData = $args['requestRequest'];
@@ -24,15 +26,10 @@ class SolicitudesMutations
         $clientId =$requestData['id_client'];
         $now=Carbon::now();
 
-        $client=Cliente_Interno::find($clientId);
-        if(!$client){
-            return [ 'message' => 'Cliente no encontrado.'];
-        }
+        $client=ValidationModels::validationclientInternal($clientId);
 
-        $technician=Tecnico::find($technicianId);
-        if(!$technician){
-            return [ 'message' => 'Tecnico no encontrado.'];
-        }
+        $technician=ValidationModels::validationTechnician($technicianId); //Tecnico::find($technicianId);
+
         DB::beginTransaction();
             try{
             ##########################
@@ -40,12 +37,12 @@ class SolicitudesMutations
             $request->clientId = $client->id;
             $request->technicianId = $technician->id;
             $request->requestDescription = $description;
-            $request->status = self::status_accept;
+            $request->status = StateCatalog::STATUS_ACTIVE;
             $request->registrationDateTime = $now;
             $request->save();
             ##########################
             $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_PENDING, self::$entity_type);
-            $_request = Solicitud::find($request->id);
+            $_request =ValidationModels::validationRequest($request->id);
             DB::commit();
             return [
                 'message' => 'Solicitud registrada',
@@ -54,7 +51,11 @@ class SolicitudesMutations
                 'technician' => $technician
             ];
             DB::rollBack();
-        }catch (\Exception $e){return ['message' => 'El error es.'. $e->getMessage()];}
+        }catch (\Exception $e){
+            return[
+                'message' => 'El error es.'. $e->getMessage()
+            ];
+        }
     }
 
     public function cancelRequestTechnician($root,array $args){
@@ -90,18 +91,19 @@ class SolicitudesMutations
         // tipo 2
         //$requestData = $args['requestRequest'];
         $requestId = $args['id'];
-        $request = Solicitud::find($requestId);
+        $request = ValidationModels::validationRequest($requestId);
+        //dd($args['id']);
         ###################################3
         $clientId = $request->clientId;
         $tecnicoId=$request->technicianId;
         $cliente = Cliente_Interno::find($clientId);
         $tecnico = Tecnico::find($tecnicoId);
-        $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_REJECTED, self::$entity_type);
+        $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_REJECTED_C, self::$entity_type);
         //$request->status= self::status_cancel;
         $_request = Solicitud::find($request->id);
         $request->save();
         return[
-            'message'=>'Solicitud rechazada por el tecnico',
+            'message'=>'Solicitud rechazada por el cliente',
             'requests'=>$_request,
             'client' => $cliente,
             'technician' => $tecnico
@@ -110,20 +112,78 @@ class SolicitudesMutations
 
     public function acceptRequest($root,array $args){
         // tipo 2
-        $requestId = $args['id'];
-        $request = Solicitud::find($requestId);
-        $clientId = $request->clientId;
-        $tecnicoId=$request->technicianId;
-        $cliente = Cliente_Interno::find($clientId);
-        $tecnico = Tecnico::find($tecnicoId);
-        $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_ACCEPTED, self::$entity_type);
-        //$request->status= self::status_accept;
-        $request->save();
-        $_request = Solicitud::find($request->id);
+        $requestData = $args['requestRequest'];
+        $requestId = $requestData['id_request'];
+        DB::beginTransaction();
+        try{
+            $request = Solicitud::find($requestId);
+            if(!$request){
+                return[
+                    'message' => 'No existe la solicitud'
+                ];
+            }
+            $clientId = $requestData['id_client'];
+            $tecnicoId=$requestData['id_technician'];
+            $cliente = Cliente_Interno::find($clientId);
+            if(!$cliente){
+                return [
+                    'message' => 'no se al cliente de la solicitud'
+                ];
+            }
+            $tecnico = Tecnico::find($tecnicoId);
+            if(!$tecnico){
+                return [
+                    'message' => 'no se encontro al tecnico.'
+                ];
+            }
+            $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_ACCEPTED, self::$entity_type);
+            //$request->status= self::status_accept;
+            $request->save();
+            $_request = Solicitud::find($request->id);
+            $agenda = Agenda_Tecnico::where('technicianId',$tecnico->id)->first();
+            if(!$agenda){
+                return [
+                    'message' => 'No existe agenda para el tecnico'
+                ];
+            }
+            $now= Carbon::now();
+            $service = Servicio::create([
+                'requestsId' => $request->id,
+                'technicalId' => $tecnico->id,
+                'clientId' => $cliente->id,
+                'activityId' => $requestData['id_activity'],
+                'typeClient' => ServicioMutations::clientInternal,
+                'titleService' => trim($requestData['titleService']),
+                'serviceDescription' => trim($requestData['serviceDescription']),
+                'serviceLocation' => trim($requestData['serviceLocation']),
+                'createdDateTime' => $now,
+                'updatedDateTime' => $requestData['updatedDateTime'],
+                'status' => StateCatalog::STATUS_ACTIVE
+            ]);
+            $serviceId = $service->id;
+            $agendaId = $agenda->id;
+            $detail = Detalle_Agenda_Tecnico::create([
+                'agendaTechnicalId' => $agendaId,
+                'clientId' => $cliente->id,
+                'serviceId' => $serviceId,
+                'typeClient' => $service->typeClient,
+                'serviceDate' => $service->createdDateTime,
+                'createDate' => Carbon::now()
+            ]);
+
+        DB::commit();
+        }catch(\Exception $e){
+            DB::rollBack();
+            return[
+                'message' => 'Fallas en la aceptar la solicitud y crear el servicio'.$e->getMessage()
+            ];
+        }
         return[
             'message'=>'solicitud confirmada',
             'requests'=>$_request,
             'messageService' => 'Se agendara el servico en un momento',
+            'service' => $service ,
+            'agenda' => $detail ,
             'client' => $cliente,
             'technician' => $tecnico
         ];

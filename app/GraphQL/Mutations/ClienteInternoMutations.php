@@ -5,6 +5,7 @@ namespace App\GraphQL\Mutations;
 
 use App\Models\User;
 use App\Models\Cliente_Interno;
+use App\Services\StateCatalog;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
@@ -42,7 +43,7 @@ class ClienteInternoMutations{
             'email' => $email,
             'password' => Hash::make($clienteData['password']),
             'ci' => $clienteData['ci'],
-            'type_user' => $clienteData['type_user'],
+            'type_user' => StateCatalog::USER_CLIENT,
         ]);
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;

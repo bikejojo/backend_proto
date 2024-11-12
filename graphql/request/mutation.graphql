@@ -1,8 +1,8 @@
 extend type Mutation {
   registerRequest(requestRequest:JSON!):requestResponse @field(resolver: "SolicitudesMutations@create")
-  acceptRequestTechnician(id:ID):requestResponseService @field(resolver: "SolicitudesMutations@acceptRequest")
+  acceptRequestTechnician(requestRequest:JSON):requestResponseService @field(resolver: "SolicitudesMutations@acceptRequest")
   cancelRequestTechnician(id:ID):requestResponse @field(resolver: "SolicitudesMutations@cancelRequestTechnician")
-  #cancelRequestClient(id:ID):requestResponse @field(resolver: "SolicitudesMutations@cancelRequestClient")
+  cancelRequestClient(id:ID):requestResponse @field(resolver: "SolicitudesMutations@cancelRequestClient")
 }
 
 type requestResponse {
@@ -16,10 +16,11 @@ type requestResponse {
 type requestResponseService{
     message:String
     requests:Request
-    client:InternalClient
-    technician:Technician
     messageService:String
     service:Service
+    agenda:DetailAgendaTechnical
+    client:InternalClient
+    technician:Technician
 }
 
 #import request.graphql

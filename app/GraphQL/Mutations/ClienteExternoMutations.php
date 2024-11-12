@@ -7,29 +7,31 @@ use App\Models\User;
 use App\Models\Cliente_Externo;
 use App\Models\Asociacion_Cliente_Tecnico;
 use App\Models\Tecnico;
+use App\Services\StateCatalog;
+use App\Services\ValidationModels;
 use Carbon\Carbon;
 
 class ClienteExternoMutations{
     public function create($root, array $args){
         $clienteData = $args['clientRequest'];
-        $valor = 1;
+        $tecnicoId = $clienteData['technicalId'];
         // Crear el cliente en la base de datos
-        $tecnico = Tecnico::find($clienteData['technicalId']);
+        $tecnico = ValidationModels::validationTechnician($tecnicoId);//Tecnico::find($clienteData['technicalId']);
 
-        if($tecnico == null){
+        /*if($tecnico == null){
             return [
                 'message'=>'Usuario tecnico no encontrado'
             ];
-        }
+        }*/
         $phone=$clienteData['phoneNumber'];
         $existe = Cliente_Externo::where('phoneNumber',$phone)->first();
         if($existe){
-            if($existe->status === 1 ){
+            if($existe->status === StateCatalog::STATUS_ACTIVE ){
                 return [
                     'message' => 'cliente se registro con anterioridad en la lista!'
                 ];
             }else{
-                $existe->status = 1;
+                $existe->status = StateCatalog::STATUS_ACTIVE;
                 $existe->save();
                 return [
                     'message' => 'cliente se volvio a habilitar!'
@@ -39,9 +41,8 @@ class ClienteExternoMutations{
             $cliente = Cliente_Externo::create([
                 'fullName' => $clienteData['fullName'],
                 'phoneNumber' => $clienteData['phoneNumber'],
-                'status' => $valor
+                'status' => StateCatalog::STATUS_ACTIVE
             ]);
-            //dd($clientId);
             $cliente->save();
             $asociacion = Asociacion_Cliente_Tecnico::create([
                 'clientId' => $cliente->id,
@@ -67,6 +68,7 @@ class ClienteExternoMutations{
         $client->save();
         $technical=Asociacion_Cliente_Tecnico::where('clientId',$client->id)
         ->join('technicians','technicalId','=','technicians.id')
+        ->select('technicians.*')
         ->first();
         return[
             'message' => 'Cliente actualizado exitoso!!' ,
@@ -79,7 +81,7 @@ class ClienteExternoMutations{
         if(!$id){
             return ['message'=> 'Borrado no existoso'];
         }else{
-            $id->status=0;
+            $id->status=StateCatalog::STATUS_LOW;
             $id->save();
             return ['message'=> 'Borrado existoso'];
         }

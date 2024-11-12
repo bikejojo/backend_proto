@@ -9,11 +9,10 @@ use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Helpers\ImageHelper;
+use App\Services\StateCatalog;
+use App\Services\ValidationModels;
 
 final class PublicityMutations{
-
-    const status_on =1;
-    const status_off = 0;
 
     protected $app;
 
@@ -39,7 +38,7 @@ final class PublicityMutations{
             'startDate' =>            $publicityDate['startDate'],
             'finishDate' =>           $publicityDate['finishDate'],
             'categoryId' =>           $publicityDate['id_category'],
-            'status'=>                self::status_on
+            'status'=>                StateCatalog::STATUS_PUBLICITY_ACTIVE
         ]);
 
         $publicityId = $publicity->id;
@@ -68,8 +67,9 @@ final class PublicityMutations{
                 'message' => 'No se encontró la publicidad con el ID proporcionado.'
             ];
         }
-
-        $publicity->status = $publicityDate['status'];
+        if($publicityDate['status'] === StateCatalog::STATUS_PUBLICITY_EXPIRATION ){
+            $publicity->status = StateCatalog::STATUS_PUBLICITY_EXPIRATION;
+        }
         $publicity->save();
         return [
             'message' => 'Publicidad expirada.',
@@ -125,14 +125,14 @@ final class PublicityMutations{
     }
     public function delete($root,array $args){
         $publicityId = $args['requestPublicity']['id'];
-        $publicity = Publicidad::find($publicityId);
+        $publicity = ValidationModels::validationPublicity($publicityId); /*Publicidad::find($publicityId);
         if (!$publicity) {
             return [
                 'message' => 'No se encontró la publicidad'
             ];
-        }
+        }*/
         // Realizar baja lógica
-        $publicity->status = self::status_off;
+        $publicity->status = StateCatalog::STATUS_PUBLICITY_CANCELED;
         $publicity->save();
         return [
             'message' => 'La publicidad se dio de baja.',

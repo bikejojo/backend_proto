@@ -10,6 +10,7 @@ use App\Models\Asociacion_Cliente_Tecnico;
 use App\Models\Cliente_Interno;
 use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Tecnico;
+use App\Services\StateCatalog;
 use App\Services\StatusAssigner;
 
 class ServicioMutations
@@ -47,7 +48,7 @@ class ServicioMutations
                 'serviceLocation' => trim($serviceData['serviceLocation']),
                 'createdDateTime' => $now,
                 'updatedDateTime' => $serviceData['updatedDateTime'],
-                'status' => 1
+                'status' => StateCatalog::STATUS_ACTIVE
             ]);
             $stateId = StatusAssigner::assignState($service, StatusAssigner::SERVICE_PENDING, self::$entity_type);
             $_service = Servicio::find($service->id);
@@ -119,7 +120,7 @@ class ServicioMutations
                 'serviceLocation' => trim($serviceData['serviceLocation']),
                 'createdDateTime' => $now,
                 'updatedDateTime' => $serviceData['updatedDateTime'],
-                'status' => 1
+                'status' => StateCatalog::STATUS_ACTIVE
             ]);
             StatusAssigner::assignState($service,StatusAssigner::SERVICE_PENDING,self::$entity_type);
             $service->save();
@@ -245,7 +246,7 @@ class ServicioMutations
         $serviceId=$serviceData['id_service'];
         $service = Servicio::find($serviceId);
         if($service != null){
-            $service->status = 0;
+            $service->status = StateCatalog::STATUS_LOW;
             $service->save();
             return[
                 'message' => 'El servicio se elimino.',
