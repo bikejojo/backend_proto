@@ -71,6 +71,7 @@ class DatabaseSeeder extends Seeder
         #servicio
         Tipo_Estado::create(['description'=>'pendiente','entity_type'=>'service']);
         Tipo_Estado::create(['description'=>'terminado','entity_type'=>'service']);
+        Tipo_Estado::create(['description'=>'rechazado por cliente.','entity_type'=>'request']);
 
         categoria_Publicidad::create(['description'=>'tecnologia','entity_type'=>'publicity','code'=>'PUB001']);
         categoria_Publicidad::create(['description'=>'servicios','entity_type'=>'publicity','code'=>'PUB002']);

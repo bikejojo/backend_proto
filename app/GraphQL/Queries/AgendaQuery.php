@@ -43,11 +43,9 @@ class AgendaQuery{
 
         $query = Detalle_Agenda_Tecnico::where('agendaTechnicalId', $agenda->id)
             ->where('typeClient', 1); // Cliente interno
-        //dd($query->get());
         if ($dateFilter) {
             $query = $this->dateHelper($dateFilter, $query, 'serviceDate');
         }
-
         $serviceDetails = $query->get();
         if ($serviceDetails->isEmpty()) {
             return [

@@ -23,6 +23,7 @@ class StatusAssigner{
     const REQUEST_PENDING = 'pendiente por aceptar';
     const REQUEST_REJECTED = 'rechazado por tecnico';
     const REQUEST_ACCEPTED = 'aceptado';
+    const REQUEST_REJECTED_C = 'rechazado por cliente';
 
     // Constantes para los estados de servicio
     const SERVICE_PENDING = 'pendiente';
