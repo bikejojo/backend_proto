@@ -81,9 +81,13 @@ return new class extends Migration
         }*/
         public function up(): void
         {
-           Schema::table('category_publicity', function (Blueprint $table) {
-                $table->text('entity_type')->nullable();
-                $table->text('code')->nullable();
+           Schema::table('requests', function (Blueprint $table) {
+                $table->text('titleRequests')->nullable();
+                $table->text('latitude')->nullable();
+                $table->text('longitude')->nullable();
+                $table->text('reference_phone')->nullable();
+                $table->unsignedBigInteger('activityId')->nullable();
+                $table->foreign('activityId')->references('id')->on('activity_types')->onDelete('cascade');
             });
         }
 

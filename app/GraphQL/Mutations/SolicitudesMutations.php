@@ -19,39 +19,39 @@ class SolicitudesMutations
 {
     public static  $entity_type = 'request';
 
-    public function create($root , array $args){
+    public function createRequestClient($root,array $args){
         $requestData = $args['requestRequest'];
-        $description = trim($requestData['requestDescription']);
         $technicianId=$requestData['id_technician'];
         $clientId =$requestData['id_client'];
+        $technician = ValidationModels::validationTechnician($technicianId);
+        $client = ValidationModels::validationclientInternal($clientId);
         $now=Carbon::now();
-
-        $client=ValidationModels::validationclientInternal($clientId);
-
-        $technician=ValidationModels::validationTechnician($technicianId); //Tecnico::find($technicianId);
-
         DB::beginTransaction();
-            try{
-            ##########################
-            $request = new Solicitud();
-            $request->clientId = $client->id;
-            $request->technicianId = $technician->id;
-            $request->requestDescription = $description;
-            $request->status = StateCatalog::STATUS_ACTIVE;
+        try{
+            $request = Solicitud::create([
+                'clientId' => $client->id,
+                'technicianId' => $technician->id,
+                'titleRequests'=> $requestData['titleRequests'],
+                'requestDescription'=>$requestData['requestDescription'],
+                'latitude'=>$requestData['latitude'],
+                'longitude'=>$requestData['longitude'],
+                'reference_phone'=>$requestData['reference_phone'],
+                'status'=>StateCatalog::STATUS_ACTIVE,
+                'activityId' => $requestData['id_activity']
+            ]);
+            $assgin = StatusAssigner::assignState($request,StatusAssigner::REQUEST_PENDING,self::$entity_type);
             $request->registrationDateTime = $now;
             $request->save();
-            ##########################
-            $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_PENDING, self::$entity_type);
-            $_request =ValidationModels::validationRequest($request->id);
+            $request = Solicitud::find($request->id);
             DB::commit();
             return [
                 'message' => 'Solicitud registrada',
-                'requests' => $_request,
+                'requests' => $request,
                 'client' => $client,
                 'technician' => $technician
             ];
+        } catch(\Exception $e){
             DB::rollBack();
-        }catch (\Exception $e){
             return[
                 'message' => 'El error es.'. $e->getMessage()
             ];
@@ -60,7 +60,6 @@ class SolicitudesMutations
 
     public function cancelRequestTechnician($root,array $args){
         // tipo 3
-        //$requestData = $args['requestRequest'];
         $requestId = $args['id'];
         /*$requestId = $args['id_request'];
         $technicianId = $args['id_technician'];*/
@@ -75,8 +74,6 @@ class SolicitudesMutations
         }*/
         $tecnico = Tecnico::find($tecnicoId);
         $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_REJECTED, self::$entity_type);
-        //$stateAssign = StatusAssigner::assignState($tecnico,$request,StatusAssigner::REQUEST_REJECTED, self::$entity_type);
-        //$request->status= self::status_cancel;
         $_request = Solicitud::find($request->id);
         $request->save();
         return[
@@ -89,17 +86,14 @@ class SolicitudesMutations
 
     public function cancelRequestClient($root,array $args){
         // tipo 2
-        //$requestData = $args['requestRequest'];
         $requestId = $args['id'];
         $request = ValidationModels::validationRequest($requestId);
-        //dd($args['id']);
         ###################################3
         $clientId = $request->clientId;
         $tecnicoId=$request->technicianId;
         $cliente = Cliente_Interno::find($clientId);
         $tecnico = Tecnico::find($tecnicoId);
         $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_REJECTED_C, self::$entity_type);
-        //$request->status= self::status_cancel;
         $_request = Solicitud::find($request->id);
         $request->save();
         return[
@@ -114,50 +108,31 @@ class SolicitudesMutations
         // tipo 2
         $requestData = $args['requestRequest'];
         $requestId = $requestData['id_request'];
+        $clientId = $requestData['id_client'];
+        $tecnicoId=$requestData['id_technician'];
+        $visitDateTime=$requestData['visitDateTime'];
         DB::beginTransaction();
         try{
-            $request = Solicitud::find($requestId);
-            if(!$request){
-                return[
-                    'message' => 'No existe la solicitud'
-                ];
-            }
-            $clientId = $requestData['id_client'];
-            $tecnicoId=$requestData['id_technician'];
-            $cliente = Cliente_Interno::find($clientId);
-            if(!$cliente){
-                return [
-                    'message' => 'no se al cliente de la solicitud'
-                ];
-            }
-            $tecnico = Tecnico::find($tecnicoId);
-            if(!$tecnico){
-                return [
-                    'message' => 'no se encontro al tecnico.'
-                ];
-            }
+            $request = ValidationModels::validationRequest($requestId);
+
+            $cliente = ValidationModels::validationclientInternal($clientId);
+            $tecnico = ValidationModels::validationTechnician($tecnicoId);
             $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_ACCEPTED, self::$entity_type);
-            //$request->status= self::status_accept;
             $request->save();
             $_request = Solicitud::find($request->id);
-            $agenda = Agenda_Tecnico::where('technicianId',$tecnico->id)->first();
-            if(!$agenda){
-                return [
-                    'message' => 'No existe agenda para el tecnico'
-                ];
-            }
+            $agenda = ValidationModels::validationAgenda($tecnico->id);
             $now= Carbon::now();
             $service = Servicio::create([
                 'requestsId' => $request->id,
                 'technicalId' => $tecnico->id,
                 'clientId' => $cliente->id,
-                'activityId' => $requestData['id_activity'],
+                'activityId' => $request->activityId,
                 'typeClient' => ServicioMutations::clientInternal,
-                'titleService' => trim($requestData['titleService']),
-                'serviceDescription' => trim($requestData['serviceDescription']),
-                'serviceLocation' => trim($requestData['serviceLocation']),
+                'titleService' => $request->titleRequests,
+                'serviceDescription' => $request->requestDescription,
+                'serviceLocation' => $request->latitude. ' , ' .$request->longitude,
                 'createdDateTime' => $now,
-                'updatedDateTime' => $requestData['updatedDateTime'],
+                'updatedDateTime' => $visitDateTime,
                 'status' => StateCatalog::STATUS_ACTIVE
             ]);
             $serviceId = $service->id;

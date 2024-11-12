@@ -15,7 +15,12 @@ class Solicitud extends Model
         'stateId',
         'clientId',
         'technicianId',
+        'activityId',
+        'titleRequests',
         'requestDescription',
+        'latitude',
+        'longitude',
+        'reference_phone',
         'status',
         'registrationDateTime',
     ];

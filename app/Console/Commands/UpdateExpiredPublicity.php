@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use App\Models\Publicidad;
+use App\Services\StateCatalog;
 
 class UpdateExpiredPublicity extends Command
 {
@@ -30,8 +31,8 @@ class UpdateExpiredPublicity extends Command
         //
         $now = Carbon::now();
         $expiredPublicity = Publicidad::where('finishDate' , '<' , $now )
-        ->where('status','!=',2)
-        ->update(['status'=>2]);
+        ->where('status','!=',StateCatalog::STATUS_PUBLICITY_EXPIRATION)
+        ->update(['status'=>StateCatalog::STATUS_PUBLICITY_EXPIRATION]);
 
         if($expiredPublicity > 0 ){
             $this->info("Se actualizaron $expiredPublicity publicaciones vencidas.");

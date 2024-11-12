@@ -8,9 +8,18 @@ use App\Models\Asociacion_Cliente_Tecnico;
 use App\Models\Cliente_Externo;
 use App\Models\Publicidad;
 use App\Models\Solicitud;
+use App\Models\Agenda_Tecnico;
 
 class ValidationModels{
-    public static function validationGeneral($objeto,$state){}
+    public static function validationAgenda($objeto){
+        if(!Agenda_Tecnico::where('technicianId',$objeto)->first()){
+            return[
+                'message' => 'No existe agenda para el tecnico.'
+            ];
+        }else{
+            return Agenda_Tecnico::where('technicianId',$objeto)->first();
+        }
+    }
 
     public static function validationTechnician($objeto){
 

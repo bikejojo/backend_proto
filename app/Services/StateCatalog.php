@@ -14,4 +14,6 @@ class StateCatalog {
     const STATUS_PUBLICITY_ACTIVE = 1;
     const STATUS_PUBLICITY_EXPIRATION = 0;
     const STATUS_PUBLICITY_CANCELED=2;
+    //actividad
+    
 }

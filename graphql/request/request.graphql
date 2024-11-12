@@ -3,7 +3,12 @@ type Request {
     id_client:ID! @rename(attribute: "clientId")
     id_technician:ID! @rename(attribute: "technicianId")
     id_state:ID @rename(attribute: "stateId")
-    requestDescription:String!
+    id_activity:ID @rename(attribute: "activityId")
+    titleRequests:String @trim
+    requestDescription:String! @trim
+    latitude:String
+    longitude:String
+    reference_phone:String @trim
     status:String!
     registrationDateTime:String
 
