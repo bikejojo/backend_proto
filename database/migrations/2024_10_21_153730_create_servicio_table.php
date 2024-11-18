@@ -22,6 +22,8 @@ return new class extends Migration
             $table->text('titleService');
             $table->string('serviceDescription');
             $table->text('serviceLocation');
+            $table->text('longitude');
+            $table->text('latitude');
             $table->string('status');
             $table->datetime('createdDateTime')->nullable();
             $table->datetime('updatedDateTime')->nullable();

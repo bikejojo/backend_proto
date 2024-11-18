@@ -9,6 +9,8 @@ type Service {
     titleService: String
     serviceDescription:String
     serviceLocation:String
+    latitude:String
+    longitude:String
     status:String
     createdDateTime:String
     updatedDateTime:String

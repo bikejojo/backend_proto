@@ -6,6 +6,7 @@ extend type Query {
 
 type responseClientInternalSearch{
     message: String
+    request:Request
     client_i: [InternalClient]
 }
 #import InternalClient.graphql
