@@ -24,7 +24,7 @@ class TecnicoMutations {
         $this->app = env('FULL_URL');
         $technicianData = $args['technicianRequest'];
         $skill = null;
-
+       
         // Verificar si el CI ya existe
         if (User::where('ci', $technicianData['ci'])->exists()) {
             return [
@@ -93,6 +93,7 @@ class TecnicoMutations {
             $nowFront=Carbon::now()->format('Ymd_His');
             $nowBack=Carbon::now()->addMinute(1);
             $nowBack=$nowBack->format('Ymd_His');
+            
             if (isset($args['frontIdCard']) && $args['frontIdCard'] instanceof UploadedFile) {
                 $frontIdCardPath = ImageHelper::processImage($args['frontIdCard'], "/{$technicianId}/id_card/"."{$nowFront}.png", $manager);
                 $technician->frontIdCard = $this->app . '/storage' . str_replace('public/', '', $frontIdCardPath);
@@ -135,12 +136,13 @@ class TecnicoMutations {
     }
 
     public function update($root , array $args){
+        $this->app = env('FULL_URL');   
         $technicianData = $args['technicianRequest'];
         if(!isset($technicianData)){
             return[
                 'message' => 'No existe datos de tecnico'];
         }
-
+        
         $validators = ImageHelper::validateImage($args);
         if ($validators->fails()) {
             return [
