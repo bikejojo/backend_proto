@@ -21,3 +21,4 @@ scalar Upload @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload
 #import rating/*.graphql
 #import publicity/*.graphql
 #import categoryPublicity/*.graphql
+#import list_internal_client/*.graphql

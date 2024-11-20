@@ -13,18 +13,18 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('stateId');
+            $table->unsignedBigInteger('stateId')->nullable();
             $table->unsignedBigInteger('requestsId')->nullable();
             $table->unsignedBigInteger('technicalId');
             $table->unsignedBigInteger('clientId');
             $table->unsignedBigInteger('activityId');
             $table->string('typeClient');
-            $table->text('titleService');
-            $table->string('serviceDescription');
-            $table->text('serviceLocation');
-            $table->text('longitude');
-            $table->text('latitude');
-            $table->string('status');
+            $table->text('titleService')->nullable();
+            $table->string('serviceDescription')->nullable();
+            $table->text('serviceLocation')->nullable();
+            $table->text('longitude')->nullable();
+            $table->text('latitude')->nullable();
+            $table->string('status')->nullable();
             $table->datetime('createdDateTime')->nullable();
             $table->datetime('updatedDateTime')->nullable();
             $table->datetime('finishedDateTime')->nullable();

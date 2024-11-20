@@ -1,0 +1,6 @@
+type list_internal_client {
+    id:ID!
+    technicianId:ID
+    clientId:ID
+    typeClient:String
+}

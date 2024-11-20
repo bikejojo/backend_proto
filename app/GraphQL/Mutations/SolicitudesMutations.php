@@ -119,6 +119,7 @@ class SolicitudesMutations
             $tecnico = ValidationModels::validationTechnician($tecnicoId);
             $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_ACCEPTED, self::$entity_type);
             $request->save();
+            //dd($request);
             $_request = Solicitud::find($request->id);
             $agenda = ValidationModels::validationAgenda($tecnico->id);
             $now= Carbon::now();

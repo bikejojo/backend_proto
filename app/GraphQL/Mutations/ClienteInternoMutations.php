@@ -36,7 +36,7 @@ class ClienteInternoMutations{
                 'upcomingmessage' => 'Registre su usuario'
             ];
         }
-        DB::transaction();
+        DB::beginTransaction();
         try{
         $email = strtolower(trim($clienteData['email']));
         $user = User::create([

@@ -21,6 +21,8 @@ class Servicio extends Model
         'titleService',
         'serviceDescription',
         'serviceLocation',
+        'longitude',
+        'latitude',
         'createdDateTime',
         'updatedDateTime',
         'finishDateTime',
