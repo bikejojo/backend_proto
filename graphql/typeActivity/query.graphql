@@ -1,0 +1,5 @@
+extend type Query {
+    getActivity:[ActivityType] @all (model: "App\\Models\\Tipo_Actividad")
+}
+
+#import typeActivity.graphql

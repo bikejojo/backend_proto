@@ -9,7 +9,7 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
 
-class FotoTrabajoMutations{
+/*class FotoTrabajoMutations{
     public function create($root, array $args)
     {
         $fotoData = $args['fotoTrabajoRequest'];
@@ -64,4 +64,4 @@ class FotoTrabajoMutations{
             return ['message' => 'borrado exitoso'];
         }
     }
-}
+}*/

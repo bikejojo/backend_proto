@@ -15,6 +15,7 @@ class Cliente_Interno extends Model
         'lastName',       // apellido
         'email',
         'loginMethod',    // metodo_login
+        'phoneNumber',
         'photo',
         'userId',
         'cityId',          // foto
@@ -32,11 +33,6 @@ class Cliente_Interno extends Model
         return $this->belongsTo(Ciudad::class, 'cityId');
     }
 
-    // Relación con SkillPreference (Preferencia_Habilidad)
-    public function skillPreferences()
-    {
-        return $this->hasMany(Preferencia_Habilidad::class, 'clientId');
-    }
 
     // Relación con Request (Solicitud)
     public function requests()

@@ -1,0 +1,7 @@
+type City {
+  id_city: ID! @rename (attribute: "id" )
+  name: String!
+
+  externalClients: [InternalClient!]! @hasMany
+  technicians: [Technician!]! @hasMany
+}

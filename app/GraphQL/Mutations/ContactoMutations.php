@@ -34,11 +34,27 @@ class ContactoMutations{
         return [
             'message' => 'Registro de contacto exitoso!',
             'contact' => $contacto ,
-            
+
         ];
     }
     public function update($root , array $args ){
     }
     public function delete($root , array $args ){
+    }
+    public function list($root , array $args){
+        $contact = $args['contactRequest'];
+        $tecnicoId = $contact['tecnicoId'];
+        $list = Contacto::where('technicianId',$tecnicoId)->get();
+
+        if($list->isEmpity()){
+            return [
+                'message' => 'No tiene contenido en su agenda' ,
+                'contact' => null
+            ];
+        }
+        return [
+            'message' => 'Listado de Agenda del tecnico' ,
+            'contact' => $list
+        ];
     }
 }

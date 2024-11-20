@@ -1,0 +1,25 @@
+extend type Mutation {
+    createTechnician(technicianRequest: JSON!, frontIdCard: Upload, backIdCard: Upload ): TechnicianResponse @field(resolver: "TecnicoMutations@create")
+    updateTechnician(id: ID!, technicianRequest: JSON!, frontIdCard: Upload, backIdCard: Upload): TechnicianResponse @field(resolver: "TecnicoMutations@update")
+    deleteTecnico(id:ID! @whereKey): Response @field(resolver: "TecnicoMutations@delete")
+    updatePhotoTechnician(id:ID!,photo:Upload):TechnicianResponse @field(resolver: "TecnicoMutations@photoUpdate")
+}
+
+type Response {
+  message: String
+}
+
+type TechnicianResponse {
+  user: User
+  technician: Technician
+  skills: [technicianskills]
+  message: String
+  upcomingmessage: String
+}
+
+type technicianskills {
+    id_skill:ID
+    name:String
+    experience:String
+}
+#import technician.graphql

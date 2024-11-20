@@ -1,6 +1,8 @@
 <?php
 
 namespace App\GraphQL\Mutations;
+
+use App\Models\Tecnico_Habilidad;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -62,35 +64,109 @@ class UserMutations{
 
     public function login($root, array $args)
     {
+        //verificar si el CI se encuentra registrado en la dupla
         $user = User::where('ci', $args['ci'])->first();
 
         if ($user == null ) {
             return [
                 'message' => "El usuario con CI no existe",
                 'user' => null,
-                'tecnico' => null
+                'tecnico' => null,
+                'skill' => null
             ];
         }
-
-        $tecnico = $user->technicians()->first();
+        // Error en la contraseña
+        $client = $user->clientsExterns()->first();
         if (!Hash::check($args['password'], $user->password)) {
             return [
                 'message' => "Credenciales invalidas" ,
             ];
         }
+        $tecnico = $user->technicians()->first();
+        if($tecnico !== null ){
+            $habilidades_tec = Tecnico_Habilidad::where('technicianId', $tecnico->id)
+            ->get();
+            $ha=[];
+            foreach($habilidades_tec as $habilidad_tec) {
+                if ($habilidad_tec->skill) {
+                    // Añadimos los detalles de la habilidad al array
+                    $ha[] = [
+                        'id_skill' => $habilidad_tec->skill->id,
+                        'name' => $habilidad_tec->skill->name,
+                        'experience' => $habilidad_tec->experience,
+                    ];
+                }
+            }
+        }
+   // Crear un token con Sanctum
+        $tokens = $user->createToken('authToken')->plainTextToken;
+        $user->token = $tokens;
+        $user->save();
+        if($tecnico !== null ){
+            if($ha !== null ){
+                return [
+                    'message' => 'Login exitoso',
+                    'user' => $user,
+                    'technician' => $tecnico,
+                    'skills' => $ha
+                ];
+            }else{
+                return [
+                    'message' => 'Login exitoso',
+                    'user' => $user,
+                    'technician' => $tecnico,
+                    'skills' => null
+                ];
+            }
+        }else{
+            return [
+                'message' => 'Login exitoso',
+                'user' => $user,
+                'skills' => null
+            ];
+        }
+    }
+
+    public function loginClient($root, array $args)
+    {
+        //verificar si el CI se encuentra registrado en la dupla
+        $user = User::where('ci', $args['ci'])->first();
+
+        if ($user == null ) {
+            return [
+                'message' => "El usuario con CI no existe",
+                'user' => null,
+                'client' => null,
+                'skill' => null
+            ];
+        }
+        // Error en la contraseña
+        $client = $user->clientsExterns()->first();
+        if (!Hash::check($args['password'], $user->password)) {
+            return [
+                'message' => "Credenciales invalidas" ,
+            ];
+        }
+        $client = $user->clientsExterns()->first();
 
    // Crear un token con Sanctum
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
         $user->save();
-        return [
-            'message' => 'Login exitoso',
-            'user' => $user,
-            'technician' => $tecnico
-        ];
+        if($client !== null ){
+            return [
+                'message' => 'Login exitoso',
+                'user' => $user,
+                'technician' => $client
+            ];
+        }else{
+            return [
+                'message' => 'Login no exitoso'
+            ];
+        }
     }
 
-   /* public function logout($root, array $args)
+    public function logout($root, array $args)
     {
         $user = Auth::user(); // Obtener el usuario autenticado
 
@@ -115,6 +191,6 @@ class UserMutations{
         return [
             'message' => 'No se encuentra usuario'
         ];
-    }*/
+    }
 
 }

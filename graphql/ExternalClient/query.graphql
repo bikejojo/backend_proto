@@ -1,0 +1,33 @@
+extend type Query {
+    searchParameterExternalClient (requestClient:JSON!):responseClientExternalSearch @field(resolver: "ClientQuery@searchExternalByName")
+    getExternalCustomerForIdTechnician(id_technician:String):responseClientExternalSearch @field(resolver: "ClientQuery@technicianByclient")
+    clientExternalById(id:ID! @whereKey):ExternalClient @find(model: "App\\Models\\Cliente_Externo")
+    quantifyClient(requestClient:JSON!):responseCities @field(resolver: "ClientQuery@quantifyclient")
+    quantityClientAllow(id_technician:JSON):responseClient @field(resolver: "ClientQuery@quantityClient")
+    quantityCitationsProgram(id_technician:JSON):responseClient @field(resolver: "ClientQuery@quantityCities")
+}
+
+
+type responseCities{
+    servicesExternal:[serv]
+    servicesInternal:[serv]
+}
+
+type serv {
+    fullName:String
+    date:String
+    servicecount:Int
+    clientName:String
+    clienttype:String
+}
+
+type responseClientExternalSearch{
+    message: String
+    customer_external: [ExternalClient]
+}
+
+type responseClient{
+    message:String
+    quantity:String
+}
+#import ExternalClient.graphql

@@ -20,9 +20,5 @@ class Habilidad extends Model
         return $this->hasMany(Tecnico_Habilidad::class, 'skillId');
     }
 
-    // Relación con SkillPreference (Preferencia_Habilidad)
-    public function skillPreferences()
-    {
-        return $this->hasMany(Preferencia_Habilidad::class, 'skillId');
-    }
+
 }

@@ -1,0 +1,6 @@
+extend type Query {
+    getAllSkills: [Skill] @all (model: "App\\Models\\Habilidad")
+    getSkillById(id: ID! @whereKey): Skill @find (model: "App\\Models\\Habilidad")
+}
+
+#import skill.graphql

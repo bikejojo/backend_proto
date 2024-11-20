@@ -1,0 +1,10 @@
+type Agenda_Technical @model(class: "App\\Models\\Agenda_Tecnico") {
+    id:ID!
+    id_technician:ID! @rename(attribute: "technicianId")
+    createDate:String!
+
+    technician:Technician! @belongsTo
+    details:[DetailAgendaTechnical] @hasMany
+}
+
+

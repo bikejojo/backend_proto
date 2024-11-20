@@ -8,6 +8,10 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 
-Artisan::command('solicitudes:revisar',function(){
-    $this->call(\App\Console\Commands\RevisarSolicitudes::class);
+//Artisan::command('solicitudes:revisar',function(){
+  //  $this->call(\App\Console\Commands\RevisarSolicitudes::class);
+//});
+
+Artisan::command('update:Expired',function(){
+    $this->call(\App\Console\Commands\UpdateExpiredPublicity::class);
 });

@@ -1,0 +1,7 @@
+type Skill {
+  id_skill: ID @rename (attribute: "id")
+  name: String!
+
+
+  technicianSkills: [TechnicianSkill!]! @hasMany
+}

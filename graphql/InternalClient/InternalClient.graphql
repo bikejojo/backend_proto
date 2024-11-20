@@ -1,0 +1,15 @@
+type InternalClient @model(class: "App\\Models\\Cliente_Interno"){
+  id: ID
+  firstName: String!
+  lastName: String!
+  email: String
+  phoneNumber: String!
+  loginMethod: String!
+  photo: String
+  userId:ID!
+  cityId:ID!
+
+  user: User! @belongsTo
+  city: City! @belongsTo
+
+}

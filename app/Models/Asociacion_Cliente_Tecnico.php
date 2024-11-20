@@ -10,8 +10,8 @@ class Asociacion_Cliente_Tecnico extends Model
     protected $PrimaryKey = 'id';
     protected $table = 'associationTechnClient';
     protected $fillable = [
-        'clientId',      // nombre
-        'technicalId',       // apellido
+        'clientId',
+        'technicalId',
         'dateTimeCreated'
     ];
 
@@ -20,7 +20,12 @@ class Asociacion_Cliente_Tecnico extends Model
         return $this->hasMany(Tecnico::class,'technicalId');
     }
     //cliente externos
-    public function clients(){
+   /*  public function clients(){
         return $this->hasMany(Cliente_Externo::class,'clientId');
-    }
+    } */
+    // cliente externos
+public function client(){
+    return $this->belongsTo(Cliente_Externo::class, 'clientId', 'id');
+}
+
 }

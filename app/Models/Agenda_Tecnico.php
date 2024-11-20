@@ -10,41 +10,17 @@ class Agenda_Tecnico extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $table = 'technician_schedules';
-
+    protected $table = 'technician_agenda';
     protected $fillable = [
-        'createdDate',  // fecha_creada
-        'nextDate',  // fecha_proxima
-        'nextDescription'  // descripcion_proxima
+        'technicianId',
+        'createDate',
     ];
 
-    // Relación con Technician (Tecnico)
-    public function technician()
-    {
-        return $this->belongsTo(Tecnico::class, 'technicianId');
+    public function technician(){
+        return $this->belongsTo(Tecnico::class,'technicianId');
     }
 
-    // Relación con ExternalClient (Cliente Externo)
-    public function client()
-    {
-        return $this->belongsTo(Cliente_Interno::class, 'clientId');
-    }
-
-    // Relación con Appointment (Cita)
-    public function appointment()
-    {
-        return $this->belongsTo(Cita::class, 'appointmentId');
-    }
-
-    // Relación con ActivityType (Tipo_Actividad)
-    public function activityType()
-    {
-        return $this->belongsTo(Tipo_Actividad::class, 'activityTypeId');
-    }
-
-    // Relación con Note (Nota)
-    public function note()
-    {
-        return $this->belongsTo(Note::class, 'noteId');
+    public function details(){
+        return $this->hasMany(Detalle_Agenda_Tecnico::class,'agendaTechnicalId');
     }
 }

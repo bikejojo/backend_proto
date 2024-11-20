@@ -1,0 +1,5 @@
+extend type Query {
+    getAllCategory:[CategoryPublicity] @all (model: "App\\Models\\Categoria_Publicidad")
+}
+
+#import CategoryPublicity.graphql

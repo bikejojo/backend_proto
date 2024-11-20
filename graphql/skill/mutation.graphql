@@ -1,0 +1,6 @@
+extend type Mutation {
+    createSkill(name: String!): Skill @field(resolver:"HabilidadMutations@create")
+    updateSkill(id: ID!, name: String!): Skill @field(resolver:"HabilidadMutations@create")
+}
+
+#import skill.graphql
