@@ -10,6 +10,7 @@ use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Servicio;
 use App\Models\Cita;
 use App\Models\Tecnico;
+use App\Models\Lists_Internal_Client;
 use Illuminate\Support\Facades\DB;
 
 class ClientQuery{

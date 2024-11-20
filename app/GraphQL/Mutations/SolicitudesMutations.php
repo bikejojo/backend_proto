@@ -149,6 +149,12 @@ class SolicitudesMutations
                 'createDate' => Carbon::now()
             ]);
 
+            $list= List_Internal_Client::create([
+                'technicianId'=> $tecnico->id,
+                'clientId'=> $cliente->id,
+                'typeClient'=> ServicioMutations::clientInternal,
+            ]);
+
         DB::commit();
         }catch(\Exception $e){
             DB::rollBack();
