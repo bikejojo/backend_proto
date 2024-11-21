@@ -10,6 +10,7 @@ use App\Models\Tecnico;
 use App\Services\StateCatalog;
 use App\Services\ValidationModels;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ClienteExternoMutations{
     public function create($root, array $args){
@@ -17,46 +18,49 @@ class ClienteExternoMutations{
         $tecnicoId = $clienteData['technicalId'];
         // Crear el cliente en la base de datos
         $tecnico = ValidationModels::validationTechnician($tecnicoId);//Tecnico::find($clienteData['technicalId']);
-
-        /*if($tecnico == null){
-            return [
-                'message'=>'Usuario tecnico no encontrado'
-            ];
-        }*/
         $phone=$clienteData['phoneNumber'];
         $existe = Cliente_Externo::where('phoneNumber',$phone)->first();
-        if($existe){
-            if($existe->status === StateCatalog::STATUS_ACTIVE ){
-                return [
-                    'message' => 'cliente se registro con anterioridad en la lista!'
-                ];
+        DB::beginTransaction();
+        try{
+            if($existe){
+                if($existe->status === StateCatalog::STATUS_ACTIVE ){
+                    return [
+                        'message' => 'cliente se registro con anterioridad en la lista!'
+                    ];
+                }else{
+                    $existe->status = StateCatalog::STATUS_ACTIVE;
+                    $existe->save();
+                    return [
+                        'message' => 'cliente se volvio a habilitar!'
+                    ];
+                }
             }else{
-                $existe->status = StateCatalog::STATUS_ACTIVE;
-                $existe->save();
-                return [
-                    'message' => 'cliente se volvio a habilitar!'
-                ];
+                $cliente = Cliente_Externo::create([
+                    'fullName' => $clienteData['fullName'],
+                    'phoneNumber' => $clienteData['phoneNumber'],
+                    'status' => StateCatalog::STATUS_ACTIVE
+                ]);
+                $cliente->save();
+                $asociacion = Asociacion_Cliente_Tecnico::create([
+                    'clientId' => $cliente->id,
+                    'technicalId' => $tecnico->id,
+                    'dateTimeCreated' => Carbon::now(),
+                ]);
+                    $asociacion->save();
             }
-        }else{
-            $cliente = Cliente_Externo::create([
-                'fullName' => $clienteData['fullName'],
-                'phoneNumber' => $clienteData['phoneNumber'],
-                'status' => StateCatalog::STATUS_ACTIVE
-            ]);
-            $cliente->save();
-            $asociacion = Asociacion_Cliente_Tecnico::create([
-                'clientId' => $cliente->id,
-                'technicalId' => $tecnico->id,
-                'dateTimeCreated' => Carbon::now(),
-            ]);
-                $asociacion->save();
+            DB::commit();
+            return [
+                'message' => 'Creacion Cliente exitoso!',
+                'customer_external' => $cliente,
+                'technical' => $tecnico
+            ];
         }
-
-        return [
-            'message' => 'Creacion Cliente exitoso!',
-            'customer_external' => $cliente,
-            'technical' => $tecnico
-        ];
+        catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'message' => 'El siguiente error es esto '.$e->getMessage(),
+            ];
+        }
     }
     public function update($root ,array $args){
         $clientData = $args['clientRequest'];

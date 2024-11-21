@@ -5,6 +5,7 @@ extend type Mutation {
     updateUser(id: ID!, userRequest: JSON!): User @field(resolver:"UserMutations@update")
     deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
     login(ci: String! ,password:String!):responseLogin @field(resolver:"UserMutations@login")
+    loginClient(ci: String! ,password:String!):responseClientLogin @field(resolver:"UserMutations@loginClient")
     logout:Response @field(resolver:"UserMutations@logout")
 }
 
@@ -17,6 +18,12 @@ type responseLogin {
   technician: Technician
   skills: [skills]
   message: String
+}
+
+type responseClientLogin {
+    user: User
+    client: InternalClient
+    message:String
 }
 
 type skills {

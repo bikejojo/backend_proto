@@ -129,39 +129,46 @@ class UserMutations{
 
     public function loginClient($root, array $args)
     {
-        //verificar si el CI se encuentra registrado en la dupla
+        // Verificar si el CI se encuentra registrado
         $user = User::where('ci', $args['ci'])->first();
 
-        if ($user == null ) {
+        if ($user == null) {
             return [
                 'message' => "El usuario con CI no existe",
                 'user' => null,
-                'client' => null,
-                'skill' => null
+                'client' => null
             ];
         }
-        // Error en la contraseña
-        $client = $user->clientsExterns()->first();
+
+        // Verificar contraseña
         if (!Hash::check($args['password'], $user->password)) {
             return [
-                'message' => "Credenciales invalidas" ,
+                'message' => "Credenciales inválidas",
+                'user' => null,
+                'client' => null
             ];
         }
+
+        // Obtener cliente asociado
         $client = $user->clientsExterns()->first();
 
-   // Crear un token con Sanctum
+        // Crear token con Sanctum
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
         $user->save();
-        if($client !== null ){
+
+        // Retornar respuesta
+        if ($client !== null) {
             return [
                 'message' => 'Login exitoso',
                 'user' => $user,
-                'technician' => $client
+                'client' => $client
             ];
-        }else{
+        } else {
             return [
-                'message' => 'Login no exitoso'
+                'message' => 'El usuario no tiene un cliente asociado',
+                'user' => $user,
+                'client' => null
             ];
         }
     }
