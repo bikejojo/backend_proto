@@ -68,32 +68,29 @@ class ClientQuery{
     public function searchInternalByName($root, array $args){
         $clientData = $args['requestClient'];
         $tecnicoId = $clientData['technicalId'];
-
+        
         // Verificar si existe el parámetro de búsqueda
         if (!empty($clientData['searchParameter'])) {
             $clientNamePhone = strtolower($clientData['searchParameter']);
 
-            // Aplicar el filtro por nombre, apellido o teléfono y filtrar por el técnico
-            $clientInterno = Cliente_Interno::whereIn('id', function ($query) use ($tecnicoId) {
-                $query->select('clientId')
-                    ->from('list_internal_client')
-                    ->where('technicalId', $tecnicoId); // Filtrar por técnico
-            })
-            ->where(function ($query) use ($clientNamePhone) {
-                $query->where(DB::raw('LOWER(firstName)'), 'LIKE', "%{$clientNamePhone}%")
-                    ->orWhere(DB::raw('LOWER(lastName)'), 'LIKE', "%{$clientNamePhone}%")
-                    ->orWhere(DB::raw('LOWER(phoneNumber)'), 'LIKE', "%{$clientNamePhone}%");
-            })
-            ->orderBy('created_at', 'desc') // Ordenar por fecha de creación
-            ->get();
+            $clientInterno = Cliente_Interno::leftjoin('list_internal_clients', 'internal_clients.id', '=', 'list_internal_clients.clientId')
+                ->where('list_internal_clients.technicianId', $tecnicoId)
+                ->where(function ($query) use ($clientNamePhone) {
+                    $query->where(DB::raw('LOWER("internal_clients"."firstName")'), 'LIKE', "%{$clientNamePhone}%")
+                        ->orWhere(DB::raw('LOWER("internal_clients"."lastName")'), 'LIKE', "%{$clientNamePhone}%")
+                        ->orWhere(DB::raw('LOWER("internal_clients"."phoneNumber")'), 'LIKE', "%{$clientNamePhone}%");
+                })
+                ->orderBy('internal_clients.created_at', 'desc')
+                ->get();
+                //dd($clientInterno);
         } else {
             // Si no hay parámetro de búsqueda, solo aplicar el filtro del técnico
-            $clientInterno = Cliente_Interno::whereIn('id', function ($query) use ($tecnicoId) {
-                $query->select('clientId')
-                    ->from('list_internal_client')
-                    ->where('technicalId', $tecnicoId); // Filtrar por técnico
+            $clientInterno = Cliente_Interno::leftjoin('list_internal_clients', 'internal_clients.id', '=', 'list_internal_clients.clientId')
+            ->where('list_internal_clients.technicianId', $tecnicoId)
+            ->where(function ($query) use ($clientNamePhone) {
+                $query->where('technicalId', $tecnicoId); // Filtrar por técnico
             })
-            ->orderBy('created_at', 'desc') // Ordenar por fecha de creación
+            ->orderBy('internal_clients.created_at', 'desc') // Ordenar por fecha de creación
             ->get();
         }
 
@@ -101,14 +98,14 @@ class ClientQuery{
         if ($clientInterno->isEmpty()) {
             return [
                 'message' => 'No se encontraron resultados',
-                'customer_internal' => null
+                'client_i' => null
             ];
         }
 
         // Retornar los resultados encontrados
         return [
             'message' => 'Resultados encontrados',
-            'customer_internal' => $clientInterno
+            'client_i' => $clientInterno
         ];
     }
 

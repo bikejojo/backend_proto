@@ -13,6 +13,7 @@ class Lists_Internal_Client extends Model
     protected $fillable = [
         'technicianId',
         'clientId',
-        'typeclient',
+        'typeClient',
+        'requestsId',
     ];
 }

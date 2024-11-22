@@ -115,7 +115,6 @@ class SolicitudesMutations
         DB::beginTransaction();
         try{
             $request = ValidationModels::validationRequest($requestId);
-
             $cliente = ValidationModels::validationclientInternal($clientId);
             $tecnico = ValidationModels::validationTechnician($tecnicoId);
             $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_ACCEPTED, self::$entity_type);
@@ -149,29 +148,31 @@ class SolicitudesMutations
                 'serviceDate' => $service->createdDateTime,
                 'createDate' => Carbon::now()
             ]);
-
+            //en caso de existir ya enlalistaDeClientInternoParaTecnicoNoDebeRealizarMasInsercion
+           
             $list= Lists_Internal_Client::create([
                 'technicianId'=> $tecnico->id,
                 'clientId'=> $cliente->id,
                 'typeClient'=> ServicioMutations::clientInternal,
+                'requestsId'=> $_request->id,
             ]);
-
-        DB::commit();
+            
+            DB::commit();  
+            return[
+                'message'=>'solicitud confirmada',
+                'requests'=>$_request,
+                'messageService' => 'Se agendara el servico en un momento',
+                'service' => $service ,
+                'agenda' => $detail ,
+                'client' => $cliente,
+                'technician' => $tecnico
+            ];
         }catch(\Exception $e){
             DB::rollBack();
             return[
                 'message' => 'Fallas en la aceptar la solicitud y crear el servicio'.$e->getMessage()
             ];
         }
-        return[
-            'message'=>'solicitud confirmada',
-            'requests'=>$_request,
-            'messageService' => 'Se agendara el servico en un momento',
-            'service' => $service ,
-            'agenda' => $detail ,
-            'client' => $cliente,
-            'technician' => $tecnico
-        ];
     }
 
 

@@ -1,6 +1,6 @@
 extend type Query {
     clientAllow:[InternalClient] @all (model: "App\\Models\\Cliente_Interno")
-    searchClientInternalByName(name:String):responseClientInternalSearch @field(resolver: "ClientQuery@searchInternalByName")
+    searchClientInternalByName(requestClient:JSON):responseClientInternalSearch @field(resolver: "ClientQuery@searchInternalByName")
     clientInternalById(id:ID! @whereKey):InternalClient @find(model: "App\\Models\\Cliente_Interno")
 }
 

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('technicianId')->nullable();
             $table->unsignedBigInteger('clientId')->nullable();
             $table->unsignedBigInteger('typeClient')->nullable();
+            $table->unsignedBigInteger('requestsId')->nullable();
             $table->timestamps();
         });
     }
