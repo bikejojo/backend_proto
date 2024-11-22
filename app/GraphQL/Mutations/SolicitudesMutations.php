@@ -8,6 +8,7 @@ use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Servicio;
 use App\Models\Solicitud;
 use App\Models\Tecnico;
+use App\Models\Lists_Internal_Client;
 use App\Services\StateCatalog;
 use App\Services\StatusAssigner;
 
@@ -149,7 +150,7 @@ class SolicitudesMutations
                 'createDate' => Carbon::now()
             ]);
 
-            $list= List_Internal_Client::create([
+            $list= Lists_Internal_Client::create([
                 'technicianId'=> $tecnico->id,
                 'clientId'=> $cliente->id,
                 'typeClient'=> ServicioMutations::clientInternal,
