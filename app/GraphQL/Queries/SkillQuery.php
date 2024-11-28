@@ -51,13 +51,12 @@ class SkillQuery
             $parameter=$experience;
             $skill=Habilidad::join('technician_skills','skills.id','=','technician_skills.skillId')
             ->join('technicians','technician_skills.technicianId','=','technicians.id')
-            ->where(function ($query) use ($parameter){
-                $query->where(DB::raw('LOWER("technician_skills"."experience")'),'LIKE',"%{$parameter}%");
-            })
-            ->select('technicians.id','technician_skills.experience','skills.*')
+            ->where('technician_skills.experience','<=',$parameter)
+            ->select('technicians.*','technician_skills.experience','skills.name')
             ->get();
-            dd($skill);
+            
         }
+        //dd($skill);
         return [
             'message'=>'Se encontro a los siguientes tecnicos.',
             'technicians' => $skill
