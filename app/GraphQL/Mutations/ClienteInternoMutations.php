@@ -13,8 +13,16 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\ImageHelper;
+use Carbon\Carbon;
 
 class ClienteInternoMutations{
+    protected $app; // Define la propiedad de la clase
+
+    public function __construct() {
+        $this->app = env('FULL_URL'); // Asigna el valor a la propiedad de la clase
+    }
+
     public function create($root, array $args){
     //dd($args['clientRequest']);
         $clienteData = $args['clientRequest'];
@@ -52,12 +60,12 @@ class ClienteInternoMutations{
         $clienteData['userId'] = $userId;
         $cliente = Cliente_Interno::create($clienteData);
         $clientId = $cliente->id;
-
+        $value=$user->type_user;
+        ImageHelper::createDirectorie($clientId,$value);
         $manager = new ImageManager(new Driver());
-            // Manejo de la imagen del cliente (si se envió una)
         if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
-            $fotoPath = $this->processImage($args['photo'], "/{$clientId}_client/foto.png",$manager);
-            $cliente->photo = str_replace('public/', '', $fotoPath);  // Guardar la ruta de la imagen
+            $fotoPath = $this->processImage($args['photo'], "/client_{$clientId}/photo/foto.png",$manager);
+            $cliente->photo = $this->app . '/storage' . str_replace('public/', '', $fotoPath);  // Guardar la ruta de la imagen
         }
         $cliente->save();
         $cliente=Cliente_Interno::find($clientId);
@@ -93,15 +101,17 @@ class ClienteInternoMutations{
         $client->phoneNumber=$phone;
         $client->loginMethod=$clientData['loginMethod'];
         $client->cityId = $clientData['cityId'];
-
+        $value=$user->type_user;
+        $now=Carbon::now()->format('Ymd_His');
+        ImageHelper::createDirectorie($clientId,$value);
         $manager = new ImageManager(new Driver());
         if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
             //dd($technician->photo);
             if ($client->photo) {
                 Storage::delete('public/' . $client->photo);
             }
-            $photoPath = $this->processImage($args['photo'], "/{$clientId}_client/foto.png",$manager);
-            $client->photo = str_replace('public/', '', $photoPath);
+            $photoPath = $this->processImage($args['photo'], "/client_{$clientId}/photo/{$now}.png",$manager);
+            $client->photo = $this->app . '/storage' .str_replace('public/', '', $photoPath);
         }
         $client->save();
         $user->email = $email ?? $user->email;
