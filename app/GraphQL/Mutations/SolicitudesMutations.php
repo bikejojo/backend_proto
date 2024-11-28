@@ -62,17 +62,11 @@ class SolicitudesMutations
     public function cancelRequestTechnician($root,array $args){
         // tipo 3
         $requestId = $args['id'];
-        /*$requestId = $args['id_request'];
-        $technicianId = $args['id_technician'];*/
         $request = Solicitud::find($requestId);
         ###################################3
         $clientId = $request->clientId;
         $tecnicoId=$request->technicianId;
-        //$tecnico = Tecnico::find($technicianId);
         $cliente = Cliente_Interno::find($clientId);
-        /*if($tecnico){
-            return ['message'=> 'No existe tecnico']
-        }*/
         $tecnico = Tecnico::find($tecnicoId);
         $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_REJECTED, self::$entity_type);
         $_request = Solicitud::find($request->id);
@@ -138,6 +132,8 @@ class SolicitudesMutations
                 'updatedDateTime' => $visitDateTime,
                 'status' => StateCatalog::STATUS_ACTIVE
             ]);
+            $service->stateId=StatusAssigner::assignState($service,StatusAssigner::SERVICE_PENDING,'service');
+            $service->save();
             $serviceId = $service->id;
             $agendaId = $agenda->id;
             $detail = Detalle_Agenda_Tecnico::create([
@@ -170,10 +166,8 @@ class SolicitudesMutations
         }catch(\Exception $e){
             DB::rollBack();
             return[
-                'message' => 'Fallas en la aceptar la solicitud y crear el servicio'.$e->getMessage()
+                'message' => 'Fallas en la aceptar la solicitud y crear el servicio '.$e->getMessage()
             ];
         }
     }
-
-
 }

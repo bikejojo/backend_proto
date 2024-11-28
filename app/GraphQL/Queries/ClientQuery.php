@@ -80,16 +80,16 @@ class ClientQuery{
                         ->orWhere(DB::raw('LOWER("internal_clients"."lastName")'), 'LIKE', "%{$clientNamePhone}%")
                         ->orWhere(DB::raw('LOWER("internal_clients"."phoneNumber")'), 'LIKE', "%{$clientNamePhone}%");
                 })
+                ->select('internal_clients.*', 'internal_clients.created_at')
+                ->distinct()
                 ->orderBy('internal_clients.created_at', 'desc')
                 ->get();
-                //dd($clientInterno);
         } else {
             // Si no hay parámetro de búsqueda, solo aplicar el filtro del técnico
             $clientInterno = Cliente_Interno::leftjoin('list_internal_clients', 'internal_clients.id', '=', 'list_internal_clients.clientId')
             ->where('list_internal_clients.technicianId', $tecnicoId)
-            ->where(function ($query) use ($clientNamePhone) {
-                $query->where('technicalId', $tecnicoId); // Filtrar por técnico
-            })
+            ->select('internal_clients.*', 'internal_clients.created_at') // Agregar columnas necesarias
+            ->distinct()
             ->orderBy('internal_clients.created_at', 'desc') // Ordenar por fecha de creación
             ->get();
         }

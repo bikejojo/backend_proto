@@ -173,8 +173,6 @@ class ServicioMutations
             ];
         }
 
-
-
         DB::beginTransaction();
         try{
             $client = Cliente_Externo::find($service->clientId);
