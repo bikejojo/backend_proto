@@ -20,5 +20,4 @@ class Habilidad extends Model
         return $this->hasMany(Tecnico_Habilidad::class, 'skillId');
     }
 
-
 }

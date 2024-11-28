@@ -18,10 +18,16 @@ use function PHPUnit\Framework\isEmpty;
 
 class TecnicoMutations {
     protected $app;
+    protected $now;
+
+    public function __construct() {
+        $this->app= env('FULL_URL');
+        $this->nowFront= Carbon::now()->format('Ymd_His');
+        $this->nowBack=Carbon::now()->addMinute(1);
+    }
 
     public function create($root, array $args)
     {
-        $this->app = env('FULL_URL');
         $technicianData = $args['technicianRequest'];
         $skill = null;
        
@@ -90,18 +96,17 @@ class TecnicoMutations {
             $manager = new ImageManager(new Driver());
 
             // Procesar imagen delantera del carnet
-            $nowFront=Carbon::now()->format('Ymd_His');
-            $nowBack=Carbon::now()->addMinute(1);
-            $nowBack=$nowBack->format('Ymd_His');
+            
+            $this->nowBack=$this->nowBack->format('Ymd_His');
             
             if (isset($args['frontIdCard']) && $args['frontIdCard'] instanceof UploadedFile) {
-                $frontIdCardPath = ImageHelper::processImage($args['frontIdCard'], "/{$technicianId}/id_card/"."{$nowFront}.png", $manager);
+                $frontIdCardPath = ImageHelper::processImage($args['frontIdCard'], "/{$technicianId}/id_card/"."{$this->nowFront}.png", $manager);
                 $technician->frontIdCard = $this->app . '/storage' . str_replace('public/', '', $frontIdCardPath);
             }
 
             // Procesar imagen trasera del carnet
             if (isset($args['backIdCard']) && $args['backIdCard'] instanceof UploadedFile) {
-                $backIdCardPath = ImageHelper::processImage($args['backIdCard'], "/{$technicianId}/id_card/"."{$nowBack}.png", $manager);
+                $backIdCardPath = ImageHelper::processImage($args['backIdCard'], "/{$technicianId}/id_card/"."{$this->nowBack}.png", $manager);
                 $technician->backIdCard = $this->app . '/storage' . str_replace('public/', '', $backIdCardPath);
             }
 
@@ -136,7 +141,6 @@ class TecnicoMutations {
     }
 
     public function update($root , array $args){
-        $this->app = env('FULL_URL');   
         $technicianData = $args['technicianRequest'];
         if(!isset($technicianData)){
             return[
@@ -178,9 +182,8 @@ class TecnicoMutations {
         // Crear directorios utilizando el ID del técnico
         ImageHelper::deleteDirectoryIdCard($technicianId);
         ImageHelper::createDirectorie($technicianId,$value);
-        $nowFront=Carbon::now()->format('Ymd_His');
-            $nowBack=Carbon::now()->addMinute(1);
-            $nowBack=$nowBack->format('Ymd_His');
+       
+        $this->nowBack=$this->nowBack->format('Ymd_His');
         $isFrontIdCardUploaded = isset($args['frontIdCard']) && $args['frontIdCard'] instanceof UploadedFile;
         $isBackIdCardUploaded = isset($args['backIdCard']) && $args['backIdCard'] instanceof UploadedFile;
         $manager = new ImageManager(new Driver());
@@ -188,13 +191,13 @@ class TecnicoMutations {
             // Procesar cada archivo solo si fue enviado en la solicitud
             if ($isFrontIdCardUploaded) {
 
-                $frontIdCardPath = ImageHelper::processImage($args['frontIdCard'], "/{$technicianId}/id_card/"."{$nowFront}.png", $manager);
+                $frontIdCardPath = ImageHelper::processImage($args['frontIdCard'], "/{$technicianId}/id_card/"."{$this->nowFront}.png", $manager);
                 $technician->frontIdCard =$this->app.'/storage' . str_replace('public/', '', $frontIdCardPath);
             }
 
             if ($isBackIdCardUploaded) {
 
-                $backIdCardPath = ImageHelper::processImage($args['backIdCard'], "/{$technicianId}/id_card/"."{$nowBack}.png", $manager);
+                $backIdCardPath = ImageHelper::processImage($args['backIdCard'], "/{$technicianId}/id_card/"."{$this->nowBack}.png", $manager);
                 $technician->backIdCard =$this->app.'/storage' . str_replace('public/', '', $backIdCardPath);
             }
 
@@ -238,12 +241,11 @@ class TecnicoMutations {
         $user = User::find($userId);
         $manager = new ImageManager(new Driver());
         $isPhotoUploaded = isset($args['photo']) && $args['photo'] instanceof UploadedFile;
-        $now=Carbon::now()->format('Ymd_His');
         if ($isPhotoUploaded) {
             // Eliminar foto anterior
             ImageHelper::deleteDirectoryProfile($technicialId);
 
-            $photoCardPath = ImageHelper::processImage($args['photo'], "/{$technicialId}/profile/"."{$now}.png", $manager);
+            $photoCardPath = ImageHelper::processImage($args['photo'], "/{$technicialId}/profile/"."{$this->nowFront}.png", $manager);
             $technicial->photo =$this->app.'/storage' . str_replace('public/', '', $photoCardPath);
         }
         $technicial->save();

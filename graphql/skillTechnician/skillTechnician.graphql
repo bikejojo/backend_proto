@@ -5,5 +5,5 @@ type TechnicianSkill {
   experience: String
 
   technician: Technician! @belongsTo
-  skill: [Skill] @belongsTo
+  skill: Skill @belongsTo
 }

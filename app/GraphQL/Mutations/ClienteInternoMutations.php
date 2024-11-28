@@ -17,14 +17,16 @@ use App\Helpers\ImageHelper;
 use Carbon\Carbon;
 
 class ClienteInternoMutations{
-    protected $app; // Define la propiedad de la clase
+    //variables
+    protected $app;
+    protected $now;
 
     public function __construct() {
-        $this->app = env('FULL_URL'); // Asigna el valor a la propiedad de la clase
+        $this->app = env('FULL_URL'); 
+        $this->now= Carbon::now()->format('Ymd_His');
     }
 
     public function create($root, array $args){
-    //dd($args['clientRequest']);
         $clienteData = $args['clientRequest'];
         // Crear el cliente en la base de datos
         if (User::where('ci',$clienteData['ci'])->exists()) {
@@ -64,7 +66,7 @@ class ClienteInternoMutations{
         ImageHelper::createDirectorie($clientId,$value);
         $manager = new ImageManager(new Driver());
         if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
-            $fotoPath = $this->processImage($args['photo'], "/client_{$clientId}/photo/foto.png",$manager);
+            $fotoPath = $this->processImage($args['photo'], "/client_{$clientId}/photo/{$this->now}.png",$manager);
             $cliente->photo = $this->app . '/storage' . str_replace('public/', '', $fotoPath);  // Guardar la ruta de la imagen
         }
         $cliente->save();
@@ -76,9 +78,9 @@ class ClienteInternoMutations{
             'user' => $user
         ];
         DB::rollBack();
-    }catch (\Exception $e){
-        return ['message' => 'El error es.'. $e->getMessage()];
-    }
+        }catch (\Exception $e){
+            return ['message' => 'El error es.'. $e->getMessage()];
+        }
     }
     public function update($root ,array $args){
         $clientData = $args['clientRequest'];
@@ -102,7 +104,6 @@ class ClienteInternoMutations{
         $client->loginMethod=$clientData['loginMethod'];
         $client->cityId = $clientData['cityId'];
         $value=$user->type_user;
-        $now=Carbon::now()->format('Ymd_His');
         ImageHelper::createDirectorie($clientId,$value);
         $manager = new ImageManager(new Driver());
         if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
@@ -110,7 +111,7 @@ class ClienteInternoMutations{
             if ($client->photo) {
                 Storage::delete('public/' . $client->photo);
             }
-            $photoPath = $this->processImage($args['photo'], "/client_{$clientId}/photo/{$now}.png",$manager);
+            $photoPath = $this->processImage($args['photo'], "/client_{$clientId}/photo/{$this->now}.png",$manager);
             $client->photo = $this->app . '/storage' .str_replace('public/', '', $photoPath);
         }
         $client->save();
