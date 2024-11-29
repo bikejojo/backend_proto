@@ -23,7 +23,7 @@ class Lists_Internal_ClientFactory extends Factory
     public function definition()
     {
         return [
-            'technicianId' => 4, // Asocia un técnico creado por factory
+            'technicianId' => 1, // Asocia un técnico creado por factory
             'clientId' => rand(1,3), // Asocia un cliente creado por factory
             'typeClient' => 1,
             'requestsId' => 1, // Asocia una solicitud creada por factory
