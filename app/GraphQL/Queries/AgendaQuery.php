@@ -73,7 +73,7 @@ class AgendaQuery{
         });
 
         return [
-            'message' => 'Listado de agenda',
+            'message' => 'Listado de agenda de cliente interno',
             'content' => $agendaContent
         ];
     }

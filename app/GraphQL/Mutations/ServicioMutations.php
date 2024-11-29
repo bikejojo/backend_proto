@@ -119,7 +119,6 @@ class ServicioMutations
                 'typeClient' => self::clientExternal,
                 'titleService' => trim($serviceData['titleService']),
                 'serviceDescription' => trim($serviceData['serviceDescription']),
-                'serviceLocation' => trim($serviceData['serviceLocation']),
                 'latitude' => $serviceData['latitude'],
                 'longitude' => $serviceData['longitude'],
                 'createdDateTime' => $now,

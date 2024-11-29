@@ -1,7 +1,6 @@
 extend type Query{
     getAgendaInternal(requestAgenda:JSON!):responseDetaiAgendaInternal @field(resolver: "AgendaQuery@listAgendaInternalClient" )
     getAgendaExternal(requestAgenda:JSON!):responseDetaiAgendaExternal @field(resolver: "AgendaQuery@listAgendaExternalClient" )
-
 }
 
 type responseDetaiAgendaInternal {

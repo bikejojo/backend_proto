@@ -46,20 +46,43 @@ class SkillQuery
         $searchData = $args['requestSkillTechnician'];
         $skillId = $searchData['skillsId'] ?? null;
         $experience = $searchData['experience'] ?? null;
+        if(!empty($searchData['experience'])){
+            $technicians = Tecnico::with(['technicianSkills' => function ($query) use ($skillId, $experience) {
+                $query->where('skillId', $skillId)->where('experience', '<=', $experience); 
+            }, 'technicianSkills.skill'])
+                ->whereHas('technicianSkills', function ($query) use ($skillId, $experience) {
+                    $query->where('skillId', $skillId)
+                        ->where('experience', '<=', $experience);
+                })
+                ->get();
 
-        if(!empty($experience)){
-            $parameter=$experience;
-            $skill=Habilidad::join('technician_skills','skills.id','=','technician_skills.skillId')
-            ->join('technicians','technician_skills.technicianId','=','technicians.id')
-            ->where('technician_skills.experience','<=',$parameter)
-            ->select('technicians.*','technician_skills.experience','skills.name')
-            ->get();
-            
+            $filteredTechnicians = $technicians->map(function ($technician) use ($skillId) {
+                $technician->technicianSkills = $technician->technicianSkills->filter(function ($skill) use ($skillId) {
+                    return $skill->skillId == $skillId;
+                });
+
+                return $technician;
+            });
+        }else{
+            $technicians = Tecnico::with(['technicianSkills' => function ($query) use ($skillId) {
+                $query->where('skillId', $skillId); 
+            }, 'technicianSkills.skill'])
+                ->whereHas('technicianSkills', function ($query) use ($skillId) {
+                    $query->where('skillId', $skillId);
+                })
+                ->get();
+
+            $filteredTechnicians = $technicians->map(function ($technician) use ($skillId) {
+                $technician->technicianSkills = $technician->technicianSkills->filter(function ($skill) use ($skillId) {
+                    return $skill->skillId == $skillId;
+                });
+
+                return $technician;
+            });
         }
-        //dd($skill);
         return [
             'message'=>'Se encontro a los siguientes tecnicos.',
-            'technicians' => $skill
+            'technicians' => $filteredTechnicians
         ];
     }
 
