@@ -21,12 +21,12 @@ class Detalle_Agenda_TecnicoFactory extends Factory
     public function definition(): array
     {
         return [
-            'clientId' => rand(3,10),
-            'agendaTechnicalId' => 43,
-            'serviceId' => $this->faker->numberBetween(501, 900),
+            'clientId' => rand(1,4),
+            'agendaTechnicalId' => 1,
+            'serviceId' => $this->faker->numberBetween(1, 5),
             'typeClient' => 1,
             'createDate' => now(),
-            'serviceDate' => '2024-11-10 12:12:11',
+            'serviceDate' => '2024-11-30 12:12:11',
         ];
     }
 }
