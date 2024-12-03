@@ -15,6 +15,7 @@ class Calificacion extends Model
     protected $fillable = [
         'technicialId',
         'serviceId',
+        'clientId',
         'rating',
         'feedback',
     ];
@@ -25,5 +26,9 @@ class Calificacion extends Model
 
     public function service(){
         return $this->belongsTo(Servicio::class , 'serviceId');
+    }
+
+    public function client(){
+        return $this->belongsTo(Cliente_Interno::class,'clientId');
     }
 }
