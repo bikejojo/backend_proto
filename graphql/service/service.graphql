@@ -14,7 +14,8 @@ type Service {
     status:String
     createdDateTime:String
     updatedDateTime:String
-    finishDateTime:String
+    finishDateTime_client:String
+    finishDateTime_technician:String
 
     state:StateType! @belongsTo
     request:[Request!]! @hasMany

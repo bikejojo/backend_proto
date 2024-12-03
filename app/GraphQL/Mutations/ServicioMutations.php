@@ -176,7 +176,7 @@ class ServicioMutations
         try{
             $client = Cliente_Externo::find($service->clientId);
             $technician = Tecnico::find($service->technicianId);
-            $service->finishDateTime = $serviceDateTime;
+            $service->finishDateTime_technician = $serviceDateTime;
             $service->updatedDateTime = Carbon::now();
 
             StatusAssigner::assignState($service,StatusAssigner::SERVICE_COMPLETED,self::$entity_type);
@@ -223,7 +223,54 @@ class ServicioMutations
         }
         DB::beginTransaction();
         try{
-            $service->finishDateTime = $serviceDateTime;
+            $service->finishDateTime_client = $serviceDateTime;
+            $service->updatedDateTime = Carbon::now();
+
+            StatusAssigner::assignState($service,StatusAssigner::SERVICE_COMPLETED,self::$entity_type);
+            $service->save();
+            $_service = Servicio::find($service->id);
+            return [
+                'message' => 'Servicio terminado',
+                'customer_internal' => $client ,
+                'technician' => $technician ,
+                'service' => $_service
+            ];
+        }catch(\Exception $e){
+            DB::rollBack();
+            return [
+                'message' => 'Error en la actualizacion de datos.' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function finishServiceTechnician($root,array $args){
+        $serviceData = $args['requestService'];
+        $serviceId = $serviceData['id_service'];
+        $clientId = $serviceData['id_client'];
+        $technicianId = $serviceData['id_tecnico'];
+        $serviceDateTime = $serviceData['finishDateTime_technician'];
+
+        $service = Servicio::find($serviceId);
+        if(is_null($service->id)){
+            return [
+                'message' => 'Servicio no encontrado.'
+            ];
+        }
+        $client = Cliente_Interno::find($clientId);
+        if(is_null($client->id)){
+            return [
+                'message' => 'Cliente no encontrado.'
+            ];
+        }
+        $technician = Tecnico::find($technicianId);
+        if(is_null($technician->id)){
+            return [
+                'message' => 'Tecnico no encontrado.'
+            ];
+        }
+        DB::beginTransaction();
+        try{
+            $service->finishDateTime_technician = $serviceDateTime;
             $service->updatedDateTime = Carbon::now();
 
             StatusAssigner::assignState($service,StatusAssigner::SERVICE_COMPLETED,self::$entity_type);

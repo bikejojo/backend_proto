@@ -1,7 +1,8 @@
 extend type Mutation {
-    createClient(clientRequest:JSON! photo:Upload): ClientResponse @field(resolver:"ClienteInternoMutations@create")
+    registerClient(clientRequest:JSON! photo:Upload): ClientResponse @field(resolver:"ClienteInternoMutations@create")
     updateClient(id: ID,clientRequest:JSON! photo:Upload ): ClientResponse @field(resolver:"ClienteInternoMutations@update")
     deleteClient(id: ID! @whereKey): Response @field(resolver:"ClienteInternoMutations@delete")
+    updatePhoto(clientRequest:JSON, photo:Upload):ClientResponse @field(resolver:"ClienteInternoMutations@updatePhoto")
 }
 
 type Response {

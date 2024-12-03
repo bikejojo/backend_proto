@@ -22,11 +22,12 @@ class ClienteInternoMutations{
     protected $now;
 
     public function __construct() {
-        $this->app = env('FULL_URL'); 
+        $this->app = env('FULL_URL');
         $this->now= Carbon::now()->format('Ymd_His');
     }
 
     public function create($root, array $args){
+        //dd($args);
         $clienteData = $args['clientRequest'];
         // Crear el cliente en la base de datos
         if (User::where('ci',$clienteData['ci'])->exists()) {
@@ -40,6 +41,7 @@ class ClienteInternoMutations{
             ];
         }
         $validators = $this->validateImage($args);
+
         if ($validators->fails()) {
             return [
                 'message' => 'Archivo de imagen inválido.',
@@ -66,10 +68,12 @@ class ClienteInternoMutations{
         ImageHelper::createDirectorie($clientId,$value);
         $manager = new ImageManager(new Driver());
         if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
+
             $fotoPath = $this->processImage($args['photo'], "/client_{$clientId}/photo/{$this->now}.png",$manager);
             $cliente->photo = $this->app . '/storage' . str_replace('public/', '', $fotoPath);  // Guardar la ruta de la imagen
+            $cliente->save();
         }
-        $cliente->save();
+
         $cliente=Cliente_Interno::find($clientId);
         DB::commit();
         return [
@@ -77,8 +81,9 @@ class ClienteInternoMutations{
             'client' => $cliente,
             'user' => $user
         ];
-        DB::rollBack();
+
         }catch (\Exception $e){
+            DB::rollBack();
             return ['message' => 'El error es.'. $e->getMessage()];
         }
     }
@@ -133,6 +138,47 @@ class ClienteInternoMutations{
             return ['message'=> 'Borrado existoso'];
         }
     }
+
+    public function updatePhoto($root , array $args){
+        $clientData = $args['clientRequest'];
+        $validators = $this->validateImage($args);
+
+        if ($validators->fails()) {
+            return [
+                'message' => 'Archivo de imagen inválido.',
+                'upcomingmessage' => 'Registre su usuario'
+            ];
+        }
+        $client = Cliente_Interno::find($clientData['id']);
+        $user = User::find($client->userId);
+        $manager = new ImageManager(new Driver());
+        // Manejo de la imagen
+        if (isset($args['photo'])) {
+            if ($args['photo'] instanceof UploadedFile) {
+                // Eliminar la foto anterior si existe
+                if ($client->photo) {
+                    $path = str_replace($this->app . '/storage/', '', $client->photo);
+                    Storage::delete('public/' . $path);
+                }
+
+                // Procesar y guardar la nueva imagen
+                $photoPath = $this->processImage($args['photo'], "/client_{$client->id}/photo/{$this->now}.png", $manager);
+                $client->photo = $this->app . '/storage' . str_replace('public/', '', $photoPath);
+            } elseif (is_null($args['photo'])) {
+                // Si `photo` es explícitamente null, eliminar la foto actual
+                if ($client->photo) {
+                    $path = str_replace($this->app . '/storage/', '', $client->photo);
+                    Storage::delete('public/' . $path);
+                    $client->photo = null;
+                }
+            }
+        }
+        $client->save();
+        return[
+            'message' => 'Foto de cliente actualizado exitoso!!' ,
+            'client' => $client
+        ];
+    }
     // Procesamiento de imágenes
     private function processImage(UploadedFile $file, $path, $manager){
         $image = $manager->read($file->getRealPath());
@@ -150,7 +196,6 @@ class ClienteInternoMutations{
         return Validator::make([
         'photo' => $args['photo'] ?? null ,
         ], [
-
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
         ]);
     }

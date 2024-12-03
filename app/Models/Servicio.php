@@ -25,7 +25,8 @@ class Servicio extends Model
         'latitude',
         'createdDateTime',
         'updatedDateTime',
-        'finishDateTime',
+        'finishDateTime_client',
+        'finishDateTime_technician',
         'status'
     ];
 

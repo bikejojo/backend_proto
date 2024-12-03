@@ -130,22 +130,18 @@ class UserMutations{
     public function loginClient($root, array $args)
     {
         // Verificar si el CI se encuentra registrado
-        $user = User::where('ci', $args['ci'])->first();
+        $user = User::where('email', $args['email'])->first();
 
         if ($user == null) {
             return [
-                'message' => "El usuario con CI no existe",
-                'user' => null,
-                'client' => null
+                'message' => "El usuario con el correo no existe"
             ];
         }
 
         // Verificar contraseña
         if (!Hash::check($args['password'], $user->password)) {
             return [
-                'message' => "Credenciales inválidas",
-                'user' => null,
-                'client' => null
+                'message' => "Credenciales inválidas"
             ];
         }
 
