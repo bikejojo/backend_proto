@@ -1,6 +1,6 @@
 type Rating {
     id:ID!
-    id_technical:ID! @rename (attribute: "technicalId")
+    id_technical:ID! @rename (attribute: "technicialId")
     id_service:ID! @rename (attribute: "serviceId")
     id_client:ID! @rename (attribute: "clientId")
     rating:String

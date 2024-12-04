@@ -1,0 +1,9 @@
+extend type Query {
+    technicalaverage(requestRating:JSON):requestAverage @field (resolver:"RatingQuery@getTechnicianRating")
+}
+
+type requestAverage {
+    message:String
+    average_rating:String
+    ratings_count:String
+}

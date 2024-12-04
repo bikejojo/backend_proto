@@ -10,19 +10,17 @@ return new class extends Migration
      * Run the migrations.
      */
 
-        /*public function up(): void
+        public function up(): void
         {
-            Schema::table('requests', function (Blueprint $table) {
-                $table->bigInteger('status')->nullable();
+            Schema::table('technicians', function (Blueprint $table) {
+                $table->decimal('average_rating')->default(0)->nullable();
             });
         }
 
         public function down(): void
         {
-            Schema::table('requests', function (Blueprint $table) {
-                $table->bigInteger('status')->nullable(); // Revertir cambios aquí si es necesario
-            });
-        }*/
+
+        }
         /*public function up(): void
         {
             Schema::table('requests', function (Blueprint $table) {
