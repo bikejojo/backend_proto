@@ -132,7 +132,7 @@ class SolicitudesMutations
                 'updatedDateTime' => $visitDateTime,
                 'status' => StateCatalog::STATUS_ACTIVE
             ]);
-            $service->stateId=StatusAssigner::assignState($service,StatusAssigner::SERVICE_PENDING,'service');
+            $service->stateId=4;
             $service->save();
             $serviceId = $service->id;
             $agendaId = $agenda->id;

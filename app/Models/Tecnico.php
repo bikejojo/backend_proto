@@ -19,6 +19,7 @@ class Tecnico extends Model
         'email',
         'phoneNumber',  // telefono
         'password',     // contrasenia
+        'average_rating',
         'photo',
         'userId',         // foto
         'cityId'

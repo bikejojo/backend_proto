@@ -27,7 +27,6 @@ class ClienteInternoMutations{
     }
 
     public function create($root, array $args){
-        //dd($args);
         $clienteData = $args['clientRequest'];
         // Crear el cliente en la base de datos
         if (User::where('ci',$clienteData['ci'])->exists()) {
@@ -68,7 +67,6 @@ class ClienteInternoMutations{
         ImageHelper::createDirectorie($clientId,$value);
         $manager = new ImageManager(new Driver());
         if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
-            //dd(1);
             $fotoPath = $this->processImage($args['photo'], "/client_{$clientId}/photo/{$this->now}.png",$manager);
             $cliente->photo = $this->app . '/storage' . str_replace('public/', '', $fotoPath);  // Guardar la ruta de la imagen
             $cliente->save();
@@ -161,11 +159,9 @@ class ClienteInternoMutations{
                     Storage::delete('public/' . $path);
                 }
 
-                // Procesar y guardar la nueva imagen
                 $photoPath = $this->processImage($args['photo'], "/client_{$client->id}/photo/{$this->now}.png", $manager);
                 $client->photo = $this->app . '/storage' . str_replace('public/', '', $photoPath);
             } elseif (is_null($args['photo'])) {
-                // Si `photo` es explícitamente null, eliminar la foto actual
                 if ($client->photo) {
                     $path = str_replace($this->app . '/storage/', '', $client->photo);
                     Storage::delete('public/' . $path);
