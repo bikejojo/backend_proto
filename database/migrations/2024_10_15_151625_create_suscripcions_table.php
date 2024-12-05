@@ -21,8 +21,8 @@ return new class extends Migration
             $table->boolean('status');
             $table->text('description');
             $table->text('photo_qr');
-            $table->unsignedBigInteger('clientsId');
-            $table->unsignedBigInteger('technicalId');
+            $table->unsignedBigInteger('userId');
+            $table->BigInteger('typeUser');
             $table->timestamps();
         });
     }

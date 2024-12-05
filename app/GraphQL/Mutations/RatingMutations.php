@@ -40,11 +40,9 @@ class RatingMutations
         $ratingsCount = Calificacion::where('technicialId', $technician->id)->count();
         $ratingsSum = Calificacion::where('technicialId', $technician->id)->sum('rating');
         $averageRating = $ratingsCount > 0 ? $ratingsSum / $ratingsCount : 0;
-        // Redondear al múltiplo más cercano de 0.5
         $roundedRating = round($averageRating * 2) / 2;
         $technician->average_rating=$roundedRating;
-        //dd($roundedRating);
-        $technician->save();
+        $technician->save();    
 
         return [
             'message' => 'Su calificacion fue registrada' ,
