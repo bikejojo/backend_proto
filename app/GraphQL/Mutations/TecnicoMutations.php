@@ -30,7 +30,6 @@ class TecnicoMutations {
     {
         $technicianData = $args['technicianRequest'];
         $skill = null;
-       
         // Verificar si el CI ya existe
         if (User::where('ci', $technicianData['ci'])->exists()) {
             return [
@@ -92,11 +91,8 @@ class TecnicoMutations {
             $technicianId = $technician->id;
             $value = $user->type_user;
             ImageHelper::createDirectorie($technicianId,$value);
-            // Manejo de imágenes utilizando Intervention Image
             $manager = new ImageManager(new Driver());
-
             // Procesar imagen delantera del carnet
-            
             $this->nowBack=$this->nowBack->format('Ymd_His');
             
             if (isset($args['frontIdCard']) && $args['frontIdCard'] instanceof UploadedFile) {

@@ -28,6 +28,23 @@ class RatingMutations
                 'rating' => $ratingData['rating'] ,
                 'feedback' => $ratingData['comments']
             ]);
+        $technician = Tecnico::find($technicianId);
+        if (!$technician) {
+            return [
+                'message' => 'Técnico no encontrado.',
+                'average_rating' => null,
+                'ratings_count' => 0,
+            ];
+        }
+
+        $ratingsCount = Calificacion::where('technicialId', $technicianId)->count();
+        $ratingsSum = Calificacion::where('technicialId', $technicianId)->sum('rating');
+        $averageRating = $ratingsCount > 0 ? $ratingsSum / $ratingsCount : 0;
+
+        // Redondear al múltiplo más cercano de 0.5
+        $roundedRating = round($averageRating * 2) / 2;
+        $technician->average_rating=$roundedRating;
+        
         return [
             'message' => 'Su calificacion fue registrada' ,
             'service' => $service,

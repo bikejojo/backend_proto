@@ -10,7 +10,7 @@ return new class extends Migration
      * Run the migrations.
      */
 
-        public function up(): void
+        /*public function up(): void
         {
             Schema::table('technicians', function (Blueprint $table) {
                 $table->decimal('average_rating')->default(0)->nullable();
@@ -20,7 +20,7 @@ return new class extends Migration
         public function down(): void
         {
 
-        }
+        }*/
         /*public function up(): void
         {
             Schema::table('requests', function (Blueprint $table) {

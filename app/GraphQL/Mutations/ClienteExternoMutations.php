@@ -19,7 +19,8 @@ class ClienteExternoMutations{
         // Crear el cliente en la base de datos
         $tecnico = ValidationModels::validationTechnician($tecnicoId);//Tecnico::find($clienteData['technicalId']);
         $phone=$clienteData['phoneNumber'];
-        $existe = Cliente_Externo::where('phoneNumber',$phone)->first();
+        $existe = Cliente_Externo::join('associationTechnClient','external_clients.id','=','associationTechnClient.clientId')
+        ->where('phoneNumber',$phone)->where('associationTechnClient.technicalId',$tecnicoId)->first();
         DB::beginTransaction();
         try{
             if($existe){
