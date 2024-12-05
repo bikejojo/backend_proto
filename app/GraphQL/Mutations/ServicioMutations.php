@@ -9,6 +9,7 @@ use App\Models\Agenda_Tecnico;
 use App\Models\Asociacion_Cliente_Tecnico;
 use App\Models\Cliente_Interno;
 use App\Models\Detalle_Agenda_Tecnico;
+use App\Models\Historial_Servicios;
 use App\Models\Tecnico;
 use App\Services\StateCatalog;
 use App\Services\StatusAssigner;
@@ -236,6 +237,9 @@ class ServicioMutations
                 $service->save();
             }
             $_service = Servicio::find($service->id);
+            $history=Historial_Servicios::where('jobId',$service->id)->where('descriptionJob',2)->first();
+            $history->finishDate=$service->finishDateTime_client;
+            $history->save();
             DB::commit();
 
             return [

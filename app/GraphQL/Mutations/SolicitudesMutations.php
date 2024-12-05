@@ -5,6 +5,7 @@ namespace App\GraphQL\Mutations;
 use App\Models\Agenda_Tecnico;
 use App\Models\Cliente_Interno;
 use App\Models\Detalle_Agenda_Tecnico;
+use App\Models\Historial_Servicios;
 use App\Models\Servicio;
 use App\Models\Solicitud;
 use App\Models\Tecnico;
@@ -43,6 +44,17 @@ class SolicitudesMutations
             $assgin = StatusAssigner::assignState($request,StatusAssigner::REQUEST_PENDING,self::$entity_type);
             $request->registrationDateTime = $now;
             $request->save();
+
+            $historial = Historial_Servicios::create([
+                'clientId' => $client->id,
+                'technicianId' => $technician->id,
+                'jobId'=>$request->id,
+                'descriptionJob'=>1,
+                'stateId'=> $request->stateId,
+                'outsetDate'=>$request->registrationDateTime,
+                'description'=>$request->requestDescription
+            ]);
+
             $request = Solicitud::find($request->id);
             DB::commit();
             return [
@@ -134,6 +146,7 @@ class SolicitudesMutations
             ]);
             $service->stateId=4;
             $service->save();
+
             $serviceId = $service->id;
             $agendaId = $agenda->id;
             $detail = Detalle_Agenda_Tecnico::create([
@@ -144,7 +157,6 @@ class SolicitudesMutations
                 'serviceDate' => $service->createdDateTime,
                 'createDate' => Carbon::now()
             ]);
-            //en caso de existir ya enlalistaDeClientInternoParaTecnicoNoDebeRealizarMasInsercion
            
             $list= Lists_Internal_Client::create([
                 'technicianId'=> $tecnico->id,
@@ -153,6 +165,19 @@ class SolicitudesMutations
                 'requestsId'=> $_request->id,
             ]);
             
+            $history=Historial_Servicios::where('jobId',$request->id)->where('descriptionJob',1)->first();
+            $history->finishDate=$service->createdDateTime;
+            $history->save();
+
+            $historial=Historial_Servicios::create([
+                'clientId' => $cliente->id,
+                'technicianId' => $tecnico->id,
+                'jobId'=>$service->id,
+                'descriptionJob'=>2,
+                'outsetDate'=>$service->createdDateTime,
+                'description'=>'El tecnico ha confirmado la solicitud'  
+            ]);
+
             DB::commit();  
             return[
                 'message'=>'solicitud confirmada',
