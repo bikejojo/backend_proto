@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('technicianId');  // Traducción de 'tecnico_id'
             $table->datetime('createDate');
-            $table->foreign('technicianId')->references('id')->on('technicians')->onDelete('cascade');
+            $table->foreign('technicianId')->references('id')->on('technicians');
             $table->timestamps();
         });
     }

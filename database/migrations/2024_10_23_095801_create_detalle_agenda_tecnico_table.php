@@ -19,8 +19,8 @@ return new class extends Migration
             $table->unsignedInteger('typeClient');
             $table->datetime('createDate');
             $table->datetime('serviceDate')->nullable();
-            $table->foreign('agendaTechnicalId')->references('id')->on('technician_agenda')->onDelete('cascade');
-            $table->foreign('serviceId')->references('id')->on('services')->onDelete('cascade');
+            $table->foreign('agendaTechnicalId')->references('id')->on('technician_agenda');
+            $table->foreign('serviceId')->references('id')->on('services');
             $table->timestamps();
         });
     }

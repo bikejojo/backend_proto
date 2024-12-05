@@ -24,10 +24,10 @@ return new class extends Migration
             $table->text('reference_phone');
             $table->datetime('registrationDateTime')->nullable();
             $table->bigInteger('status');
-            $table->foreign('technicianId')->references('id')->on('technicians')->onDelete('cascade');
-            $table->foreign('clientId')->references('id')->on('internal_clients')->onDelete('cascade');
-            $table->foreign('stateId')->references('id')->on('state_types')->onDelete('cascade');
-            $table->foreign('activityId')->references('id')->on('activity_types')->onDelete('cascade');
+            $table->foreign('technicianId')->references('id')->on('technicians');
+            $table->foreign('clientId')->references('id')->on('internal_clients');
+            $table->foreign('stateId')->references('id')->on('state_types');
+            $table->foreign('activityId')->references('id')->on('activity_types');
             $table->timestamps();
         });
     }

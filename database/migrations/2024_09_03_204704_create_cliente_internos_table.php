@@ -21,8 +21,8 @@ return new class extends Migration
             $table->string('photo')->nullable();
             $table->unsignedBigInteger('userId');  // Traducción de 'users_id'
             $table->unsignedBigInteger('cityId');  // Traducción de 'ciudades_id'
-            $table->foreign('userId')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('cityId')->references('id')->on('cities')->onDelete('cascade');
+            $table->foreign('userId')->references('id')->on('users');
+            $table->foreign('cityId')->references('id')->on('cities');
             $table->timestamps();
         });
     }

@@ -22,7 +22,7 @@ return new class extends Migration
             $table->datetime('finishDate');
             $table->bigInteger('status'); // 1 activo  0 dado de baja  2 expiracion
             $table->unsignedBigInteger('categoryId')->nullable();
-            $table->foreign('categoryId')->references('id')->on('category_publicity')->onDelete('cascade');
+            $table->foreign('categoryId')->references('id')->on('category_publicity');
             $table->timestamps();
         });
     }

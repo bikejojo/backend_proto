@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('experience')->nullable();  // Traducción de 'experiencia'
             $table->unsignedBigInteger('technicianId');  // Traducción de 'tecnico_id'
             $table->unsignedBigInteger('skillId');  // Traducción de 'habilidad_id'
-            $table->foreign('skillId')->references('id')->on('skills')->onDelete('cascade');
-            $table->foreign('technicianId')->references('id')->on('technicians')->onDelete('cascade');
+            $table->foreign('skillId')->references('id')->on('skills');
+            $table->foreign('technicianId')->references('id')->on('technicians');
             $table->timestamps();
         });
     }
