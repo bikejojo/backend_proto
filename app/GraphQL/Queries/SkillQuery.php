@@ -44,18 +44,22 @@ class SkillQuery
     public function searchFilterSkillTechnician($root, array $args)
     {
         $searchData = $args['requestSkillTechnician'];
+        //dd($searchData);
         $skillId = $searchData['skillsId'] ?? null;
         $experience = $searchData['experience'] ?? null;
+        $qualification = $searchData['qualification'];
         if(!empty($searchData['experience'])){
-            $technicians = Tecnico::with(['technicianSkills' => function ($query) use ($skillId, $experience) {
-                $query->where('skillId', $skillId)->where('experience', '<=', $experience); 
+            $technicians = Tecnico::where('average_rating','=',$qualification)->with(['technicianSkills' => function ($query) use ($skillId, $experience,$qualification) {
+                $query->where('skillId', $skillId)
+                ->where('experience', '<=', $experience)
+               ; 
             }, 'technicianSkills.skill'])
-                ->whereHas('technicianSkills', function ($query) use ($skillId, $experience) {
+                ->whereHas('technicianSkills', function ($query) use ($skillId, $experience,$qualification) {
                     $query->where('skillId', $skillId)
-                        ->where('experience', '<=', $experience);
+                        ->where('experience', '<=', $experience)
+                        ->where('average_rating','<=',$qualification);
                 })
                 ->get();
-
             $filteredTechnicians = $technicians->map(function ($technician) use ($skillId) {
                 $technician->technicianSkills = $technician->technicianSkills->filter(function ($skill) use ($skillId) {
                     return $skill->skillId == $skillId;

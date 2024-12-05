@@ -30,8 +30,6 @@ class StatusAssigner{
     const SERVICE_COMPLETED = 'terminado';
 
     public static function assignState($objeto, $state,$entity_type){
-    //public static function assignState ($objetoprev,$objeto,$state,$entity_type){
-        //DB::beginTransccion();
         try{
             $status = Tipo_Estado::where('entity_type',$entity_type)
             ->where('description',$state)
@@ -41,9 +39,6 @@ class StatusAssigner{
             }
             if($entity_type === 'service'){
                 $entity = Servicio::find($objeto->id);
-                /*if($objetoprior->id === $objeto->technicalId){
-                    $entity = Servicio::find($objeto->id);
-                }*/
             }
             $entity->stateId = $status->id;
             return $entity->save();

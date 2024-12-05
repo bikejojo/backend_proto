@@ -229,11 +229,12 @@ class ServicioMutations
         try {
             $service->finishDateTime_client = $serviceDateTime;
             $service->updatedDateTime = Carbon::now();
-
-            // Actualizar el estado a completado
-            StatusAssigner::assignState($service, StatusAssigner::SERVICE_COMPLETED, self::$entity_type);
             $service->save();
-
+            // Actualizar el estado a completado
+            if($service->finishDateTime_client != null && $service->serviceDateTime_technician != null){
+                StatusAssigner::assignState($service, StatusAssigner::SERVICE_COMPLETED, self::$entity_type);
+                $service->save();
+            }
             $_service = Servicio::find($service->id);
             DB::commit();
 
@@ -283,11 +284,12 @@ class ServicioMutations
         try {
             $service->finishDateTime_technician = $serviceDateTime;
             $service->updatedDateTime = Carbon::now();
-
-            // Actualizar el estado a completado
-            StatusAssigner::assignState($service, StatusAssigner::SERVICE_COMPLETED, self::$entity_type);
             $service->save();
-
+            // Actualizar el estado a completado
+            if($service->finishDateTime_client != null && $service->finishDateTime_technician != null){
+                StatusAssigner::assignState($service, StatusAssigner::SERVICE_COMPLETED, self::$entity_type);
+                $service->save();
+            }
             $_service = Servicio::find($service->id);
             DB::commit();
 
