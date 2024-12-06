@@ -57,8 +57,9 @@ class TecnicoHabilidadMutations{
             'technician' => $technician,
             'skills' => $skill
         ];
-        DB::rollBack();
+       
     }catch(\Exception $e){
+        DB::rollBack();
         return [
             'message' => 'Existe un error en.' . $e->getMessage()
         ];

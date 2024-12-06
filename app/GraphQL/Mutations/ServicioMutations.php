@@ -79,8 +79,9 @@ class ServicioMutations
                 'service' => $_service,
                 'customer_internal' => $clientId
             ];
-            DB::rollBack();
+            
         }catch(\Exception $e){
+            DB::rollBack();
             return [
                 'message' => 'Se presento un error en.' . $e->getMessage()
             ];

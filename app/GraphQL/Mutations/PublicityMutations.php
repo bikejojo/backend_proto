@@ -23,40 +23,48 @@ final class PublicityMutations{
 
     public function create($root,array $args){
         $publicityDate = $args['requestPublicity'];
-        $validators = ImageHelper::validateImage($args);
-        if ($validators->fails()) {
+        DB::beginTransaction();
+        try{
+            $validators = ImageHelper::validateImage($args);
+            if ($validators->fails()) {
+                return [
+                    'message' => 'Archivo de imagen inválido.'
+                ];
+            }
+
+            $publicity = Publicidad::create([
+                'descriptionPublicity' => $publicityDate['descriptionPublicity'],
+                'commercialName' =>       $publicityDate['commercialName'],
+                'link'=>                  $publicityDate['link'],
+                'createdDate'=>           $publicityDate['createdDate'],
+                'startDate' =>            $publicityDate['startDate'],
+                'finishDate' =>           $publicityDate['finishDate'],
+                'categoryId' =>           $publicityDate['id_category'],
+                'status'=>                StateCatalog::STATUS_PUBLICITY_ACTIVE
+            ]);
+
+            $publicityId = $publicity->id;
+            $publicityComplete = $publicityId;
+            $value=0;
+            ImageHelper::createDirectorie($publicityComplete,$value);
+            $now = Carbon::now()->format('Ymd_His');
+            $manager = new ImageManager(new Driver());
+            if (isset($args['logo']) && $args['logo'] instanceof UploadedFile) {
+                $frontIdPath = ImageHelper::processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/". "{$now}.png", $manager);
+                $publicity->logo =$this->app . '/storage' . str_replace('public/', '', $frontIdPath);
+            }
+            $publicity->save();
+            DB::commit();
             return [
-                'message' => 'Archivo de imagen inválido.'
+                'message' => 'datos de publicidad',
+                'publicity' => $publicity
+            ];
+        }catch(\Exception $e){
+            DB::rollback();
+            return [
+                'La falla es la siguiente: ' => $e->getMessage()
             ];
         }
-
-        $publicity = Publicidad::create([
-            'descriptionPublicity' => $publicityDate['descriptionPublicity'],
-            'commercialName' =>       $publicityDate['commercialName'],
-            'link'=>                  $publicityDate['link'],
-            'createdDate'=>           $publicityDate['createdDate'],
-            'startDate' =>            $publicityDate['startDate'],
-            'finishDate' =>           $publicityDate['finishDate'],
-            'categoryId' =>           $publicityDate['id_category'],
-            'status'=>                StateCatalog::STATUS_PUBLICITY_ACTIVE
-        ]);
-
-        $publicityId = $publicity->id;
-        $publicityComplete = $publicityId;
-        $value=0;
-        ImageHelper::createDirectorie($publicityComplete,$value);
-        $now = Carbon::now()->format('Ymd_His');
-        $manager = new ImageManager(new Driver());
-        if (isset($args['logo']) && $args['logo'] instanceof UploadedFile) {
-            $frontIdPath = ImageHelper::processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/". "{$now}.png", $manager);
-            $publicity->logo =$this->app . '/storage' . str_replace('public/', '', $frontIdPath);
-        }
-        $publicity->save();
-
-        return [
-            'message' => 'datos de publicidad',
-            'publicity' => $publicity
-        ];
     }
     public function updateExpiration($root , array $args){
         $publicityDate = $args['requestPublicity'];
@@ -83,45 +91,55 @@ final class PublicityMutations{
         $publicity = Publicidad::find($publicityId);
         $publicityIdOld = $publicity->id;
         $publicityCompleteOld = $publicityIdOld;
+
         if (!$publicity) {
             return [
                 'message' => 'No se encontró la publicidad con el ID proporcionado.'
             ];
         }
-        ########################################################
-        $publicity->descriptionPublicity = $publicityDate['descriptionPublicity'];
-        $publicity->commercialName = $publicityDate['commercialName'];
-        $publicity->link = $publicityDate['link'];
-        $publicity->startDate = $publicityDate['startDate'];
-        $publicity->createdDate = $publicityDate['createdDate'];
-        $publicity->finishDate = $publicityDate['finishDate'];
-        $publicity->categoryId = $publicityDate['id_category'];
-        $publicity->save();
-        #######################################################
-        $publicityId = $publicity->id;
-        $publicityComplete =  $publicityId;
-        $isLogoPublicity = isset($args['logo']) && $args['logo'] instanceof UploadedFile;
-        $manager = new ImageManager(new Driver());
-        if ($publicityCompleteOld !== $publicityComplete) {
-            Storage::deleteDirectory('public/publicidad/'.$publicityCompleteOld);
-            $this->createDirectories($publicityComplete);
-        }
-
-        // Verifica si hay un logo para procesar
-        if ($isLogoPublicity) {
-            // Elimina el logo anterior
-            Storage::disk('public')->delete($publicity->logo);
-
-            // Procesa y guarda la nueva imagen en el nuevo directorio
-            $now = Carbon::now()->format('Ymd_His');
-            $logoPath = ImageHelper::processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/"."{$now}.png", $manager);
-            $publicity->logo =$this->app . '/storage' . str_replace('public/', '', $logoPath);
+        DB::beginTransaction();
+        try{
+            ########################################################
+            $publicity->descriptionPublicity = $publicityDate['descriptionPublicity'];
+            $publicity->commercialName = $publicityDate['commercialName'];
+            $publicity->link = $publicityDate['link'];
+            $publicity->startDate = $publicityDate['startDate'];
+            $publicity->createdDate = $publicityDate['createdDate'];
+            $publicity->finishDate = $publicityDate['finishDate'];
+            $publicity->categoryId = $publicityDate['id_category'];
             $publicity->save();
+            #######################################################
+            $publicityId = $publicity->id;
+            $publicityComplete =  $publicityId;
+            $isLogoPublicity = isset($args['logo']) && $args['logo'] instanceof UploadedFile;
+            $manager = new ImageManager(new Driver());
+            if ($publicityCompleteOld !== $publicityComplete) {
+                Storage::deleteDirectory('public/publicidad/'.$publicityCompleteOld);
+                $this->createDirectories($publicityComplete);
+            }
+
+            // Verifica si hay un logo para procesar
+            if ($isLogoPublicity) {
+                // Elimina el logo anterior
+                Storage::disk('public')->delete($publicity->logo);
+
+                // Procesa y guarda la nueva imagen en el nuevo directorio
+                $now = Carbon::now()->format('Ymd_His');
+                $logoPath = ImageHelper::processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/"."{$now}.png", $manager);
+                $publicity->logo =$this->app . '/storage' . str_replace('public/', '', $logoPath);
+                $publicity->save();
+            }
+            DB::commit();
+            return [
+                'message' => 'Publicidad actualizada',
+                'publicity' => $publicity
+            ];
+        } catch(\Exception $e){
+            DB::rollback();
+            return [
+                'La falla es la siguiente: ' => $e->getMessage()
+            ];
         }
-        return [
-            'message' => 'Publicidad actualizada',
-            'publicity' => $publicity
-        ];
     }
     public function delete($root,array $args){
         $publicityId = $args['requestPublicity']['id'];

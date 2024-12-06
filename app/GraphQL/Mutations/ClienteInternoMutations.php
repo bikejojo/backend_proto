@@ -93,38 +93,45 @@ class ClienteInternoMutations{
         $user = User::find($client->userId);
         //dd($user);
         if ($client==null){
-            throw new \Exception('Client not found.');
+           return[
+                'message'=>'No existe cliente'
+            ];
         }
-        $firstName = trim($clientData['firstName']);
-
-        $lastName = trim($clientData['lastName']);
-        $email = trim($clientData['email']);
-        $phone = trim($clientData['phoneNumber']);
-        $client->firstName=$firstName;
-        $client->lastName=$lastName;
-        $client->email=$email;
-        $client->phoneNumber=$phone;
-        $client->loginMethod=$clientData['loginMethod'];
-        $client->cityId = $clientData['cityId'];
-        $value=$user->type_user;
-        ImageHelper::createDirectorie($clientId,$value);
-        $manager = new ImageManager(new Driver());
-        if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
-            //dd($technician->photo);
-            if ($client->photo) {
-                Storage::delete('public/' . $client->photo);
+        DB::beginTransaction();
+        try{
+            $firstName = trim($clientData['firstName']);
+            $lastName = trim($clientData['lastName']);
+            $email = trim($clientData['email']);
+            $phone = trim($clientData['phoneNumber']);
+            $client->firstName=$firstName;
+            $client->lastName=$lastName;
+            $client->email=$email;
+            $client->phoneNumber=$phone;
+            $client->loginMethod=$clientData['loginMethod'];
+            $client->cityId = $clientData['cityId'];
+            $value=$user->type_user;
+            ImageHelper::createDirectorie($clientId,$value);
+            $manager = new ImageManager(new Driver());
+            if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
+                //dd($technician->photo);
+                if ($client->photo) {
+                    Storage::delete('public/' . $client->photo);
+                }
+                $photoPath = $this->processImage($args['photo'], "/client_{$clientId}/photo/{$this->now}.png",$manager);
+                $client->photo = $this->app . '/storage' .str_replace('public/', '', $photoPath);
             }
-            $photoPath = $this->processImage($args['photo'], "/client_{$clientId}/photo/{$this->now}.png",$manager);
-            $client->photo = $this->app . '/storage' .str_replace('public/', '', $photoPath);
+            $client->save();
+            $user->email = $email ?? $user->email;
+            $user->save();
+            DB::commit();
+            return[
+                'message' => 'Cliente actualizado exitoso!!' ,
+                'client' => $client
+            ];
+        }catch (\Exception $e){
+            DB::rollBack();
+            return ['message' => 'El error es.'. $e->getMessage()];
         }
-        $client->save();
-        $user->email = $email ?? $user->email;
-        $user->save();
-
-        return[
-            'message' => 'Cliente actualizado exitoso!!' ,
-            'client' => $client
-        ];
     }
     public function delete($root ,array $args){
         $id=Cliente_Interno::find($args['id']);
@@ -149,31 +156,40 @@ class ClienteInternoMutations{
         }
         $client = Cliente_Interno::find($clientData['id']);
         $user = User::find($client->userId);
-        $manager = new ImageManager(new Driver());
-        // Manejo de la imagen
-        if (isset($args['photo'])) {
-            if ($args['photo'] instanceof UploadedFile) {
-                // Eliminar la foto anterior si existe
-                if ($client->photo) {
-                    $path = str_replace($this->app . '/storage/', '', $client->photo);
-                    Storage::delete('public/' . $path);
-                }
+        try{
+            $manager = new ImageManager(new Driver());
+            // Manejo de la imagen
+            DB::beginTransaction();
+            if (isset($args['photo'])) {
+                if ($args['photo'] instanceof UploadedFile) {
+                    // Eliminar la foto anterior si existe
+                    if ($client->photo) {
+                        $path = str_replace($this->app . '/storage/', '', $client->photo);
+                        Storage::delete('public/' . $path);
+                    }
 
-                $photoPath = $this->processImage($args['photo'], "/client_{$client->id}/photo/{$this->now}.png", $manager);
-                $client->photo = $this->app . '/storage' . str_replace('public/', '', $photoPath);
-            } elseif (is_null($args['photo'])) {
-                if ($client->photo) {
-                    $path = str_replace($this->app . '/storage/', '', $client->photo);
-                    Storage::delete('public/' . $path);
-                    $client->photo = null;
+                    $photoPath = $this->processImage($args['photo'], "/client_{$client->id}/photo/{$this->now}.png", $manager);
+                    $client->photo = $this->app . '/storage' . str_replace('public/', '', $photoPath);
+                } elseif (is_null($args['photo'])) {
+                    if ($client->photo) {
+                        $path = str_replace($this->app . '/storage/', '', $client->photo);
+                        Storage::delete('public/' . $path);
+                        $client->photo = null;
+                    }
                 }
             }
+            $client->save();
+            DB::commit();
+            return[
+                'message' => 'Foto de cliente actualizado exitoso!!' ,
+                'client' => $client
+            ];
+        } catch (\Exception $e) {
+            DB::rollback();
+            return [
+                'message'=>'El error es el siguiente. '. $e->getMessage()
+            ];
         }
-        $client->save();
-        return[
-            'message' => 'Foto de cliente actualizado exitoso!!' ,
-            'client' => $client
-        ];
     }
     // Procesamiento de imágenes
     private function processImage(UploadedFile $file, $path, $manager){

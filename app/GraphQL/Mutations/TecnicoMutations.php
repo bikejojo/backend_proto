@@ -128,8 +128,9 @@ class TecnicoMutations {
                 'user' => $user,
                 'skills' => $skill
             ];
-            DB::rollBack();
+            
         } catch (\Exception $e) {
+            DB::rollBack();
             return [
                 'message' => 'Ocurrió un error al crear el técnico: ' . $e->getMessage()
             ];
