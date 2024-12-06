@@ -221,10 +221,16 @@ class ClientQuery{
             ->get();
         $technician = DB::table('technicians')
         ->join('service_client_history','service_client_history.technicianId','=','technicians.id')
+        ->where('service_client_history.clientId', $clientId)
         ->select('technicians.*')
         ->distinct()
         ->get();
         $client = Cliente_Interno::where('id',$clientId)->first();
-        dd($technician);
+        //dd($technician);
+        return[
+            'message'=>'bien!!',
+            'technician'=>$technician,
+            'client'=>$client
+        ];
     }
 }
