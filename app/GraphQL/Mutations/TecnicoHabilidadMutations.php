@@ -74,26 +74,34 @@ class TecnicoHabilidadMutations{
                 'message' => 'No existe tecnico'
             ];
         }
-
-        // Eliminar las habilidades existentes del técnico
-        Tecnico_Habilidad::where('technicianId', $tecnicoId)->delete();
-        // Guardar las nuevas habilidades
-        foreach ($habilidades as $habilidad) {
-            Tecnico_Habilidad::create([
-                'technicianId' => $tecnicoId,
-                'skillId' => $habilidad['id_skill'],
-                'experience' => $habilidad['experience'],
-            ]);
+        DB::beginTransaction();
+        try{
+            // Eliminar las habilidades existentes del técnico
+            Tecnico_Habilidad::where('technicianId', $tecnicoId)->delete();
+            // Guardar las nuevas habilidades
+            foreach ($habilidades as $habilidad) {
+                Tecnico_Habilidad::create([
+                    'technicianId' => $tecnicoId,
+                    'skillId' => $habilidad['id_skill'],
+                    'experience' => $habilidad['experience'],
+                ]);
+            }
+            $habilidades = Tecnico_Habilidad::where('technicianId', $tecnicoId)
+            ->leftjoin('skills','technician_skills.skillId','=','skills.id')->get();
+            //return $habilidades;
+            //dd($habilidades);
+            DB::commit();
+            return [
+                'message' => 'habilidades actualizadas al tecnico OK' ,
+                'technician' => $technician,
+                'skills' => $habilidades
+            ];
+        } catch(\Exception $e){
+            DB::rollback();
+            return[
+                'message' => 'Existe un error en.'. $e->getMessage()
+            ];
         }
-        $habilidades = Tecnico_Habilidad::where('technicianId', $tecnicoId)
-        ->leftjoin('skills','technician_skills.skillId','=','skills.id')->get();
-        //return $habilidades;
-        //dd($habilidades);
-        return [
-            'message' => 'habilidades actualizadas al tecnico OK' ,
-            'technician' => $technician,
-            'skills' => $habilidades
-        ];
     }
     public function userSkilsById($root , array $args){
         $userId = $args['id'];

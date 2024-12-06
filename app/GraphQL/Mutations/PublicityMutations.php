@@ -4,6 +4,7 @@ namespace App\GraphQL\Mutations;
 
 use App\Models\Publicidad;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
