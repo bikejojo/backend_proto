@@ -204,33 +204,50 @@ class ClientQuery{
     }
 
     public function list_requests_services($root,array $args){
-        $list = $args['clientRequest'];
-        $clientId=$list['id_client'];
-        // Obtener las solicitudes relacionadas
-        $history_solic = DB::table('service_client_history')
-            ->join('requests', 'service_client_history.jobId', '=', 'requests.id')
-            ->where('service_client_history.clientId', $clientId)
-            ->where('service_client_history.descriptionJob', 1)
+        $clientId = $args['clientRequest']['id_client'];
+       
+        $historial = Historial_Servicios::where('clientId', $clientId)
+            ->with(['client', 'technician'])
+            ->orderBy('outsetDate', 'desc')
             ->get();
 
-        // Obtener los servicios relacionados
-        $history_serv = DB::table('service_client_history')
-            ->join('services', 'service_client_history.jobId', '=', 'services.id')
-            ->where('service_client_history.clientId', $clientId)
-            ->where('service_client_history.descriptionJob', 2)
-            ->get();
-        $technician = DB::table('technicians')
-        ->join('service_client_history','service_client_history.technicianId','=','technicians.id')
-        ->where('service_client_history.clientId', $clientId)
-        ->select('technicians.*')
-        ->distinct()
-        ->get();
-        $client = Cliente_Interno::where('id',$clientId)->first();
-        //dd($technician);
-        return[
-            'message'=>'bien!!',
-            'technician'=>$technician,
-            'client'=>$client
-        ];
+            $history = $historial->map(function ($record) {
+                // Determinar si es una solicitud o un servicio
+                $type = $record->descriptionJob == 1 ? 'Solicitud' : 'Servicio';
+    
+                // Obtener detalle de la solicitud o servicio
+                $detail = null;
+                if ($type === 'Solicitud') {
+                    $solicitud = Solicitud::find($record->jobId);
+                    $detail = [
+                        'id' => $solicitud->id,
+                        'title' => $solicitud->titleRequests,
+                        'description' => $solicitud->requestDescription,
+                        'dateCreate' => $solicitud->registrationDateTime->toDateString(),
+                    ];
+                } else {
+                    $servicio = Servicio::find($record->jobId);
+                    $detail = [
+                        'id' => $servicio->id,
+                        'title' => $servicio->titleService,
+                        'description' => $servicio->serviceDescription,
+                        'dateCreate' => $servicio->createdDateTime->toDateString(),
+                        'dateFinish' => $servicio->finishDateTime_client->toDateString(),
+                    ];
+                }
+    
+                return [
+                    'type' => $type,
+                    'client' => Cliente_Interno::find($record->clientId),
+                    'technician' => Tecnico::find($record->technicianId),
+                    'detail' => $detail,
+                ];
+            });
+    
+            return [
+                'message' => 'Historial obtenido correctamente',
+                'history' => $history->toArray(),
+            ];
     }
+    
 }
