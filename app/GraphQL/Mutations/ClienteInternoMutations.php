@@ -103,6 +103,7 @@ class ClienteInternoMutations{
             $lastName = trim($clientData['lastName']);
             $email = trim($clientData['email']);
             $phone = trim($clientData['phoneNumber']);
+            $password = $clientData['password'];
             $client->firstName=$firstName;
             $client->lastName=$lastName;
             $client->email=$email;
@@ -122,6 +123,7 @@ class ClienteInternoMutations{
             }
             $client->save();
             $user->email = $email ?? $user->email;
+            $user->password = $password;
             $user->save();
             DB::commit();
             return[

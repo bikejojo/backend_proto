@@ -8,7 +8,8 @@ use App\Models\Cliente_Interno;
 use App\Models\Asociacion_Cliente_Tecnico;
 use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Servicio;
-use App\Models\Cita;
+use App\Models\Solicitud;
+use App\Models\Historial_Servicios;
 use App\Models\Tecnico;
 use App\Models\Lists_Internal_Client;
 use Illuminate\Support\Facades\DB;
@@ -200,5 +201,30 @@ class ClientQuery{
             'message' => 'Total de citas programas de tecnico',
             'quantity' => $detailAgenda
         ];
+    }
+
+    public function list_requests_services($root,array $args){
+        $list = $args['clientRequest'];
+        $clientId=$list['id_client'];
+        // Obtener las solicitudes relacionadas
+        $history_solic = DB::table('service_client_history')
+            ->join('requests', 'service_client_history.jobId', '=', 'requests.id')
+            ->where('service_client_history.clientId', $clientId)
+            ->where('service_client_history.descriptionJob', 1)
+            ->get();
+
+        // Obtener los servicios relacionados
+        $history_serv = DB::table('service_client_history')
+            ->join('services', 'service_client_history.jobId', '=', 'services.id')
+            ->where('service_client_history.clientId', $clientId)
+            ->where('service_client_history.descriptionJob', 2)
+            ->get();
+        $technician = DB::table('technicians')
+        ->join('service_client_history','service_client_history.technicianId','=','technicians.id')
+        ->select('technicians.*')
+        ->distinct()
+        ->get();
+        $client = Cliente_Interno::where('id',$clientId)->first();
+        dd($technician);
     }
 }
