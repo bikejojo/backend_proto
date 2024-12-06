@@ -16,9 +16,9 @@ class ExternalClientSeeder extends Seeder
     public function run(): void
     {
         //
-        $tecnico = 19;
+        $tecnico = 1;
                 // Crea 1000 clientes
-        Cliente_Externo::factory(100)->create()->each(function ($client) use ($tecnico) {
+        Cliente_Externo::factory(50)->create()->each(function ($client) use ($tecnico) {
             // Asocia cada cliente a un técnico de forma aleatoria
             Asociacion_Cliente_Tecnico::create([
                 'clientId' => $client->id,

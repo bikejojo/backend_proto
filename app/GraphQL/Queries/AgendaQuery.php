@@ -112,7 +112,6 @@ class AgendaQuery{
             ->leftjoin('detail_technical_agenda', 'detail_technical_agenda.agendaTechnicalId', '=', 'technician_agenda.id')
             ->where('detail_technical_agenda.agendaTechnicalId', $request->agendaTechnicalId)
             ->select('technicians.*')->first();
-            //dd($tecnico);
             $client=DB::table('external_clients')
             ->leftJoin('associationTechnClient', function($join) use ($tecnico) {
                 $join->on('associationTechnClient.technicalId', '=', DB::raw($tecnico->id));
@@ -120,7 +119,6 @@ class AgendaQuery{
             ->where('external_clients.id', $request->clientId)
             ->select('external_clients.*')
             ->first();
-            //dd($agenda);
             return [
                 'agenda' => $request ,
                 'technician' => $tecnico ,
