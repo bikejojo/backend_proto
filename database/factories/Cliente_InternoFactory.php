@@ -24,9 +24,9 @@ class Cliente_InternoFactory extends Factory
             'lastName' => $this->faker->lastName(),
             'email' => $this->faker->email(),
             'phoneNumber' => $this->faker->phoneNumber(),
-            'cityId' => 1,
+            'cityId' => rand(1,4),
             'loginMethod' => 'manual',
-            'userId' => 11,
+            'userId' => 1,
         ];
     }
 }
