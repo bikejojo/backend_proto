@@ -14,6 +14,8 @@ class Pago extends Model
         'account',
         'social reason',
         'amount',
+        'amount_promotion',
+        'amount_pay',
         'method_payment',
         'date_payment',
         'photo_qr',
