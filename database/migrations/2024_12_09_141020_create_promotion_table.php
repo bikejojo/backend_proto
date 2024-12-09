@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('namePromotion');
             $table->string('description')->nullable();
             $table->string('type')->nullable();
-            $table->decimal('discount_value')->nullable();
+            $table->BigInteger('discount_value')->nullable();
             $table->dateTime('createDate')->nullable();
             $table->dateTime('finishDate')->nullabe();
             $table->BigInteger('duration')->nullable();

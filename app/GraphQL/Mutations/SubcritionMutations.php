@@ -53,7 +53,8 @@ class SubcritionMutations
                 'message'=>'Creacion de subscripcion exitosa',
                 'message'=>'Se espera que ingrese alguna promocion',
                 'technician'=>Tecnico::find($technicianId),
-                'subcription'=>$subcription
+                'subcription'=>$subcription,
+                'payment'=>$payment
             ];
         } catch (\Exception $e){
             DB::rollback();
@@ -64,15 +65,37 @@ class SubcritionMutations
     }
 
     public function registerSubcriptPromot($root,array $args){
+        $now=Carbon::now();
         $subcriptionData = $args['requestSubcription'];
         $promotionData = $subcriptionData['codePromotion'];
-        if(Promocion::where('codePromotion',$promotionData)->first()){
+        $promotion = Promocion::where('codePromotion', $promotionData)
+        ->where('status', true) // Activa
+        ->where('finishDate', '>=', now()) // No vencida
+        ->first();
+
+        if (!$promotion) {
             return [
-                'message' => 'La promocion dejo de ser valida.'
+                'message' => 'La promoción no es válida o está vencida.',
             ];
         }
+
         $subcription=Suscripcion::find($subcriptionData['id']);
-        $promotion=Promocion::where('codePromotion',$promotionData)->first();
+
+        $promotion = Promocion::where('codePromotion', $promotionCode)
+        ->where('status', true) // La promoción debe estar activa
+        ->where('finishDate', '>=', now()) // No debe estar vencida
+        ->first();
+
+        $existingPromotion = Promocion_suscripcion::where('subcriptionsId', $subcription->id)
+        ->where('promotionId', $promotion->id)
+        ->first();
+
+        if ($existingPromotion) {
+            return [
+                'message' => 'La promoción ya ha sido aplicada a esta suscripción.'
+            ];
+        }
+
         DB::beginTransaction();
         try{
             $register=Promocion_suscripcion::create([
@@ -83,7 +106,16 @@ class SubcritionMutations
             $payment->amount_promotion = $promotion;
             $payment->amount_pay = $payment->amount - $payment->amount_promotion;
             $payment->save();
+            $subcription->createDate = $now;
+            $subcription->finishDate = $now->copy()->addDays($promotion->discount_value);
+            $subcription->save();
             DB::commit();
+            return [
+                'message'=>'La promocion se ha aplicado correctamente.',
+                'subcription'=>$subcription,
+                'payment'=>$payment,
+                'promotion'=>$promotion
+            ];
         }catch(\Exception $e){
             DB::rollback();
             return [
