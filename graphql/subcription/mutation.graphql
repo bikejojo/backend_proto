@@ -1,5 +1,0 @@
-extend type Mutation {
-
-}
-
-#import subcription.graphql

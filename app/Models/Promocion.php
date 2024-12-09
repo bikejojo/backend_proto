@@ -8,8 +8,9 @@ class Promocion extends Model
 {
     //
     protected $id='id';
-    protected $table='promotions';
+    protected $table='promotion';
     protected $fillable=[
+        'codePromotion',
         'namePromotion',
         'description',
         'type',

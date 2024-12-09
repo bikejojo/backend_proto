@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('subcriptions', function (Blueprint $table) {
+        Schema::create('payment', function (Blueprint $table) {
             $table->id();
-            $table->text('account');
+            $table->decimal('amount',10,8)->nullable();
+            $table->unsignedBigInteger('subscriptionId');
+            $table->text('method_payment');
+            $table->date('date_payment');
             $table->BigInteger('status');
-            $table->text('description');
-            $table->datetime('createDate')->nullable();
-            $table->datetime('finishDate')->nullable();
-            $table->unsignedBigInteger('technicianId');
-            $table->foreign('technicianId')->references('id')->on('technicians');
+            $table->foreign('subscriptionId')->references('id')->on('subcriptions');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('subcriptions');
+        Schema::dropIfExists('payment');
     }
 };
