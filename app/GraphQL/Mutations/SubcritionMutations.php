@@ -97,29 +97,35 @@ class SubcritionMutations
         }
 
         DB::beginTransaction();
-        try{
-            $register=Promocion_suscripcion::create([
-                'subcriptionsId'=>$subcription->id,
-                'promotionId'=>$promotion->id,
+        try {
+            // Registrar la relación entre promoción y suscripción
+            $register = Promocion_suscripcion::create([
+                'subcriptionsId' => $subcription->id,
+                'promotionId' => $promotion->id,
             ]);
-            $promotion = $payment->amount;
-            $payment->amount_promotion = $promotion;
-            $payment->amount_pay = $payment->amount - $payment->amount_promotion;
-            $payment->save();
+
+            // Aplicar el descuento a la suscripción
+            $payment = Pago::where('subscriptionId',$subcription->id)->first();
+            $payment = $subcription->amount; // Verifica si esta variable existe en tu modelo
+            $payment_promotion = $promotion->discount_value; // Asume que es un valor numérico
+            $payment_pay = $payment - $payment_promotion;
+
             $subcription->createDate = $now;
             $subcription->finishDate = $now->copy()->addDays($promotion->discount_value);
+            $subcription->amount_promotion = $payment_promotion;
+            $subcription->amount_pay = $payment_pay;
             $subcription->save();
+
             DB::commit();
             return [
-                'message'=>'La promocion se ha aplicado correctamente.',
-                'subcription'=>$subcription,
-                'payment'=>$payment,
-                'promotion'=>$promotion
+                'message' => 'La promoción se ha aplicado correctamente.',
+                'subcription' => $subcription,
+                'promotion' => $promotion,
             ];
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
             return [
-                'message'=> 'Fallo en el ' . $e->getMessage()
+                'message' => 'Fallo en el proceso: ' . $e->getMessage(),
             ];
         }
     }
