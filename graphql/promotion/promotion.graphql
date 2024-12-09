@@ -1,0 +1,10 @@
+type Promotion {
+    namePromotion:String!
+    description:String!
+    type:String!
+    discount_value:String!
+    createDate:String!
+    finishDate:String!
+    duration:String!
+    status:String!
+}

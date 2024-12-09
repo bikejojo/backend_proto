@@ -13,6 +13,7 @@ use App\Models\Historial_Servicios;
 use App\Models\Tecnico;
 use App\Models\Lists_Internal_Client;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ClientQuery{
     /** @param  array{}  $args */
@@ -205,49 +206,65 @@ class ClientQuery{
 
     public function list_requests_services($root,array $args){
         $clientId = $args['clientRequest']['id_client'];
-       
+
+        // Obtener el historial de servicios y solicitudes para el cliente
         $historial = Historial_Servicios::where('clientId', $clientId)
             ->with(['client', 'technician'])
             ->orderBy('outsetDate', 'desc')
             ->get();
-
-            $history = $historial->map(function ($record) {
-                // Determinar si es una solicitud o un servicio
-                $type = $record->descriptionJob == 1 ? 'Solicitud' : 'Servicio';
     
-                // Obtener detalle de la solicitud o servicio
-                $detail = null;
-                if ($type === 'Solicitud') {
-                    $solicitud = Solicitud::find($record->jobId);
+        // Si no hay historial, devolver un mensaje apropiado
+        if ($historial->isEmpty()) {
+            return [
+                'message' => 'No se encontraron registros en el historial.',
+                'client' => null,
+                'historial' => null,
+            ];
+        }
+    
+        // Procesar el historial
+        $history = $historial->map(function ($record) {
+            // Determinar si es una solicitud o un servicio
+            $type = $record->descriptionJob == 1 ? 'Solicitud' : 'Servicio';
+    
+            // Obtener detalle de la solicitud o servicio
+            $detail = null;
+            if ($type === 'Solicitud') {
+                $solicitud = Solicitud::find($record->jobId);
+                if ($solicitud) {
                     $detail = [
-                        'id' => $solicitud->id,
                         'title' => $solicitud->titleRequests,
                         'description' => $solicitud->requestDescription,
-                        'dateCreate' => $solicitud->registrationDateTime->toDateString(),
-                    ];
-                } else {
-                    $servicio = Servicio::find($record->jobId);
-                    $detail = [
-                        'id' => $servicio->id,
-                        'title' => $servicio->titleService,
-                        'description' => $servicio->serviceDescription,
-                        'dateCreate' => $servicio->createdDateTime->toDateString(),
-                        'dateFinish' => $servicio->finishDateTime_client->toDateString(),
+                        'dateCreate' => $solicitud->registrationDateTime ? Carbon::parse($solicitud->registrationDateTime)->toDateString() : null,
                     ];
                 }
-    
-                return [
-                    'type' => $type,
-                    'client' => Cliente_Interno::find($record->clientId),
-                    'technician' => Tecnico::find($record->technicianId),
-                    'detail' => $detail,
-                ];
-            });
+            } else {
+                $servicio = Servicio::find($record->jobId);
+                if ($servicio) {
+                    $detail = [
+                        'title' => $servicio->titleService,
+                        'description' => $servicio->serviceDescription,
+                        'dateCreate' => $servicio->createdDateTime ? Carbon::parse($servicio->createdDateTime)->toDateString() : null,
+                        'dateFinish' => $servicio->finishDateTime_client ? Carbon::parse($servicio->finishDateTime_client)->toDateString() : null,
+                    ];
+                }
+            }
     
             return [
-                'message' => 'Historial obtenido correctamente',
-                'history' => $history->toArray(),
+                'type' => $type,
+                'technician' => $record->technician,
+                'detail' => $detail,
             ];
+        });
+    
+        // Obtener información del cliente
+        $client = Cliente_Interno::find($clientId);
+    
+        return [
+            'message' => 'Historial obtenido correctamente.',
+            'client' => $client,
+            'historial' => $history,
+        ];
     }
     
 }

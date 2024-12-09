@@ -1,0 +1,14 @@
+type Subcription {
+        payment_date:String!
+        transaction_code:String!
+        bank:String!
+        account:String!
+        amount:String!
+        status:String!
+        description:String!
+        photo_qr:String!
+        userId:String!
+        typeUser:String!
+        createDate:String!
+        finishDate:String!
+}
