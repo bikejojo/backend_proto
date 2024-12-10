@@ -10,7 +10,7 @@ type Payment {
     date_payment:String
     photo_qr:String
     status:String
-    subcriptionId:ID
+    subscriptionId:ID
 
 
 }
