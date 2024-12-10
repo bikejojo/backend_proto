@@ -8,9 +8,10 @@ class Suscripcion extends Model
 {
     //
     protected $id='id';
-    protected $table = 'subscriptions';
+    protected $table = 'subcriptions';
     protected $fillable=[
         'account',
+        'status',
         'description',
         'createDate',
         'finishDate',

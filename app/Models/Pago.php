@@ -12,7 +12,7 @@ class Pago extends Model
     protected $fillable=[
         'bank',
         'account',
-        'social reason',
+        'social_reason',
         'amount',
         'amount_promotion',
         'amount_pay',
@@ -20,6 +20,6 @@ class Pago extends Model
         'date_payment',
         'photo_qr',
         'subscriptionId',
-        'status'
+        'status',
     ];
 }

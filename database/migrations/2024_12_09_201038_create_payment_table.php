@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('payment', function (Blueprint $table) {
             $table->id();
+            $table->text('bank');
             $table->text('account');
             $table->text('social_reason');
-            $table->decimal('amount',10,8)->nullable();
+            $table->decimal('amount',10,2)->nullable();
+            $table->decimal('amount_promotion',10,2)->nullable();
+            $table->decimal('amount_pay',10,2)->nullable();
             $table->text('method_payment');
-            $table->date('date_payment');
+            $table->date('date_payment')->nullable();
             $table->text('photo_qr')->nullable();
             $table->BigInteger('status');
             $table->unsignedBigInteger('subscriptionId');

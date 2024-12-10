@@ -1,0 +1,9 @@
+type Mutation {
+    paymentGenerator(requestPayment:JSON):responsePayment @field(resolver: "PagoMutations@generatorPayment")
+}
+
+type responsePayment{
+    message:String
+    payment:Payment
+}
+#import payment.graphql

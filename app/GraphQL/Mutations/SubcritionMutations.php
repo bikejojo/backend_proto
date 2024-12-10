@@ -6,6 +6,7 @@ use App\Models\Tecnico;
 use App\Models\Suscripcion;
 use App\Models\Pago;
 use App\Models\Promocion_suscripcion;
+use App\Models\Promocion;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -13,6 +14,7 @@ class SubcritionMutations
 {
     public function creaSubcription($root,array $args){
         $subcriptionData = $args['requestSubcription'];
+        //dd($subcriptionData);
         $technicianId=$subcriptionData['technicianId'];
         if(Tecnico::find($technicianId == null )){
             return[
@@ -22,7 +24,7 @@ class SubcritionMutations
         DB::beginTransaction();
         try{
             $now=Carbon::now();
-            $nowAdd=$now()->addDays(3);
+            $nowAdd=$now->copy()->addDays(3);
             $subcription = Suscripcion::create([
                 'account'=>$subcriptionData['account'],
                 'description'=>$subcriptionData['description'],
@@ -32,26 +34,24 @@ class SubcritionMutations
                 'status'=>1,
                 
             ]);
-
-            $payment=Pago::create([
-                'bank'=>$subcriptionData['bank'],
-                'account'=>$subcriptionData['account'],
-                'social_reason'=>$subcriptionData['social_reason'],
-                'amount'=>$subcriptionData['amount'],
-                'amount_promotion'=> 0,
-                'method_payment'=>$subcriptionData['method_payment'],
-                'date_payment'=>$nowAdd,
-                'photo_qr'=>$subcriptionData['photo_qr'],
-                'subcriptionId'=>$subcription->id
+            $payment = Pago::create([
+                'bank' => $subcriptionData['bank'],
+                'account' => $subcriptionData['account'],
+                'social_reason' => $subcriptionData['social_reason'],
+                'amount' => $subcriptionData['amount'],
+                'method_payment' => $subcriptionData['method_payment'],
+                'date_payment' => $nowAdd,
+                'photo_qr' => $subcriptionData['photo_qr'],
+                'subscriptionId' => $subcription->id,
+                'status'=>1,
             ]);
-
             $payment->amount_pay = $payment->amount - $payment->amount_promotion;
             $payment->save();
 
         DB::commit();
             return[
                 'message'=>'Creacion de subscripcion exitosa',
-                'message'=>'Se espera que ingrese alguna promocion',
+                'messageNext'=>'Se espera que ingrese alguna promocion',
                 'technician'=>Tecnico::find($technicianId),
                 'subcription'=>$subcription,
                 'payment'=>$payment
@@ -64,38 +64,49 @@ class SubcritionMutations
         }
     }
 
-    public function registerSubcriptPromot($root,array $args){
-        $now=Carbon::now();
-        $subcriptionData = $args['requestSubcription'];
-        $promotionData = $subcriptionData['codePromotion'];
-        $promotion = Promocion::where('codePromotion', $promotionData)
-        ->where('status', true) // Activa
-        ->where('finishDate', '>=', now()) // No vencida
-        ->first();
-
+    public function registerSubcriptPromot($root, array $args)
+    {
+        $now = Carbon::now();
+        $subcriptionData = $args['requestSubcription']; // Cambié el nombre al esperado en el esquema
+        $promotionCode = $subcriptionData['codePromotion'];
+    
+        // Buscar promoción válida
+        $promotion = Promocion::where('codePromotion', $promotionCode)
+            ->where('status', true) // Activa
+            ->where('finishDate', '>=', $now) // No vencida
+            ->first();
+    
         if (!$promotion) {
             return [
                 'message' => 'La promoción no es válida o está vencida.',
             ];
         }
-
-        $subcription=Suscripcion::find($subcriptionData['id']);
-
-        $promotion = Promocion::where('codePromotion', $promotionCode)
-        ->where('status', true) // La promoción debe estar activa
-        ->where('finishDate', '>=', now()) // No debe estar vencida
-        ->first();
-
-        $existingPromotion = Promocion_suscripcion::where('subcriptionsId', $subcription->id)
-        ->where('promotionId', $promotion->id)
-        ->first();
-
-        if ($existingPromotion) {
-            return [
-                'message' => 'La promoción ya ha sido aplicada a esta suscripción.'
+        $technician = Tecnico::find($subcriptionData['technician_id']);
+        if(!$technician){
+            return[
+                'message'=>'No existe ID del tecnico.'
             ];
         }
-
+        // Buscar suscripción
+        $subcription = Suscripcion::find($subcriptionData['id']);
+    
+        if (!$subcription) {
+            return [
+                'message' => 'No se encontró la suscripción.',
+            ];
+        }
+    
+        // Verificar si la promoción ya está aplicada
+        $existingPromotion = Promocion_suscripcion::where('subcriptionsId', $subcription->id)
+            ->where('promotionId', $promotion->id)
+            ->first();
+    
+        if ($existingPromotion) {
+            return [
+                'message' => 'La promoción ya ha sido aplicada a esta suscripción.',
+            ];
+        }
+    
         DB::beginTransaction();
         try {
             // Registrar la relación entre promoción y suscripción
@@ -103,24 +114,36 @@ class SubcritionMutations
                 'subcriptionsId' => $subcription->id,
                 'promotionId' => $promotion->id,
             ]);
+    
+            // Aplicar descuento a la suscripción
+            $payment = Pago::where('subscriptionId', $subcription->id)->first();
+            if (!$payment) {
+                return [
+                    'message'=>'No se encontró un pago relacionado con esta suscripción.'
+                ];
+            }
+            if($promotion->type === 'Fecha'){
+                $subcription->finishDate = $now->copy()->addDays($promotion->discount_value);
+                $subcription->save();
+                $payment->amount_promotion = $payment->amount;
+                $payment->amount_pay = $payment->amount - $payment->amount_promotion;
+                $payment->save();
 
-            // Aplicar el descuento a la suscripción
-            $payment = Pago::where('subscriptionId',$subcription->id)->first();
-            $payment = $subcription->amount; // Verifica si esta variable existe en tu modelo
-            $payment_promotion = $promotion->discount_value; // Asume que es un valor numérico
-            $payment_pay = $payment - $payment_promotion;
-
-            $subcription->createDate = $now;
-            $subcription->finishDate = $now->copy()->addDays($promotion->discount_value);
-            $subcription->amount_promotion = $payment_promotion;
-            $subcription->amount_pay = $payment_pay;
-            $subcription->save();
+            }
+            if($promotion->type === 'Descuento'){
+                $payment->amount_promotion = $payment->amount*($promotion->discount_vale / 100);
+                $payment->amount_pay = $payment->amount - $payment->amount_promotion;
+                $payment->save();
+            }
 
             DB::commit();
+    
             return [
                 'message' => 'La promoción se ha aplicado correctamente.',
                 'subcription' => $subcription,
-                'promotion' => $promotion,
+                'promotion' =>   $promotion,
+                'payment' =>     $payment,
+                'technician' =>  $technician
             ];
         } catch (\Exception $e) {
             DB::rollback();
@@ -132,7 +155,7 @@ class SubcritionMutations
 
     public function lowSubcription($root,array $args){
         $subcriptionData = $args['requestSubcription'];
-        if(Suscripcion::find($subcriptionData['id'])){
+        if(!Suscripcion::find($subcriptionData['id'])){
             return[
                 'message'=>'No existe suscripcion!.'
             ];
@@ -141,6 +164,7 @@ class SubcritionMutations
         DB::beginTransaction();
         try{
             $subcription->status=0;
+            $subcription->save();
             DB::commit();
             return[
                 'message'=>'La suscripcion se ha cancelado correctamente.',

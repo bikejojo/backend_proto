@@ -1,0 +1,24 @@
+type Mutation   {
+    createSubcripcion(requestSubcription:JSON):responseSubcripcion @field(resolver: "SubcritionMutations@creaSubcription" )
+    lowSubcription(requestSubcription:JSON):responseSubcripcion @field(resolver: "SubcritionMutations@lowSubcription" )
+    registerPromotion(requestSubcription: JSON!): responseSubcripcionPromotion @field(resolver: "SubcritionMutations@registerSubcriptPromot")
+
+}
+
+type responseSubcripcion {
+    message:String!
+    messageNext:String
+    subcription:Subcription
+    technician:Technician
+    payment:Payment
+}
+
+type responseSubcripcionPromotion {
+    message:String!
+    subcription:Subcription
+    technician:Technician
+    payment:Payment
+    promotion:Promotion
+}
+
+#import subcription.graphql
