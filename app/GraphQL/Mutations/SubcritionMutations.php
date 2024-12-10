@@ -177,4 +177,40 @@ class SubcritionMutations
             ];
         }
     }
+
+    public function technicalSubscription($root,array $args){
+        $subcriptionData = $args['requestSubcription'];
+        $technician=Tecnico::find($subcriptionData['technicianId']);
+        if(!$technician){
+            return[
+                'message'=>'No existe tecnico.'
+            ];
+        }
+        $suscription=Suscripcion::where('technicianId',$technician->id)->where('status',1)->first();
+        if (!$suscription) {
+            return [
+                'message' => 'El técnico no tiene una suscripción activa.',
+            ];
+        }
+        $now=Carbon::now();
+        $finishDate = Carbon::parse($suscription->finishDate);
+        if ($finishDate->isPast()) {
+            return [
+                'message' => 'La suscripción ha expirado.',
+                'day' => 'La suscripción venció el ' . $finishDate->toDateString() . '.',
+                'technician' => $technician,
+                'suscripcion' => $suscription,
+            ];
+        }
+    
+        // Calcular días restantes para que finalice la suscripción
+        $daysRemaining = ceil($now->diffInHours($finishDate) / 24);
+    
+        return [
+            'message' => 'Validación de suscripción exitosa.',
+            'day' => 'Faltan ' . $daysRemaining . ' días para que termine la suscripción.',
+            'technician' => $technician,
+            'suscripcion' => $suscription,
+        ];
+    }
 }
