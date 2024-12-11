@@ -46,90 +46,82 @@ class SubcritionMutations
     public function registerSubcriptPromot($root, array $args)
     {
         $now = Carbon::now();
-        $subcriptionData = $args['requestSubcription']; // Cambié el nombre al esperado en el esquema
-        $promotionCode = $subcriptionData['codePromotion'];
+        $paymentData = $args['requestPayment'];
+        $subscriptionId = $paymentData['subscriptionId'];
+        $promotionCode = $paymentData['promotionCode'] ?? null;
 
-        // Buscar promoción válida
-        $promotion = Promocion::where('codePromotion', $promotionCode)
-            ->where('status', true) // Activa
-            ->where('finishDate', '>=', $now) // No vencida
-            ->first();
-
-        if (!$promotion) {
-            return [
-                'message' => 'La promoción no es válida o está vencida.',
-            ];
-        }
-        $technician = Tecnico::find($subcriptionData['technician_id']);
-        if(!$technician){
-            return[
-                'message'=>'No existe ID del tecnico.'
-            ];
-        }
-        // Buscar suscripción
-        $subcription = Suscripcion::find($subcriptionData['id']);
-
-        if (!$subcription) {
-            return [
-                'message' => 'No se encontró la suscripción.',
-            ];
+        // Buscar la suscripción
+        $subscription = Suscripcion::find($subscriptionId);
+        if (!$subscription) {
+            return ['message' => 'Suscripción no encontrada.'];
         }
 
-        // Verificar si la promoción ya está aplicada
-        $existingPromotion = Promocion_suscripcion::where('subcriptionsId', $subcription->id)
-            ->where('promotionId', $promotion->id)
-            ->first();
+        // Validar promoción (si se proporciona un código)
+        $promotion = null;
+        if ($promotionCode) {
+            $promotion = Promocion::where('codePromotion', $promotionCode)
+                ->where('status', true)
+                ->where('finishDate', '>=', $now)
+                ->first();
 
-        if ($existingPromotion) {
-            return [
-                'message' => 'La promoción ya ha sido aplicada a esta suscripción.',
-            ];
-        }
+            if (!$promotion) {
+                return ['message' => 'La promoción no es válida o está vencida.'];
+            }
 
-        DB::beginTransaction();
-        try {
-            // Registrar la relación entre promoción y suscripción
-            $register = Promocion_suscripcion::create([
-                'subcriptionsId' => $subcription->id,
+            // Verificar si ya fue aplicada
+            $existingPromotion = Promocion_suscripcion::where('subcriptionsId', $subscription->id)
+                ->where('promotionId', $promotion->id)
+                ->first();
+
+            if ($existingPromotion) {
+                return ['message' => 'La promoción ya fue aplicada a esta suscripción.'];
+            }
+
+            // Registrar la promoción aplicada
+            Promocion_suscripcion::create([
+                'subcriptionsId' => $subscription->id,
                 'promotionId' => $promotion->id,
             ]);
-
-            // Aplicar descuento a la suscripción
-            $payment = Pago::where('subscriptionId', $subcription->id)->first();
-            if (!$payment) {
-                return [
-                    'message'=>'No se encontró un pago relacionado con esta suscripción.'
-                ];
-            }
-            if($promotion->type === 'Fecha'){
-                $subcription->finishDate = $now->copy()->addDays($promotion->discount_value);
-                $subcription->save();
-                $payment->amount_promotion = $payment->amount;
-                $payment->amount_pay = $payment->amount - $payment->amount_promotion;
-                $payment->save();
-
-            }
-            if($promotion->type === 'Descuento'){
-                $payment->amount_promotion = $payment->amount*($promotion->discount_vale / 100);
-                $payment->amount_pay = $payment->amount - $payment->amount_promotion;
-                $payment->save();
-            }
-
-            DB::commit();
-
-            return [
-                'message' => 'La promoción se ha aplicado correctamente.',
-                'subcription' => $subcription,
-                'promotion' =>   $promotion,
-                'payment' =>     $payment,
-                'technician' =>  $technician
-            ];
-        } catch (\Exception $e) {
-            DB::rollback();
-            return [
-                'message' => 'Fallo en el proceso: ' . $e->getMessage(),
-            ];
         }
+
+        // Calcular monto a pagar
+        $amount = $paymentData['amount']; // Monto original
+        $amountPromotion = 0; // Monto de descuento
+        $amountPay = $amount;
+
+        if ($promotion) {
+            if ($promotion->type === 'Descuento') {
+                $amountPromotion = $amount * ($promotion->discount_value / 100);
+                $amountPay = $amount - $amountPromotion;
+            }
+        }
+
+        // Registrar el pago
+        $payment = Pago::create([
+            'bank' => $paymentData['bank'],
+            'account' => $paymentData['account'],
+            'social_reason' => $paymentData['social_reason'],
+            'amount' => $amount,
+            'amount_promotion' => $amountPromotion,
+            'amount_pay' => $amountPay,
+            'method_payment' => $paymentData['method_payment'],
+            'date_payment' => $now,
+            'subscriptionId' => $subscription->id,
+            'status' => 'pendiente',
+        ]);
+
+        // Procesar la extensión de duración (si aplica)
+        if ($promotion && $promotion->type === 'Fecha') {
+            $subscription->finishDate = $subscription->finishDate->addDays($promotion->discount_value);
+            $subscription->save();
+        }
+
+        return [
+            'message' => 'Pago procesado correctamente.',
+            'subscription' => $subscription,
+            'payment' => $payment,
+            'promotion' => $promotion,
+        ];
     }
 
     public function lowSubcription($root,array $args){
