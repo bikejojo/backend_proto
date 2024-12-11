@@ -13,8 +13,21 @@ type responseClientInternalSearch{
 
 type responseHistorial{
     message: String
-    technician:[Technician]
     client:InternalClient
+    historial:[historialDetail]
+}
+
+type historialDetail{
+    type:String
+    technician:Technician
+    detail:historyItemDetail
+}
+
+type historyItemDetail{
+    title:String
+    description:String
+    dateCreate:String
+    dateFinish:String
 }
 
 #import InternalClient.graphql

@@ -13,16 +13,11 @@ return new class extends Migration
     {
         Schema::create('subcriptions', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('payment_date')->nullable(); // Campo para la fecha de pago
-            $table->string('transaction_code')->nullable();
-            $table->text('bank');
-            $table->text('account');
-            $table->decimal('amount', 10, 2);
-            $table->boolean('status');
-            $table->text('description');
-            $table->text('photo_qr');
-            $table->unsignedBigInteger('userId');
-            $table->BigInteger('typeUser');
+            $table->text('name');
+            $table->text('description')->nullable();
+            $table->BigInteger('status')->nullable();
+            $table->datetime('createDate')->nullable();
+            $table->BigInteger('duration')->nullable();
             $table->timestamps();
         });
     }

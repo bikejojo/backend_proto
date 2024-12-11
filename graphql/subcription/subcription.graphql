@@ -1,0 +1,8 @@
+type Subcription {
+        id:ID!
+        name:String
+        description:String
+        createDate:String
+        duration:String
+        status:String
+}

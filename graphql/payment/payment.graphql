@@ -1,0 +1,16 @@
+type Payment {
+    id:ID!
+    bank:String
+    account:String
+    social_reason:String
+    amount:Int
+    amount_promotion:Int
+    amount_pay:Int
+    method_payment:String
+    date_payment:String
+    photo_qr:String
+    status:String
+    subscriptionId:ID
+
+
+}

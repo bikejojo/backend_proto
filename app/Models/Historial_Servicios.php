@@ -20,4 +20,12 @@ class Historial_Servicios extends Model
        'finishDate',
        'description',
     ];
+
+    public function client(){
+        return $this->belongsTo(Cliente_Interno::class,'clientId');
+    }
+
+    public function technician(){
+        return $this->belongsTo(Tecnico::class,'technicianId');
+    }
 }

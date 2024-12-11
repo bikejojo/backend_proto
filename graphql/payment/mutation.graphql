@@ -1,0 +1,18 @@
+extend type Mutation {
+    paymentGenerator(requestPayment:JSON):responsePayment @field(resolver: "PagoMutations@generatorPayment")
+    payment(requestPayment:JSON):responsePaymentComplet @field(resolver: "PagoMutations@payment")
+    lowPayment(requestPayment:JSON):responsePayment @field(resolver: "PagoMutations@cancelPayment")
+}
+
+type responsePayment{
+    message:String
+    payment:Payment
+}
+
+type responsePaymentComplet{
+    message:String
+    payment:Payment
+    technician:Technician
+    suscripcion:Subcription
+}
+#import payment.graphql

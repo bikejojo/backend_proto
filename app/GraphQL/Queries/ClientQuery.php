@@ -13,6 +13,7 @@ use App\Models\Historial_Servicios;
 use App\Models\Tecnico;
 use App\Models\Lists_Internal_Client;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ClientQuery{
     /** @param  array{}  $args */
@@ -204,33 +205,66 @@ class ClientQuery{
     }
 
     public function list_requests_services($root,array $args){
-        $list = $args['clientRequest'];
-        $clientId=$list['id_client'];
-        // Obtener las solicitudes relacionadas
-        $history_solic = DB::table('service_client_history')
-            ->join('requests', 'service_client_history.jobId', '=', 'requests.id')
-            ->where('service_client_history.clientId', $clientId)
-            ->where('service_client_history.descriptionJob', 1)
-            ->get();
+        $clientId = $args['clientRequest']['id_client'];
 
-        // Obtener los servicios relacionados
-        $history_serv = DB::table('service_client_history')
-            ->join('services', 'service_client_history.jobId', '=', 'services.id')
-            ->where('service_client_history.clientId', $clientId)
-            ->where('service_client_history.descriptionJob', 2)
+        // Obtener el historial de servicios y solicitudes para el cliente
+        $historial = Historial_Servicios::where('clientId', $clientId)
+            ->with(['client', 'technician'])
+            ->orderBy('outsetDate', 'desc')
             ->get();
-        $technician = DB::table('technicians')
-        ->join('service_client_history','service_client_history.technicianId','=','technicians.id')
-        ->where('service_client_history.clientId', $clientId)
-        ->select('technicians.*')
-        ->distinct()
-        ->get();
-        $client = Cliente_Interno::where('id',$clientId)->first();
-        //dd($technician);
-        return[
-            'message'=>'bien!!',
-            'technician'=>$technician,
-            'client'=>$client
+    
+        // Si no hay historial, devolver un mensaje apropiado
+        if ($historial->isEmpty()) {
+            return [
+                'message' => 'No se encontraron registros en el historial.',
+                'client' => null,
+                'historial' => null,
+            ];
+        }
+    
+        // Procesar el historial
+        $history = $historial->map(function ($record) {
+            // Determinar si es una solicitud o un servicio
+            $type = $record->descriptionJob == 1 ? 'Solicitud' : 'Servicio';
+    
+            // Obtener detalle de la solicitud o servicio
+            $detail = null;
+            if ($type === 'Solicitud') {
+                $solicitud = Solicitud::find($record->jobId);
+                if ($solicitud) {
+                    $detail = [
+                        'title' => $solicitud->titleRequests,
+                        'description' => $solicitud->requestDescription,
+                        'dateCreate' => $solicitud->registrationDateTime ? Carbon::parse($solicitud->registrationDateTime)->toDateString() : null,
+                    ];
+                }
+            } else {
+                $servicio = Servicio::find($record->jobId);
+                if ($servicio) {
+                    $detail = [
+                        'title' => $servicio->titleService,
+                        'description' => $servicio->serviceDescription,
+                        'dateCreate' => $servicio->createdDateTime ? Carbon::parse($servicio->createdDateTime)->toDateString() : null,
+                        'dateFinish' => $servicio->finishDateTime_client ? Carbon::parse($servicio->finishDateTime_client)->toDateString() : null,
+                    ];
+                }
+            }
+    
+            return [
+                'type' => $type,
+                'technician' => $record->technician,
+                'detail' => $detail,
+            ];
+        });
+    
+        // Obtener información del cliente
+        $client = Cliente_Interno::find($clientId);
+    
+        return [
+            'message' => 'Historial obtenido correctamente.',
+            'client' => $client,
+            'historial' => $history,
         ];
     }
+    
 }

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Cliente_Interno;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,17 +17,17 @@ class Cliente_InternoFactory extends Factory
      * @return array<string, mixed>
      */
     protected $model = Cliente_Interno::class;
-    public function definition(): array
 
-    {
+
+    public function definition(): array{
         return [
             'firstName' => $this->faker->firstName(),
             'lastName' => $this->faker->lastName(),
             'email' => $this->faker->email(),
             'phoneNumber' => $this->faker->phoneNumber(),
-            'cityId' => rand(1,4),
-            'loginMethod' => 'manual',
-            'userId' => 1,
+            'cityId' => 1,
+            'userId' => User::factory(),
+            'loginMethod'=> $this->faker->randomElement(['email', 'google', 'facebook']),
         ];
     }
 }

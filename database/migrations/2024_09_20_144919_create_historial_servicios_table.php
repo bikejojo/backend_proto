@@ -21,8 +21,10 @@ return new class extends Migration
             $table->datetime('outsetDate')->nullable();  // Traducción de 'fecha_realizada'
             $table->datetime('finishDate')->nullable();  // Traducción de 'fecha_acabado'
             $table->text('description')->nullable();
-            
             $table->timestamps();
+            $table->foreign('clientId')->references('id')->on('internal_clients')->onDelete('cascade');
+            $table->foreign('technicianId')->references('id')->on('technicians')->onDelete('cascade');
+            
         });
     }
 
