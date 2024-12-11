@@ -1,0 +1,13 @@
+type DetailAgendaTechnical  @model(class: "App\\Models\\Detalle_Agenda_Tecnico"){
+    id:ID!
+    id_agendaTechnical:ID @rename (attribute: "agendaTechnicalId")
+    id_client:ID @rename (attribute: "clientId")
+    id_service:ID @rename (attribute: "serviceId")
+    typeClient:String!
+    serviceDate:String!
+    createDate:String!
+
+    details:Agenda_Technical @belongsTo
+    services:Service @belongsTo
+}
+

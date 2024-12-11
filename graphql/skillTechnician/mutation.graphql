@@ -1,0 +1,28 @@
+extend type Mutation {
+    regisTechnicianSkill(technicianId: ID!, skills: JSON): SkillResponse @field(resolver: "TecnicoHabilidadMutations@assign")
+    updateTechnicianSkill(id: ID!, skills: [TechnicianSkillInput!]): SkillResponse @field(resolver: "TecnicoHabilidadMutations@update")
+    userSkilsById(id:ID!):responseSkillsUser @field(resolver: "TecnicoHabilidadMutations@userSkilsById")
+}
+
+type SkillResponse {
+  message: String
+  technician: Technician
+  skills: [technicianskill]
+}
+
+type technicianskill {
+    id_skill:ID @rename (attribute: "skillId")
+    name:String
+    experience:String
+}
+
+type responseSkillsUser {
+    message: String
+    skills: [TechnicianSkill]
+}
+
+input TechnicianSkillInput {
+  id_skill: ID!
+  experience: String
+}
+#import skillTechnician.graphql

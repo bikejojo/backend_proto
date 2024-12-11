@@ -11,10 +11,12 @@ class Tipo_Actividad extends Model
     protected $PrimaryKey = 'id';
     protected $table = 'activity_types';
     protected $fillable =[
-        'descripcion'
+        'descripcion',
+        'entity_type'
     ];
 
-    public function technicianSchedules(){
-        return $this->hasMany(Agenda_Tecnico::class,'tipo_actividad_id');
+
+    public function activity(){
+        return $this->belongsTo(Cita::class,'activityId');
     }
 }

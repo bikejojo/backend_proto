@@ -1,0 +1,13 @@
+extend type Mutation {
+    rateService(requestRating:JSON):responseRate @field (resolver: "RatingMutations@rateService")
+}
+
+type responseRate {
+    message:String
+    service:Service
+    rating:Rating
+    client:InternalClient
+    technician:Technician
+}
+
+#import rating.graphql

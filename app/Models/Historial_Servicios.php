@@ -9,15 +9,23 @@ class Historial_Servicios extends Model
 {
     use HasFactory;
     protected $PrimaryKey = 'id';
-    protected $table = 'historial_servicios';
+    protected $table = 'service_client_history';
     protected $fillable = [
-       'cliente_id',
-       'tecnico_id',
-       'solicitud_id',
-       'agenda_tecnico_id',
-       'fecha_realizada',
-       'fecha_acabado',
-       'descripcion',
-       'duracion',
+       'clientId',
+       'technicianId',
+       'jobId',
+       'descriptionJob',
+       'stateId',
+       'outsetDate',
+       'finishDate',
+       'description',
     ];
+
+    public function client(){
+        return $this->belongsTo(Cliente_Interno::class,'clientId');
+    }
+
+    public function technician(){
+        return $this->belongsTo(Tecnico::class,'technicianId');
+    }
 }

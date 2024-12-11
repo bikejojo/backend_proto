@@ -11,17 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('service_history', function (Blueprint $table) {
+        Schema::create('service_client_history', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('clientId');  // Traducción de 'cliente_id'
             $table->unsignedBigInteger('technicianId');  // Traducción de 'tecnico_id'
-            $table->unsignedBigInteger('requestId');  // Traducción de 'solicitud_id'
-            $table->unsignedBigInteger('technicianScheduleId');  // Traducción de 'agenda_tecnico_id'
-            $table->datetime('performedDate');  // Traducción de 'fecha_realizada'
-            $table->datetime('finishedDate');  // Traducción de 'fecha_acabado'
-            $table->unsignedBigInteger('description');  // Traducción de 'descripcion'
-            $table->text('duration');  // Traducción de 'duracion'
+            $table->unsignedBigInteger('jobId');  // Traducción de 'solicitud_id'
+            $table->bigInteger('descriptionJob')->nullable();  // Traducción de 'solicitud_id'------> 1 ----------> 2
+            $table->bigInteger('stateId')->nullable();
+            $table->datetime('outsetDate')->nullable();  // Traducción de 'fecha_realizada'
+            $table->datetime('finishDate')->nullable();  // Traducción de 'fecha_acabado'
+            $table->text('description')->nullable();
             $table->timestamps();
+            $table->foreign('clientId')->references('id')->on('internal_clients')->onDelete('cascade');
+            $table->foreign('technicianId')->references('id')->on('technicians')->onDelete('cascade');
+            
         });
     }
 
@@ -30,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('service_history');
+        Schema::dropIfExists('service_client_history');
     }
 };

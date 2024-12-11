@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('external_clients', function (Blueprint $table) {
             $table->id();
-            $table->string('firstName');
-            $table->string('lastName');
+            $table->string('fullName');
             $table->string('phoneNumber');
+            $table->text('status')->nullable();//1 activo y 0 eliminado
             $table->timestamps();
         });
     }

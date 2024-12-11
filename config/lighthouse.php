@@ -40,7 +40,7 @@ return [
             Nuwave\Lighthouse\Http\Middleware\AttemptAuthentication::class,
 
             // Logs every incoming GraphQL query.
-            // Nuwave\Lighthouse\Http\Middleware\LogGraphQLQueries::class,
+            Nuwave\Lighthouse\Http\Middleware\LogGraphQLQueries::class,
 
         ],
 
@@ -261,7 +261,7 @@ return [
         Nuwave\Lighthouse\Execution\AuthorizationErrorHandler::class,
         Nuwave\Lighthouse\Execution\ValidationErrorHandler::class,
         Nuwave\Lighthouse\Execution\ReportingErrorHandler::class,
-        
+
     ],
 
     /*

@@ -1,0 +1,35 @@
+#mutation.graphql
+
+extend type Mutation {
+    createUser(userRequest: JSON!): User @field(resolver:"UserMutations@create")
+    updateUser(id: ID!, userRequest: JSON!): User @field(resolver:"UserMutations@update")
+    deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
+    login(ci: String! ,password:String!):responseLogin @field(resolver:"UserMutations@login")
+    loginClient(email: String! ,password:String!):responseClientLogin @field(resolver:"UserMutations@loginClient")
+    logout:Response @field(resolver:"UserMutations@logout")
+}
+
+type Response {
+  message: String
+}
+
+type responseLogin {
+  user: User
+  technician: Technician
+  skills: [skills]
+  message: String
+}
+
+type responseClientLogin {
+    user: User
+    client: InternalClient
+    message:String
+}
+
+type skills {
+    id_skill:ID!
+    name:String
+    experience:String
+}
+#import user.graphql
+

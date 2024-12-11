@@ -20,3 +20,4 @@ yarn-error.log
 /.vscode
 prueba1.bat
 /graphql/schema.graphql.old
+/graphql/schema_v2.graphql.old

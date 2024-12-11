@@ -1,0 +1,33 @@
+extend type Query {
+    clientAllow:[InternalClient] @all (model: "App\\Models\\Cliente_Interno")
+    searchClientInternalByName(requestClient:JSON):responseClientInternalSearch @field(resolver: "ClientQuery@searchInternalByName")
+    clientInternalById(id:ID! @whereKey):InternalClient @find(model: "App\\Models\\Cliente_Interno")
+    historyClientInternal(clientRequest:JSON):responseHistorial @field( resolver: "clientQuery@list_requests_services")
+}
+
+type responseClientInternalSearch{
+    message: String
+    request:Request
+    client_i: [InternalClient]
+}
+
+type responseHistorial{
+    message: String
+    client:InternalClient
+    historial:[historialDetail]
+}
+
+type historialDetail{
+    type:String
+    technician:Technician
+    detail:historyItemDetail
+}
+
+type historyItemDetail{
+    title:String
+    description:String
+    dateCreate:String
+    dateFinish:String
+}
+
+#import InternalClient.graphql

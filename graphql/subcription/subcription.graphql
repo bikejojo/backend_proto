@@ -1,0 +1,9 @@
+type Subcription {
+        id:ID!
+        account:String
+        description:String
+        createDate:String
+        finishDate:String
+        technicianId:ID!
+        status:String
+}

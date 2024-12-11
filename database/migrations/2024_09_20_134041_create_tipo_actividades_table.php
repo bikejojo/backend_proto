@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('activity_types', function (Blueprint $table) {
             $table->id();
             $table->text('description');  // Traducción de 'descripcion'
+            $table->text('entity_type')->nullable();
             $table->timestamps();
         });
     }

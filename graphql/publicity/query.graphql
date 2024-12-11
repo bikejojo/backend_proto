@@ -1,0 +1,18 @@
+extend type Query {
+    getPublicityAll:responsePublicity @field (resolver: "PublicityQuery@getAllowPublicity")
+    getPublicityId(id:ID!):responsePublicit @field (resolver: "PublicityQuery@getIdPublicity")
+    #listPublicityDateExpiration:responsePublicity @field (resolver: "PublicityQuery@getDateExpiration")
+    #listStatusPublicity(requestPublicity:JSON):responsePublicity @field (resolver: "PublicityQuery@getStatusPublicity" )
+    listCategoryPublicidad(requestPublicity:JSON):responsePublicity @field (resolver: "PublicityQuery@getCategoryPublicity")
+}
+
+type responsePublicity {
+    message:String
+    publicity:[Publicity]
+}
+
+type responsePublicit {
+    message:String
+    publicity:Publicity
+}
+#import publicity.graphql

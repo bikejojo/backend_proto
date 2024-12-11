@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Categoria_Publicidad;
 use App\Models\User;
 use App\Models\Ciudad;
 use App\Models\Habilidad;
@@ -59,22 +60,23 @@ class DatabaseSeeder extends Seeder
         Habilidad::create(['name' => 'Limpieza General']);
         Habilidad::create(['name' => 'Tecnico en telefonia movil']);
         #agenda
-        Tipo_Actividad::create(['description'=>'mantenimiento']);
-        Tipo_Actividad::create(['description'=>'reparacion']);
-        Tipo_Actividad::create(['description'=>'seguimiento']);
-        Tipo_Actividad::create(['description'=>'visita']);
-        Tipo_Actividad::create(['description'=>'finalizado']);
+        Tipo_Actividad::create(['description'=>'mantenimiento','entity_type'=>'service']);
+        Tipo_Actividad::create(['description'=>'reparacion','entity_type'=>'service']);
+        Tipo_Actividad::create(['description'=>'instalacion','entity_type'=>'service']);
+        Tipo_Actividad::create(['description'=>'inspeccion','entity_type'=>'service']);
         #solicitud
-        Tipo_Estado::create(['description'=>'pendiente por aceptar']);
-        Tipo_Estado::create(['description'=>'rechazada por tiempo de espera']);
-        Tipo_Estado::create(['description'=>'en conversacion']);
-        Tipo_Estado::create(['description'=>'rechazada por tiempo']);
-        Tipo_Estado::create(['description'=>'rechazada por tecnico']);
-        Tipo_Estado::create(['description'=>'aceptada']);
-        #cita
-        Tipo_Estado::create(['description'=>'en progreso']);
-        Tipo_Estado::create(['description'=>'cliente ausente']);
-        Tipo_Estado::create(['description'=>'reprogramada']);
-        Tipo_Estado::create(['description'=>'completada']);
+        Tipo_Estado::create(['description'=>'pendiente por aceptar','entity_type'=>'request']);
+        Tipo_Estado::create(['description'=>'rechazado por cliente.','entity_type'=>'request']);
+        Tipo_Estado::create(['description'=>'aceptado','entity_type'=>'request']);
+        #servicio
+        Tipo_Estado::create(['description'=>'pendiente','entity_type'=>'service']);
+        Tipo_Estado::create(['description'=>'terminado','entity_type'=>'service']);
+
+        Tipo_Estado::create(['description'=>'rechazado por tecnico','entity_type'=>'request']);
+
+        Categoria_Publicidad::create(['description'=>'tecnologia','entity_type'=>'publicity','code'=>'PUB001']);
+        Categoria_Publicidad::create(['description'=>'servicios','entity_type'=>'publicity','code'=>'PUB002']);
+        Categoria_Publicidad::create(['description'=>'productos','entity_type'=>'publicity','code'=>'PUB003']);
+        Categoria_Publicidad::create(['description'=>'consultoria','entity_type'=>'publicity','code'=>'PUB004']);
     }
 }

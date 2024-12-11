@@ -1,0 +1,9 @@
+type TechnicianSkill {
+  id: ID!
+  id_technician: ID! @rename(attribute: "technicianId")
+  id_skill: ID! @rename(attribute: "skillId")
+  experience: String
+
+  technician: Technician! @belongsTo
+  skill: Skill @belongsTo
+}

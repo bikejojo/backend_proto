@@ -1,0 +1,12 @@
+extend type Mutation {
+    createPublicity(requestPublicity:JSON,logo:Upload):responsePublicit @field (resolver: "PublicityMutations@create")
+    updatePublicity(id:ID!,requestPublicity:JSON,logo:Upload):responsePublicit @field (resolver: "PublicityMutations@update")
+    deletePublicity(requestPublicity:JSON):responsePublicit @field (resolver: "PublicityMutations@delete")
+}
+
+type responsePublicit {
+    message:String
+    publicity: Publicity
+}
+
+#import publicity.graphql

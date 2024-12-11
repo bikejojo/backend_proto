@@ -2,120 +2,270 @@
 
 namespace App\GraphQL\Mutations;
 
+use Illuminate\Support\Facades\DB;
+use App\Models\Agenda_Tecnico;
 use App\Models\Tecnico;
+use App\Models\Tecnico_Habilidad;
 use App\Models\User;
-use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
-use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Drivers\Gd\Driver;
+use App\Helpers\ImageHelper;
+
+use function PHPUnit\Framework\isEmpty;
 
 class TecnicoMutations {
-    public function create($root, array $args){
+    protected $app;
+    protected $now;
+
+    public function __construct() {
+        $this->app= env('FULL_URL');
+        $this->nowFront= Carbon::now()->format('Ymd_His');
+        $this->nowBack=Carbon::now()->addMinute(1);
+    }
+
+    public function create($root, array $args)
+    {
         $technicianData = $args['technicianRequest'];
-        // Crear usuario internamente
-        $email = strtolower(trim($technicianData['email']));
+        $skill = null;
+        // Verificar si el CI ya existe
+        if (User::where('ci', $technicianData['ci'])->exists()) {
+            return [
+                'message' => 'Esta cédula de identidad ya está en uso, por favor intenta con otro.'
+            ];
+        }
+
+        // Validar longitud del CI
         if (strlen($technicianData['ci']) != 7) {
-            throw new \Exception('El CI debe tener exactamente 7 dígitos.');
+            return [
+                'message' => 'El CI debe tener exactamente 7 dígitos.'
+            ];
         }
-        // Crear el usuario
-        $user = User::create([
-            'email' => $email,
-            'password' => Hash::make($technicianData['password']),
-            'ci' => $technicianData['ci'],
-            'type_user' => 1,
-        ]);
-        $tokens = $user->createToken('authToken')->plainTextToken;
-        $user->token = $tokens;
-        $user->save();
-        $userId = $user->id;
-        $technicianData['userId'] = $userId;
-        // Validar formato de imágenes
-        $validators = $this->validateImage($args);
+
+        // Validar imágenes
+        $validators = ImageHelper::validateImage($args);
         if ($validators->fails()) {
-            throw new \Exception('Invalid image file.');
+            return [
+                'message' => 'Archivo de imagen inválido.',
+                'upcomingmessage' => 'Registre su usuario'
+            ];
         }
-        // Encriptar la contraseña antes de crear el técnico
-        if (isset($technicianData['password'])) {
-            $technicianData['password'] = Hash::make($technicianData['password']);
-        }
-        // Crear técnico con datos iniciales
-        $technician = Tecnico::create($technicianData);
-        //dd($technician);
-        $technicianId = $technician->id;
-        // Crear directorios utilizando technicianId para la ruta
-        $this->createTechnicianDirectories($technicianId);
-        $manager = new ImageManager(new Driver());
+        DB::beginTransaction();
+        // Si pasa todas las validaciones, crear usuario y técnico
+        try {
+            $email = strtolower(trim($technicianData['email']));
+            $user = User::create([
+                'email' => $email,
+                'password' => Hash::make($technicianData['password']),
+                'ci' => $technicianData['ci'],
+                'type_user' => $technicianData['type_user'],
+            ]);
 
-        // Manejo de las imágenes
-        if (isset($args['frontIdCard']) && $args['frontIdCard'] instanceof UploadedFile) {
-            $frontIdCardPath = $this->processImage($args['frontIdCard'], "$technicianId/id_card/front.png", $manager);
-            $technician->frontIdCard = str_replace('public/', '', $frontIdCardPath);
-        }
+            // Crear token de acceso y guardar el usuario
+            $tokens = $user->createToken('authToken')->plainTextToken;
+            $user->token = $tokens;
+            $user->save();
 
-        if (isset($args['backIdCard']) && $args['backIdCard'] instanceof UploadedFile) {
-            $backIdCardPath = $this->processImage($args['backIdCard'], "$technicianId/id_card/back.png", $manager);
-            $technician->backIdCard = str_replace('public/', '', $backIdCardPath);
-        }
-        // Guardar las rutas de las imágenes en el técnico
-        $technician->save();
-        $technician=Tecnico::find($technician->id);
-        //dd($technician);
-        return [
-            'message'=> ' Registro tecnico exitoso!' ,
-            'upcomingmessage' => 'Registre sus habilidades' ,
-            'technician' => $technician,
-            'user' => $user
-        ];
-    }
-    public function update($root, array $args){
-        $technicianData = $args['technicianRequest'];
-        $technician = Tecnico::find($args['id']);
-        $technicianId = $technician->id;
-        $user = User::find($technicianData['userId']);
+            // Asociar el usuario creado al técnico
+            $technicianData['userId'] = $user->id;
 
-        if ($technician==null){
-            throw new \Exception('Technician not found.');
-        }
-        // Actualización de los datos del técnico
-        $firstName = trim($technicianData['firstName']);
-        $lastName = trim($technicianData['lastName']);
-        $email = trim($technicianData['email']);
-        $phoneNumber = trim($technicianData['phoneNumber']);
-        ####################################
-        $technician->firstName = $firstName;
-        $technician->lastName = $lastName;
-        $technician->email = $email;
-        $technician->phoneNumber = $phoneNumber;
-        $technician->password = isset($technicianData['password']) ? Hash::make($technicianData['password']) : $technician->password;
-        $technician->photo = $technicianData['photo'] ?? $technician->photo;
-        $technician->userId = $technicianData['userId'] ?? $technician->userId;
-        $technician->cityId = $technicianData['cityId'] ?? $technician->cityId;
+            // Crear técnico
+            $technician = Tecnico::create([
+                'firstName' => $technicianData['firstName'],
+                'lastName' => $technicianData['lastName'],
+                'email' => $technicianData['email'],
+                'phoneNumber' => $technicianData['phoneNumber'],
+                'password' => Hash::make($technicianData['password']),
+                'userId' => $technicianData['userId'],
+                'cityId' => $technicianData['cityId'],
+            ]);
 
-        // Manejo de la imagen de perfil
-        $manager = new ImageManager(new Driver());
-        if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
-            //dd($technician->photo);
-            if ($technician->photo) {
-                Storage::delete('public/' . $technician->photo);
+            if (!$technician) {
+                return [
+                    'message' => 'Error al registrar el técnico.'
+                ];
             }
-            $photoPath = $this->processImage($args['photo'], "$technicianId/profile/photo.png", $manager);
-            $technician->photo = str_replace('public/', '', $photoPath);
-        }
-        // Guardar cambios del técnico
-        $technician->save();
-        // Actualizar datos del usuario relacionado
-        $user->email = $technicianData['email'] ?? $user->email;
-        $user->save();
 
-    //return $technician;
-        return [
-            'message' => 'Tecnico actualizado exitoso!' ,
-            'technician' => $technician
+            $technicianId = $technician->id;
+            $value = $user->type_user;
+            ImageHelper::createDirectorie($technicianId,$value);
+            $manager = new ImageManager(new Driver());
+            // Procesar imagen delantera del carnet
+            $this->nowBack=$this->nowBack->format('Ymd_His');
+            
+            if (isset($args['frontIdCard']) && $args['frontIdCard'] instanceof UploadedFile) {
+                $frontIdCardPath = ImageHelper::processImage($args['frontIdCard'], "/{$technicianId}/id_card/"."{$this->nowFront}.png", $manager);
+                $technician->frontIdCard = $this->app . '/storage' . str_replace('public/', '', $frontIdCardPath);
+            }
+
+            // Procesar imagen trasera del carnet
+            if (isset($args['backIdCard']) && $args['backIdCard'] instanceof UploadedFile) {
+                $backIdCardPath = ImageHelper::processImage($args['backIdCard'], "/{$technicianId}/id_card/"."{$this->nowBack}.png", $manager);
+                $technician->backIdCard = $this->app . '/storage' . str_replace('public/', '', $backIdCardPath);
+            }
+
+            // Guardar las rutas de las imágenes en el registro del técnico
+            $technician->save();
+            // Crear la agenda para el técnico
+            $agenda = Agenda_Tecnico::create([
+                'technicianId' => $technicianId,
+                'createDate' => Carbon::now()
+            ]);
+
+            if (!isset($agenda)) {
+                return [
+                    'message' => 'Error al crear la agenda del técnico.'
+                ];
+            }
+            // Retornar los datos de éxito
+            DB::commit();
+            return [
+                'message' => 'Registro técnico exitoso',
+                'upcomingmessage' => 'Registre sus habilidades',
+                'technician' => $technician,
+                'user' => $user,
+                'skills' => $skill
+            ];
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'message' => 'Ocurrió un error al crear el técnico: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function update($root , array $args){
+        $technicianData = $args['technicianRequest'];
+        if(!isset($technicianData)){
+            return[
+                'message' => 'No existe datos de tecnico'];
+        }
+        
+        $validators = ImageHelper::validateImage($args);
+        if ($validators->fails()) {
+            return [
+                'message' => 'Archivo de imagen inválido.'
+            ];
+        }
+        $technicianId = $args['id'];
+        $technician = Tecnico::find($technicianId);
+        $userId = $technician->userId;
+        $user = User::find($userId);
+
+        if(!isset($technicianData['password'])){
+            $technicianData['password'] = $user->password;
+        }
+        //actualizar user para todo
+        $email = strtolower(trim($technicianData['email']));
+        $user->email = $email;
+        $user->password = Hash::make($technicianData['password']);
+        $user->type_user = $technicianData['type_user'];
+        $user->save();
+        //
+        $technician->firstName = $technicianData['firstName'];
+        $technician->lastName = $technicianData['lastName'];
+        $technician->email = $email;
+        $technician->phoneNumber = $technicianData['phoneNumber'];
+        $technician->password = Hash::make($technicianData['password']);
+        $technician->userId = $user->id;
+        $technician->cityId = $technicianData['cityId'];
+        $technician->save();
+
+        $technicianId = $technician->id;
+        $value = $user->type_user;
+        // Crear directorios utilizando el ID del técnico
+        ImageHelper::deleteDirectoryIdCard($technicianId);
+        ImageHelper::createDirectorie($technicianId,$value);
+       
+        $this->nowBack=$this->nowBack->format('Ymd_His');
+        $isFrontIdCardUploaded = isset($args['frontIdCard']) && $args['frontIdCard'] instanceof UploadedFile;
+        $isBackIdCardUploaded = isset($args['backIdCard']) && $args['backIdCard'] instanceof UploadedFile;
+        $manager = new ImageManager(new Driver());
+        if ($isFrontIdCardUploaded || $isBackIdCardUploaded) {
+            // Procesar cada archivo solo si fue enviado en la solicitud
+            if ($isFrontIdCardUploaded) {
+
+                $frontIdCardPath = ImageHelper::processImage($args['frontIdCard'], "/{$technicianId}/id_card/"."{$this->nowFront}.png", $manager);
+                $technician->frontIdCard =$this->app.'/storage' . str_replace('public/', '', $frontIdCardPath);
+            }
+
+            if ($isBackIdCardUploaded) {
+
+                $backIdCardPath = ImageHelper::processImage($args['backIdCard'], "/{$technicianId}/id_card/"."{$this->nowBack}.png", $manager);
+                $technician->backIdCard =$this->app.'/storage' . str_replace('public/', '', $backIdCardPath);
+            }
+
+            // Guardar las rutas de las imágenes en el técnico solo si se han actualizado
+            $technician->save();
+        }
+        $skillsData = Tecnico_Habilidad::where('technicianId',$technicianId)
+        ->get();
+        $ha=[];
+            foreach($skillsData as $habilidad_tec) {
+                if ($habilidad_tec->skill) {
+                    // Añadimos los detalles de la habilidad al array
+                    $ha[] = [
+                        'id_skill' => $habilidad_tec->skill->id,
+                        'name' => $habilidad_tec->skill->name,
+                        'experience' => $habilidad_tec->experience,
+                    ];
+                }
+            }
+
+        return[
+            'message' => 'Tecnico actualizado exitoso',
+            'upcomingmessage' => 'Actualizacion de sus habilidades',
+            'technician' => $technician,
+            'user' => $user,
+            'skills' => $ha
         ];
     }
 
+    public function photoUpdate($root ,array $args){
+        $photoTechnicialId = $args['id'];
+        $technicial = Tecnico::find($photoTechnicialId);
+        $validators = ImageHelper::validateImagePhoto($args);
+        if ($validators->fails()) {
+            return [
+                'message' => 'Archivo de imagen inválido.'
+            ];
+        }
+        $technicialId = $technicial->id;
+        $userId = $technicial->userId;
+        $user = User::find($userId);
+        $manager = new ImageManager(new Driver());
+        $isPhotoUploaded = isset($args['photo']) && $args['photo'] instanceof UploadedFile;
+        if ($isPhotoUploaded) {
+            // Eliminar foto anterior
+            ImageHelper::deleteDirectoryProfile($technicialId);
+
+            $photoCardPath = ImageHelper::processImage($args['photo'], "/{$technicialId}/photo/"."{$this->nowFront}.png", $manager);
+            $technicial->photo =$this->app.'/storage' . str_replace('public/', '', $photoCardPath);
+        }
+        $technicial->save();
+        $skillsData = Tecnico_Habilidad::where('technicianId',$technicialId)
+        ->get();
+        $ha=[];
+        foreach($skillsData as $habilidad_tec) {
+            if ($habilidad_tec->skill) {
+                // Añadimos los detalles de la habilidad al array
+                $ha[] = [
+                    'id_skill' => $habilidad_tec->skill->id,
+                    'name' => $habilidad_tec->skill->name,
+                    'experience' => $habilidad_tec->experience,
+                ];
+            }
+        }
+        return[
+            'message' => 'Foto de tecnico actualizado exitoso',
+            'technician' => $technicial,
+            'user' => $user,
+            'skills' => $ha
+        ];
+    }
     public function delete($root, array $args){
         $technician = Tecnico::find($args['id']);
         if (!$technician) {
@@ -125,32 +275,6 @@ class TecnicoMutations {
         $technician->delete();
         return ['message' => 'Eliminacion exitosa del tecnico'];
     }
-// Validación de imágenes
-    private function validateImage($args){
-        return Validator::make([
-        'frontIdCard' => $args['frontIdCard'] ?? null ,
-        'backIdCard'=> $args['backIdCard'] ?? null ,
-        'photo' => $args['photo'] ?? null ,
-        ], [
-            'frontIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
-            'backIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
-        ]);
-    }
 
-    private function createTechnicianDirectories($technicianId){
-        Storage::makeDirectory('public/' . $technicianId . '/id_card');
-        Storage::makeDirectory('public/' . $technicianId . '/profile');
-    }
-    // Procesamiento de imágenes
-    private function processImage(UploadedFile $file, $path, $manager){
-        $image = $manager->read($file->getRealPath());
-        $image->resize(750, 750, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-        });
-        $fullPath = storage_path("app/public/{$path}");
-        $image->save($fullPath, 80, 'png');
-        return $path;
-    }
+
 }

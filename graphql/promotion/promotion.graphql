@@ -1,0 +1,12 @@
+type Promotion @model(class: "App\\Models\\Promocion"){
+    id:ID!
+    codePromotion:String
+    namePromotion:String
+    description:String
+    type:String
+    discount_value:String
+    createDate:String
+    finishDate:String
+    duration:String
+    status:String
+}

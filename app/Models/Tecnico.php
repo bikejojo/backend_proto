@@ -19,6 +19,7 @@ class Tecnico extends Model
         'email',
         'phoneNumber',  // telefono
         'password',     // contrasenia
+        'average_rating',
         'photo',
         'userId',         // foto
         'cityId'
@@ -36,18 +37,6 @@ class Tecnico extends Model
         return $this->belongsTo(Ciudad::class, 'cityId');
     }
 
-    // Relación con Certification (Certificación)
-    public function certifications()
-    {
-        return $this->hasMany(Certificacion::class, 'technicianId');
-    }
-
-    // Relación con WorkPhoto (Foto_Trabajo)
-    public function workPhotos()
-    {
-        return $this->hasMany(Foto_Trabajo::class, 'technicianId');
-    }
-
     // Relación con TechnicianSkill (Tecnico_Habilidad)
     public function technicianSkills()
     {
@@ -60,17 +49,24 @@ class Tecnico extends Model
         return $this->hasMany(Solicitud::class, 'technicianId');
     }
 
-    // Relación con TechnicianSchedule (Agenda_Tecnico)
-    public function schedules()
-    {
-        return $this->hasMany(Agenda_Tecnico::class, 'technicianId');
-    }
-
     // relacion de tecnico (asociacionclienteTecnico)
     public function associantions(){
         return $this->belongsTo(Asociacion_Cliente_Tecnico::class,'technicalId');
     }
-    public function contact(){
-        return $this->belongsTo(Contacto::class,'technicalId');
+
+    public function agenda(){
+        return $this->belongsTo(Agenda_Tecnico::class,'technicianId');
+    }
+
+    public function ratings(){
+        return $this->hasMany(Calificacion::class,'technicialId');
+    }
+
+    public function averageRating(){
+        return $this->ratings()->avg('rating');
+    }
+
+    public function totalRarings(){
+        return $this->ratings()->count();
     }
 }

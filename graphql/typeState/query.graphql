@@ -1,0 +1,4 @@
+extend type Query {
+    getAllStateTypes: [StateType] @all (model: "App\\Models\\Tipo_Estado")
+}
+#import typeState.graphql
