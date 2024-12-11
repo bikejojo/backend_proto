@@ -12,57 +12,35 @@ use Illuminate\Support\Facades\DB;
 
 class SubcritionMutations
 {
-    public function creaSubcription($root,array $args){
+    public function creaSubcription($root, array $args){
         $subcriptionData = $args['requestSubcription'];
-        //dd($subcriptionData);
-        $technicianId=$subcriptionData['technicianId'];
-        if(Tecnico::find($technicianId == null )){
-            return[
-                'message'=>'No existe la ID del tecnico en la base de datos.'
-            ];
-        }
+       
         DB::beginTransaction();
-        try{
-            $now=Carbon::now();
-            $nowAdd=$now->copy()->addDays(3);
+        try {
+            // Crear una nueva suscripción
+            $now = Carbon::now();
             $subcription = Suscripcion::create([
-                'account'=>$subcriptionData['account'],
-                'description'=>$subcriptionData['description'],
-                'createDate'=>$now,
-                'finishDate'=>$nowAdd,
-                'technicianId'=>$technicianId,
-                'status'=>1,
-                
+                'name' => $subcriptionData['name'],
+                'description' => $subcriptionData['description'],
+                'createDate' => $now,
+                'duration' => $subcriptionData['duration'],
+                'status' => 1, // Estado inicial de la suscripción
             ]);
-            $payment = Pago::create([
-                'bank' => $subcriptionData['bank'],
-                'account' => $subcriptionData['account'],
-                'social_reason' => $subcriptionData['social_reason'],
-                'amount' => $subcriptionData['amount'],
-                'method_payment' => $subcriptionData['method_payment'],
-                'date_payment' => $nowAdd,
-                'photo_qr' => $subcriptionData['photo_qr'],
-                'subscriptionId' => $subcription->id,
-                'status'=>1,
-            ]);
-            $payment->amount_pay = $payment->amount - $payment->amount_promotion;
-            $payment->save();
 
-        DB::commit();
-            return[
-                'message'=>'Creacion de subscripcion exitosa',
-                'messageNext'=>'Se espera que ingrese alguna promocion',
-                'technician'=>Tecnico::find($technicianId),
-                'subcription'=>$subcription,
-                'payment'=>$payment
+            DB::commit();
+
+            return [
+                'message' => 'Creación de suscripción exitosa.',
+                'subcription' => $subcription
             ];
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
-            return[
-                'message'=>'Ocurrio el siguiente problema. ' .$e->getMessage()
+            return [
+                'message' => 'Ocurrió el siguiente problema: ' . $e->getMessage(),
             ];
         }
     }
+
 
     public function registerSubcriptPromot($root, array $args)
     {

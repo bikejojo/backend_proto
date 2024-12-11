@@ -10,7 +10,6 @@ type responseSubcripcion {
     messageNext:String
     subcription:Subcription
     technician:Technician
-    payment:Payment
 }
 
 type responseSubcripcionPromotion {

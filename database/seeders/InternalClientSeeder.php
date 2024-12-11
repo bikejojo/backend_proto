@@ -16,7 +16,7 @@ class InternalClientSeeder extends Seeder
     {
         // Crear varios usuarios
         User::factory()
-            ->count(5)
+            ->count(4)
             ->create()
             ->each(function ($user) {
                 // Por cada usuario, crear varios clientes internos

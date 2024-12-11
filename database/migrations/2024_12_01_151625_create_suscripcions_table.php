@@ -13,13 +13,11 @@ return new class extends Migration
     {
         Schema::create('subcriptions', function (Blueprint $table) {
             $table->id();
-            $table->text('account');
-            $table->BigInteger('status');
-            $table->text('description');
+            $table->text('name');
+            $table->text('description')->nullable();
+            $table->BigInteger('status')->nullable();
             $table->datetime('createDate')->nullable();
-            $table->datetime('finishDate')->nullable();
-            $table->unsignedBigInteger('technicianId');
-            $table->foreign('technicianId')->references('id')->on('technicians');
+            $table->BigInteger('duration')->nullable();
             $table->timestamps();
         });
     }

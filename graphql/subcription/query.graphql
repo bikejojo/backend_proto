@@ -1,0 +1,5 @@
+extend type Query {
+    getAllSubcription:[Subcription] @all (model: "App\\Models\\Suscripcion")
+}
+
+#import subcription.graphql

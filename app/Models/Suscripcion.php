@@ -10,11 +10,10 @@ class Suscripcion extends Model
     protected $id='id';
     protected $table = 'subcriptions';
     protected $fillable=[
-        'account',
+        'name',
         'status',
         'description',
         'createDate',
-        'finishDate',
-        'technicianId',
+        'duration'
     ];
 }

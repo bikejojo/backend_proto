@@ -8,8 +8,10 @@ use App\Models\Ciudad;
 use App\Models\Habilidad;
 use App\Models\Tipo_Estado;
 use App\Models\Tipo_Actividad;
+use App\Models\Suscripcion;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
@@ -78,5 +80,8 @@ class DatabaseSeeder extends Seeder
         Categoria_Publicidad::create(['description'=>'servicios','entity_type'=>'publicity','code'=>'PUB002']);
         Categoria_Publicidad::create(['description'=>'productos','entity_type'=>'publicity','code'=>'PUB003']);
         Categoria_Publicidad::create(['description'=>'consultoria','entity_type'=>'publicity','code'=>'PUB004']);
+
+        //suscripcion inicial
+        Suscripcion::create(['name'=>'esencial','description'=>'ESENCIAL','createDate'=>Carbon::now(),'duration'=> 3,'status'=>1]);
     }
 }
