@@ -31,7 +31,7 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('123'),
             'remember_token' => Str::random(10),
             'ci' => $this->faker->unique()->numerify('########'),
-            'type_user' => 1
+            'type_user' => 2
         ];
     }
 

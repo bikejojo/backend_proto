@@ -7,6 +7,7 @@ use App\Models\Suscripcion;
 use App\Models\Pago;
 use App\Models\Promocion_suscripcion;
 use App\Models\Promocion;
+use App\Models\Technician_subcripcion;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -14,7 +15,7 @@ class SubcritionMutations
 {
     public function creaSubcription($root, array $args){
         $subcriptionData = $args['requestSubcription'];
-       
+
         DB::beginTransaction();
         try {
             // Crear una nueva suscripción
@@ -47,13 +48,13 @@ class SubcritionMutations
         $now = Carbon::now();
         $subcriptionData = $args['requestSubcription']; // Cambié el nombre al esperado en el esquema
         $promotionCode = $subcriptionData['codePromotion'];
-    
+
         // Buscar promoción válida
         $promotion = Promocion::where('codePromotion', $promotionCode)
             ->where('status', true) // Activa
             ->where('finishDate', '>=', $now) // No vencida
             ->first();
-    
+
         if (!$promotion) {
             return [
                 'message' => 'La promoción no es válida o está vencida.',
@@ -67,24 +68,24 @@ class SubcritionMutations
         }
         // Buscar suscripción
         $subcription = Suscripcion::find($subcriptionData['id']);
-    
+
         if (!$subcription) {
             return [
                 'message' => 'No se encontró la suscripción.',
             ];
         }
-    
+
         // Verificar si la promoción ya está aplicada
         $existingPromotion = Promocion_suscripcion::where('subcriptionsId', $subcription->id)
             ->where('promotionId', $promotion->id)
             ->first();
-    
+
         if ($existingPromotion) {
             return [
                 'message' => 'La promoción ya ha sido aplicada a esta suscripción.',
             ];
         }
-    
+
         DB::beginTransaction();
         try {
             // Registrar la relación entre promoción y suscripción
@@ -92,7 +93,7 @@ class SubcritionMutations
                 'subcriptionsId' => $subcription->id,
                 'promotionId' => $promotion->id,
             ]);
-    
+
             // Aplicar descuento a la suscripción
             $payment = Pago::where('subscriptionId', $subcription->id)->first();
             if (!$payment) {
@@ -115,7 +116,7 @@ class SubcritionMutations
             }
 
             DB::commit();
-    
+
             return [
                 'message' => 'La promoción se ha aplicado correctamente.',
                 'subcription' => $subcription,
@@ -156,39 +157,80 @@ class SubcritionMutations
         }
     }
 
-    public function technicalSubscription($root,array $args){
+    public function technicalSubscription($root, array $args){
+
         $subcriptionData = $args['requestSubcription'];
-        $technician=Tecnico::find($subcriptionData['technicianId']);
-        if(!$technician){
-            return[
-                'message'=>'No existe tecnico.'
-            ];
-        }
-        $suscription=Suscripcion::where('technicianId',$technician->id)->where('status',1)->first();
-        if (!$suscription) {
+        $technician = Tecnico::find($subcriptionData['technicianId']);
+
+        // Verificar si el técnico existe
+        if (!$technician) {
             return [
-                'message' => 'El técnico no tiene una suscripción activa.',
+                'message' => 'No existe el técnico.',
             ];
         }
-        $now=Carbon::now();
-        $finishDate = Carbon::parse($suscription->finishDate);
-        if ($finishDate->isPast()) {
+
+        // Verificar si el técnico tiene una asociación con alguna suscripción
+        $subscriptionAssociation = Technician_subcripcion::where('technicianId', $technician->id)->first();
+
+        if (!$subscriptionAssociation) {
             return [
-                'message' => 'La suscripción ha expirado.',
-                'day' => 'La suscripción venció el ' . $finishDate->toDateString() . '.',
-                'technician' => $technician,
-                'suscripcion' => $suscription,
+                'message' => 'El técnico no está asociado a ninguna suscripción.',
+                'result' => false ,
+                'technician' => $technician
             ];
         }
-    
-        // Calcular días restantes para que finalice la suscripción
-        $daysRemaining = ceil($now->diffInHours($finishDate) / 24);
-    
+
+        $suscripcion = Suscripcion::where('id',$subscriptionAssociation->subcriptionsId)->first();
         return [
-            'message' => 'Validación de suscripción exitosa.',
-            'day' => 'Faltan ' . $daysRemaining . ' días para que termine la suscripción.',
+            'message' => 'El técnico no está asociado a ninguna suscripción.',
+            'result' => true ,
             'technician' => $technician,
-            'suscripcion' => $suscription,
+            'suscripcion' => $suscripcion
         ];
+    }
+
+    public function registerSubcriptionTechncian($root, array $args){
+
+        $subcriptionData = $args['requestSubcription'];
+        $technician = Tecnico::find($subcriptionData['technicianId']);
+
+        // Verificar si el técnico existe
+        if (!$technician) {
+            return [
+                'message' => 'No existe el técnico.',
+            ];
+        }
+
+        $subcription = Suscripcion::find($subcriptionData['subcriptionId']);
+
+        if(!$subcription){
+            return [
+                'message' => 'No existe la suscripcion.',
+            ];
+        }
+        DB::beginTransaction();
+        try{
+            $newSubscription = Technician_subcripcion::create([
+                'technicianId' => $technician->id,
+                'subcriptionsId' => $subcription->id
+            ]);
+            $now=Carbon::now();
+            $newSubscription->starDate = Carbon::now();
+            $newSubscription->endDate = $now->addDay($subcription->duration);
+            $newSubscription->save();
+            //dd($newSubscription);
+        DB::commit();
+        return [
+            'message' => 'El registro de suscripcion fue exitosa.',
+            'technician'=>$technician,
+            'suscripcion'=>$subcription
+        ];
+
+        } catch( \Exception $e ){
+            DB::rollBack();
+            return[
+                'message' => 'sucedio un problema al registrar su suscripcion. ' . $e->getMessage()
+            ];
+        }
     }
 }

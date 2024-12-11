@@ -2,6 +2,7 @@ extend type Mutation   {
     createSubcripcion(requestSubcription:JSON):responseSubcripcion @field(resolver: "SubcritionMutations@creaSubcription" )
     lowSubcription(requestSubcription:JSON):responseSubcripcion @field(resolver: "SubcritionMutations@lowSubcription" )
     registerPromotion(requestSubcription: JSON!): responseSubcripcionPromotion @field(resolver: "SubcritionMutations@registerSubcriptPromot")
+    registerTechnicianSubcription(requestSubcription:JSON): responseTechnicianSuscription @field(resolver: "SubcritionMutations@registerSubcriptionTechncian")
     validationSubscription(requestSubcription:JSON): responseTechnicianSuscription @field(resolver: "SubcritionMutations@technicalSubscription")
 }
 
@@ -22,7 +23,7 @@ type responseSubcripcionPromotion {
 
 type responseTechnicianSuscription{
     message:String
-    day:String
+    result:Boolean
     technician:Technician
     suscripcion:Subcription
 }
