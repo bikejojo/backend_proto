@@ -1,0 +1,14 @@
+extend type Mutation {
+    createPromotion(requestPromotion:JSON):responsePromotion @field(resolver: "PromotionMutations@creaPromotion" )
+    editPromotion(requestPromotion:JSON):responsePromotion @field(resolver: "PromotionMutations@editPromotion" )
+    unsubscribe(requestPromotion:JSON):responsePromotion @field ( resolver: "PromotionMutations@lowPromotion")
+}
+
+
+type responsePromotion {
+    message: String!
+    success: Boolean!
+    promotion: Promotion
+}
+
+#import promotion.graphql

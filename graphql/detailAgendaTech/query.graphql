@@ -1,0 +1,27 @@
+extend type Query{
+    getAgendaInternal(requestAgenda:JSON!):responseDetaiAgendaInternal @field(resolver: "AgendaQuery@listAgendaInternalClient" )
+    getAgendaExternal(requestAgenda:JSON!):responseDetaiAgendaExternal @field(resolver: "AgendaQuery@listAgendaExternalClient" )
+}
+
+type responseDetaiAgendaInternal {
+    message:String!
+    content:[contentInternal]
+}
+
+type responseDetaiAgendaExternal {
+    message:String!
+    content:[contentExternal]
+}
+
+type contentExternal {
+    agenda:DetailAgendaTechnical
+    technician:Technician
+    client:ExternalClient
+}
+
+type contentInternal {
+    agenda:DetailAgendaTechnical
+    technician:Technician
+    client:InternalClient
+}
+#import detailAgendaTechnical.graphql

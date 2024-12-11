@@ -1,0 +1,18 @@
+extend type Mutation {
+    registerClient(clientRequest:JSON! photo:Upload): ClientResponse @field(resolver:"ClienteInternoMutations@create")
+    updateClient(id: ID,clientRequest:JSON! photo:Upload ): ClientResponse @field(resolver:"ClienteInternoMutations@update")
+    deleteClient(id: ID! @whereKey): Response @field(resolver:"ClienteInternoMutations@delete")
+    updatePhoto(clientRequest:JSON, photo:Upload):ClientResponse @field(resolver:"ClienteInternoMutations@updatePhoto")
+}
+
+type Response {
+  message: String
+}
+
+type ClientResponse {
+  message: String
+  client: InternalClient
+  user: User
+}
+
+#import InternalClient.graphql

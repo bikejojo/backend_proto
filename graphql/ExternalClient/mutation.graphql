@@ -1,0 +1,16 @@
+extend type Mutation {
+    createClientExternal(clientRequest:JSON!): ClientsResponse @field(resolver:"ClienteExternoMutations@create")
+    updateClientExternal(clientRequest:JSON!): ClientsResponse @field(resolver:"ClienteExternoMutations@update")
+    deleteClientExternal(id: ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
+}
+
+type ClientsResponse {
+  message: String
+  customer_external: ExternalClient
+  technical: Technician
+}
+
+type Response {
+  message: String
+}
+#import ExternalClient.graphql

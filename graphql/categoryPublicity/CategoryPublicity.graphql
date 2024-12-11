@@ -1,0 +1,8 @@
+type CategoryPublicity {
+    id:ID
+    description:String
+    entity_type:String
+    code:String
+
+    categories:[Publicity] @hasMany
+}

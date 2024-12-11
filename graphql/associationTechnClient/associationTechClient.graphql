@@ -1,0 +1,9 @@
+type AssociationTechnClient {
+    id:ID!
+    clientId:ID!
+    technicalId:ID! @rename(attribute: "technicalId")
+    dateTimeCreated:String!
+
+    technicals: Technician @hasMany
+    clients: [ExternalClient] @hasMany
+}

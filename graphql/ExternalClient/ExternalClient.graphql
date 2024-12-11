@@ -1,0 +1,8 @@
+type ExternalClient {
+    id: ID!
+    fullName: String! @trim
+    phoneNumber: String! @trim
+    status: String
+    associantions: AssociationTechnClient @belongsTo
+    contacts: Contact @belongsTo
+}

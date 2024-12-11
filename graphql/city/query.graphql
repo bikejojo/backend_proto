@@ -1,0 +1,6 @@
+extend type Query {
+  getAllCities: [City] @all (model: "App\\Models\\Ciudad")
+  getCityById(id: ID! @whereKey): City @find (model: "App\\Models\\Ciudad")
+}
+
+#import cities.graphql

@@ -1,0 +1,6 @@
+extend type Query {
+  getAllUsers: [User] @all
+  getUserById(id: ID! @whereKey): User @find
+}
+
+#import user.graphql

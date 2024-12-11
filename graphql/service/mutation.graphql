@@ -1,0 +1,28 @@
+extend type Mutation {
+    createServiceInternal(requestService:JSON!):responseServiceClient @field(resolver: "ServicioMutations@createInternal")
+    createServiceExternal(requestService:JSON!):responseService @field(resolver: "ServicioMutations@createExternal")
+
+    completServiceInternal(requestService:JSON):responseServiceClient @field(resolver: "ServicioMutations@finishServiceClientInternal")
+    completServiceExternal(requestService:JSON):responseService @field(resolver: "ServicioMutations@finishServiceClientExternal")
+    completServiceTechnician(requestService:JSON):responseServiceClient @field(resolver: "ServicioMutations@finishServiceTechnician")
+    deleteService(requestService:JSON!):responseServiceDelete @field(resolver: "ServicioMutations@delete")
+}
+
+type responseService {
+    message:String
+    service:Service
+    customer_external:ExternalClient
+}
+
+type responseServiceClient {
+    message:String
+    messageN:String
+    service:Service
+    customer_internal:InternalClient
+}
+
+type responseServiceDelete {
+    message:String
+    service:Service
+}
+#import service.graphql

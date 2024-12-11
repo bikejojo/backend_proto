@@ -2,141 +2,197 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Models\Agenda_Tecnico;
+use App\Models\Cliente_Interno;
+use App\Models\Detalle_Agenda_Tecnico;
+use App\Models\Historial_Servicios;
+use App\Models\Servicio;
 use App\Models\Solicitud;
-use App\Models\Foto_Solicitud;
-use App\Models\Solicitud_Detalle;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
+use App\Models\Tecnico;
+use App\Models\Lists_Internal_Client;
+use App\Services\StateCatalog;
+use App\Services\StatusAssigner;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use App\Services\ValidationModels;
 
 class SolicitudesMutations
 {
-    public function create($root , array $args){
-        // Extraer datos del request dentro de solicitudRequest
-        $solicitudData = $args['solicitud']['solicitudRequest'];
-        $hoy= Carbon::today();
-        $fecha_programada = $solicitudData['fecha_tiempo_registrado'];
-        //validar fecha programada
-        if(!$this->validarFechaProgramada($fecha_programada)){
-            return $this->errorResponse('Fechas No Coinciden');
-        }
-        #cambiar el timepo de fecha fin;
-        $solicitud = new Solicitud();
-        $fecha_hoy = Carbon::now();
-        $fecha_fin = $fecha_hoy->addMinutes(10);
-        // Crear instancia de Solicitud
-        $solicitud->cliente_id = $solicitudData['cliente_id'];
-        $solicitud->tecnico_id = $solicitudData['tecnico_id'];
-        $solicitud->fecha_tiempo_registrado = Carbon::now();
-        $solicitud->fecha_tiempo_actualizado = Carbon::now();
-        $solicitud->fecha_tiempo_vencimiento = $fecha_fin;
-        $solicitud->estado_id = 1;
+    public static  $entity_type = 'request';
 
-        $descripcion_servicio = trim($solicitudData['descripcion_servicio']);
-        $latitud = trim($solicitudData['latitud']);
-        $longitud = trim($solicitudData['longitud']);
-        $descripcion_servicio = trim($solicitudData['descripcion_ubicacion']);
+    public function createRequestClient($root,array $args){
+        $requestData = $args['requestRequest'];
+        $technicianId=$requestData['id_technician'];
+        $clientId =$requestData['id_client'];
+        $technician = ValidationModels::validationTechnician($technicianId);
+        $client = ValidationModels::validationclientInternal($clientId);
+        $now=Carbon::now();
+        DB::beginTransaction();
+        try{
+            $request = Solicitud::create([
+                'clientId' => $client->id,
+                'technicianId' => $technician->id,
+                'titleRequests'=> $requestData['titleRequests'],
+                'requestDescription'=>$requestData['requestDescription'],
+                'latitude'=>$requestData['latitude'],
+                'longitude'=>$requestData['longitude'],
+                'reference_phone'=>$requestData['reference_phone'],
+                'status'=>StateCatalog::STATUS_ACTIVE,
+                'activityId' => $requestData['id_activity']
+            ]);
+            $assgin = StatusAssigner::assignState($request,StatusAssigner::REQUEST_PENDING,self::$entity_type);
+            $request->registrationDateTime = $now;
+            $request->save();
 
-        $solicitud->descripcion_servicio = $descripcion_servicio;
-        $solicitud->latitud = $latitud;
-        $solicitud->longitud = $longitud;
-        $solicitud->descripcion_ubicacion = $descripcion_servicio;
-        $solicitud->save();
-        // Guardar detalles de la solicitud
-        $habilidades_ids = $solicitudData['habilidades_solicitadas'];
-        foreach($habilidades_ids as $habilidad_id){
-            $detalles = new Solicitud_Detalle();
-            $detalles->solicitud_id = $solicitud->id;
-            $detalles->habilidades_solicitadas = $habilidad_id;
-            $detalles->save();
-        }
-        // Crear directorio para fotos
-        $solicitudDir = 'public/' . $solicitudData['cliente_id'];;
-        Storage::makeDirectory($solicitudDir . '/foto_solicitud');
-        // Manejar las fotos
-        $fotoUrls = [];
-        $manager = new ImageManager(new Driver());
-        $contador = 0;
-        foreach ($args['solicitud']['fotos_url'] as $foto) {
-            if ($foto instanceof UploadedFile) {
-                // Procesar la imagen
-                $contador = $contador + 1;
-                $image = $manager->read($foto->getRealPath());
-                $image->resize(800, 800, function ($constrain) {
-                    $constrain->aspectRatio();
-                    $constrain->upsize();
-                });
-                $foto_trabajo = $solicitudData['cliente_id'] . '/foto_solicitud/' . 'solicitud'. $contador . '.png';
-                $fullPath = storage_path('app/public/' . $foto_trabajo);
-                $image->save($fullPath, 75, 'png');
-                // Guardar la URL en la base de datos
-                $foto = new Foto_Solicitud();
-                $foto->solicitud_id = $solicitud->id;
-                $foto->descripcion = $solicitudData['descripcion_servicio']; // Misma descripción para todas las fotos
-                $foto->fotos_url = preg_replace('/\\\\|\/\/|\/public/', '/', $foto_trabajo)?preg_replace('/\\\\|\/\/|\/public/', '/', $foto_trabajo):null;
-                $foto->save();
-                $fotoUrls[] = $foto->fotos_url;
-            }
-        }
-        return [
-            'message' => 'solicitud Creada',
-            'solicitud' => Solicitud::where('id', $solicitud->id)->with('solicituds')->first()
-        ];
-   }
-    public function modifyState($root,array $args){
-        $solicitudData = $args['solicitudRequest'];
+            $historial = Historial_Servicios::create([
+                'clientId' => $client->id,
+                'technicianId' => $technician->id,
+                'jobId'=>$request->id,
+                'descriptionJob'=>1,
+                'stateId'=> $request->stateId,
+                'outsetDate'=>$request->registrationDateTime,
+                'description'=>$request->requestDescription
+            ]);
 
-        $tecnico_id = $solicitudData['tecnico_id'];
-        $cliente_id = $solicitudData['cliente_id'];
-        $solicitud_id = $solicitudData['solicitud_id'];
-        $solicitudActual = new Solicitud();
-        $solicitudActual = Solicitud::where('tecnico_id',$tecnico_id)
-                        ->where('cliente_id',$cliente_id)
-                        ->where('id',$solicitud_id)
-                        ->first();
-        if($solicitudActual){
-            switch($solicitudData['estado_id']){
-                case 3:
-                    $solicitudActual->estado_id = 3;
-                    $solicitudActual->fecha_tiempo_actualizado = Carbon::now();
-                    break;
-                case 5:
-                    $solicitudActual->fecha_tiempo_actualizado = Carbon::now();
-                    $solicitudActual->estado_id = 5;
-                    break;
-                case 6:
-                    $solicitudActual->fecha_tiempo_actualizado = Carbon::now();
-                    $solicitudActual->estado_id = 6;
-                    break;
-                default:
-                    return $this->errorResponse("El estado proporcionado no es válido");
-            }
-            #$solicitudActual->fecha_tiempo_vencimiento = Carbon::now();
-            $solicitudActual->save();
+            $request = Solicitud::find($request->id);
+            DB::commit();
             return [
-                'message'=> 'actualizacion de solicitud hecha ',
-                'solicitud'=> $solicitudActual
+                'message' => 'Solicitud registrada',
+                'requests' => $request,
+                'client' => $client,
+                'technician' => $technician
             ];
-        }else{
-            return [
-                'message' => 'solcitud no encontrada',
-                'solictud' => $solicitudActual
+        } catch(\Exception $e){
+            DB::rollBack();
+            return[
+                'message' => 'El error es.'. $e->getMessage()
             ];
         }
     }
 
-    private function errorResponse($message){
-        return [
-            'message' => $message,
-            'solicitud' => null
+    public function cancelRequestTechnician($root,array $args){
+        // tipo 3
+        $requestId = $args['id'];
+        $request = Solicitud::find($requestId);
+        ###################################3
+        $clientId = $request->clientId;
+        $tecnicoId=$request->technicianId;
+        $cliente = Cliente_Interno::find($clientId);
+        $tecnico = Tecnico::find($tecnicoId);
+        $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_REJECTED, self::$entity_type);
+        $_request = Solicitud::find($request->id);
+        $request->save();
+        return[
+            'message'=>'Solicitud rechazada por el tecnico',
+            'requests'=>$_request,
+            'client' => $cliente,
+            'technician' => $tecnico
         ];
     }
 
-    private function validarFechaProgramada($fecha_programada){
-        $fecha_carbon =Carbon::createFromFormat('Y-m-d',$fecha_programada);
-        return $fecha_carbon->isSameDay($fecha_programada);
+    public function cancelRequestClient($root,array $args){
+        // tipo 2
+        $requestId = $args['id'];
+        $request = ValidationModels::validationRequest($requestId);
+        ###################################3
+        $clientId = $request->clientId;
+        $tecnicoId=$request->technicianId;
+        $cliente = Cliente_Interno::find($clientId);
+        $tecnico = Tecnico::find($tecnicoId);
+        $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_REJECTED_C, self::$entity_type);
+        $_request = Solicitud::find($request->id);
+        $request->save();
+        return[
+            'message'=>'Solicitud rechazada por el cliente',
+            'requests'=>$_request,
+            'client' => $cliente,
+            'technician' => $tecnico
+        ];
+    }
+
+    public function acceptRequest($root,array $args){
+        // tipo 2
+        $requestData = $args['requestRequest'];
+        $requestId = $requestData['id_request'];
+        $clientId = $requestData['id_client'];
+        $tecnicoId=$requestData['id_technician'];
+        $visitDateTime=$requestData['visitDateTime'];
+        DB::beginTransaction();
+        try{
+            $request = ValidationModels::validationRequest($requestId);
+            $cliente = ValidationModels::validationclientInternal($clientId);
+            $tecnico = ValidationModels::validationTechnician($tecnicoId);
+            $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_ACCEPTED, self::$entity_type);
+            $request->save();
+            //dd($request);
+            $_request = Solicitud::find($request->id);
+            $agenda = ValidationModels::validationAgenda($tecnico->id);
+            $now= Carbon::now();
+            $service = Servicio::create([
+                'requestsId' => $request->id,
+                'technicalId' => $tecnico->id,
+                'clientId' => $cliente->id,
+                'activityId' => $request->activityId,
+                'typeClient' => ServicioMutations::clientInternal,
+                'titleService' => $request->titleRequests,
+                'serviceDescription' => $request->requestDescription,
+                'serviceLocation' => $request->serviceLocation,
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+                'createdDateTime' => $now,
+                'updatedDateTime' => $visitDateTime,
+                'status' => StateCatalog::STATUS_ACTIVE
+            ]);
+            $service->stateId=4;
+            $service->save();
+
+            $serviceId = $service->id;
+            $agendaId = $agenda->id;
+            $detail = Detalle_Agenda_Tecnico::create([
+                'agendaTechnicalId' => $agendaId,
+                'clientId' => $cliente->id,
+                'serviceId' => $serviceId,
+                'typeClient' => $service->typeClient,
+                'serviceDate' => $service->createdDateTime,
+                'createDate' => Carbon::now()
+            ]);
+           
+            $list= Lists_Internal_Client::create([
+                'technicianId'=> $tecnico->id,
+                'clientId'=> $cliente->id,
+                'typeClient'=> ServicioMutations::clientInternal,
+                'requestsId'=> $_request->id,
+            ]);
+            
+            $history=Historial_Servicios::where('jobId',$request->id)->where('descriptionJob',1)->first();
+            $history->finishDate=$service->createdDateTime;
+            $history->save();
+
+            $historial=Historial_Servicios::create([
+                'clientId' => $cliente->id,
+                'technicianId' => $tecnico->id,
+                'jobId'=>$service->id,
+                'descriptionJob'=>2,
+                'outsetDate'=>$service->createdDateTime,
+                'description'=>'El tecnico ha confirmado la solicitud'  
+            ]);
+
+            DB::commit();  
+            return[
+                'message'=>'solicitud confirmada',
+                'requests'=>$_request,
+                'messageService' => 'Se agendara el servico en un momento',
+                'service' => $service ,
+                'agenda' => $detail ,
+                'client' => $cliente,
+                'technician' => $tecnico
+            ];
+        }catch(\Exception $e){
+            DB::rollBack();
+            return[
+                'message' => 'Fallas en la aceptar la solicitud y crear el servicio '.$e->getMessage()
+            ];
+        }
     }
 }

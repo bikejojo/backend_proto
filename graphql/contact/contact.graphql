@@ -1,0 +1,14 @@
+type Contact {
+    id: ID!
+    clientInternalId: ID!
+    technicalId: ID!
+    statusId: ID!
+    typeContact: String!
+    issue: String!
+    dateRegistered: String!
+
+    clients: InternalClient! @hasMany
+    clientse: ExternalClient! @hasMany
+    technicals: Technician! @hasMany
+    status: StateType! @hasMany
+}

@@ -16,11 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('clientInternalId');
             $table->unsignedBigInteger('technicalId');
             $table->unsignedBigInteger('statusId');
-            $table->date('dateRegistered');
+            $table->text('typeContact');
             $table->text('issue');
-            $table->foreign('clientInternalId')->references('id')->on('internal_clients')->onDelete('cascade');
-            $table->foreign('technicalId')->references('id')->on('technicians')->onDelete('cascade');
-            $table->foreign('statusId')->references('id')->on('state_types')->onDelete('cascade');
+            $table->datetime('dateRegistered')->nullable();
             $table->timestamps();
         });
     }

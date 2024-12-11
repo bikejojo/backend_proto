@@ -1,0 +1,9 @@
+extend type Mutation {
+    updateCitation(requestCitation:JSON!):ResponseCitation @field(resolver:"CitaMutations@update")
+}
+
+type ResponseCitation {
+    message:String!
+    citation:Citation
+}
+

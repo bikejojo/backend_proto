@@ -16,12 +16,13 @@ return new class extends Migration
             $table->string('firstName');  // Traducción de 'nombre'
             $table->string('lastName');   // Traducción de 'apellido'
             $table->string('email');
+            $table->string('phoneNumber');
             $table->string('loginMethod')->nullable();  // Traducción de 'metodo_login'
             $table->string('photo')->nullable();
             $table->unsignedBigInteger('userId');  // Traducción de 'users_id'
-            $table->unsignedBigInteger('cityId')->default(1);  // Traducción de 'ciudades_id'
-            $table->foreign('userId')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('cityId')->references('id')->on('cities')->onDelete('cascade');
+            $table->unsignedBigInteger('cityId');  // Traducción de 'ciudades_id'
+            $table->foreign('userId')->references('id')->on('users');
+            $table->foreign('cityId')->references('id')->on('cities');
             $table->timestamps();
         });
     }

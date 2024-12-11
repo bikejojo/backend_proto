@@ -1,0 +1,40 @@
+extend type Query {
+    requestTechnicalAll(id:ID!):responseTechnicalId @field (resolver: "RequestQuery@requestsTechnicalId")
+    requestClientAll(id:ID!):responseClientId @field (resolver: "RequestQuery@requestsClientId")
+    getListStatusRequest(requestRequest:JSON):responseTechnicalId @field (resolver: "RequestQuery@listStatusPendingComplet")
+}
+
+type responseTechnicalId {
+    message:String
+    request:[_requesttechnician]
+    technical:Technician
+}
+
+type _requesttechnician {
+    request:Request
+    client:_client
+}
+
+type _technician {
+    fullName:String
+    phoneNumber:String
+    ci:String
+}
+
+type responseClientId {
+    message:String
+    request:[_requestclient]
+    client: InternalClient
+}
+
+type _requestclient {
+    request:Request
+    technician:_client
+}
+type _client {
+    fullName:String
+    phoneNumber:String
+    ci:String
+}
+
+#import request.graphql

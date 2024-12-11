@@ -12,13 +12,17 @@ class Solicitud extends Model
     protected $table = 'requests';
 
     protected $fillable = [
-        'registrationDateTime',  // fecha_tiempo_registrado
-        'expirationDateTime',  // fecha_tiempo_vencimiento
-        'updatedDateTime',  // fecha_tiempo_actualizado
-        'requestDescription',  // descripcion_solicitud
-        'latitude',  // latitud
-        'longitude',  // longitud
-        'locationDescription'  // descripcion_ubicacion
+        'stateId',
+        'clientId',
+        'technicianId',
+        'activityId',
+        'titleRequests',
+        'requestDescription',
+        'latitude',
+        'longitude',
+        'reference_phone',
+        'status',
+        'registrationDateTime',
     ];
 
     // Relación con Technician (Tecnico)
@@ -38,16 +42,8 @@ class Solicitud extends Model
     {
         return $this->belongsTo(Tipo_Estado::class, 'stateId');
     }
-
-    // Relación con RequestDetail (Solicitud_Detalle)
-    public function requestDetails()
-    {
-        return $this->hasMany(Solicitud_Detalle::class, 'requestId');
+    public function service(){
+        return $this->belongsTo(Servicio::class,'requestsId');
     }
 
-    // Relación con RequestPhoto (Foto_Solicitud)
-    public function requestPhotos()
-    {
-        return $this->hasMany(Foto_Solicitud::class, 'requestId');
-    }
 }

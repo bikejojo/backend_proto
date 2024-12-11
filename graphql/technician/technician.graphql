@@ -1,0 +1,23 @@
+type Technician @model(class: "App\\Models\\Tecnico"){
+  id: ID
+  firstName: String @trim
+  lastName: String @trim
+  frontIdCard: String @trim
+  backIdCard: String @trim
+  email: String @trim
+  phoneNumber: String @trim
+  password: String! @trim
+  photo: String @trim
+  userId: String! @trim
+  average_rating:String!
+  id_city: String! @rename (attribute: "cityId")
+
+  city: City! @belongsTo
+  user: User! @belongsTo
+
+  technicianSkills: [TechnicianSkill!]! @hasMany
+  associantions: [AssociationTechnClient!] @belongsTo
+
+  ratings: [Rating] @hasMany
+}
+

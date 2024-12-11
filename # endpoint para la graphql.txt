@@ -1,0 +1,148 @@
+# endpoint para la graphql 
+# cliente interno
+
+###########################
+### mutation de créate
+###########################
+
+operations
+{
+  "query": "mutation CreateClient($clientRequest: JSON!, $photo: Upload) { createClient(clientRequest: $clientRequest, photo: $photo) { message client { id firstName lastName email loginMethod photo city{ name }} user{ id ci token} } }",
+  "variables": {
+    "clientRequest": {
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "email": "jane.doe@example.com",
+      "ci": "1234588",
+      "password": "123",
+      "type_user":"1",
+      "phoneNumber": "79837262",
+      "loginMethod": "manual",
+      "cityId":"2"
+    },
+    "photo": null
+  }
+}
+{
+  "0": ["variables.photo"]
+}
+-- Cliente Interno
+
+#########################
+### mutation de update
+#########################
+
+operations
+{
+  "query": "mutation updateClient($id: ID!, $clientRequest: JSON!, $photo: Upload) { updateClient(id: $id, clientRequest: $clientRequest, photo: $photo) { message client { id firstName lastName email loginMethod photo userId cityId  city { name }   } } }",
+  "variables": {
+    "id": 1,  
+    "clientRequest": {
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "email": "jane.doe@example.com",
+      "loginMethod": "manual",
+      "userId": 1,
+      "cityId": 2
+    },
+    "photo": null
+  }
+}
+
+{
+  "0": ["variables.photo"]
+}
+
+########################
+## mutation delete
+########################
+
+{
+  "query": "mutation deleteClient($id: ID!) { deleteClient(id: $id) { message } }",
+  "variables": {
+    "id": 8
+  }
+}
+
+##################
+###  QUERY
+##################
+
+## Buscar el nombre de cliente
+{
+  "query": "query searchClientByName($name: String!) { searchClientInternalByName(name: $name) { message client_i { id firstName lastName email loginMethod city { name } } } }",
+  "variables": {
+    "name": "J"
+  }
+}
+
+## busca el contenido de un cliente por su ID
+{
+  "query": "query clientById($id: ID!) { clientInternalById(id: $id) { id firstName lastName email loginMethod city { name } } }",
+  "variables": {
+    "id": 2
+  }
+}
+
+## devuelve todos los clientes interns
+{
+  "query": "query { clientAllow { id firstName lastName email phoneNumber loginMethod city { name } user{id ci} } }"
+}
+
+# cliente externo
+#####################################
+	#create cliente externo
+####################################3
+{
+  "query": "mutation($clientRequest: JSON!) { createClients(clientRequest: $clientRequest) { message clients { id fullName phoneNumber } } }",
+  "variables": {
+    "clientRequest": {
+      "fullName": "John Doe",
+      "phoneNumber": "123456789" ,
+      "technicalId": "1" //id del tecnico 
+    }
+  }
+}
+
+devuelve todo las habilidades del sistema 
+
+{
+    "query" : "query {  getAllSkills{ id name } }"
+}
+
+asigna habilidades al tenico
+
+{
+  "query": "mutation($technicianId: ID!, $skills: JSON!) { assignTechnicianSkill(technicianId: $technicianId, skills: $skills) {message technical{ id , firstName , lastName , phoneNumber , email} skills{ id,technicianId ,skillId, experience, description } } }",
+  "variables": {
+    "technicianId": "1",
+    "skills": [
+      {
+        "skillId": "1",
+        "experience": "",
+        "description": ""
+      },
+      {
+        "skillId": "3",
+        "experience": "",
+        "description": ""
+      },
+      {
+        "skillId": "9",
+        "experience": "",
+        "description": ""
+      }
+    ]
+  }
+}
+
+verifica las habilidades si tiene el técnico
+
+{
+  "query": "mutation userSkilsById($id: ID!) { userSkilsById(id: $id) { message skills { skillId } } }",
+  "variables": {
+    "id": "4"  # es un ejemplo es la id del user , no id del tecnico
+  }
+}
+
+
