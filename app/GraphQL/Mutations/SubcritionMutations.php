@@ -43,8 +43,7 @@ class SubcritionMutations
     }
 
 
-    public function registerSubcriptPromot($root, array $args)
-    {
+    public function registerSubcriptPromot($root, array $args){
         $now = Carbon::now();
         $paymentData = $args['requestPayment'];
         $subscriptionId = $paymentData['subscriptionId'];
@@ -76,53 +75,62 @@ class SubcritionMutations
             if ($existingPromotion) {
                 return ['message' => 'La promoción ya fue aplicada a esta suscripción.'];
             }
+            DB::beginTransaction();
+            try{
+                // Registrar la promoción aplicada
+                Promocion_suscripcion::create([
+                    'subcriptionsId' => $subscription->id,
+                    'promotionId' => $promotion->id,
+                ]);
 
-            // Registrar la promoción aplicada
-            Promocion_suscripcion::create([
-                'subcriptionsId' => $subscription->id,
-                'promotionId' => $promotion->id,
-            ]);
-        }
 
-        // Calcular monto a pagar
-        $amount = $paymentData['amount']; // Monto original
-        $amountPromotion = 0; // Monto de descuento
-        $amountPay = $amount;
+                // Calcular monto a pagar
+                $amount = $paymentData['amount']; // Monto original
+                $amountPromotion = 0; // Monto de descuento
+                $amountPay = $amount;
 
-        if ($promotion) {
-            if ($promotion->type === 'Descuento') {
-                $amountPromotion = $amount * ($promotion->discount_value / 100);
-                $amountPay = $amount - $amountPromotion;
+                if ($promotion) {
+                    if ($promotion->type === 'Descuento') {
+                        $amountPromotion = $amount * ($promotion->discount_value / 100);
+                        $amountPay = $amount - $amountPromotion;
+                    }
+                }
+
+                // Registrar el pago
+                $payment = Pago::create([
+                    'bank' => $paymentData['bank'],
+                    'account' => $paymentData['account'],
+                    'social_reason' => $paymentData['social_reason'],
+                    'amount' => $amount,
+                    'amount_promotion' => $amountPromotion,
+                    'amount_pay' => $amountPay,
+                    'method_payment' => $paymentData['method_payment'],
+                    'date_payment' => $now,
+                    'subscriptionId' => $subscription->id,
+                    'status' => 0,
+                ]);
+
+                // Procesar la extensión de duración (si aplica)
+                if ($promotion && $promotion->type === 'Fecha') {
+                    $subscription->finishDate = $subscription->finishDate->addDays($promotion->discount_value);
+                    $subscription->save();
+                }
+                DB::commit();
+                return [
+                    'message' => 'Pago procesado correctamente.',
+                    'subscription' => $subscription,
+                    'payment' => $payment,
+                    'promotion' => $promotion,
+                ];
+            }catch(\Exception $e){
+                DB::rollBack();
+                return [
+                    'message' => 'Se produjo el siguiente error ' . $e->getMessage()
+                ];
             }
         }
-
-        // Registrar el pago
-        $payment = Pago::create([
-            'bank' => $paymentData['bank'],
-            'account' => $paymentData['account'],
-            'social_reason' => $paymentData['social_reason'],
-            'amount' => $amount,
-            'amount_promotion' => $amountPromotion,
-            'amount_pay' => $amountPay,
-            'method_payment' => $paymentData['method_payment'],
-            'date_payment' => $now,
-            'subscriptionId' => $subscription->id,
-            'status' => 'pendiente',
-        ]);
-
-        // Procesar la extensión de duración (si aplica)
-        if ($promotion && $promotion->type === 'Fecha') {
-            $subscription->finishDate = $subscription->finishDate->addDays($promotion->discount_value);
-            $subscription->save();
-        }
-
-        return [
-            'message' => 'Pago procesado correctamente.',
-            'subscription' => $subscription,
-            'payment' => $payment,
-            'promotion' => $promotion,
-        ];
     }
+
 
     public function lowSubcription($root,array $args){
         $subcriptionData = $args['requestSubcription'];
@@ -139,7 +147,7 @@ class SubcritionMutations
             DB::commit();
             return[
                 'message'=>'La suscripcion se ha cancelado correctamente.',
-               'subcription'=>$subcription
+                'subcription'=>$subcription
             ];
         }catch(\Exception $e){
             DB::rollback();

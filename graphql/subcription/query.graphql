@@ -1,5 +1,18 @@
 extend type Query {
     getAllSubcription:[Subcription] @all (model: "App\\Models\\Suscripcion")
+    promotionValidity(requestPromotion:JSON):responseValidityPromotion @field (resolver: "SubcriptionQuery@validationDatePromotion")
+    getDateExpiration:responsePromotion @field(resolver: "SubcriptionQuery@expirationPromotion")
+    getPromotionFalse:responsePromotion @field(resolver: "SubcriptionQuery@falsePromotion")
+    getPromotionValid:responsePromotion @field(resolver: "SubcriptionQuery@promotionValid")
 }
 
+type responseValidityPromotion{
+    message:String
+    promocion:Promotion
+}
+
+type responsePromotion {
+    message:String
+    promocion:Promotion
+}
 #import subcription.graphql

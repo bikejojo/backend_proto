@@ -37,8 +37,7 @@ class PagoMutations
 
         DB::beginTransaction();
         try {
-            // Crear un nuevo pago con estado "Pendiente" (status = 0)
-           
+            
             $payment = Pago::create([
                 'bank' => $paymentData['bank'],
                 'account' => $paymentData['account'],
@@ -140,7 +139,7 @@ class PagoMutations
         }
 
         // Validar el estado actual del pago
-        if ($payment->status !== 0) { 
+        if ($payment->status !== 0) {
             return [
                 'message' => 'El pago ya ha sido procesado o está inactivo.'
             ];

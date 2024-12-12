@@ -26,7 +26,7 @@ class PromotionMutations
             $promotion->status=1;
             $startDate = Carbon::parse($promotionData['createDate']);
             $endDate = Carbon::parse($promotionData['finishDate']);
-            $promotion->duration = round($startDate->diffInDays($endDate)); 
+            $promotion->duration = round($startDate->diffInDays($endDate));
             $promotion->save();
 
         DB::commit();
@@ -65,7 +65,7 @@ class PromotionMutations
             $promotion->status=1;
             $startDate = Carbon::parse($promotionData['createDate']);
             $endDate = Carbon::parse($promotionData['finishDate']);
-            $promotion->duration = round($startDate->diffInDays($endDate)); 
+            $promotion->duration = round($startDate->diffInDays($endDate));
             $promotion->save();
 
             DB::commit();
@@ -98,4 +98,6 @@ class PromotionMutations
             'promotion' => $promotion
         ];
     }
+
+
 }
