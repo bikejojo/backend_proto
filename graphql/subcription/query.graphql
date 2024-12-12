@@ -4,6 +4,7 @@ extend type Query {
     getDateExpiration:responsePromotion @field(resolver: "SubcriptionQuery@expirationPromotion")
     getPromotionFalse:responsePromotion @field(resolver: "SubcriptionQuery@falsePromotion")
     getPromotionValid:responsePromotion @field(resolver: "SubcriptionQuery@promotionValid")
+    validationSuscriptionPromotion(requestSubcriptionPromotion:JSON):responseSuscription @field(resolver: "SubcriptionQuery@getSubcriptionPromotion")
 }
 
 type responseValidityPromotion{
@@ -13,6 +14,14 @@ type responseValidityPromotion{
 
 type responsePromotion {
     message:String
+    promocion:[Promotion]
+}
+
+type responseSuscription {
+    message:String
+    result:Boolean
+    technician:Technician
+    suscripcion:Subcription
     promocion:Promotion
 }
 #import subcription.graphql

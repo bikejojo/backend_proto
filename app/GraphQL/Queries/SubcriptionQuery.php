@@ -5,18 +5,12 @@ namespace App\GraphQL\Queries;
 use App\Models\Suscripcion;
 use App\Models\Tecnico;
 use App\Models\Technician_subcripcion;
-use App\Models\Promoocion_suscripcion;
 use App\Models\Promocion;
+use App\Models\Promocion_suscripcion;
 use Carbon\Carbon;
 
 class SubcriptionQuery
 {
-    /** @param  array{}  $args */
-    public function __invoke(null $_, array $args)
-    {
-        // TODO implement the resolver
-    }
-
     public function validationDatePromotion($root,array $args){
         $promotionData = $args['requestPromotion'];
         $now=Carbon::now();
@@ -44,7 +38,7 @@ class SubcriptionQuery
         $now=Carbon::now();
         $promotion = Promocion::all();
         $validPromotions = $promotion->filter(function ($promotion) use($now){
-            return $promotion->finishDate <= $now;
+            return $promotion->finishDate >= $now;
         });
 
         if ($validPromotions->isEmpty()) {
@@ -75,7 +69,7 @@ class SubcriptionQuery
         }
 
         return [
-            'message' => 'La promocion sigue vigente',
+            'message' => 'La promociones no siguen vigente',
             'promocion' => $validPromotions
         ];
 
@@ -97,6 +91,38 @@ class SubcriptionQuery
         return [
             'message' => 'La promocion sigue vigente',
             'promocion' => $validPromotions
+        ];
+    }
+
+    public function getSubcriptionPromotion( $root , array $args){
+        $subcriptionPromotionData = $args['requestSubcriptionPromotion'];
+        $subcriptionData = Suscripcion::find($subcriptionPromotionData['id_suscription']);
+
+        $promotionData = Promocion::where('codePromotion',$subcriptionPromotionData['codePromotion'])
+                                ->first();
+
+        $validacion = Promocion_suscripcion::where('subcriptionsId',$subcriptionData->id)
+                                        ->where('promotionId',$promotionData->id)
+                                        ->first();
+        $technician = Tecnico::select('technicians.*')
+            ->join('technician_subcription', 'technicians.id', '=', 'technician_subcription.technicianId')
+            ->where('technician_subcription.subcriptionsId',$subcriptionData->id)
+            ->first();
+        if($validacion){
+            return[
+                'message' => 'Esta suscripcion utilizo la promocion.',
+                'result' => true,
+                'technician' => $technician,
+                'promocion'=> $promotionData,
+                'suscripcion'=> $subcriptionData
+            ];
+        }
+
+        return[
+            'message' => 'Esta suscripcion no utilizo la promocion.',
+            'result' => false,
+            'promocion'=> $promotionData,
+            'suscripcion'=> $subcriptionData
         ];
     }
 }
