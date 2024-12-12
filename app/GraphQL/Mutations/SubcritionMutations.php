@@ -182,7 +182,7 @@ class SubcritionMutations
 
         $suscripcion = Suscripcion::where('id',$subscriptionAssociation->subcriptionsId)->first();
         return [
-            'message' => 'El técnico no está asociado a ninguna suscripción.',
+            'message' => 'El técnico está asociado a una suscripción.',
             'result' => true ,
             'technician' => $technician,
             'suscripcion' => $suscripcion

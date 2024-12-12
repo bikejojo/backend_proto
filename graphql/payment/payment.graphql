@@ -11,6 +11,4 @@ type Payment {
     photo_qr:String
     status:String
     subscriptionId:ID
-
-
 }
