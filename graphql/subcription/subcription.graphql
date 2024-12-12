@@ -4,5 +4,8 @@ type Subcription {
         description:String
         createDate:String
         duration:String
+        durationDescription:String
+        price:String
+        codeSubcription:String
         status:String
 }

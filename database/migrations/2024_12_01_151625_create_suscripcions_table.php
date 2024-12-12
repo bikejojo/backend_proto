@@ -18,6 +18,9 @@ return new class extends Migration
             $table->BigInteger('status')->nullable();
             $table->datetime('createDate')->nullable();
             $table->BigInteger('duration')->nullable();
+            $table->String('durationDescription')->nullable();
+            $table->decimal('price')->default(0)->nullable();
+            $table->string('codeSubcription')->nullable();
             $table->timestamps();
         });
     }

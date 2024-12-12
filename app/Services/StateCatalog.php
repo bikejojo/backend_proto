@@ -15,5 +15,14 @@ class StateCatalog {
     const STATUS_PUBLICITY_EXPIRATION = 0;
     const STATUS_PUBLICITY_CANCELED=2;
     //actividad
-    
+    //categoria de duration en suscripcion
+    const DURATION_ANO = "año";
+    const DURATION_ANO_ = "Año";
+    const DURATION_SEMANA = "semana";
+    const DURATION_SEMANA_ = "Semana";
+    const DURATION_MES = "mes";
+    const DURATION_MES_ = "Mes";
+    const CODE_S = 1;
+    const CODE_M = 2;
+    const CODE_A = 3;
 }

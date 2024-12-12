@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('payment_technician', function (Blueprint $table) {
+        Schema::create('payment_technician', function (Blueprint $table) {
             //
             $table->id();
             $table->unsignedBigInteger('technicianId');
             $table->unsignedBigInteger('paymentId');
             $table->unsignedBigInteger('subscriptionsId');
-            
+
             $table->timestamps();
         });
     }
@@ -27,8 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('payment_technician', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('payment_technician');
     }
 };

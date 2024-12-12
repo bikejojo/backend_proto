@@ -9,25 +9,32 @@ use App\Models\Promocion_suscripcion;
 use App\Models\Promocion;
 use App\Models\Technician_subcripcion;
 use Carbon\Carbon;
+use App\Services\StateCatalog;
 use Illuminate\Support\Facades\DB;
 
 class SubcritionMutations
 {
     public function creaSubcription($root, array $args){
         $subcriptionData = $args['requestSubcription'];
-
+        //si escoge año no debe superar los 2 a 3 años
+        // si escoge semanas no debe superar las 52
+        // si escoge dias no debe superar los 365
         DB::beginTransaction();
         try {
-            // Crear una nueva suscripción
-            $now = Carbon::now();
-            $subcription = Suscripcion::create([
+            $subcription=Suscripcion::create([
                 'name' => $subcriptionData['name'],
                 'description' => $subcriptionData['description'],
-                'createDate' => $now,
-                'duration' => $subcriptionData['duration'],
-                'status' => 1, // Estado inicial de la suscripción
+                'codeSubcription' => $subcriptionData['codeSubcription'],
+                'status' => 1,
+                'price' => $subcriptionData['price'],
             ]);
-
+            if($subcriptionData['code_duration']===StateCatalog::CODE_A){
+                $subcription->durationDescription = 
+            }
+            if(){
+            }
+            if(){
+            }
             DB::commit();
 
             return [

@@ -8,12 +8,11 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     */
-
-        /*public function up(): void
+     *//*
+        public function up(): void
         {
-            Schema::table('technicians', function (Blueprint $table) {
-                $table->decimal('average_rating')->default(0)->nullable();
+            Schema::table('subcriptions', function (Blueprint $table) {
+                $table->string('codeSubcription')->nullable();
             });
         }
 

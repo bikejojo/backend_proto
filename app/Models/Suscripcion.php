@@ -14,6 +14,9 @@ class Suscripcion extends Model
         'status',
         'description',
         'createDate',
-        'duration'
+        'duration',
+        'durationDescription',
+        'price',
+        'codeSubcription'
     ];
 }
