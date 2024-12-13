@@ -24,12 +24,12 @@ class SubcriptionQuery
         if(!$joint){
             return [
                 'message' => 'Todas las suscripciones.',
-                'suscripcion' => Suscripcion::all()
+                'suscripcion' => Suscripcion::orderBy('id','ASC')->get()
             ];
         }else{
             return[
                 'message' => 'Todas las suscripciones menos la Free',
-                'suscripcion' => Suscripcion::where('id','>',1)->get()
+                'suscripcion' => Suscripcion::where('codeSubcription','!=','FREE')->orderBy('id','ASC')->get()
             ];
         }
     }
