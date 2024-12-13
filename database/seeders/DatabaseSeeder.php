@@ -82,6 +82,6 @@ class DatabaseSeeder extends Seeder
         Categoria_Publicidad::create(['description'=>'consultoria','entity_type'=>'publicity','code'=>'PUB004']);
 
         //suscripcion inicial
-        Suscripcion::create(['name'=>'esencial','description'=>'ESENCIAL','createDate'=>Carbon::now(),'duration'=> 3,'status'=>1]);
+        Suscripcion::create(['name'=>'Suscripcion Free','description'=>'Duracion de 7 dias por Free','createDate'=>Carbon::now(),'duration'=> 7,'status'=>1,'durationDescription'=>'7 dias','price'=>0,'codeSubcription'=>'FREE']);
     }
 }

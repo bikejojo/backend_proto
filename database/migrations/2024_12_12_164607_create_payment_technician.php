@@ -17,6 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('technicianId');
             $table->unsignedBigInteger('paymentId');
             $table->unsignedBigInteger('subscriptionsId');
+            $table->datetime('startDateTimePay');
+            $table->datetime('finishDateTimePay');
             $table->foreign('technicianId')->references('id')->on('technicians');
             $table->foreign('paymentId')->references('id')->on('payment');
             $table->foreign('subscriptionsId')->references('id')->on('subcriptions');

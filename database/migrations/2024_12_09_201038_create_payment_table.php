@@ -20,8 +20,6 @@ return new class extends Migration
             $table->date('date_payment')->nullable();
             $table->text('photo_qr')->nullable();
             $table->BigInteger('status');
-            $table->unsignedBigInteger('subscriptionId');
-            $table->foreign('subscriptionId')->references('id')->on('subcriptions');
             $table->timestamps();
         });
     }

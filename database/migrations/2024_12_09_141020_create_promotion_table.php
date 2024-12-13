@@ -20,7 +20,7 @@ return new class extends Migration
             $table->BigInteger('discount_value')->nullable();
             $table->dateTime('createDate')->nullable();
             $table->dateTime('finishDate')->nullabe();
-            $table->BigInteger('duration')->nullable();
+            $table->BigInteger('durationPromotion')->nullable();
             $table->boolean('status')->nullable();
             $table->timestamps();
         });
