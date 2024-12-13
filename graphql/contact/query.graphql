@@ -1,0 +1,9 @@
+extend type Query{
+    listContact:responseContact @field(resolver: "SettingQuery@list")
+}
+
+type responseContact {
+    message:String
+    contact:[Setting]
+}
+#import contact.graphql

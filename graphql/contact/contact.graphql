@@ -1,14 +1,6 @@
-type Contact {
+type Setting {
     id: ID!
-    clientInternalId: ID!
-    technicalId: ID!
-    statusId: ID!
-    typeContact: String!
-    issue: String!
+    sopport_number:String
+    screens:JSON
     dateRegistered: String!
-
-    clients: InternalClient! @hasMany
-    clientse: ExternalClient! @hasMany
-    technicals: Technician! @hasMany
-    status: StateType! @hasMany
 }

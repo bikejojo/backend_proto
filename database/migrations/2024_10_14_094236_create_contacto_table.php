@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('contact', function (Blueprint $table) {
+        Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('clientInternalId');
-            $table->unsignedBigInteger('technicalId');
-            $table->unsignedBigInteger('statusId');
-            $table->text('typeContact');
-            $table->text('issue');
+            $table->text('sopport_number');
+            $table->json('screens');
             $table->datetime('dateRegistered')->nullable();
             $table->timestamps();
         });
