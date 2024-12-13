@@ -11,6 +11,28 @@ use Carbon\Carbon;
 
 class SubcriptionQuery
 {
+    public function getAllTechnician($root , array $args){
+        $subcriptionData=$args['requestSubcription'];
+        $technician = Tecnico::find($subcriptionData['id_technician']);
+        if(!$technician){
+            return[
+                'message' => 'No existe el tecnico.'
+            ];
+        }
+        $joint = Technician_subcripcion::where('technicianId',$technician->id)->first();
+
+        if(!$joint){
+            return [
+                'message' => 'Todas las suscripciones.',
+                'suscripcion' => Suscripcion::all()
+            ];
+        }else{
+            return[
+                'message' => 'Todas las suscripciones menos la Free',
+                'suscripcion' => Suscripcion::where('id','>',1)->get()
+            ];
+        }
+    }
     public function validationDatePromotion($root,array $args){
         $promotionData = $args['requestPromotion'];
         $now=Carbon::now();

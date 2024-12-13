@@ -11,14 +11,19 @@ use App\Models\Technician_subcripcion;
 use Carbon\Carbon;
 use App\Services\StateCatalog;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Expr\AssignOp\Concat;
 
 class SubcritionMutations
 {
+    protected $now;
+    public function __construct()
+    {
+        $this->now = Carbon::now();
+    }
     public function creaSubcription($root, array $args){
         $subcriptionData = $args['requestSubcription'];
-        //si escoge año no debe superar los 2 a 3 años
-        // si escoge semanas no debe superar las 52
-        // si escoge dias no debe superar los 365
+        //dd($subcriptionData);
+        $now = $this->now;
         DB::beginTransaction();
         try {
             $subcription=Suscripcion::create([
@@ -27,14 +32,40 @@ class SubcritionMutations
                 'codeSubcription' => $subcriptionData['codeSubcription'],
                 'status' => 1,
                 'price' => $subcriptionData['price'],
+                'createDate' => $now
             ]);
-            if($subcriptionData['code_duration']===StateCatalog::CODE_A){
-                $subcription->durationDescription = 
+            if(($subcriptionData['code_duration']===StateCatalog::DURATION_ANIO) || ($subcriptionData['code_duration']===StateCatalog::DURATION_ANIOS)){
+                if($subcriptionData['duration'] < 2){
+                    $subcription->durationDescription = $subcriptionData['duration'].' '.$subcriptionData['code_duration']; // duration por dia
+                    $calculation=$subcriptionData['duration']*365;
+                }else{
+                    return[
+                        'message' => 'La duracion del tiempo no debe superar a 1 año'
+                    ];
+                }
             }
-            if(){
+            if(($subcriptionData['code_duration']===StateCatalog::DURATION_MES) || ($subcriptionData['code_duration']===StateCatalog::DURATION_MESS)){
+                if($subcriptionData['duration'] > 0 && $subcriptionData['duration'] < 4){
+                    $subcription->durationDescription = $subcriptionData['duration'].' '.$subcriptionData['code_duration']; // duration por dia
+                    $calculation=$subcriptionData['duration']*30;
+                }else{
+                    return[
+                        'message' => 'La duracion del tiempo no debe superar a 3 meses'
+                    ];
+                }
             }
-            if(){
+            if(($subcriptionData['code_duration']===StateCatalog::DURATION_SEMANA) || ($subcriptionData['code_duration']===StateCatalog::DURATION_SEMANAS)){
+                if($subcriptionData['duration'] > 0 && $subcriptionData['duration'] < 5){
+                    $subcription->durationDescription = $subcriptionData['duration'].' '.$subcriptionData['code_duration']; // duration por dia
+                    $calculation=$subcriptionData['duration']*7;
+                }else{
+                    return[
+                        'message' => 'La duracion del tiempo no debe superar a 4 semanas'
+                    ];
+                }
             }
+            $subcription->duration = $calculation;
+            $subcription->save();
             DB::commit();
 
             return [
