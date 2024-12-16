@@ -1,0 +1,22 @@
+extend type Query {
+    #geservicetGroupName:GroupSkill @all (model: "App\\Models\\Skills_group")
+    getServiceCategory:responseGroup @field(resolver: "GroupSkillQuery@allGroupSkill")
+    getServiceCategory_:responseGroup_ @field(resolver: "GroupSkillQuery@allGroupSkill_")
+}
+
+type responseGroup{
+    message:String
+    subCategory:[Group]
+}
+
+type responseGroup_{
+    message:String
+    subCategory:[responseSkill]
+}
+
+type responseSkill {
+    id:ID
+    nameCategoria:String
+    skill: [Skill]
+}
+#import GroupSkill.graphql

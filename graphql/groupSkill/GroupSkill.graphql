@@ -1,0 +1,8 @@
+type GroupSkill {
+    id:ID!
+    groupId:ID
+    skillsId:ID
+
+    skill:Skill @belongsTo
+    group:Group @belongsTo
+}
