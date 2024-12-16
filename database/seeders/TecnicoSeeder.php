@@ -7,6 +7,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Tecnico;
+use Carbon\Carbon;
 
 class TecnicoSeeder extends Seeder
 {
@@ -26,9 +27,9 @@ class TecnicoSeeder extends Seeder
                         'userId' => $user->id,
                     ])
                     ->each(function ($technician){
-                        Agenda_Tecnico::factory()
-                            ->create([
-                                'technicianId'=>$technician->id
+                        Agenda_Tecnico::create([
+                                'technicianId'=>$technician->id,
+                                'createDate'=>Carbon::now()
                             ]);
                     });
             });

@@ -157,15 +157,16 @@ class SolicitudesMutations
                 'serviceDate' => $service->createdDateTime,
                 'createDate' => Carbon::now()
             ]);
-           
+
             $list= Lists_Internal_Client::create([
                 'technicianId'=> $tecnico->id,
                 'clientId'=> $cliente->id,
                 'typeClient'=> ServicioMutations::clientInternal,
                 'requestsId'=> $_request->id,
             ]);
-            
+
             $history=Historial_Servicios::where('jobId',$request->id)->where('descriptionJob',1)->first();
+            //dd($history);
             $history->finishDate=$service->createdDateTime;
             $history->save();
 
@@ -175,10 +176,10 @@ class SolicitudesMutations
                 'jobId'=>$service->id,
                 'descriptionJob'=>2,
                 'outsetDate'=>$service->createdDateTime,
-                'description'=>'El tecnico ha confirmado la solicitud'  
+                'description'=>'El tecnico ha confirmado la solicitud'
             ]);
 
-            DB::commit();  
+            DB::commit();
             return[
                 'message'=>'solicitud confirmada',
                 'requests'=>$_request,
