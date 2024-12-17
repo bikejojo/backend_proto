@@ -80,7 +80,7 @@ class SolicitudesMutations
         $tecnicoId=$request->technicianId;
         $cliente = Cliente_Interno::find($clientId);
         $tecnico = Tecnico::find($tecnicoId);
-        $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_REJECTED, self::$entity_type);
+        $stateAssign = StatusAssigner::assignState();
         $_request = Solicitud::find($request->id);
         $request->save();
         return[
@@ -100,7 +100,7 @@ class SolicitudesMutations
         $tecnicoId=$request->technicianId;
         $cliente = Cliente_Interno::find($clientId);
         $tecnico = Tecnico::find($tecnicoId);
-        $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_REJECTED_C, self::$entity_type);
+        $stateAssign = StatusAssigner::assignState();
         $_request = Solicitud::find($request->id);
         $request->save();
         return[
@@ -123,7 +123,7 @@ class SolicitudesMutations
             $request = ValidationModels::validationRequest($requestId);
             $cliente = ValidationModels::validationclientInternal($clientId);
             $tecnico = ValidationModels::validationTechnician($tecnicoId);
-            $stateAssign = StatusAssigner::assignState($request,StatusAssigner::REQUEST_ACCEPTED, self::$entity_type);
+            $stateAssign = StatusAssigner::assignState();
             $request->save();
             //dd($request);
             $_request = Solicitud::find($request->id);
