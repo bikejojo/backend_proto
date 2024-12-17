@@ -29,7 +29,7 @@ return new class extends Migration
             $table->datetime('updatedDateTime')->nullable();
             $table->datetime('finishDateTime_client')->nullable();
             $table->datetime('finishDateTime_technician')->nullable();
-            $table->foreign('stateId')->references('id')->on('state_types');
+            $table->foreign('stateId')->references('id')->on('state_reference'); // cambio que se debe hacer la momento de migrate
             $table->foreign('requestsId')->references('id')->on('requests');
             $table->foreign('activityId')->references('id')->on('activity_types');
             $table->timestamps();

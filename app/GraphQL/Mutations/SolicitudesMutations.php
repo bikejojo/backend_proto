@@ -41,7 +41,7 @@ class SolicitudesMutations
                 'status'=>StateCatalog::STATUS_ACTIVE,
                 'activityId' => $requestData['id_activity']
             ]);
-            $assgin = StatusAssigner::assignState($request,StatusAssigner::REQUEST_PENDING,self::$entity_type);
+            $assgin = StatusAssigner::assignStateRequest($request,$this->entity_type,$now);
             $request->registrationDateTime = $now;
             $request->save();
 
