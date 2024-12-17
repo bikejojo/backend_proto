@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('ci');
+            $table->string('ci')->nullable(); //solo cliente tendra en ci null
             $table->string('email')->nullable();
             $table->bigInteger('type_user')->nullable(); // 1 tecnico 2 cliente interno
             $table->text('token')->nullable();

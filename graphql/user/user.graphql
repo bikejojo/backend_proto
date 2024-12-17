@@ -11,8 +11,8 @@ type User {
     created_at: DateTime!
 
     updated_at: DateTime!
-    ci:String! @trim
-    type_user:Int! @trim
+    ci:String @trim
+    type_user:Int @trim
     token: String!
     clientsExterns:[InternalClient!]! @hasMany
     technicians:[Technician!]! @hasMany

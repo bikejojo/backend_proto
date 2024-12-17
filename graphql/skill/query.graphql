@@ -2,11 +2,30 @@ extend type Query {
     getAllSkills: [Skill] @all (model: "App\\Models\\Habilidad")
     getSkillById(id: ID! @whereKey): Skill @find (model: "App\\Models\\Habilidad")
     searchSkillTechnician(requestSkillTechnician:JSON):responseTechnician @field (resolver: "SkillQuery@searchSkillTechnician")
-    filterSkillTechnician(requestSkillTechnician:JSON):responseTechnician @field (resolver: "SkillQuery@searchFilterSkillTechnician")
+
+    filterSkillTechnician(requestSkillTechnician:JSON):responseTechnician_ @field (resolver: "SkillQuery@searchFilterSkillTechnician")
 }
 
 type responseTechnician {
     message:String
     technicians:[Technician]
+}
+
+type responseTechnician_ {
+    message:String
+    content:[Content]
+}
+
+type Content {
+    technicians:Technician
+    feedback:[Feedback_]
+}
+
+type Feedback_ {
+    id_service:String
+    titleService:String
+    serviceDescription:String
+    rating:Float
+    feedback:String
 }
 #import skill.graphql

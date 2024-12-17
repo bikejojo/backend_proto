@@ -16,7 +16,7 @@ type responseGroup_{
 
 type responseSkill {
     id:ID
-    nameCategoria:String
+    nameCategory:String
     skill: [Skill]
 }
 #import GroupSkill.graphql

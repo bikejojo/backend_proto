@@ -1,4 +1,4 @@
-type Group {
+type Group @model(class: "App\\Models\\Group"){
     id:ID!
     name:String
 

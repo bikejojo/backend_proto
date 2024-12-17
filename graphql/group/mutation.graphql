@@ -1,0 +1,10 @@
+extend type Mutation {
+    createGroup(requestGroup:JSON):Group! @field(resolver: "GroupMutations@create")
+}
+
+type responseGroup {
+    message: String
+    grupo2: Group
+}
+
+#import Group.graphql

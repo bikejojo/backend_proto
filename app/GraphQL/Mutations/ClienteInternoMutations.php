@@ -29,16 +29,12 @@ class ClienteInternoMutations{
     public function create($root, array $args){
         $clienteData = $args['clientRequest'];
         // Crear el cliente en la base de datos
-        if (User::where('ci',$clienteData['ci'])->exists()) {
+        if (User::where('email',$clienteData['email'])->exists()) {
             return [
-                 'message'=> 'Esta celula de identidad ya esta en uso, por favor intenta con otro.'
+                 'message'=> 'Este email ya esta en uso, por favor intenta con otro.'
             ];
          }
-        if (strlen($clienteData['ci']) != 7) {
-            return [
-                'message' => 'Tu CI debe tener 7 digitos!',
-            ];
-        }
+
         $validators = $this->validateImage($args);
 
         if ($validators->fails()) {
@@ -53,17 +49,18 @@ class ClienteInternoMutations{
         $user = User::create([
             'email' => $email,
             'password' => Hash::make($clienteData['password']),
-            'ci' => $clienteData['ci'],
             'type_user' => StateCatalog::USER_CLIENT,
         ]);
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
         $user->save();
+
         $userId = $user->id;
         $clienteData['userId'] = $userId;
         $cliente = Cliente_Interno::create($clienteData);
         $clientId = $cliente->id;
         $value=$user->type_user;
+
         ImageHelper::createDirectorie($clientId,$value);
         $manager = new ImageManager(new Driver());
         if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {

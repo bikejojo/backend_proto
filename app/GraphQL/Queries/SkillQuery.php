@@ -5,6 +5,7 @@ namespace App\GraphQL\Queries;
 use App\Models\Habilidad;
 use App\Models\Tecnico;
 use App\Models\Cliente_Interno;
+use App\Models\Servicio;
 use Illuminate\Support\Facades\DB;
 
 class SkillQuery
@@ -41,6 +42,7 @@ class SkillQuery
         ];
     }
 
+
     public function searchFilterSkillTechnician($root, array $args){
         $searchData = $args['requestSkillTechnician'];
         $skillId = $searchData['skillsId'] ?? null;
@@ -75,20 +77,35 @@ class SkillQuery
         }
 
         $technicians = $query->get();
-
-        // Filtrar habilidades específicas en los técnicos
-        $filteredTechnicians = $technicians->map(function ($technician) use ($skillId) {
+        //dd($technicians);
+        // Preparar la lista de técnicos y servicios con feedback
+        $content = $technicians->map(function ($technician) use ($skillId) {
+            // Filtrar habilidades específicas en los técnicos
             if ($skillId) {
                 $technician->technicianSkills = $technician->technicianSkills->filter(function ($skill) use ($skillId) {
                     return $skill->skillId == $skillId;
                 });
             }
-            return $technician;
+            // Buscar el servicio y feedback relacionado al técnico
+            // Buscar los servicios y feedback relacionados al técnico
+                $feedbacks = Servicio::join('rating', 'services.id', '=', 'rating.serviceId')
+                ->where('rating.technicialId', $technician->id) // Relacionar con el técnico actual
+                ->select(
+                    'services.id as id_service',
+                    'services.titleService as titleService',
+                    'services.serviceDescription as serviceDescription',
+                    'rating.rating as rating',
+                    'rating.feedback as feedback'
+                )
+                ->get();
+            return [
+                'technicians' => $technician,
+                'feedback' => $feedbacks
+            ];
         });
-
         return [
-            'message' => 'Se encontró a los siguientes técnicos.',
-            'technicians' => $filteredTechnicians
+            'message' => 'Se encontraron los técnicos con sus servicios.',
+            'content' => $content
         ];
     }
 }
