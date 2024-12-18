@@ -106,12 +106,14 @@ class RequestQuery
         $stateId = StatusAssigner::allowState(self::$entity_type);
 
         $query = Solicitud::where('technicianId',$technicianId)
+        ->where('state_reference.type','request')
         ->leftjoin('internal_clients','requests.clientId','=','internal_clients.id')
         ->leftjoin('users','internal_clients.userId','=','users.id')
+        ->leftjoin('state_reference','state_reference.referenceId','=','requests.id')
         ->select('requests.*','internal_clients.firstName','internal_clients.lastName','internal_clients.phoneNumber','users.ci');
 
         if(in_array($statusId,$stateId)){
-            $query->where('stateId',$statusId);
+            $query->where('state_reference.stateId',$statusId);
         }
 
         if($orderFilter){
