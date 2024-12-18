@@ -20,14 +20,20 @@ use App\Services\ValidationModels;
 class SolicitudesMutations
 {
     public static  $entity_type = 'request';
+    protected $now;
+
+    public function __construct()
+    {
+        $this->now = Carbon::now();
+    }
 
     public function createRequestClient($root,array $args){
         $requestData = $args['requestRequest'];
+        $comments = $requestData['comments'];
         $technicianId=$requestData['id_technician'];
         $clientId =$requestData['id_client'];
         $technician = ValidationModels::validationTechnician($technicianId);
         $client = ValidationModels::validationclientInternal($clientId);
-        $now=Carbon::now();
         DB::beginTransaction();
         try{
             $request = Solicitud::create([
@@ -41,8 +47,8 @@ class SolicitudesMutations
                 'status'=>StateCatalog::STATUS_ACTIVE,
                 'activityId' => $requestData['id_activity']
             ]);
-            $assgin = StatusAssigner::assignStateRequest($request,$this->entity_type,$now);
-            $request->registrationDateTime = $now;
+            $assgin = StatusAssigner::assignStateRequest($request,$this->entity_type,$this->now,$comments,1);
+            $request->registrationDateTime = $this->now;
             $request->save();
 
             $historial = Historial_Servicios::create([
@@ -75,12 +81,13 @@ class SolicitudesMutations
         // tipo 3
         $requestId = $args['id'];
         $request = Solicitud::find($requestId);
+        $comments = $args['comments'];
         ###################################3
         $clientId = $request->clientId;
         $tecnicoId=$request->technicianId;
         $cliente = Cliente_Interno::find($clientId);
         $tecnico = Tecnico::find($tecnicoId);
-        $stateAssign = StatusAssigner::assignState();
+        $stateAssign = StatusAssigner::assignStateRequest($request,$this->entity_type,$this->now,$comments,2);
         $_request = Solicitud::find($request->id);
         $request->save();
         return[
@@ -94,13 +101,14 @@ class SolicitudesMutations
     public function cancelRequestClient($root,array $args){
         // tipo 2
         $requestId = $args['id'];
+        $comments = $args['comments'];
         $request = ValidationModels::validationRequest($requestId);
         ###################################3
         $clientId = $request->clientId;
         $tecnicoId=$request->technicianId;
         $cliente = Cliente_Interno::find($clientId);
         $tecnico = Tecnico::find($tecnicoId);
-        $stateAssign = StatusAssigner::assignState();
+        $stateAssign = StatusAssigner::assignStateRequest($request,$this->entity_type,$this->now,$comments,3);
         $_request = Solicitud::find($request->id);
         $request->save();
         return[
@@ -118,12 +126,13 @@ class SolicitudesMutations
         $clientId = $requestData['id_client'];
         $tecnicoId=$requestData['id_technician'];
         $visitDateTime=$requestData['visitDateTime'];
+        $comments = $requestData['comments'];
         DB::beginTransaction();
         try{
             $request = ValidationModels::validationRequest($requestId);
             $cliente = ValidationModels::validationclientInternal($clientId);
             $tecnico = ValidationModels::validationTechnician($tecnicoId);
-            $stateAssign = StatusAssigner::assignState();
+            $stateAssign = StatusAssigner::assignStateRequest($request,$this->entity_type,$this->now,$comments,4);
             $request->save();
             //dd($request);
             $_request = Solicitud::find($request->id);
@@ -144,7 +153,8 @@ class SolicitudesMutations
                 'updatedDateTime' => $visitDateTime,
                 'status' => StateCatalog::STATUS_ACTIVE
             ]);
-            $service->stateId=4;
+            //$service->stateId=1;
+            StatusAssigner::assignStatService($request,$this->entity_type,$this->now,'Se inicio un servicio al cliente',1);
             $service->save();
 
             $serviceId = $service->id;

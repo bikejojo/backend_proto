@@ -4,6 +4,8 @@ namespace App\GraphQL\Queries;
 
 use App\Models\Servicio;
 use App\Models\Tecnico;
+use App\Models\Tipo_Estado;
+use App\Models\StateReference;
 use Illuminate\Support\Facades\DB;
 use app\Helpers\StatusHelper;
 use app\Services\StatusAssigner;
@@ -62,9 +64,11 @@ class ServiceQuery
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_external)
-        ->where('stateId', 4)
+        ->where('state_reference.stateId', 1)
         ->select('services.*','external_clients.*')
         ->leftjoin('external_clients','services.clientId','=','external_clients.id')
+        ->leftjoin('state_reference','services.id','=','state_reference.referenceId')
+        ->leftjoin('state_types','state_reference.stateId','=','state_types.id')
         ->orderBy('updatedDateTime','DESC')
         ->get();
         if($service->isEmpty()){
@@ -99,9 +103,11 @@ class ServiceQuery
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_external)
-        ->where('stateId',5)
+        ->where('state_reference.stateId',4)
         ->select('services.*','external_clients.*')
         ->leftjoin('external_clients','services.clientId','=','external_clients.id')
+        ->leftjoin('state_reference','services.id','=','state_reference.referenceId')
+        ->leftjoin('state_types','state_reference.stateId','=','state_types.id')
         ->orderBy('updatedDateTime','DESC')
         ->get();
 
@@ -127,7 +133,7 @@ class ServiceQuery
             'technician' => $technician
         ];
     }
-  
+
 
     public function getInternalClient($root , array $args){
         $serviceData = $args['id'];
@@ -176,9 +182,11 @@ class ServiceQuery
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_internal)
-        ->where('stateId', 4)
+        ->where('state_reference.stateId', 1)
         ->select('services.*','internal_clients.*')
         ->leftjoin('internal_clients','services.clientId','=','internal_clients.id')
+        ->leftjoin('state_reference','services.id','=','state_reference.referenceId')
+        ->leftjoin('state_types','state_reference.stateId','=','state_types.id')
         ->orderBy('updatedDateTime','DESC')
         ->get();
         if($service->isEmpty()){
@@ -214,9 +222,11 @@ class ServiceQuery
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_internal)
-        ->where('stateId',5)
+        ->where('state_reference.stateId',4)
         ->select('services.*','internal_clients.*')
         ->leftjoin('internal_clients','services.clientId','=','internal_clients.id')
+        ->leftjoin('state_reference','services.id','=','state_reference.referenceId')
+        ->leftjoin('state_types','state_reference.stateId','=','state_types.id')
         ->orderBy('updatedDateTime','DESC')
         ->get();
 

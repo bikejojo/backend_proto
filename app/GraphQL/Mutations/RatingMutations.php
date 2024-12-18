@@ -9,25 +9,38 @@ use App\Models\Servicio;
 use App\Models\Calificacion;
 use App\Services\StatusAssigner;
 
-class RatingMutations
-{
-    public function rateService($root,array $args){
+class RatingMutations{
+    public function rateService($root, array $args){
         $ratingData = $args['requestRating'];
         $serviceId = $ratingData['id_service'];
-        $service =Servicio::find($serviceId);
-        if($service->stateId !== 5){
+
+        // Buscar el servicio con su estado asociado
+        $service = Servicio::with('stateReference.stateType')->find($serviceId);
+
+        if (!$service) {
             return [
-                'message'=>'El servicio no esta terminado.'
+                'message' => 'Servicio no encontrado.',
             ];
         }
-        $ratingData = $args['requestRating'];
-            $rating = Calificacion::create([
-                'technicialId' => $ratingData['id_technician'],
-                'serviceId'=> $ratingData['id_service'],
-                'clientId' => $ratingData['id_client'],
-                'rating' => $ratingData['rating'] ,
-                'feedback' => $ratingData['comments']
-            ]);
+
+        // Verificar si el estado actual del servicio es "Terminado" (stateId = 5)
+        $stateReference = $service->stateReference;
+        if (!$stateReference || $stateReference->stateId !== 5) {
+            return [
+                'message' => 'El servicio no está terminado.',
+            ];
+        }
+
+        // Crear la calificación
+        $rating = Calificacion::create([
+            'technicialId' => $ratingData['id_technician'],
+            'serviceId' => $ratingData['id_service'],
+            'clientId' => $ratingData['id_client'],
+            'rating' => $ratingData['rating'],
+            'feedback' => $ratingData['comments']
+        ]);
+
+        // Verificar si el técnico existe
         $technician = Tecnico::find($rating->technicialId);
         if (!$technician) {
             return [
@@ -37,19 +50,18 @@ class RatingMutations
             ];
         }
 
+        // Calcular promedio de calificaciones del técnico
         $ratingsCount = Calificacion::where('technicialId', $technician->id)->count();
         $ratingsSum = Calificacion::where('technicialId', $technician->id)->sum('rating');
         $averageRating = $ratingsCount > 0 ? $ratingsSum / $ratingsCount : 0;
         $roundedRating = round($averageRating * 2) / 2;
-        $technician->average_rating=$roundedRating;
-        $technician->save();    
+        $technician->average_rating = $roundedRating;
+        $technician->save();
 
         return [
-            'message' => 'Su calificacion fue registrada' ,
+            'message' => 'Su calificación fue registrada',
             'service' => $service,
             'rating' => $rating
         ];
-
     }
-
 }

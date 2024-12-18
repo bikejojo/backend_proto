@@ -17,13 +17,18 @@ use App\Services\StatusAssigner;
 class ServicioMutations
 {
     public static $entity_type = "service";
+    protected $now;
+
+    public function __construct()
+    {
+        $this->now = Carbon::now();
+    }
     //state
     const clientExternal= 2;
     const clientInternal= 1;
     // CREAR SERVICIO PARA CLIENTE INTERNO
     public function createInternal($root,array $args){
         $serviceData = $args['requestService'];
-        $now=Carbon::now();
         $technicalId = Tecnico::find($serviceData['id_technician']);
         if(is_null($technicalId)){
             return [
@@ -49,11 +54,11 @@ class ServicioMutations
                 'serviceLocation' => trim($serviceData['serviceLocation']),
                 'latitude' => $serviceData['latitude'],
                 'longitude' => $serviceData['longitude'],
-                'createdDateTime' => $now,
+                'createdDateTime' => $this->now,
                 'updatedDateTime' => $serviceData['updatedDateTime'],
                 'status' => StateCatalog::STATUS_ACTIVE
             ]);
-            $stateId = StatusAssigner::assignState($service, StatusAssigner::SERVICE_PENDING, self::$entity_type);
+            $stateId = StatusAssigner::assignStatService($service,$this->entity_type,$this->now,'El servicio fue creado por el tecnico para cliente interno.',1);
             $_service = Servicio::find($service->id);
             $_service->save();
             $agenda = Agenda_Tecnico::where('technicianId',$technicalId->id)->first();
@@ -79,7 +84,7 @@ class ServicioMutations
                 'service' => $_service,
                 'customer_internal' => $clientId
             ];
-            
+
         }catch(\Exception $e){
             DB::rollBack();
             return [
@@ -127,7 +132,7 @@ class ServicioMutations
                 'updatedDateTime' => $serviceData['updatedDateTime'],
                 'status' => StateCatalog::STATUS_ACTIVE
             ]);
-            StatusAssigner::assignState($service,StatusAssigner::SERVICE_PENDING,self::$entity_type);
+            StatusAssigner::assignStatService($service,$this->entity_type,$this->now,'El servicio fue creado por el tecnico para cliente externo.',1);
             $service->save();
             $_service = Servicio::find($service->id);
             $agenda = Agenda_Tecnico::where('technicianId',$technicalId->id)->first();
@@ -181,7 +186,7 @@ class ServicioMutations
             $service->finishDateTime_technician = $serviceDateTime;
             $service->updatedDateTime = Carbon::now();
 
-            StatusAssigner::assignState($service,StatusAssigner::SERVICE_COMPLETED,self::$entity_type);
+            StatusAssigner::assignStatService($service,$this->entity_type,$this->now,'El servicio fue acabo para el cliente externo.',3);
 
             $service->save();
             $_service = Servicio::find($service->id);
@@ -234,7 +239,7 @@ class ServicioMutations
             $service->save();
             // Actualizar el estado a completado
             if($service->finishDateTime_client != null && $service->serviceDateTime_technician != null){
-                StatusAssigner::assignState($service, StatusAssigner::SERVICE_COMPLETED, self::$entity_type);
+                StatusAssigner::assignStatService($service,$this->entity_type,$this->now,'El servicio fue acabo de manera completa por el lado del cliente.',2);
                 $service->save();
             }
             $_service = Servicio::find($service->id);
@@ -292,7 +297,7 @@ class ServicioMutations
             $service->save();
             // Actualizar el estado a completado
             if($service->finishDateTime_client != null && $service->finishDateTime_technician != null){
-                StatusAssigner::assignState($service, StatusAssigner::SERVICE_COMPLETED, self::$entity_type);
+                StatusAssigner::assignStatService($service,$this->entity_type,$this->now,'El servicio fue acabo de manera completa por el lado del cliente.',2);
                 $service->save();
             }
             $_service = Servicio::find($service->id);

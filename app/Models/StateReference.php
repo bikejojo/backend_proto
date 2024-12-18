@@ -16,6 +16,17 @@ class StateReference extends Model
         'stateId',
         'type',
         'descriptionState',
+        'observations',
         'dateCreate',
     ];
+
+    public function servicio()
+    {
+        return $this->belongsTo(Servicio::class, 'referenceId', 'id');
+    }
+
+    public function stateType()
+    {
+        return $this->belongsTo(Tipo_Estado::class, 'stateId', 'id');
+    }
 }
