@@ -185,7 +185,7 @@ class ServicioMutations
             $service->finishDateTime_technician = $serviceDateTime;
             $service->updatedDateTime = Carbon::now();
             $service->save();
-            StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'El servicio fue acabo para el cliente externo.',2);
+            StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'El servicio fue acabo para el cliente externo.',4);
             $service->save();
             $_service = Servicio::find($service->id);
             DB::commit();

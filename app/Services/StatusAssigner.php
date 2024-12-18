@@ -32,8 +32,9 @@ class StatusAssigner{
 
     // Constantes para los estados de servicio
     const SERVICE_PENDING = 'pendiente por acabar.';
-    const SERVICE_COMPLETED_C = 'termino el servicio por el lado del cliente.';
-    const SERVICE_COMPLETED_T = 'se termino el servicio por el lado del tecnico.';
+    const SERVICE_COMPLETED_CI = 'servicio completado cliente interno.';
+    const SERVICE_COMPLETED_CE = 'servicio completado cliente externo.';
+    const SERVICE_COMPLETED_T = 'servicio completado tecnico.';
 
     public static function assignStateRequest($objeto, $now, $type_reference,$comments,$number ){
         switch ($number) {
@@ -119,7 +120,19 @@ class StatusAssigner{
                     'referenceId' => $objeto->id,
                     'stateId' => self::FINISH,
                     'type' => $type_reference,
-                    'descriptionState' => self::SERVICE_COMPLETED_C,
+                    'descriptionState' => self::SERVICE_COMPLETED_CI,
+                    'observations' => $comments,
+                    'dateCreate' => $now
+                ]);
+                $objeto->stateId = $stateReference->id;
+                $objeto->save();
+            break;
+            case 4:
+                $stateReference = StateReference::create([
+                    'referenceId' => $objeto->id,
+                    'stateId' => self::FINISH,
+                    'type' => $type_reference,
+                    'descriptionState' => self::SERVICE_COMPLETED_CE,
                     'observations' => $comments,
                     'dateCreate' => $now
                 ]);

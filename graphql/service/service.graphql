@@ -17,7 +17,7 @@ type Service {
     finishDateTime_client:String
     finishDateTime_technician:String
 
-    state:StateType! @belongsTo
+    stateReference: StateReference
     request:[Request!]! @hasMany
 
     ratings:[Rating] @hasOne

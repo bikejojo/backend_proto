@@ -1,0 +1,9 @@
+type StateReference {
+    id: ID!
+    stateId: Int!
+    type: String!
+    descriptionState: String
+    observations: String
+    dateCreate: String
+    stateType: StateType
+}

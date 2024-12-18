@@ -8,6 +8,8 @@ use App\Models\Tecnico;
 use App\Models\Servicio;
 use App\Models\Calificacion;
 use App\Services\StatusAssigner;
+use App\Services\StateCatalog;
+use Nuwave\Lighthouse\Federation\Resolvers\Service;
 
 class RatingMutations{
     public function rateService($root, array $args){
@@ -15,8 +17,20 @@ class RatingMutations{
         $serviceId = $ratingData['id_service'];
 
         // Buscar el servicio con su estado asociado
-        $service = Servicio::with('stateReference.stateType')->find($serviceId);
-
+        /*$service = Servicio::with('stateReference.stateType')
+            ->where('id', $serviceId)
+            ->whereHas('stateReference', function ($query) {
+                $query->where('stateId', 4); // Filtrar por stateId = 4
+                $query->where('type','service');
+                $query->where('descriptionState',StatusAssigner::SERVICE_COMPLETED_T);
+            })
+            ->get();*/
+        $service = Servicio::join('state_reference','services.id','=','state_reference.referenceId')
+                    ->where('state_reference.stateId',4)
+                    ->where('state_reference.type','service')
+                    ->where('descriptionState',StatusAssigner::SERVICE_COMPLETED_T)
+                    ->first();
+        //dd($service->stateId);
         if (!$service) {
             return [
                 'message' => 'Servicio no encontrado.',
@@ -24,8 +38,8 @@ class RatingMutations{
         }
 
         // Verificar si el estado actual del servicio es "Terminado" (stateId = 5)
-        $stateReference = $service->stateReference;
-        if (!$stateReference || $stateReference->stateId !== 5) {
+        //$stateReference = $service->stateReference;
+        if (!$service->stateId || $service->stateId !== 4) {
             return [
                 'message' => 'El servicio no está terminado.',
             ];
