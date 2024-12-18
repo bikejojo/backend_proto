@@ -88,7 +88,7 @@ class StatusAssigner{
         }
     }
 
-    public static function assignStatService($objeto, $type_reference, $now,$comments,$number ){
+    public static function assignStatService($objeto, $now, $type_reference,$comments,$number ){
         switch ($number){
             case 1:
                 $stateReference = StateReference::create([

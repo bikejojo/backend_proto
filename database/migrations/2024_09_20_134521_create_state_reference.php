@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('descriptionState')->nullable();
             $table->string('observations')->nullable();
-            $table->dateTime('dateCreate')->nullable();
+            $table->datetime('dateCreate')->nullable();
             $table->foreign('stateId')->references('id')->on('state_types');
             $table->timestamps();
         });

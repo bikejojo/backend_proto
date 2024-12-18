@@ -12,6 +12,7 @@ type responseService {
     message:String
     service:Service
     customer_external:ExternalClient
+    technician:Technician
 }
 
 type responseServiceClient {
@@ -19,6 +20,7 @@ type responseServiceClient {
     messageN:String
     service:Service
     customer_internal:InternalClient
+    technician:Technician
 }
 
 type responseServiceDelete {

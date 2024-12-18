@@ -24,12 +24,11 @@ class SolicitudesMutations
 
     public function __construct()
     {
-        $this->now = Carbon::now();
+        $this->now = Carbon::now()->format('Y-m-d H:i:s');
     }
 
     public function createRequestClient($root,array $args){
         $requestData = $args['requestRequest'];
-        $comments = $requestData['comments'];
         $technicianId=$requestData['id_technician'];
         $clientId =$requestData['id_client'];
         $technician = ValidationModels::validationTechnician($technicianId);
@@ -47,7 +46,8 @@ class SolicitudesMutations
                 'status'=>StateCatalog::STATUS_ACTIVE,
                 'activityId' => $requestData['id_activity']
             ]);
-            $assgin = StatusAssigner::assignStateRequest($request,$this->entity_type,$this->now,$comments,1);
+
+            StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El cliente solicito un servicio',1);
             $request->registrationDateTime = $this->now;
             $request->save();
 
@@ -87,7 +87,7 @@ class SolicitudesMutations
         $tecnicoId=$request->technicianId;
         $cliente = Cliente_Interno::find($clientId);
         $tecnico = Tecnico::find($tecnicoId);
-        $stateAssign = StatusAssigner::assignStateRequest($request,$this->entity_type,$this->now,$comments,2);
+        StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,$comments,2);
         $_request = Solicitud::find($request->id);
         $request->save();
         return[
@@ -108,7 +108,7 @@ class SolicitudesMutations
         $tecnicoId=$request->technicianId;
         $cliente = Cliente_Interno::find($clientId);
         $tecnico = Tecnico::find($tecnicoId);
-        $stateAssign = StatusAssigner::assignStateRequest($request,$this->entity_type,$this->now,$comments,3);
+        $stateAssign = StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,$comments,3);
         $_request = Solicitud::find($request->id);
         $request->save();
         return[
@@ -120,21 +120,18 @@ class SolicitudesMutations
     }
 
     public function acceptRequest($root,array $args){
-        // tipo 2
         $requestData = $args['requestRequest'];
         $requestId = $requestData['id_request'];
         $clientId = $requestData['id_client'];
         $tecnicoId=$requestData['id_technician'];
         $visitDateTime=$requestData['visitDateTime'];
-        $comments = $requestData['comments'];
         DB::beginTransaction();
         try{
             $request = ValidationModels::validationRequest($requestId);
             $cliente = ValidationModels::validationclientInternal($clientId);
             $tecnico = ValidationModels::validationTechnician($tecnicoId);
-            $stateAssign = StatusAssigner::assignStateRequest($request,$this->entity_type,$this->now,$comments,4);
+            StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El tecnic acepto la solicitud',4);
             $request->save();
-            //dd($request);
             $_request = Solicitud::find($request->id);
             $agenda = ValidationModels::validationAgenda($tecnico->id);
             $now= Carbon::now();
@@ -154,7 +151,7 @@ class SolicitudesMutations
                 'status' => StateCatalog::STATUS_ACTIVE
             ]);
             //$service->stateId=1;
-            StatusAssigner::assignStatService($request,$this->entity_type,$this->now,'Se inicio un servicio al cliente',1);
+            StatusAssigner::assignStatService($service,$this->now,'service','Se inicio un servicio al cliente',1);
             $service->save();
 
             $serviceId = $service->id;
