@@ -8,6 +8,7 @@ use App\Models\Tecnico;
 use App\Models\Solicitud;
 use Carbon\Carbon;
 use App\Services\StatusAssigner;
+use App\Services\ValidationModels;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -17,12 +18,13 @@ class RequestQuery
 
     public function requestsTechnicalId($root , array $args){
         $technicalId = $args['id'];
-        $technical = Tecnico::find($technicalId);
+        $technical = ValidationModels::validationTechnician($technicalId);
+        /*$technical = Tecnico::find($technicalId);
         if(!isset($technical)){
             return [
                 'message' => 'No existe tecnico'
             ];
-        }
+        }*/
 
         $technicaId = $technical->id;
         $requests = Solicitud::where('technicianId',$technicaId)
@@ -55,12 +57,13 @@ class RequestQuery
         $clientId = $args['id'];
 
         // Obtener el cliente
-        $client = Cliente_Interno::find($clientId);
+        $client = ValidationModels::validationclientInternal($clientId);
+        /*$client = Cliente_Interno::find($clientId);
         if (!$client) {
             return [
                 'message' => 'No existe cliente'
             ];
-        }
+        }*/
 
         // Obtener las solicitudes del cliente
         $requests = Solicitud::where('clientId', $clientId)

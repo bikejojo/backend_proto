@@ -10,6 +10,7 @@ USE App\Models\Cliente_Externo;
 USE App\Models\Cliente_Interno;
 use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Tecnico;
+use App\Services\ValidationModels;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -27,13 +28,13 @@ class AgendaQuery{
         $agendaData = $args['requestAgenda'];
         $technicianId = $agendaData['technicianId'];
         $dateFilter = $agendaData['entryDate'] ?? StatusHelper::ORDER_NAME_RECENT;
-
-        $tecnico = Tecnico::find($technicianId);
+        $tecnico = ValidationModels::validationTechnician($technicianId);
+        /*$tecnico = Tecnico::find($technicianId);
         if (!$tecnico) {
             return [
                 'message' => 'No existe tecnico.'
             ];
-        }
+        }*/
 
         $agenda = Agenda_Tecnico::where('technicianId', $tecnico->id)->first();
         if (!$agenda) {
@@ -88,12 +89,13 @@ class AgendaQuery{
             $agendaData = $args['requestAgenda'];
             $technicianId = $agendaData['technicianId'];
             $dateFilter = $agendaData['entryDate'] ?? StatusHelper::ORDER_NAME_RECENT;
-            $tecnico = Tecnico::find($technicianId);
+            $tecnico = ValidationModels::validationTechnician($technicianId);
+            /*$tecnico = Tecnico::find($technicianId);
             if(!$tecnico){
                 return[
                     'message' => 'No existe tecnico.'
                 ];
-            }
+            }*/
             $agenda = Agenda_Tecnico::where('technicianId',$tecnico->id)->first();
             if(!$agenda){
                 return[

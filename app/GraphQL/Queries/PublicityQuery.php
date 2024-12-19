@@ -23,6 +23,7 @@ final readonly class PublicityQuery
 
     public function getIdPublicity($root,array $args){
         $publicidadDataId = $args['id'];
+
         if(isset($publicidadData)){
             return [
                 'message' => 'No existe la publicidad publicidad.'

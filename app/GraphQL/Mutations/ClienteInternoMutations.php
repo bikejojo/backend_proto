@@ -14,6 +14,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ImageHelper;
+use App\Services\ValidationModels;
 use Carbon\Carbon;
 
 class ClienteInternoMutations{
@@ -85,16 +86,15 @@ class ClienteInternoMutations{
     }
     public function update($root ,array $args){
         $clientData = $args['clientRequest'];
-        $client = Cliente_Interno::find($args['id']);
-        //dd($client);
-        $clientId = $client->id;
-        $user = User::find($client->userId);
-        //dd($user);
+        $client = ValidationModels::validationclientInternal($args['id']);
+        /*$client = Cliente_Interno::find($args['id']);
         if ($client==null){
            return[
                 'message'=>'No existe cliente'
             ];
-        }
+        }*/
+        $clientId = $client->id;
+        $user = User::find($client->userId);
         DB::beginTransaction();
         try{
             $firstName = trim($clientData['firstName']);
@@ -139,7 +139,8 @@ class ClienteInternoMutations{
         if(!$id){
             return ['message'=> 'Borrado no existoso'];
         }else{
-            $id->delete();
+            $id->status=0;
+            $id->save();
             return ['message'=> 'Borrado existoso'];
         }
     }

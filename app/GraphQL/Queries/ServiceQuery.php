@@ -9,6 +9,7 @@ use App\Models\StateReference;
 use Illuminate\Support\Facades\DB;
 use app\Helpers\StatusHelper;
 use app\Services\StatusAssigner;
+use App\Services\ValidationModels;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -21,10 +22,11 @@ class ServiceQuery
     public function getExternalClient($root , array $args){
         $serviceData = $args['id'];
         //dd($serviceData);
-        $technician = Tecnico::find($serviceData);
+        $technician = ValidationModels::validationTechnician($serviceData);
+        /*$technician = Tecnico::find($serviceData);
         if(is_null($technician)){
             return [ 'message'=>'No existe tecnico'];
-        }
+        }*/
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_external)
@@ -57,10 +59,11 @@ class ServiceQuery
 
     public function getExternalClientEarring($root , array $args){
         $serviceData = $args['id'];
-        $technician = Tecnico::find($serviceData);
+        $technician = ValidationModels::validationTechnician($serviceData);
+        /*$technician = Tecnico::find($serviceData);
         if(is_null($technician)){
             return [ 'message'=>'No existe tecnico'];
-        }
+        }*/
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_external)
@@ -96,10 +99,11 @@ class ServiceQuery
 
     public function getExternalClientOver($root , array $args){
         $serviceData = $args['id'];
-        $technician = Tecnico::find($serviceData);
+        $technician = ValidationModels::validationTechnician($serviceData);
+        /*$technician = Tecnico::find($serviceData);
         if(is_null($technician)){
             return [ 'message'=>'No existe tecnico'];
-        }
+        }*/
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_external)
@@ -137,11 +141,11 @@ class ServiceQuery
 
     public function getInternalClient($root , array $args){
         $serviceData = $args['id'];
-        //dd($serviceData);
-        $technician = Tecnico::find($serviceData);
+        $technician = ValidationModels::validationTechnician($serviceData);
+        /*$technician = Tecnico::find($serviceData);
         if(is_null($technician)){
             return [ 'message'=>'No existe tecnico'];
-        }
+        }*/
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_internal)
@@ -175,10 +179,11 @@ class ServiceQuery
 
     public function getInternalClientEarring($root , array $args){
         $serviceData = $args['id'];
-        $technician = Tecnico::find($serviceData);
+        $technician = ValidationModels::validationTechnician($serviceData);
+        /*$technician = Tecnico::find($serviceData);
         if(is_null($technician)){
             return [ 'message'=>'No existe tecnico'];
-        }
+        }*/
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_internal)
@@ -215,10 +220,11 @@ class ServiceQuery
 
     public function getInternalClientOver($root , array $args){
         $serviceData = $args['id'];
-        $technician = Tecnico::find($serviceData);
+        $technician = ValidationModels::validationTechnician($serviceData);
+        /*$technician = Tecnico::find($serviceData);
         if(is_null($technician)){
             return [ 'message'=>'No existe tecnico'];
-        }
+        }*/
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_internal)
@@ -259,10 +265,11 @@ class ServiceQuery
         $serviceData = $args['requestService'];
         $technicianId = $serviceData['id_technician'];
         $activityId = $serviceData['id_activity'];
-        $technician = Tecnico::find($technicianId);
+        $technician = ValidationModels::validationTechnician($technicianId);
+        /*$technician = Tecnico::find($technicianId);
         if(is_null($technician)){
             return [ 'message'=>'No existe tecnico'];
-        }
+        }*/
         $query = Servicio::where('technicalId', $technician->id)
         ->where('typeClient', self::client_internal)
         ->leftJoin('internal_clients', 'services.clientId', '=', 'internal_clients.id')

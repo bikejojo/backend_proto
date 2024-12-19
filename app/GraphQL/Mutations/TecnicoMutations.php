@@ -14,8 +14,6 @@ use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Helpers\ImageHelper;
 
-use function PHPUnit\Framework\isEmpty;
-
 class TecnicoMutations {
     protected $app;
     protected $nowFront;

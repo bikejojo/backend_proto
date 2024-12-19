@@ -7,18 +7,20 @@ use App\Models\Tecnico;
 use App\Models\Technician_subcripcion;
 use App\Models\Promocion;
 use App\Models\Promocion_suscripcion;
+use App\Services\ValidationModels;
 use Carbon\Carbon;
 
 class SubcriptionQuery
 {
     public function getAllTechnician($root , array $args){
         $subcriptionData=$args['requestSubcription'];
+        $technician = ValidationModels::validationTechnician($subcriptionData['id_technician']);/*
         $technician = Tecnico::find($subcriptionData['id_technician']);
         if(!$technician){
             return[
                 'message' => 'No existe el tecnico.'
             ];
-        }
+        }*/
         $joint = Technician_subcripcion::where('technicianId',$technician->id)->first();
 
         if(!$joint){
