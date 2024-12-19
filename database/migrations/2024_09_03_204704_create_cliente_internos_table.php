@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('phoneNumber');
             $table->string('loginMethod')->nullable();  // Traducción de 'metodo_login'
             $table->string('photo')->nullable();
+            $table->bigInteger('status')->nullable();
             $table->unsignedBigInteger('userId');  // Traducción de 'users_id'
             $table->unsignedBigInteger('cityId');  // Traducción de 'ciudades_id'
             $table->foreign('userId')->references('id')->on('users');

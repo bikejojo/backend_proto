@@ -16,15 +16,6 @@ class RatingMutations{
         $ratingData = $args['requestRating'];
         $serviceId = $ratingData['id_service'];
 
-        // Buscar el servicio con su estado asociado
-        /*$service = Servicio::with('stateReference.stateType')
-            ->where('id', $serviceId)
-            ->whereHas('stateReference', function ($query) {
-                $query->where('stateId', 4); // Filtrar por stateId = 4
-                $query->where('type','service');
-                $query->where('descriptionState',StatusAssigner::SERVICE_COMPLETED_T);
-            })
-            ->get();*/
         $service = Servicio::join('state_reference','services.id','=','state_reference.referenceId')
                     ->where('state_reference.stateId',4)
                     ->where('state_reference.type','service')

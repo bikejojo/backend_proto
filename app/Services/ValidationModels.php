@@ -8,6 +8,7 @@ use App\Models\Asociacion_Cliente_Tecnico;
 use App\Models\Cliente_Externo;
 use App\Models\Publicidad;
 use App\Models\Solicitud;
+use App\Models\Servicio;
 use App\Models\Agenda_Tecnico;
 
 class ValidationModels{
@@ -66,6 +67,15 @@ class ValidationModels{
             ];
         }else{
             return Solicitud::find($objeto);
+        }
+    }
+    public static function validationService($objeto){
+        if(!Servicio::find($objeto)){
+            return[
+                'message'=>'No existe el servicio.'
+            ];
+        }else{
+            return Servicio::find($objeto);
         }
     }
 }

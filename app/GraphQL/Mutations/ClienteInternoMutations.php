@@ -66,6 +66,7 @@ class ClienteInternoMutations{
         if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
             $fotoPath = $this->processImage($args['photo'], "/client_{$clientId}/photo/{$this->now}.png",$manager);
             $cliente->photo = $this->app . '/storage' . str_replace('public/', '', $fotoPath);  // Guardar la ruta de la imagen
+            $cliente->status = 1;
             $cliente->save();
         }
 

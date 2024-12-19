@@ -17,6 +17,7 @@ class Cliente_Interno extends Model
         'loginMethod',    // metodo_login
         'phoneNumber',
         'photo',
+        'status',
         'userId',
         'cityId',          // foto
     ];
@@ -45,7 +46,5 @@ class Cliente_Interno extends Model
     {
         return $this->hasMany(Agenda_Tecnico::class, 'clientId');
     }
-    public function contact(){
-        return $this->belongsTo(Contacto::class,'clientInternalId');
-    }
+
 }

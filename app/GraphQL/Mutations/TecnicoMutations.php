@@ -81,6 +81,7 @@ class TecnicoMutations {
                 'password' => Hash::make($technicianData['password']),
                 'userId' => $technicianData['userId'],
                 'cityId' => $technicianData['cityId'],
+                'status' => 1,
             ]);
 
             if (!$technician) {
@@ -271,11 +272,12 @@ class TecnicoMutations {
     public function delete($root, array $args){
         $technician = Tecnico::find($args['id']);
         if (!$technician) {
-            throw new \Exception('Technician not found.');
+            return ['message' => 'Eliminacion no exitosa del tecnico'];
         }
         // Borrar técnico
-        $technician->delete();
-        return ['message' => 'Eliminacion exitosa del tecnico'];
+        $technician->status = 0;
+        $technician->save();
+            return ['message' => 'Eliminacion exitosa del tecnico'];
     }
 
 

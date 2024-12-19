@@ -5,6 +5,7 @@ namespace App\GraphQL\Mutations;
 use App\Models\Tecnico_Habilidad;
 use App\Models\Tecnico;
 use App\Models\User;
+use App\Services\ValidationModels;
 use Illuminate\Support\Facades\DB;
 
 class TecnicoHabilidadMutations{
@@ -57,7 +58,7 @@ class TecnicoHabilidadMutations{
             'technician' => $technician,
             'skills' => $skill
         ];
-       
+
     }catch(\Exception $e){
         DB::rollBack();
         return [
@@ -68,12 +69,13 @@ class TecnicoHabilidadMutations{
     public function update($root,array $args){
         $tecnicoId = $args['id'];
         $habilidades = $args['skills'];
-        $technician = Tecnico::find($tecnicoId);
+        $technician = ValidationModels::validationTechnician($tecnicoId);
+        /*$technician = Tecnico::find($tecnicoId);
         if(!$technician){
             return [
                 'message' => 'No existe tecnico'
             ];
-        }
+        }*/
         DB::beginTransaction();
         try{
             // Eliminar las habilidades existentes del técnico

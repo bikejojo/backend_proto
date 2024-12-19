@@ -21,6 +21,7 @@ class Tecnico extends Model
         'password',     // contrasenia
         'average_rating',
         'photo',
+        'status',
         'userId',         // foto
         'cityId'
     ];

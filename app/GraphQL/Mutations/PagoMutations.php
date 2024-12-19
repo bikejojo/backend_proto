@@ -4,6 +4,7 @@ namespace App\GraphQL\Mutations;
 
 use App\Models\Payment;
 use App\Models\Tecnico;
+use App\Services\ValidationModels;
 use App\Models\Suscripcion;
 use App\Models\Pago;
 use Carbon\Carbon;
@@ -21,12 +22,13 @@ class PagoMutations
                 'message' => 'No se encontró la suscripción especificada.'
             ];
         }
-        $technician=Tecnico::find($subscription->technicianId);
+        $technician=ValidationModels::validationTechnician($subscription->technicianId);
+        /*$technician=Tecnico::find($subscription->technicianId);
         if(!$technician){
             return [
                 'message' => 'No se encontró el tecnico.'
             ];
-        }
+        }*/
 
         $comprobacion=Suscripcion::where('id',$paymentData['subscriptionId'])->where('technicianId',$subscription->technicianId)->first();
         if(!$comprobacion){
@@ -37,7 +39,7 @@ class PagoMutations
 
         DB::beginTransaction();
         try {
-            
+
             $payment = Pago::create([
                 'bank' => $paymentData['bank'],
                 'account' => $paymentData['account'],
@@ -88,12 +90,13 @@ class PagoMutations
                 'message' => 'No se encontró la suscripción especificada.'
             ];
         }
-        $technician=Tecnico::where('id',$subscription->technicianId)->first();
+        $technician=ValidationModels::validationTechnician($subscription->technicianId);
+        /*$technician=Tecnico::where('id',$subscription->technicianId)->first();
         if(!$technician){
             return [
                 'message' => 'No se encontró el tecnico.'
             ];
-        }
+        }*/
 
         // Validar el estado actual del pago
         if ($payment->status !== 0) { // Solo procesar si el estado es "Pendiente"
