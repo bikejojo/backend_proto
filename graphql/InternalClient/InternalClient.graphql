@@ -1,10 +1,10 @@
 type InternalClient @model(class: "App\\Models\\Cliente_Interno"){
   id: ID
-  firstName: String!
-  lastName: String!
-  email: String
-  phoneNumber: String!
-  loginMethod: String!
+  firstName: String! @trim
+  lastName: String! @trim
+  email: String @trim
+  phoneNumber: String! @trim
+  loginMethod: String! @trim
   photo: String
   userId:ID!
   cityId:ID!

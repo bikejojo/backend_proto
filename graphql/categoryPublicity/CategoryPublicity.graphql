@@ -1,8 +1,8 @@
 type CategoryPublicity {
     id:ID
-    description:String
-    entity_type:String
-    code:String
+    description:String @trim
+    entity_type:String @trim
+    code:String @trim
 
     categories:[Publicity] @hasMany
 }

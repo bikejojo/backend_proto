@@ -2,8 +2,8 @@ type StateReference {
     id: ID!
     stateId: Int!
     type: String!
-    descriptionState: String
-    observations: String
+    descriptionState: String @trim
+    observations: String @trim
     dateCreate: String
     stateType: StateType
 }

@@ -1,7 +1,7 @@
 type StateType {
   id: ID!
-  description: String!
-  entity_type: String
+  description: String! @trim
+  entity_type: String @trim
 
   state:Service @belongsTo
 }

@@ -1,11 +1,11 @@
 type Subcription {
         id:ID!
-        name:String
-        description:String
+        name:String @trim
+        description:String @trim
         createDate:String
         duration:String
-        durationDescription:String
+        durationDescription:String @trim
         price:String
-        codeSubcription:String
+        codeSubcription:String @trim
         status:String
 }

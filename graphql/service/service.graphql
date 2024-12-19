@@ -6,9 +6,9 @@ type Service {
     id_client:ID! @rename(attribute: "clientId")
     id_activity: ID! @rename(attribute: "activityId")
     typeClient:String!
-    titleService: String
-    serviceDescription:String
-    serviceLocation:String
+    titleService: String @tirm
+    serviceDescription:String @trim
+    serviceLocation:String @trim
     latitude:String
     longitude:String
     status:String

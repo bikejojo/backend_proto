@@ -1,6 +1,6 @@
 type Setting {
     id: ID!
-    sopport_number:String
+    sopport_number:String @trim
     screens:JSON
     dateRegistered: String!
 }
