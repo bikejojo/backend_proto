@@ -110,5 +110,8 @@ class DatabaseSeeder extends Seeder
 
         //suscripcion inicial
         Suscripcion::create(['name'=>'Suscripcion Free','description'=>'Duracion de 7 dias por Free','createDate'=>Carbon::now(),'duration'=> 7,'status'=>1,'durationDescription'=>'7 dias','price'=>0,'codeSubcription'=>'FREE']);
+        Suscripcion::create(['name'=>'Suscripcion Basic','description'=>'Duracion de 14 dias por basico','createDate'=>Carbon::now(),'duration'=> 14,'status'=>1,'durationDescription'=>'14 dias','price'=>12.50,'codeSubcription'=>'BASIC']);
+        Suscripcion::create(['name'=>'Suscripcion Esencial','description'=>'Duracion de 30 dias por esencial','createDate'=>Carbon::now(),'duration'=> 30,'status'=>1,'durationDescription'=>'30 dias','price'=>25.0,'codeSubcription'=>'ESENCIAL']);
+        Suscripcion::create(['name'=>'Suscripcion Premiun','description'=>'Duracion de 60 dias por premium','createDate'=>Carbon::now(),'duration'=> 60,'status'=>1,'durationDescription'=>'60 dias','price'=>60.0,'codeSubcription'=>'PREMIUN']);
     }
 }

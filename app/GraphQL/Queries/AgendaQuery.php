@@ -134,7 +134,7 @@ class AgendaQuery{
             });
 
             return [
-                'message' => 'Listado de agenda',
+                'message' => 'Listado de agenda de clientes Externos',
                 'content' => $agenda
             ];
         } catch(\Exception $e){

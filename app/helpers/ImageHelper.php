@@ -38,7 +38,7 @@ class ImageHelper
     public static function createDirectorie($objetoId,$value){
         if($value == 1){
             Storage::makeDirectory('public/' . $objetoId . '/id_card');
-            Storage::makeDirectory('public/' . $objetoId . '/photo');
+            Storage::makeDirectory('public/' . $objetoId . '/profile');
         }
         if($value==2){
             Storage::makeDirectory('public/' . 'client_'.$objetoId . '/photo');

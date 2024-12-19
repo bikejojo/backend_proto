@@ -9,7 +9,7 @@ type Request {
     latitude:String
     longitude:String
     reference_phone:String @trim
-    status:String!
+    status:String
     registrationDateTime:String
 
     technician:Technician! @belongsTo
