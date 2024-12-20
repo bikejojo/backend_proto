@@ -11,7 +11,7 @@ use App\Models\Tipo_Actividad;
 use App\Models\Suscripcion;
 use App\Models\Skills_group;
 use App\Models\Group;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Sub_group;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 
@@ -67,29 +67,31 @@ class DatabaseSeeder extends Seeder
         Habilidad::create(['name' => 'Limpieza General']); //1
         Habilidad::create(['name' => 'Tecnico en telefonia movil']); //2
 
-/*
-        Habilidad::create(['name' => 'Aires Acondicionados']); //1
-        Habilidad::create(['name' => 'Calefonos']); //1
-        Habilidad::create(['name' => 'Electricistas']); //1
-        Habilidad::create(['name' => 'Plomero']); //1
-        Habilidad::create(['name' => 'Piscinero / Jardineria']); //3
-        Habilidad::create(['name' => 'Veterinario']); //3
-        Habilidad::create(['name' => 'Pintores']); //4
-        Habilidad::create(['name' => 'Cocinas / Helederas / Lavadoras / Hornos']); //1
-        Habilidad::create(['name' => 'Zapatero']);
-        Habilidad::create(['name' => 'Lava autos']); //4
-        Habilidad::create(['name' => 'Cambios de aceites / Recojo de vehiculos']); //4
-        Habilidad::create(['name' => 'Baterias']); //4
-        Habilidad::create(['name' => 'Servicio de computacion']); //4
-        Habilidad::create(['name' => 'Copia de llaves']); //2
-        Habilidad::create(['name' => 'Servicio de grua']); //2
-        Habilidad::create(['name' => 'Catering / Churrasquero']); //2
-        Habilidad::create(['name' => 'Garzones']); //1
-        Habilidad::create(['name' => 'Alquiler sillas, Mesas , Vajillas']); //2
-        Habilidad::create(['name' => 'Barra de bebidas / Licoreria']); //2
-        Habilidad::create(['name' => 'Grupo musica, mariachi, bandas']); //2
 
-        #
+        Sub_group::create(['description' => 'Aires Acondicionados', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Calefonos', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Electricistas', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Plomero', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Piscinero / Jardineria', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Veterinario', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Pintores', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Cocinas / Heladeras / Lavadoras / Hornos', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Zapatero', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Lava autos', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Cambios de aceites / Recojo de vehículos', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Baterías', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Servicio de computación', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Copia de llaves', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Servicio de grúa', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Catering / Churrasquero', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Garzones', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Alquiler sillas, mesas, vajillas', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Barra de bebidas / Licorería', 'createDate' => now()]);
+        Sub_group::create(['description' => 'Grupo musical, mariachi, bandas', 'createDate' => now()]);
+
+
+/*
+
 
 /*
         Group::create(['name'=>'Servicios Técnicos y de Mantenimiento']);
@@ -119,33 +121,7 @@ class DatabaseSeeder extends Seeder
         Skills_group::create(['groupId'=>4,'skillsId'=>12]);
         Skills_group::create(['groupId'=>4,'skillsId'=>13]);
 
-/*
-        #grupo de habilidades
-        Skills_group::create(['groupId'=>1,'skillsId'=>1]);
-        Skills_group::create(['groupId'=>1,'skillsId'=>2]);
-        Skills_group::create(['groupId'=>1,'skillsId'=>3]);
-        Skills_group::create(['groupId'=>1,'skillsId'=>4]);
-        Skills_group::create(['groupId'=>1,'skillsId'=>5]);
-        Skills_group::create(['groupId'=>1,'skillsId'=>7]);
-        Skills_group::create(['groupId'=>1,'skillsId'=>8]);
-        Skills_group::create(['groupId'=>1,'skillsId'=>11]);
-        Skills_group::create(['groupId'=>1,'skillsId'=>12]);
-        Skills_group::create(['groupId'=>1,'skillsId'=>13]);
 
-        Skills_group::create(['groupId'=>2,'skillsId'=>6]);
-        Skills_group::create(['groupId'=>2,'skillsId'=>9]);
-        Skills_group::create(['groupId'=>2,'skillsId'=>14]);
-
-        Skills_group::create(['groupId'=>3,'skillsId'=>10]);
-        Skills_group::create(['groupId'=>3,'skillsId'=>15]);
-
-        Skills_group::create(['groupId'=>4,'skillsId'=>16]);
-        Skills_group::create(['groupId'=>4,'skillsId'=>17]);
-        Skills_group::create(['groupId'=>4,'skillsId'=>18]);
-        Skills_group::create(['groupId'=>4,'skillsId'=>19]);
-        Skills_group::create(['groupId'=>4,'skillsId'=>20]);
-
-*/
         #agenda
         Tipo_Actividad::create(['description'=>'mantenimiento','entity_type'=>'service']);
         Tipo_Actividad::create(['description'=>'reparacion','entity_type'=>'service']);

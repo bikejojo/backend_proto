@@ -219,6 +219,8 @@ class SubcritionMutations
         }
 
         $suscripcion = Suscripcion::where('id',$subscriptionAssociation->subcriptionsId)->first();
+        $suscripcion->createDate = $suscripcion->now()->addDays(2);
+        $suscripcion->save();
         return [
             'message' => 'El técnico está asociado a una suscripción.',
             'result' => true ,
