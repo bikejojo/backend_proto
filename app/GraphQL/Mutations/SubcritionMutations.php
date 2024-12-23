@@ -195,7 +195,7 @@ class SubcritionMutations
         }
     }
 
-    public function technicalSubscription($root, array $args){
+    /*public function technicalSubscription($root, array $args){
 
         $subcriptionData = $args['requestSubcription'];
         $technician = Tecnico::find($subcriptionData['technicianId']);
@@ -227,7 +227,50 @@ class SubcritionMutations
             'technician' => $technician,
             'suscripcion' => $suscripcion
         ];
+    }*/
+    public function technicalSubscription($root, array $args)
+    {
+        $subcriptionData = $args['requestSubcription'];
+        $technician = Tecnico::find($subcriptionData['technicianId']);
+
+        // Verificar si el técnico existe
+        if (!$technician) {
+            return [
+                'message' => 'No existe el técnico.',
+                'result' => false,
+            ];
+        }
+
+        // Verificar si el técnico tiene una suscripción activa
+        $subscriptionAssociation = Technician_subcripcion::where('technicianId', $technician->id)
+            ->leftjoin('subcriptions', 'technician_subcription.subcriptionsId', '=', 'subcriptions.id')
+            ->where('subcriptions.status', 1) // Suscripción activa
+            ->whereDate('technician_subcription.endDateSubcription', '>=', Carbon::now()) // No vencida
+            ->select(
+                'subcriptions.name',
+                'subcriptions.description',
+                'subcriptions.codeSubcription',
+                'technician_subcription.starDateSubcription',
+                'technician_subcription.endDateSubcription'
+            )
+            ->first();
+
+        if (!$subscriptionAssociation) {
+            return [
+                'message' => 'El técnico no está asociado a una suscripción activa o esta ya ha expirado.',
+                'result' => false,
+                'technician' => $technician,
+            ];
+        }
+
+        return [
+            'message' => 'El técnico tiene una suscripción activa y vigente.',
+            'result' => true,
+            'technician' => $technician,
+            'subscription' => $subscriptionAssociation,
+        ];
     }
+
 
     public function registerSubcriptionTechncian($root, array $args){
 

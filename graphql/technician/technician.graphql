@@ -5,7 +5,7 @@ type Technician @model(class: "App\\Models\\Tecnico"){
   frontIdCard: String @trim
   backIdCard: String @trim
   email: String @trim
-  phoneNumber: String @trim
+  phoneNumber: String
   password: String! @trim
   photo: String @trim
   userId: String! @trim

@@ -12,8 +12,8 @@ class Technician_subcripcion extends Model
     protected $fillable = [
         'technicianId',
         'subcriptionsId',
-        'starDate',
-        'endDate'
+        'starDateSubcription',
+        'endDateSubcription'
     ];
 
     public function suscripcion()

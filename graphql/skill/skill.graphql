@@ -1,7 +1,7 @@
 type Skill {
   id_skill: ID @rename (attribute: "id")
-  name: String! @trim
+  name: String!
 
-  technicianSkills: [TechnicianSkill!]! @hasMany
+  technicianSkills: [TechnicianSkill] @hasMany
   groupSkill:[Skill] @hasMany
 }

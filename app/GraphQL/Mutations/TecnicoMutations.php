@@ -154,14 +154,14 @@ class TecnicoMutations {
         $technician = Tecnico::find($technicianId);
         $userId = $technician->userId;
         $user = User::find($userId);
-
-        if(!isset($technicianData['password'])){
-            $technicianData['password'] = $user->password;
+        if (empty($technicianData['password'])) {
+            $hashedPassword = $user->password;
+        } else {
+            $hashedPassword = Hash::make($technicianData['password']);
         }
-        //actualizar user para todo
         $email = strtolower(trim($technicianData['email']));
         $user->email = $email;
-        $user->password = Hash::make($technicianData['password']);
+        $user->password = $hashedPassword;
         $user->type_user = $technicianData['type_user'];
         $user->save();
         //
@@ -169,7 +169,6 @@ class TecnicoMutations {
         $technician->lastName = $technicianData['lastName'];
         $technician->email = $email;
         $technician->phoneNumber = $technicianData['phoneNumber'];
-        $technician->password = Hash::make($technicianData['password']);
         $technician->userId = $user->id;
         $technician->cityId = $technicianData['cityId'];
         $technician->save();
@@ -202,7 +201,7 @@ class TecnicoMutations {
             $technician->save();
         }
         $skillsData = Tecnico_Habilidad::where('technicianId',$technicianId)
-        ->get();
+                        ->get();
         $ha=[];
             foreach($skillsData as $habilidad_tec) {
                 if ($habilidad_tec->skill) {

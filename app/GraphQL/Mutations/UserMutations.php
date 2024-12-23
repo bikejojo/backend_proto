@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Models\Cliente_Interno;
 use App\Models\Tecnico_Habilidad;
 use Illuminate\Support\Facades\Auth;
 
@@ -147,6 +148,9 @@ class UserMutations{
 
         // Obtener cliente asociado
         $client = $user->clientsExterns()->first();
+        //dd($user);
+        $client1 =Cliente_Interno::where('internal_clients.userId',$user->id)->first();
+        //dd(Cliente_Interno::all());
 
         // Crear token con Sanctum
         $tokens = $user->createToken('authToken')->plainTextToken;
@@ -158,7 +162,7 @@ class UserMutations{
             return [
                 'message' => 'Login exitoso',
                 'user' => $user,
-                'client' => $client
+                'client' => $client1
             ];
         } else {
             return [

@@ -66,6 +66,7 @@ class DatabaseSeeder extends Seeder
         Habilidad::create(['name' => 'Tecnico en electrodomesticos']); //2
         Habilidad::create(['name' => 'Limpieza General']); //1
         Habilidad::create(['name' => 'Tecnico en telefonia movil']); //2
+        Habilidad::create(['name' => 'Veterinario(a)']); //2
 
 
         Sub_group::create(['description' => 'Aires Acondicionados', 'createDate' => now()]);

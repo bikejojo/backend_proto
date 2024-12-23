@@ -101,7 +101,11 @@ class ClienteInternoMutations{
             $lastName = trim($clientData['lastName']);
             $email = trim($clientData['email']);
             $phone = trim($clientData['phoneNumber']);
-            $password = $clientData['password'];
+            if (empty($technicianData['password'])) {
+                $hashedPassword = $user->password;
+            } else {
+                $hashedPassword = Hash::make($clientData['password']);
+            }
             $client->firstName=$firstName;
             $client->lastName=$lastName;
             $client->email=$email;
@@ -121,7 +125,7 @@ class ClienteInternoMutations{
             }
             $client->save();
             $user->email = $email ?? $user->email;
-            $user->password = $password;
+            $user->password = $hashedPassword;
             $user->save();
             DB::commit();
             return[

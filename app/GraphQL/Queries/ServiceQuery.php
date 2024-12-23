@@ -60,10 +60,7 @@ class ServiceQuery
     public function getExternalClientEarring($root , array $args){
         $serviceData = $args['id'];
         $technician = ValidationModels::validationTechnician($serviceData);
-        /*$technician = Tecnico::find($serviceData);
-        if(is_null($technician)){
-            return [ 'message'=>'No existe tecnico'];
-        }*/
+
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_external)

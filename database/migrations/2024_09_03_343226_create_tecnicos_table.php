@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('frontIdCard')->nullable();  // Traducción de 'carnet_anverso'
             $table->string('backIdCard')->nullable();   // Traducción de 'carnet_reverso'
             $table->string('email')->nullable();
-            $table->string('phoneNumber');  // Traducción de 'telefono'
+            $table->string('phoneNumber')->nullable();  // Traducción de 'telefono'
             $table->string('password');     // Traducción de 'contrasenia'
             $table->string('photo')->nullable();  // Traducción de 'foto'
             $table->decimal('average_rating')->default(0)->nullable();

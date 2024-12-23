@@ -20,8 +20,8 @@ class StatusAssigner{
      */
 
     const PENDING  = 1;
-    const REJECTED = 2;
-    const ACCEPT   = 3;
+    const REJECTED = 3;
+    const ACCEPT   = 2;
     const FINISH   = 4;
     // Constantes para los estados de solicitud
     const REQUEST_PENDING = 'pendiente por aceptar.';

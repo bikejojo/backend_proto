@@ -130,7 +130,7 @@ class SolicitudesMutations
             $request = ValidationModels::validationRequest($requestId);
             $cliente = ValidationModels::validationclientInternal($clientId);
             $tecnico = ValidationModels::validationTechnician($tecnicoId);
-            StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El tecnic acepto la solicitud',4);
+            StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El tecnico acepto la solicitud',4);
             $request->save();
             $_request = Solicitud::find($request->id);
             $agenda = ValidationModels::validationAgenda($tecnico->id);

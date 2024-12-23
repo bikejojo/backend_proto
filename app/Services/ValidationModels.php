@@ -43,7 +43,7 @@ class ValidationModels{
         }
     }
     public static function validationclientExternal($objeto){
-        if(!Cliente_Externo::finc($objeto)){
+        if(!Cliente_Externo::find($objeto)){
             return[
                 'message' => 'No existe Cliente Externo.'
             ];

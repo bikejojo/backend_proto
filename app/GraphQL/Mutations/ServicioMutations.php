@@ -288,20 +288,9 @@ class ServicioMutations
         }*/
 
         $client = ValidationModels::validationclientInternal($clientId);
-        /*$client = Cliente_Interno::find($clientId);
-        if (is_null($client)) {
-            return [
-                'message' => 'Cliente no encontrado.',
-            ];
-        }*/
+
 
         $technician = ValidationModels::validationTechnician($technicianId);
-        /*$technician = Tecnico::find($technicianId);
-        if (is_null($technician)) {
-            return [
-                'message' => 'Técnico no encontrado.',
-            ];
-        }*/
 
         DB::beginTransaction();
         try {
