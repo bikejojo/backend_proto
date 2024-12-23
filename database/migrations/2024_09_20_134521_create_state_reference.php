@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('referenceId');
             $table->unsignedBigInteger('stateId');
+            $table->unsignedBigInteger('clientId');
+            $table->unsignedBigInteger('typeClient');
             $table->string('type');
             $table->string('descriptionState')->nullable();
             $table->string('observations')->nullable();

@@ -19,7 +19,7 @@ use App\Services\ValidationModels;
 
 class SolicitudesMutations
 {
-    public static  $entity_type = 'request';
+    public static  $entity_type = StatusAssigner::ENTITY_REQUEST;
     protected $now;
 
     public function __construct()
@@ -151,7 +151,7 @@ class SolicitudesMutations
                 'status' => StateCatalog::STATUS_ACTIVE
             ]);
             //$service->stateId=1;
-            StatusAssigner::assignStatService($service,$this->now,'service','Se inicio un servicio al cliente',1);
+            StatusAssigner::assignStatService($service,$this->now,StatusAssigner::ENTITY_SERVICE,'Se inicio un servicio al cliente',1);
             $service->save();
 
             $serviceId = $service->id;
@@ -173,7 +173,6 @@ class SolicitudesMutations
             ]);
 
             $history=Historial_Servicios::where('jobId',$request->id)->where('descriptionJob',1)->first();
-            //dd($history);
             $history->finishDate=$service->createdDateTime;
             $history->save();
 

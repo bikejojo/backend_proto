@@ -29,6 +29,8 @@ class StatusAssigner{
     const REQUEST_REJECTED_C = 'rechazado por cliente.';
     const REQUEST_ACCEPTED_T = 'aceptado por tecnico.';
 
+    const ENTITY_REQUEST = 'request';
+    const ENTITY_SERVICE = 'service';
 
     // Constantes para los estados de servicio
     const SERVICE_PENDING = 'pendiente por acabar.';
