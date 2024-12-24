@@ -15,6 +15,8 @@ class StateReference extends Model
         'referenceId',
         'stateId',
         'type',
+        //'requestId',
+        //'serviceId'.
         'descriptionState',
         'observations',
         'dateCreate',

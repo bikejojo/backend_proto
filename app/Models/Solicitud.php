@@ -20,6 +20,7 @@ class Solicitud extends Model
         'requestDescription',
         'latitude',
         'longitude',
+        'requestLocation',
         'reference_phone',
         'status',
         'registrationDateTime',

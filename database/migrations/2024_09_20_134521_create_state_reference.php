@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('state_reference', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('referenceId');
-            $table->unsignedBigInteger('stateId');
+            $table->unsignedBigInteger('requestId')->nullable();
+            $table->unsignedBigInteger('serviceId')->nullable();
+            $table->unsignedBigInteger('type')->nullable();
+            $table->unsignedBigInteger('stateId')->nullable();
+            $table->unsignedBigInteger('technicianId')->nullable();
             $table->unsignedBigInteger('clientId');
             $table->unsignedBigInteger('typeClient');
-            $table->string('type');
             $table->string('descriptionState')->nullable();
             $table->string('observations')->nullable();
             $table->datetime('dateCreate')->nullable();

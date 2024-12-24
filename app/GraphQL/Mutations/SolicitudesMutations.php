@@ -47,7 +47,7 @@ class SolicitudesMutations
                 'activityId' => $requestData['id_activity']
             ]);
 
-            StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El cliente solicito un servicio',1);
+            StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El cliente creo una solicitud nueva.',1);
             $request->registrationDateTime = $this->now;
             $request->save();
 
@@ -81,7 +81,7 @@ class SolicitudesMutations
         // tipo 3
         $requestId = $args['id'];
         $request = Solicitud::find($requestId);
-        $comments = $args['comments'];
+        $comments = 'Se cancelo la solicitud por el tecnico.';
         ###################################3
         $clientId = $request->clientId;
         $tecnicoId=$request->technicianId;
@@ -101,14 +101,14 @@ class SolicitudesMutations
     public function cancelRequestClient($root,array $args){
         // tipo 2
         $requestId = $args['id'];
-        $comments = $args['comments'];
+        $comments = 'La solicitud fue rechazada por el cliente.';
         $request = ValidationModels::validationRequest($requestId);
         ###################################3
         $clientId = $request->clientId;
         $tecnicoId=$request->technicianId;
         $cliente = Cliente_Interno::find($clientId);
         $tecnico = Tecnico::find($tecnicoId);
-        $stateAssign = StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,$comments,3);
+        StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,$comments,3);
         $_request = Solicitud::find($request->id);
         $request->save();
         return[
@@ -125,12 +125,13 @@ class SolicitudesMutations
         $clientId = $requestData['id_client'];
         $tecnicoId=$requestData['id_technician'];
         $visitDateTime=$requestData['visitDateTime'];
+        $comments = 'La solicitud fue aceptada por el tecnico.';
         DB::beginTransaction();
         try{
             $request = ValidationModels::validationRequest($requestId);
             $cliente = ValidationModels::validationclientInternal($clientId);
             $tecnico = ValidationModels::validationTechnician($tecnicoId);
-            StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El tecnico acepto la solicitud',4);
+            StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,$comments,4);
             $request->save();
             $_request = Solicitud::find($request->id);
             $agenda = ValidationModels::validationAgenda($tecnico->id);
@@ -150,8 +151,9 @@ class SolicitudesMutations
                 'updatedDateTime' => $visitDateTime,
                 'status' => StateCatalog::STATUS_ACTIVE
             ]);
-            //$service->stateId=1;
-            StatusAssigner::assignStatService($service,$this->now,StatusAssigner::ENTITY_SERVICE,'Se inicio un servicio al cliente',1);
+            //$service->stateId=1
+            $_comments = 'Se creo un nuevo servicio por la solicitud recien creada.';
+            StatusAssigner::assignStatService($service,$this->now,StatusAssigner::ENTITY_SERVICE,$_comments,1);
             $service->save();
 
             $serviceId = $service->id;
