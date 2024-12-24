@@ -19,50 +19,50 @@ class ClienteExternoMutations{
         $tecnico = ValidationModels::validationTechnician($tecnicoId);
         $phone = $clienteData['phoneNumber'];
 
-        // Inicializar para evitar error de variable no definida
+        // Inicializar variable cliente
         $cliente = null;
-
-        // Verificar si el cliente ya existe para el mismo técnico
-        $existe = Cliente_Externo::join('associationTechnClient', 'external_clients.id', '=', 'associationTechnClient.clientId')
-            ->where('phoneNumber', $phone)
-            ->where('associationTechnClient.technicalId', $tecnicoId)
-            ->first();
 
         DB::beginTransaction();
         try {
-            // Si ya existe y está activo, retornamos un mensaje
-            if (isset($existe) && $existe->status === StateCatalog::STATUS_ACTIVE) {
-                DB::rollBack();
-                return [
-                    'message' => 'El cliente ya está registrado y activo en la lista de este técnico.',
-                    'customer_external' => $existe,
-                    'technical' => $tecnico
-                ];
-            }
-
-            // Verificar si el cliente existe globalmente
+            // 1. Buscar si el cliente existe globalmente (por teléfono)
             $cliente = Cliente_Externo::where('phoneNumber', $phone)->first();
 
-            // Si no existe, creamos uno nuevo
+            // 2. Si el cliente no existe, crearlo
             if (!$cliente) {
                 $cliente = Cliente_Externo::create([
                     'fullName' => $clienteData['fullName'],
                     'phoneNumber' => $clienteData['phoneNumber'],
-                    'status' => StateCatalog::STATUS_ACTIVE
+                    'status' => StateCatalog::STATUS_ACTIVE // Crear como activo por defecto
                 ]);
                 $cliente->save();
             }
 
-            // Crear la asociación con el técnico
-            Asociacion_Cliente_Tecnico::create([
+            // 3. Verificar si ya existe una asociación con este técnico
+            $asociacionExistente = Asociacion_Cliente_Tecnico::where('clientId', $cliente->id)
+                ->where('technicalId', $tecnicoId)
+                ->first();
+
+            // 4. Si la asociación ya existe, retornar mensaje sin duplicar
+            if ($asociacionExistente) {
+                DB::rollBack();
+                return [
+                    'message' => 'El cliente ya está asociado con este técnico.',
+                    'customer_external' => $cliente,
+                    'technical' => $tecnico
+                ];
+            }
+
+            // 5. Crear la asociación (sin importar el estado del cliente)
+            $asociacion = Asociacion_Cliente_Tecnico::create([
                 'clientId' => $cliente->id,
                 'technicalId' => $tecnico->id,
                 'dateTimeCreated' => Carbon::now(),
-            ])->save();
+            ]);
+            $asociacion->save();
 
             DB::commit();
             return [
-                'message' => 'Creación de cliente exitosa.',
+                'message' => 'Cliente registrado y asociado con el técnico exitosamente.',
                 'customer_external' => $cliente,
                 'technical' => $tecnico
             ];
@@ -74,6 +74,7 @@ class ClienteExternoMutations{
             ];
         }
     }
+
 
     public function update($root ,array $args){
         $clientData = $args['clientRequest'];
@@ -104,5 +105,45 @@ class ClienteExternoMutations{
         }
     }
 
+    public function reactivate($root, array $args) {
+        $clienteData = $args['clientRequest'];
+        $tecnicoId = $clienteData['technicalId'];
+        $phone = $clienteData['phoneNumber'];
+        $tecnico = ValidationModels::validationTechnician($tecnicoId);
 
+        // Buscar cliente inactivo para este técnico
+        $cliente = Cliente_Externo::join('associationTechnClient', 'external_clients.id', '=', 'associationTechnClient.clientId')
+            ->where('phoneNumber', $phone)
+            ->where('associationTechnClient.technicalId', $tecnicoId)
+            ->where('external_clients.status', StateCatalog::STATUS_LOW)
+            ->first();
+
+        if (!$cliente) {
+            return [
+                'message' => 'No se encontró un cliente inactivo con ese número para este técnico.',
+                'customer_external' => null,
+                'technical' => $tecnico
+            ];
+        }
+
+        DB::beginTransaction();
+        try {
+            // Reactivar el cliente cambiando el estado
+            $cliente->status = StateCatalog::STATUS_ACTIVE;
+            $cliente->save();
+
+            DB::commit();
+            return [
+                'message' => 'Cliente reactivado exitosamente.',
+                'customer_external' => $cliente,
+                'technical' => $tecnico
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'message' => 'Error al reactivar el cliente: ' . $e->getMessage(),
+                'customer_external' => null
+            ];
+        }
+    }
 }
