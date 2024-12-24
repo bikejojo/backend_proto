@@ -13,56 +13,68 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ClienteExternoMutations{
-    public function create($root, array $args){
+    public function create($root, array $args) {
         $clienteData = $args['clientRequest'];
         $tecnicoId = $clienteData['technicalId'];
-        // Crear el cliente en la base de datos
-        $tecnico = ValidationModels::validationTechnician($tecnicoId);//Tecnico::find($clienteData['technicalId']);
-        $phone=$clienteData['phoneNumber'];
-        $existe = Cliente_Externo::join('associationTechnClient','external_clients.id','=','associationTechnClient.clientId')
-        ->where('phoneNumber',$phone)->where('associationTechnClient.technicalId',$tecnicoId)->first();
+        $tecnico = ValidationModels::validationTechnician($tecnicoId);
+        $phone = $clienteData['phoneNumber'];
+
+        // Inicializar para evitar error de variable no definida
+        $cliente = null;
+
+        // Verificar si el cliente ya existe para el mismo técnico
+        $existe = Cliente_Externo::join('associationTechnClient', 'external_clients.id', '=', 'associationTechnClient.clientId')
+            ->where('phoneNumber', $phone)
+            ->where('associationTechnClient.technicalId', $tecnicoId)
+            ->first();
+
         DB::beginTransaction();
-        try{
-            if($existe){
-                if($existe->status === StateCatalog::STATUS_ACTIVE ){
-                    return [
-                        'message' => 'cliente se registro con anterioridad en la lista!'
-                    ];
-                }else{
-                    $existe->status = StateCatalog::STATUS_ACTIVE;
-                    $existe->save();
-                    return [
-                        'message' => 'cliente se volvio a habilitar!'
-                    ];
-                }
-            }else{
+        try {
+            // Si ya existe y está activo, retornamos un mensaje
+            if (isset($existe) && $existe->status === StateCatalog::STATUS_ACTIVE) {
+                DB::rollBack();
+                return [
+                    'message' => 'El cliente ya está registrado y activo en la lista de este técnico.',
+                    'customer_external' => $existe,
+                    'technical' => $tecnico
+                ];
+            }
+
+            // Verificar si el cliente existe globalmente
+            $cliente = Cliente_Externo::where('phoneNumber', $phone)->first();
+
+            // Si no existe, creamos uno nuevo
+            if (!$cliente) {
                 $cliente = Cliente_Externo::create([
                     'fullName' => $clienteData['fullName'],
                     'phoneNumber' => $clienteData['phoneNumber'],
                     'status' => StateCatalog::STATUS_ACTIVE
                 ]);
                 $cliente->save();
-                $asociacion = Asociacion_Cliente_Tecnico::create([
-                    'clientId' => $cliente->id,
-                    'technicalId' => $tecnico->id,
-                    'dateTimeCreated' => Carbon::now(),
-                ]);
-                    $asociacion->save();
             }
+
+            // Crear la asociación con el técnico
+            Asociacion_Cliente_Tecnico::create([
+                'clientId' => $cliente->id,
+                'technicalId' => $tecnico->id,
+                'dateTimeCreated' => Carbon::now(),
+            ])->save();
+
             DB::commit();
             return [
-                'message' => 'Creacion Cliente exitoso!',
+                'message' => 'Creación de cliente exitosa.',
                 'customer_external' => $cliente,
                 'technical' => $tecnico
             ];
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return [
-                'message' => 'El siguiente error es esto '.$e->getMessage(),
+                'message' => 'Error durante la creación: ' . $e->getMessage(),
+                'customer_external' => null
             ];
         }
     }
+
     public function update($root ,array $args){
         $clientData = $args['clientRequest'];
         $client = Cliente_Externo::find($clientData['id_client']);

@@ -101,19 +101,9 @@ class ServicioMutations
         $state = 4;
         $now=Carbon::now();
         $technicalId = ValidationModels::validationTechnician($serviceData['id_technician']);
-        /*$technicalId = Tecnico::find($serviceData['id_technician']);
-        if(is_null($technicalId)){
-            return [
-                'message' => 'Tecnico no existe'
-            ];
-        }*/
+
         $clientId = ValidationModels::validationclientExternal($serviceData['id_client']);
-        /*$clientId = Cliente_Externo::find($serviceData['id_client']);
-        if(is_null($clientId)){
-            return [
-                'message' => 'Cliente no existe'
-            ];
-        }*/
+
         $associant = Asociacion_Cliente_Tecnico::where('clientId',$serviceData['id_client'])
         ->where('technicalId',$serviceData['id_technician'])->first();
         if(is_null($associant)){
@@ -132,6 +122,7 @@ class ServicioMutations
                 'serviceDescription' => trim($serviceData['serviceDescription']),
                 'latitude' => $serviceData['latitude'],
                 'longitude' => $serviceData['longitude'],
+                'serviceLocation' => trim($serviceData['serviceLocation']),
                 'createdDateTime' => $now,
                 'updatedDateTime' => $serviceData['updatedDateTime'],
                 'status' => StateCatalog::STATUS_ACTIVE

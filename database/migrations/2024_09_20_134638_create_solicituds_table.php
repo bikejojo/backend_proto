@@ -27,7 +27,6 @@ return new class extends Migration
             $table->bigInteger('status');
             $table->foreign('technicianId')->references('id')->on('technicians');
             $table->foreign('clientId')->references('id')->on('internal_clients');
-            $table->foreign('stateId')->references('id')->on('state_reference'); // cambio que se debe hacer la momento de migrate
             $table->foreign('activityId')->references('id')->on('activity_types');
             $table->timestamps();
         });

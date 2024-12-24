@@ -12,11 +12,14 @@ class StateReference extends Model
     protected $PrimaryKey = 'id';
     protected $table = 'state_reference';
     protected $fillable = [
-        'referenceId',
+        //'referenceId',
         'stateId',
         'type',
-        //'requestId',
-        //'serviceId'.
+        'requestId',
+        'serviceId',
+        'technicianId',
+        'cientId',
+        'typeClient',
         'descriptionState',
         'observations',
         'dateCreate',

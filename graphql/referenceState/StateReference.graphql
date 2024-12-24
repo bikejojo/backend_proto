@@ -6,6 +6,6 @@ type StateReference {
     observations: String @trim
     dateCreate: String
     stateType: StateType
-    #requestId:ID
-    #serviceId:ID
+    requestId:ID
+    serviceId:ID
 }
