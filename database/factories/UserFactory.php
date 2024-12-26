@@ -30,7 +30,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('123'),
             'remember_token' => Str::random(10),
-            'ci' => $this->faker->unique()->numerify('########'),
+            #'ci' => $this->faker->unique()->numerify('########'),
             #'ci' => $this->faker->unique()->numerify(''), // Cliente Internos usar
             'type_user' => 2
         ];

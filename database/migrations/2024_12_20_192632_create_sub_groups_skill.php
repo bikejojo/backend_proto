@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('sub_groups_skill', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('groupId')->nullable();
+            $table->unsignedBigInteger('skillId')->nullable();
             $table->unsignedBigInteger('subGroupId')->nullable();
             $table->datetime('createDate');
-            $table->foreign('groupId')->references('id')->on('group');
+            $table->foreign('skillId')->references('id')->on('skills');
             $table->foreign('subGroupId')->references('id')->on('sub_groups');
             $table->timestamps();
         });
