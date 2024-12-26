@@ -10,8 +10,6 @@ use Carbon\Carbon;
 use App\Services\StatusAssigner;
 use App\Services\ValidationModels;
 
-use function PHPUnit\Framework\isEmpty;
-
 class RequestQuery
 {
     public static  $entity_type = 'request';
@@ -19,12 +17,6 @@ class RequestQuery
     public function requestsTechnicalId($root , array $args){
         $technicalId = $args['id'];
         $technical = ValidationModels::validationTechnician($technicalId);
-        /*$technical = Tecnico::find($technicalId);
-        if(!isset($technical)){
-            return [
-                'message' => 'No existe tecnico'
-            ];
-        }*/
 
         $technicaId = $technical->id;
         $requests = Solicitud::where('technicianId',$technicaId)
@@ -58,13 +50,6 @@ class RequestQuery
 
         // Obtener el cliente
         $client = ValidationModels::validationclientInternal($clientId);
-        /*$client = Cliente_Interno::find($clientId);
-        if (!$client) {
-            return [
-                'message' => 'No existe cliente'
-            ];
-        }*/
-
         // Obtener las solicitudes del cliente
         $requests = Solicitud::where('clientId', $clientId)
             ->leftjoin('technicians','requests.technicianId','=','technicians.id')
@@ -73,7 +58,6 @@ class RequestQuery
             ->orderBy('registrationDateTime', 'DESC')
             ->get();
 
-        //dd($requests);
 
         $_request = $requests->map(function ($request){
             return [
@@ -111,12 +95,12 @@ class RequestQuery
         $stateId = StatusAssigner::allowState(self::$entity_type);
 
         // Consulta principal
-        $query = Solicitud::where('technicianId', $technicianId)
+        $query = Solicitud::where('requests.technicianId', $technicianId)
             ->where('state_reference.type', 'request')
             ->leftjoin('internal_clients', 'requests.clientId', '=', 'internal_clients.id')
             ->leftjoin('users', 'internal_clients.userId', '=', 'users.id')
-            ->leftjoin('state_reference', 'state_reference.referenceId', '=', 'requests.id')
-            ->leftjoin('state_types', 'state_reference.stateId', '=', 'state_types.id')
+            ->leftjoin('state_reference', 'state_reference.requestId', '=', 'requests.id')
+            ->leftjoin('state_types', 'requests.stateId', '=', 'state_types.id')
             ->select(
                 'requests.*',
                 'state_types.id as state_type_id', // Alias para evitar colisiones con id_state en la tabla requests
@@ -127,7 +111,7 @@ class RequestQuery
             );
 
         if (in_array($statusId, $stateId)) {
-            $query->where('state_reference.stateId', $statusId);
+            $query->where('requests.stateId', $statusId);
         }
 
         if ($orderFilter) {
@@ -144,7 +128,7 @@ class RequestQuery
         // Mapea los resultados para cumplir con el esquema _requesttechnician
         $_request = $requests->map(function ($request) {
             return [
-                'request' => [
+                /*'request' => [
                     'id' => $request->id,
                     'id_client' => $request->clientId,
                     'id_technician' => $request->technicianId,
@@ -157,11 +141,11 @@ class RequestQuery
                     'reference_phone' => $request->reference_phone,
                     'status' => $request->status,
                     'registrationDateTime' => $request->registrationDateTime,
-                ],
+                ]*/
+                'request' => $request,
                 'client' => [
                     'fullName' => $request->firstName . ' ' . $request->lastName,
                     'phoneNumber' => $request->phoneNumber,
-                    'ci' => $request->ci,
                 ],
             ];
         });

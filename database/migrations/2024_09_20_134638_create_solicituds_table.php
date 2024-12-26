@@ -25,6 +25,7 @@ return new class extends Migration
             $table->text('reference_phone');
             $table->datetime('registrationDateTime')->nullable();
             $table->bigInteger('status');
+            $table->foreign('stateId')->references('id')->on('state_types');
             $table->foreign('technicianId')->references('id')->on('technicians');
             $table->foreign('clientId')->references('id')->on('internal_clients');
             $table->foreign('activityId')->references('id')->on('activity_types');

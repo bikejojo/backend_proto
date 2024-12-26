@@ -31,19 +31,9 @@ class ServicioMutations
     public function createInternal($root,array $args){
         $serviceData = $args['requestService'];
         $technicalId = ValidationModels::validationTechnician($serviceData['id_technician']);
-        /*$technicalId = Tecnico::find($serviceData['id_technician']);
-        if(is_null($technicalId)){
-            return [
-                'message' => 'Tecnico no existe'
-            ];
-        }*/
+
         $clientId = ValidationModels::validationclientInternal($serviceData['id_client']);
-        /*$clientId = Cliente_Interno::find($serviceData['id_client']);
-        if(is_null($clientId)){
-            return [
-                'message' => 'Cliente no existe'
-            ];
-        }*/
+
         DB::beginTransaction();
         try{
             $service = Servicio::create([
@@ -61,7 +51,7 @@ class ServicioMutations
                 'updatedDateTime' => $serviceData['updatedDateTime'],
                 'status' => StateCatalog::STATUS_ACTIVE
             ]);
-            $stateId = StatusAssigner::assignStatService($service,$this->entity_type,$this->now,'El servicio fue creado por el tecnico para cliente interno.',1);
+            StatusAssigner::assignStatService($service,$this->entity_type,$this->now,'El servicio fue creado por el tecnico para cliente interno.',1);
             $_service = Servicio::find($service->id);
             $_service->save();
             $agenda = Agenda_Tecnico::where('technicianId',$technicalId->id)->first();
@@ -98,10 +88,9 @@ class ServicioMutations
     // CREAR SERVICIO PARA CLIENTE EXTERNO
     public function createExternal($root,array $args){
         $serviceData = $args['requestService'];
-        $state = 4;
+
         $now=Carbon::now();
         $technicalId = ValidationModels::validationTechnician($serviceData['id_technician']);
-
         $clientId = ValidationModels::validationclientExternal($serviceData['id_client']);
 
         $associant = Asociacion_Cliente_Tecnico::where('clientId',$serviceData['id_client'])
@@ -168,12 +157,6 @@ class ServicioMutations
         $serviceDateTime = $serviceData['finishDateTime'];
 
         $service = ValidationModels::validationService($serviceId);
-        /*$service = Servicio::find($serviceId);
-        if(is_null($service->id)){
-            return [
-                'message' => 'Servicio no encontrado.'
-            ];
-        }*/
 
         DB::beginTransaction();
         try{
@@ -210,28 +193,10 @@ class ServicioMutations
         $serviceDateTime = Carbon::parse($serviceData['finishDateTime']);
 
         $service = ValidationModels::validationService($serviceId);
-        /*$service = Servicio::find($serviceId);
-        if (is_null($service)) {
-            return [
-                'message' => 'Servicio no encontrado.',
-            ];
-        }*/
 
         $client = ValidationModels::validationclientInternal($clientId);
-        /*$client = Cliente_Interno::find($clientId);
-        if (is_null($client)) {
-            return [
-                'message' => 'Cliente no encontrado.',
-            ];
-        }*/
 
         $technician = ValidationModels::validationTechnician($technicianId);
-        /*$technician = Tecnico::find($technicianId);
-        if (is_null($technician)) {
-            return [
-                'message' => 'Técnico no encontrado.',
-            ];
-        }*/
 
         DB::beginTransaction();
         try {
@@ -271,15 +236,8 @@ class ServicioMutations
         $comments = $serviceData['comments'];
         $serviceDateTime = Carbon::parse($serviceData['finishDateTime_technician']);
         $service = ValidationModels::validationService($serviceId);
-        /*$service = Servicio::find($serviceId);
-        if (is_null($service)) {
-            return [
-                'message' => 'Servicio no encontrado.',
-            ];
-        }*/
 
         $client = ValidationModels::validationclientInternal($clientId);
-
 
         $technician = ValidationModels::validationTechnician($technicianId);
 

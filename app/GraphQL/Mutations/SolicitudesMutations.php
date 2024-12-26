@@ -47,7 +47,6 @@ class SolicitudesMutations
                 'status'=>StateCatalog::STATUS_ACTIVE,
                 'activityId' => $requestData['id_activity']
             ]);
-
             StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El cliente creo una solicitud nueva.',1);
             $request->registrationDateTime = $this->now;
             $request->save();
@@ -56,7 +55,7 @@ class SolicitudesMutations
                 'clientId' => $client->id,
                 'technicianId' => $technician->id,
                 'jobId'=>$request->id,
-                'descriptionJob'=>1,
+                'descriptionJob'=>1, // request
                 'stateId'=> $request->stateId,
                 'outsetDate'=>$request->registrationDateTime,
                 'description'=>$request->requestDescription
@@ -102,7 +101,7 @@ class SolicitudesMutations
     public function cancelRequestClient($root,array $args){
         // tipo 2
         $requestId = $args['id'];
-        $comments = 'La solicitud fue rechazada por el cliente.';
+        $comments = 'La solicitud fue cancelada por el cliente.';
         $request = ValidationModels::validationRequest($requestId);
         ###################################3
         $clientId = $request->clientId;
@@ -127,11 +126,12 @@ class SolicitudesMutations
         $tecnicoId=$requestData['id_technician'];
         $visitDateTime=$requestData['visitDateTime'];
         $comments = 'La solicitud fue aceptada por el tecnico.';
+        $request = ValidationModels::validationRequest($requestId);
+        $cliente = ValidationModels::validationclientInternal($clientId);
+        $tecnico = ValidationModels::validationTechnician($tecnicoId);
         DB::beginTransaction();
         try{
-            $request = ValidationModels::validationRequest($requestId);
-            $cliente = ValidationModels::validationclientInternal($clientId);
-            $tecnico = ValidationModels::validationTechnician($tecnicoId);
+
             StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,$comments,4);
             $request->save();
             $_request = Solicitud::find($request->id);
@@ -183,7 +183,7 @@ class SolicitudesMutations
                 'clientId' => $cliente->id,
                 'technicianId' => $tecnico->id,
                 'jobId'=>$service->id,
-                'descriptionJob'=>2,
+                'descriptionJob'=>2, //service
                 'outsetDate'=>$service->createdDateTime,
                 'description'=>'El tecnico ha confirmado la solicitud'
             ]);

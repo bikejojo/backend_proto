@@ -37,6 +37,7 @@ class ClienteExternoMutations{
                 $cliente = Cliente_Externo::create([
                     'fullName' => $clienteData['fullName'],
                     'phoneNumber' => $clienteData['phoneNumber'],
+                    'status' => StateCatalog::STATUS_ACTIVE,
                 ]);
                 $asociacion = Asociacion_Cliente_Tecnico::create([
                     'dateTimeCreated' => Carbon::now(),
@@ -92,12 +93,15 @@ class ClienteExternoMutations{
     public function reactivate($root, array $args) {
         $clienteData = $args['clientRequest'];
         $tecnicoId = $clienteData['technicalId'];
+        $clientId  = $clienteData['clientId'];
         $phone = $clienteData['phoneNumber'];
+        $cliente = ValidationModels::validationclientExternal($clientId);
         $tecnico = ValidationModels::validationTechnician($tecnicoId);
 
         // Buscar cliente inactivo para este técnico
         $cliente = Cliente_Externo::join('associationTechnClient', 'external_clients.id', '=', 'associationTechnClient.clientId')
             ->where('phoneNumber', $phone)
+            ->where('id',$clientId)
             ->where('associationTechnClient.technicalId', $tecnicoId)
             ->where('external_clients.status', StateCatalog::STATUS_LOW)
             ->first();

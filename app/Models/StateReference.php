@@ -18,20 +18,23 @@ class StateReference extends Model
         'requestId',
         'serviceId',
         'technicianId',
-        'cientId',
+        'clientId',
         'typeClient',
         'descriptionState',
         'observations',
         'dateCreate',
     ];
 
-    public function servicio()
-    {
-        return $this->belongsTo(Servicio::class, 'referenceId', 'id');
-    }
 
     public function stateType()
     {
         return $this->belongsTo(Tipo_Estado::class, 'stateId', 'id');
+    }
+
+    public function services(){
+        return $this->belongsTo(Servicio::class,'serviceId','id');
+    }
+    public function request(){
+        return $this->belongsTo(Solicitud::class,'requestId','id');
     }
 }

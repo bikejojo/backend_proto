@@ -23,10 +23,7 @@ class ServiceQuery
         $serviceData = $args['id'];
         //dd($serviceData);
         $technician = ValidationModels::validationTechnician($serviceData);
-        /*$technician = Tecnico::find($serviceData);
-        if(is_null($technician)){
-            return [ 'message'=>'No existe tecnico'];
-        }*/
+
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_external)
@@ -64,10 +61,11 @@ class ServiceQuery
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_external)
-        ->where('state_reference.stateId', 1)
+        ->where('services.stateId', 1)
+        ->where('state_reference','service')
         ->select('services.*','external_clients.*')
         ->leftjoin('external_clients','services.clientId','=','external_clients.id')
-        ->leftjoin('state_reference','services.id','=','state_reference.referenceId')
+        ->leftjoin('state_reference','services.id','=','state_reference.serviceId')
         ->leftjoin('state_types','state_reference.stateId','=','state_types.id')
         ->orderBy('updatedDateTime','DESC')
         ->get();
@@ -97,14 +95,10 @@ class ServiceQuery
     public function getExternalClientOver($root , array $args){
         $serviceData = $args['id'];
         $technician = ValidationModels::validationTechnician($serviceData);
-        /*$technician = Tecnico::find($serviceData);
-        if(is_null($technician)){
-            return [ 'message'=>'No existe tecnico'];
-        }*/
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_external)
-        ->where('state_reference.stateId',4)
+        ->where('service.stateId',4)
         ->select('services.*','external_clients.*')
         ->leftjoin('external_clients','services.clientId','=','external_clients.id')
         ->leftjoin('state_reference','services.id','=','state_reference.referenceId')
@@ -139,10 +133,6 @@ class ServiceQuery
     public function getInternalClient($root , array $args){
         $serviceData = $args['id'];
         $technician = ValidationModels::validationTechnician($serviceData);
-        /*$technician = Tecnico::find($serviceData);
-        if(is_null($technician)){
-            return [ 'message'=>'No existe tecnico'];
-        }*/
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_internal)
@@ -177,10 +167,6 @@ class ServiceQuery
     public function getInternalClientEarring($root , array $args){
         $serviceData = $args['id'];
         $technician = ValidationModels::validationTechnician($serviceData);
-        /*$technician = Tecnico::find($serviceData);
-        if(is_null($technician)){
-            return [ 'message'=>'No existe tecnico'];
-        }*/
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_internal)
@@ -218,10 +204,6 @@ class ServiceQuery
     public function getInternalClientOver($root , array $args){
         $serviceData = $args['id'];
         $technician = ValidationModels::validationTechnician($serviceData);
-        /*$technician = Tecnico::find($serviceData);
-        if(is_null($technician)){
-            return [ 'message'=>'No existe tecnico'];
-        }*/
 
         $service = Servicio::where('technicalId',$technician->id)
         ->where('typeClient',self::client_internal)
@@ -263,10 +245,7 @@ class ServiceQuery
         $technicianId = $serviceData['id_technician'];
         $activityId = $serviceData['id_activity'];
         $technician = ValidationModels::validationTechnician($technicianId);
-        /*$technician = Tecnico::find($technicianId);
-        if(is_null($technician)){
-            return [ 'message'=>'No existe tecnico'];
-        }*/
+
         $query = Servicio::where('technicalId', $technician->id)
         ->where('typeClient', self::client_internal)
         ->leftJoin('internal_clients', 'services.clientId', '=', 'internal_clients.id')

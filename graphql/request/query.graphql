@@ -11,7 +11,7 @@ type responseTechnicalId {
 }
 
 type _requesttechnician {
-    request:_requests
+    request:Request
     client:_client
 }
 

@@ -1,11 +1,14 @@
 type StateReference {
     id: ID!
-    stateId: Int!
+    stateId: ID
+    requestId: ID
+    serviceId: ID
     type: String!
+    technicianId: ID
+    clientId: ID
+    typeClient: ID
     descriptionState: String @trim
     observations: String @trim
     dateCreate: String
     stateType: StateType
-    requestId:ID
-    serviceId:ID
 }
