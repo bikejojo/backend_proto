@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace App\GraphQL\Mutations;
 
@@ -10,8 +10,8 @@ use App\Models\Promocion;
 use App\Models\Technician_subcripcion;
 use Carbon\Carbon;
 use App\Services\StateCatalog;
+use App\Services\ValidationModels;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Expr\AssignOp\Concat;
 
 class SubcritionMutations
 {
@@ -22,7 +22,7 @@ class SubcritionMutations
     }
     public function creaSubcription($root, array $args){
         $subcriptionData = $args['requestSubcription'];
-        //dd($subcriptionData);
+
         $now = $this->now;
         DB::beginTransaction();
         try {
@@ -195,39 +195,6 @@ class SubcritionMutations
         }
     }
 
-    /*public function technicalSubscription($root, array $args){
-
-        $subcriptionData = $args['requestSubcription'];
-        $technician = Tecnico::find($subcriptionData['technicianId']);
-
-        // Verificar si el técnico existe
-        if (!$technician) {
-            return [
-                'message' => 'No existe el técnico.',
-            ];
-        }
-
-        // Verificar si el técnico tiene una asociación con alguna suscripción
-        $subscriptionAssociation = Technician_subcripcion::where('technicianId', $technician->id)->first();
-
-        if (!$subscriptionAssociation) {
-            return [
-                'message' => 'El técnico no está asociado a ninguna suscripción.',
-                'result' => false ,
-                'technician' => $technician
-            ];
-        }
-
-        $suscripcion = Suscripcion::where('id',$subscriptionAssociation->subcriptionsId)->first();
-        $suscripcion->createDate = $suscripcion->now()->addDays(2);
-        $suscripcion->save();
-        return [
-            'message' => 'El técnico está asociado a una suscripción.',
-            'result' => true ,
-            'technician' => $technician,
-            'suscripcion' => $suscripcion
-        ];
-    }*/
     public function technicalSubscription($root, array $args)
     {
         $subcriptionData = $args['requestSubcription'];
@@ -243,8 +210,8 @@ class SubcritionMutations
 
         // Verificar si el técnico tiene una suscripción activa
         $subscriptionAssociation = Technician_subcripcion::where('technicianId', $technician->id)
+            ->where('technician_subcription.status', 1) // Suscripción activa
             ->leftjoin('subcriptions', 'technician_subcription.subcriptionsId', '=', 'subcriptions.id')
-            ->where('subcriptions.status', 1) // Suscripción activa
             ->whereDate('technician_subcription.endDateSubcription', '>=', Carbon::now()) // No vencida
             ->select(
                 'subcriptions.name',
@@ -275,14 +242,8 @@ class SubcritionMutations
     public function registerSubcriptionTechncian($root, array $args){
 
         $subcriptionData = $args['requestSubcription'];
-        $technician = Tecnico::find($subcriptionData['technicianId']);
-
-        // Verificar si el técnico existe
-        if (!$technician) {
-            return [
-                'message' => 'No existe el técnico.',
-            ];
-        }
+        //$technician = Tecnico::find($subcriptionData['technicianId']);
+        $technician = ValidationModels::validationTechnician($subcriptionData['technicianId']);
 
         $subcription = Suscripcion::find($subcriptionData['subcriptionId']);
 
@@ -301,7 +262,6 @@ class SubcritionMutations
             $newSubscription->starDate = Carbon::now();
             $newSubscription->endDate = $now->addDay($subcription->duration);
             $newSubscription->save();
-            //dd($newSubscription);
         DB::commit();
         return [
             'message' => 'El registro de suscripcion fue exitosa.',
@@ -315,5 +275,20 @@ class SubcritionMutations
                 'message' => 'sucedio un problema al registrar su suscripcion. ' . $e->getMessage()
             ];
         }
+    }
+
+    public function disableExpirateSuscription(){
+        $expiredSuscription = Technician_subcripcion::where('technician_subcription.endDateSubcription','<',$this->now)
+        ->where('status',1)->get();
+
+        foreach ($expiredSuscription as $suscripcion){
+            $suscripcion->update(['status'=>0]);
+            $technician = Tecnico::find($suscripcion->technicianId);
+            $technician->update(['status'=>0]);
+        }
+        return [
+            'message' => 'Suscripciones expiradas desactivadas exitosamente.',
+            'count' => count($expiredSuscription)
+        ];
     }
 }

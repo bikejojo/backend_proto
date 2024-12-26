@@ -15,26 +15,6 @@ type _requesttechnician {
     client:_client
 }
 
-type _requests {
-    id:ID
-    id_client:ID
-    id_technician:ID
-    id_state:ID
-    id_activity:ID
-    titleRequests:String
-    requestDescription:String
-    latitude:String
-    longitude:String
-    reference_phone:String
-    status:String
-    registrationDateTime:String
-}
-
-type _technician {
-    fullName:String
-    phoneNumber:String
-    ci:String
-}
 
 type responseClientId {
     message:String

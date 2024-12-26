@@ -15,3 +15,7 @@ Artisan::command('inspire', function () {
 Artisan::command('update:Expired',function(){
     $this->call(\App\Console\Commands\UpdateExpiredPublicity::class);
 });
+
+Artisan::command('suscripcion:Expired',function(){
+    $this->call(\App\Console\Commands\DisableExpiredSubscriptions::class);
+});

@@ -4,6 +4,7 @@ extend type Mutation   {
     registerPromotion(requestSubcription: JSON): responseSubcripcionPromotion @field(resolver: "SubcritionMutations@registerSubcriptPromot")
     registerTechnicianSubcription(requestSubcription:JSON): responseTechnicianSuscription @field(resolver: "SubcritionMutations@registerSubcriptionTechncian")
     validationSubscription(requestSubcription:JSON): responseTechnicianSuscription @field(resolver: "SubcritionMutations@technicalSubscription")
+    expiredSuscription(requestSubcription:JSON):responseSuscripcion @field(resolver: "SubcritionMutations@disableExpirateSuscription")
 }
 
 type responseSubcripcion {
@@ -28,4 +29,8 @@ type responseTechnicianSuscription{
     suscripcion:Subcription
 }
 
+type responseSuscripcion {
+    message:String
+    count:String
+}
 #import subcription.graphql

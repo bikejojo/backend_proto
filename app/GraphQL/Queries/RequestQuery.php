@@ -81,7 +81,7 @@ class RequestQuery
     {
         $now = Carbon::now();
         $requestData = $args['requestRequest'];
-        $statusId = $requestData['id_state'] ?? StatusHelper::STATE_PENDING;
+        $statusId = $requestData['id_status'] ?? StatusHelper::STATE_PENDING;
         $technicianId = $requestData['id_technician'];
         $dateFilter = $requestData['date_filter'] ?? StatusHelper::DATE_ALL; // Filtro de fecha: "hoy", "esta_semana", "este_mes", "todas"
         $orderFilter = $requestData['order_filter'] ?? StatusHelper::ORDER_BY_RECENT;  // Orden: "mas_recientes", "mas_antiguas"
@@ -96,19 +96,16 @@ class RequestQuery
 
         // Consulta principal
         $query = Solicitud::where('requests.technicianId', $technicianId)
-            ->where('state_reference.type', 'request')
-            ->leftjoin('internal_clients', 'requests.clientId', '=', 'internal_clients.id')
-            ->leftjoin('users', 'internal_clients.userId', '=', 'users.id')
-            ->leftjoin('state_reference', 'state_reference.requestId', '=', 'requests.id')
-            ->leftjoin('state_types', 'requests.stateId', '=', 'state_types.id')
+            ->join('internal_clients', 'requests.clientId', '=', 'internal_clients.id')
+            ->join('users', 'internal_clients.userId', '=', 'users.id')
+            ->join('state_types', 'requests.stateId', '=', 'state_types.id')
             ->select(
                 'requests.*',
-                'state_types.id as state_type_id', // Alias para evitar colisiones con id_state en la tabla requests
                 'internal_clients.firstName',
                 'internal_clients.lastName',
-                'internal_clients.phoneNumber',
-                'users.ci'
-            );
+                'internal_clients.phoneNumber'
+            )
+            ->distinct();
 
         if (in_array($statusId, $stateId)) {
             $query->where('requests.stateId', $statusId);
@@ -128,20 +125,6 @@ class RequestQuery
         // Mapea los resultados para cumplir con el esquema _requesttechnician
         $_request = $requests->map(function ($request) {
             return [
-                /*'request' => [
-                    'id' => $request->id,
-                    'id_client' => $request->clientId,
-                    'id_technician' => $request->technicianId,
-                    'id_state' => $request->state_type_id, // Sobrescribe con el valor de state_types.id
-                    'id_activity' => $request->id_activity,
-                    'titleRequests' => $request->titleRequests,
-                    'requestDescription' => $request->requestDescription,
-                    'latitude' => $request->latitude,
-                    'longitude' => $request->longitude,
-                    'reference_phone' => $request->reference_phone,
-                    'status' => $request->status,
-                    'registrationDateTime' => $request->registrationDateTime,
-                ]*/
                 'request' => $request,
                 'client' => [
                     'fullName' => $request->firstName . ' ' . $request->lastName,
@@ -156,6 +139,4 @@ class RequestQuery
             'technical' => Tecnico::find($technicianId),
         ];
     }
-
-
 }

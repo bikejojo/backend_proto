@@ -13,7 +13,8 @@ class Technician_subcripcion extends Model
         'technicianId',
         'subcriptionsId',
         'starDateSubcription',
-        'endDateSubcription'
+        'endDateSubcription',
+        'status',
     ];
 
     public function suscripcion()

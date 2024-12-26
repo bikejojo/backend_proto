@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('subcriptionsId')->nullable();
             $table->datetime('starDateSubcription')->nullable();
             $table->datetime('endDateSubcription')->nullable();
+            $table->bigInteger('status')->nullable();
             $table->foreign('technicianId')->references('id')->on('technicians');
             $table->foreign('subcriptionsId')->references('id')->on('subcriptions');
             $table->timestamps();
