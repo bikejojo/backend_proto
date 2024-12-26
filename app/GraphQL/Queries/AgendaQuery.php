@@ -29,12 +29,6 @@ class AgendaQuery{
         $technicianId = $agendaData['technicianId'];
         $dateFilter = $agendaData['entryDate'] ?? StatusHelper::ORDER_NAME_RECENT;
         $tecnico = ValidationModels::validationTechnician($technicianId);
-        /*$tecnico = Tecnico::find($technicianId);
-        if (!$tecnico) {
-            return [
-                'message' => 'No existe tecnico.'
-            ];
-        }*/
 
         $agenda = Agenda_Tecnico::where('technicianId', $tecnico->id)->first();
         if (!$agenda) {

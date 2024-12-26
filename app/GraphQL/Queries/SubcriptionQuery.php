@@ -14,16 +14,10 @@ class SubcriptionQuery
 {
     public function getAllTechnician($root , array $args){
         $subcriptionData=$args['requestSubcription'];
-        $technician = ValidationModels::validationTechnician($subcriptionData['id_technician']);/*
-        $technician = Tecnico::find($subcriptionData['id_technician']);
-        if(!$technician){
-            return[
-                'message' => 'No existe el tecnico.'
-            ];
-        }*/
-        $joint = Technician_subcripcion::where('technicianId',$technician->id)->first();
-
-        if(!$joint){
+        $technician = ValidationModels::validationTechnician($subcriptionData['id_technician']);
+        $joint = Technician_subcripcion::where('technicianId',$technician->id)->where('status',1)->get();
+        //dd($joint);
+        if($joint->IsEmpty()){
             return [
                 'message' => 'Todas las suscripciones.',
                 'suscripcion' => Suscripcion::orderBy('id','ASC')->get()

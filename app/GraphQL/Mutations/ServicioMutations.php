@@ -33,25 +33,23 @@ class ServicioMutations
         $technicalId = ValidationModels::validationTechnician($serviceData['id_technician']);
 
         $clientId = ValidationModels::validationclientInternal($serviceData['id_client']);
-
         DB::beginTransaction();
         try{
             $service = Servicio::create([
-                'requestsId' => $serviceData['id_requests'],
                 'technicalId' => $serviceData['id_technician'],
                 'clientId' => $serviceData['id_client'],
                 'activityId' => $serviceData['id_activity'],
                 'typeClient' => self::clientInternal,
                 'titleService' => trim($serviceData['titleService']),
                 'serviceDescription' => trim($serviceData['serviceDescription']),
-                'serviceLocation' => trim($serviceData['serviceLocation']),
-                'latitude' => $serviceData['latitude'],
-                'longitude' => $serviceData['longitude'],
+                'latitude' => isset($serviceData['latitude']) ? $serviceData['latitude'] : null,
+                'longitude' => isset($serviceData['longitude']) ? $serviceData['longitude'] : null ,
+                'serviceLocation' => isset($serviceData['serviceLocation']) ? $serviceData['serviceLocation'] : null,
                 'createdDateTime' => $this->now,
                 'updatedDateTime' => $serviceData['updatedDateTime'],
                 'status' => StateCatalog::STATUS_ACTIVE
             ]);
-            StatusAssigner::assignStatService($service,$this->entity_type,$this->now,'El servicio fue creado por el tecnico para cliente interno.',1);
+            StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'El servicio fue creado por el tecnico para cliente interno.',1);
             $_service = Servicio::find($service->id);
             $_service->save();
             $agenda = Agenda_Tecnico::where('technicianId',$technicalId->id)->first();
@@ -68,14 +66,15 @@ class ServicioMutations
                 'clientId' => $serviceData['id_client'],
                 'serviceId' => $_service->id,
                 'typeClient' => self::clientInternal,
-                'serviceDate' => $_service->createdDateTime,
+                'serviceDate' => $_service->updatedDateTime,
                 'createDate' => Carbon::now()
             ]);
             DB::commit();
             return[
                 'message' => 'Servicio creado para cliente interno',
                 'service' => $_service,
-                'customer_internal' => $clientId
+                'customer_internal' => $clientId,
+                'technician' => $technicalId
             ];
 
         }catch(\Exception $e){
@@ -109,9 +108,9 @@ class ServicioMutations
                 'typeClient' => self::clientExternal,
                 'titleService' => trim($serviceData['titleService']),
                 'serviceDescription' => trim($serviceData['serviceDescription']),
-                'latitude' => $serviceData['latitude'],
-                'longitude' => $serviceData['longitude'],
-                'serviceLocation' => trim($serviceData['serviceLocation']),
+                'latitude' => isset($serviceData['latitude']) ? $serviceData['latitude'] : null,
+                'longitude' => isset($serviceData['longitude']) ? $serviceData['longitude'] : null ,
+                'serviceLocation' => isset($serviceData['serviceLocation']) ? $serviceData['serviceLocation'] : null,
                 'createdDateTime' => $now,
                 'updatedDateTime' => $serviceData['updatedDateTime'],
                 'status' => StateCatalog::STATUS_ACTIVE
