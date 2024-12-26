@@ -10,17 +10,10 @@ use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Servicio;
 use App\Models\Solicitud;
 use App\Models\Historial_Servicios;
-use App\Models\Tecnico;
-use App\Models\Lists_Internal_Client;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class ClientQuery{
-    /** @param  array{}  $args */
-    public function __invoke(null $_, array $args)
-    {
-        // TODO implement the resolver
-    }
 
     public function searchExternalByName($root, array $args)
     {
@@ -70,7 +63,7 @@ class ClientQuery{
     public function searchInternalByName($root, array $args){
         $clientData = $args['requestClient'];
         $tecnicoId = $clientData['technicalId'];
-        
+
         // Verificar si existe el parámetro de búsqueda
         if (!empty($clientData['searchParameter'])) {
             $clientNamePhone = strtolower($clientData['searchParameter']);
@@ -164,7 +157,7 @@ class ClientQuery{
         ->groupBy("fullName","programDate")
         ->orderBy("programDate")
         ->get();
-        //dd($servicesInt);
+
         return [
             'servicesExternal'=> $servicesExt,
             'servicesInternal' => $servicesInt
@@ -174,17 +167,16 @@ class ClientQuery{
     public function quantityClient($root, array $args){
         $technicialId = $args['id_technician']['id'];
         $agenda = Agenda_Tecnico::where('technicianId',$technicialId)->first();
-        //dd($agenda);
+
         $detailAgenda = Detalle_Agenda_Tecnico::where('agendaTechnicalId',$agenda->id)
         ->select('clientId', 'typeClient')
-        //->distinct()
         ->get();
         $clienteExternoCount = $detailAgenda->where('typeClient', 2)
         ->count();
         $clienteInternoCount = $detailAgenda->where('typeClient', 1)
         ->count();
         $clientSum = $clienteExternoCount + $clienteInternoCount;
-        //dd($clientSum);
+
         return [
             'message' => 'Total de clientes de tecnico',
             'quantity' => $clientSum
@@ -194,7 +186,7 @@ class ClientQuery{
     public function quantityCities($root, array $args){
         $technicialId = $args['id_technician'];
         $agenda = Agenda_Tecnico::where('technicianId',$technicialId)->first();
-        //dd($agenda);
+
         $detailAgenda = Detalle_Agenda_Tecnico::where('agendaTechnicalId',$agenda->id)
         ->whereNotNull('serviceDate')
         ->count();
@@ -212,7 +204,7 @@ class ClientQuery{
             ->with(['client', 'technician'])
             ->orderBy('outsetDate', 'desc')
             ->get();
-    
+
         // Si no hay historial, devolver un mensaje apropiado
         if ($historial->isEmpty()) {
             return [
@@ -221,12 +213,12 @@ class ClientQuery{
                 'historial' => null,
             ];
         }
-    
+
         // Procesar el historial
         $history = $historial->map(function ($record) {
             // Determinar si es una solicitud o un servicio
             $type = $record->descriptionJob == 1 ? 'Solicitud' : 'Servicio';
-    
+
             // Obtener detalle de la solicitud o servicio
             $detail = null;
             if ($type === 'Solicitud') {
@@ -249,22 +241,22 @@ class ClientQuery{
                     ];
                 }
             }
-    
+
             return [
                 'type' => $type,
                 'technician' => $record->technician,
                 'detail' => $detail,
             ];
         });
-    
+
         // Obtener información del cliente
         $client = Cliente_Interno::find($clientId);
-    
+
         return [
             'message' => 'Historial obtenido correctamente.',
             'client' => $client,
             'historial' => $history,
         ];
     }
-    
+
 }

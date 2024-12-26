@@ -3,8 +3,6 @@
 namespace App\GraphQL\Queries;
 
 use App\Models\User;
-use App\Models\Tecnico;
-
 class UserQuery{
     /** @param  array{}  $args */
     public function __invoke(null $_, array $args)

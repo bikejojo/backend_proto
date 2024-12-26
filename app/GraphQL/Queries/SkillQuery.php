@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class SkillQuery
 {
-    /** @param  array{}  $args */
-    public function __invoke(null $_, array $args)
-    {
-        // TODO implement the resolver
-    }
 
     public function searchSkillTechnician($root,array $args){
         $technicianData=$args['requestSkillTechnician'];
@@ -35,7 +30,6 @@ class SkillQuery
             ->orderBy('technician_skills.experience','DESC')
             ->get();
         }
-        //dd($skill);
         return [
             'message'=>'Se encontro a los siguientes tecnicos.',
             'technicians' => $skill
@@ -77,7 +71,6 @@ class SkillQuery
         }
 
         $technicians = $query->get();
-        //dd($technicians);
         // Preparar la lista de técnicos y servicios con feedback
         $content = $technicians->map(function ($technician) use ($skillId) {
             // Filtrar habilidades específicas en los técnicos

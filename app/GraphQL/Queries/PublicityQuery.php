@@ -26,7 +26,7 @@ final readonly class PublicityQuery
 
         if(isset($publicidadData)){
             return [
-                'message' => 'No existe la publicidad publicidad.'
+                'message' => 'No existe la publicidad.'
             ];
         }
         $publicidad = Publicidad::find($publicidadDataId);
@@ -45,7 +45,7 @@ final readonly class PublicityQuery
 
     public function getDateExpiration($root , array $args){
         $public  = Publicidad::orderBy('finishDate','ASC')->get();
-        //dd($public);
+
         return [
             'message' => 'Listado de publicidad con fecha de expiracion',
             'publicity' => $public
@@ -55,7 +55,7 @@ final readonly class PublicityQuery
     public function getStatusPublicity($root,array $args){
         $publicData = $args['requestPublicity'];
         $id_status = $publicData['id_status'];
-        //dd($id_status);
+
         $query = Publicidad::orderBy('finishDate','ASC');
         if (!is_null($id_status) && in_array($id_status, [0, 1, 2])) {
             $query->where('status', $id_status);
@@ -74,9 +74,9 @@ final readonly class PublicityQuery
 
     public function getCategoryPublicity($root,array $args){
         $publicData = $args['requestPublicity'];
-        //dd($publicData);
+
         $id_category = $publicData['id_category'];
-        //dd($id_status);
+
         $now=Carbon::now();
         $query = Publicidad::where('finishDate', '>=' ,$now);
         if (!is_null($id_category) && in_array($id_category, [1, 2,3,4])) {

@@ -21,19 +21,17 @@ class ClienteExternoMutations{
         $external = Asociacion_Cliente_Tecnico::join('external_clients','associationTechnClient.clientId','=','external_clients.id')->join('technicians','associationTechnClient.technicalId','=','technicians.id')->where('external_clients.phoneNumber',$phone)->where('associationTechnClient.technicalId',$tecnico->id)->get();
         // Inicializar variable cliente
         $cliente = null;
-        //dd(Asociacion_Cliente_Tecnico::join('external_clients','associationTechnClient.clientId','=','external_clients.id')->join('technicians','associationTechnClient.technicalId','=','technicians.id')->where('external_clients.phoneNumber',$phone)->where('associationTechnClient.technicalId',$tecnico->id)->get());
         DB::beginTransaction();
         try {
             if($external->isNotEmpty()) {
-                //dd(1);
+
                 DB::commit();
                 return [
                     'message' => 'Cliente registrado con anterioridad en su agenda.',
                     'technical' => $tecnico
                 ];
             }else{
-                //ninguna asociacion entre el nuemro de telefono con la id del tecnico
-                //dd(2);
+
                 $cliente = Cliente_Externo::create([
                     'fullName' => $clienteData['fullName'],
                     'phoneNumber' => $clienteData['phoneNumber'],

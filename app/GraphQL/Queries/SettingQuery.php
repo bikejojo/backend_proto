@@ -7,11 +7,7 @@ use App\Models\Tecnico;
 
 class SettingQuery
 {
-    /** @param  array{}  $args */
-    public function __invoke(null $_, array $args)
-    {
-        // TODO implement the resolver
-    }
+
 
     public function list($root,array $args){
         $setting = Setting::all();

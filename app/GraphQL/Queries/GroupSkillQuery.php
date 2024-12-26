@@ -8,11 +8,7 @@ use App\Models\Habilidad;
 
 class GroupSkillQuery
 {
-    /** @param  array{}  $args */
-    public function __invoke(null $_, array $args)
-    {
-        // TODO implement the resolver
-    }
+
 
     public function allGroupSkill($root,array $args){
         $groups = Group::all();

@@ -70,12 +70,8 @@ final class PublicityMutations{
     public function updateExpiration($root , array $args){
         $publicityDate = $args['requestPublicity'];
         $publicityId = $publicityDate['id_publicity'];
-        $publicity = Publicidad::find($publicityId);
-        if (!$publicity) {
-            return [
-                'message' => 'No se encontró la publicidad con el ID proporcionado.'
-            ];
-        }
+        $publicity=ValidationModels::validationPublicity($publicityId);
+
         if($publicityDate['status'] === StateCatalog::STATUS_PUBLICITY_EXPIRATION ){
             $publicity->status = StateCatalog::STATUS_PUBLICITY_EXPIRATION;
         }
@@ -144,12 +140,7 @@ final class PublicityMutations{
     }
     public function delete($root,array $args){
         $publicityId = $args['requestPublicity']['id'];
-        $publicity = ValidationModels::validationPublicity($publicityId); /*Publicidad::find($publicityId);
-        if (!$publicity) {
-            return [
-                'message' => 'No se encontró la publicidad'
-            ];
-        }*/
+        $publicity = ValidationModels::validationPublicity($publicityId); 
         // Realizar baja lógica
         $publicity->status = StateCatalog::STATUS_PUBLICITY_CANCELED;
         $publicity->save();

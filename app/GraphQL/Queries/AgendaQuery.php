@@ -15,11 +15,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class AgendaQuery{
-    /** @param  array{}  $args */
-    public function __invoke(null $_, array $args)
-    {
-        // TODO implement the resolver
-    }
 
     const servicioInternal = ServicioMutations::clientInternal;
     const servicioExternal = ServicioMutations::clientExternal;
@@ -84,18 +79,8 @@ class AgendaQuery{
             $technicianId = $agendaData['technicianId'];
             $dateFilter = $agendaData['entryDate'] ?? StatusHelper::ORDER_NAME_RECENT;
             $tecnico = ValidationModels::validationTechnician($technicianId);
-            /*$tecnico = Tecnico::find($technicianId);
-            if(!$tecnico){
-                return[
-                    'message' => 'No existe tecnico.'
-                ];
-            }*/
-            $agenda = Agenda_Tecnico::where('technicianId',$tecnico->id)->first();
-            if(!$agenda){
-                return[
-                    'message' => 'El tecnico no tiene una agenda.'
-                ];
-            }
+
+            $agenda = ValidationModels::validationAgenda($tecnico->id);
             $query = Detalle_Agenda_Tecnico::where('agendaTechnicalId',$agenda->id)
             ->where('typeClient',self::servicioExternal);
 

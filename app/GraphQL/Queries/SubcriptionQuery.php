@@ -16,7 +16,7 @@ class SubcriptionQuery
         $subcriptionData=$args['requestSubcription'];
         $technician = ValidationModels::validationTechnician($subcriptionData['id_technician']);
         $joint = Technician_subcripcion::where('technicianId',$technician->id)->where('status',1)->get();
-        //dd($joint);
+    
         if($joint->IsEmpty()){
             return [
                 'message' => 'Todas las suscripciones.',

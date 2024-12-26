@@ -2,7 +2,6 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Models\Agenda_Tecnico;
 use App\Models\Cliente_Interno;
 use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Historial_Servicios;
@@ -152,7 +151,6 @@ class SolicitudesMutations
                 'updatedDateTime' => $visitDateTime,
                 'status' => StateCatalog::STATUS_ACTIVE
             ]);
-            //$service->stateId=1
             $_comments = 'Se creo un nuevo servicio por la solicitud recien creada.';
             StatusAssigner::assignStatService($service,$this->now,StatusAssigner::ENTITY_SERVICE,$_comments,1);
             $service->save();

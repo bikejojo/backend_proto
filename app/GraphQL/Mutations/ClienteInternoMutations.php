@@ -87,12 +87,7 @@ class ClienteInternoMutations{
     public function update($root ,array $args){
         $clientData = $args['clientRequest'];
         $client = ValidationModels::validationclientInternal($args['id']);
-        /*$client = Cliente_Interno::find($args['id']);
-        if ($client==null){
-           return[
-                'message'=>'No existe cliente'
-            ];
-        }*/
+
         $clientId = $client->id;
         $user = User::find($client->userId);
         DB::beginTransaction();

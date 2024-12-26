@@ -9,7 +9,6 @@ use App\Models\Servicio;
 use App\Models\Calificacion;
 use App\Services\StatusAssigner;
 use App\Services\StateCatalog;
-use Nuwave\Lighthouse\Federation\Resolvers\Service;
 
 class RatingMutations{
     public function rateService($root, array $args){
@@ -29,7 +28,6 @@ class RatingMutations{
         }
 
         // Verificar si el estado actual del servicio es "Terminado" (stateId = 5)
-        //$stateReference = $service->stateReference;
         if (!$service->stateId || $service->stateId !== 4) {
             return [
                 'message' => 'El servicio no está terminado.',

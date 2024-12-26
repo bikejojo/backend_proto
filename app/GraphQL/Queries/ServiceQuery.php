@@ -21,7 +21,6 @@ class ServiceQuery
 
     public function getExternalClient($root , array $args){
         $serviceData = $args['id'];
-        //dd($serviceData);
         $technician = ValidationModels::validationTechnician($serviceData);
 
 

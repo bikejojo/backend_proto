@@ -242,7 +242,6 @@ class SubcritionMutations
     public function registerSubcriptionTechncian($root, array $args){
 
         $subcriptionData = $args['requestSubcription'];
-        //$technician = Tecnico::find($subcriptionData['technicianId']);
         $technician = ValidationModels::validationTechnician($subcriptionData['technicianId']);
 
         $subcription = Suscripcion::find($subcriptionData['subcriptionId']);
