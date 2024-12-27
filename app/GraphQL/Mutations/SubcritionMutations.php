@@ -240,39 +240,56 @@ class SubcritionMutations
 
 
     public function registerSubcriptionTechncian($root, array $args){
+        {
+            $subcriptionData = $args['requestSubcription'];
+            $technician = ValidationModels::validationTechnician($subcriptionData['technicianId']);
 
-        $subcriptionData = $args['requestSubcription'];
-        $technician = ValidationModels::validationTechnician($subcriptionData['technicianId']);
+            $subcription = Suscripcion::find($subcriptionData['subcriptionId']);
 
-        $subcription = Suscripcion::find($subcriptionData['subcriptionId']);
+            if (!$subcription) {
+                return [
+                    'message' => 'No existe la suscripción.',
+                ];
+            }
 
-        if(!$subcription){
-            return [
-                'message' => 'No existe la suscripcion.',
-            ];
-        }
-        DB::beginTransaction();
-        try{
-            $newSubscription = Technician_subcripcion::create([
-                'technicianId' => $technician->id,
-                'subcriptionsId' => $subcription->id
-            ]);
-            $now=Carbon::now();
-            $newSubscription->starDate = Carbon::now();
-            $newSubscription->endDate = $now->addDay($subcription->duration);
-            $newSubscription->save();
-        DB::commit();
-        return [
-            'message' => 'El registro de suscripcion fue exitosa.',
-            'technician'=>$technician,
-            'suscripcion'=>$subcription
-        ];
+            // Validar que el técnico no tenga una suscripción FREE activa
+            $existingSubscription = DB::table('technician_subcription as ts')
+                ->join('subcriptions as s', 'ts.subcriptionsId', '=', 's.id')
+                ->where('ts.technicianId', $technician->id)
+                ->where('s.codeSubcription', 'FREE')
+                ->where('ts.status', 0)
+                ->count();
 
-        } catch( \Exception $e ){
-            DB::rollBack();
-            return[
-                'message' => 'sucedio un problema al registrar su suscripcion. ' . $e->getMessage()
-            ];
+            if ($existingSubscription > 0 && $subcription->codeSubcription == 'FREE') {
+                return [
+                    'message' => 'El técnico ya tiene una suscripción FREE activa y no puede inscribirse nuevamente.'
+                ];
+            }
+
+            DB::beginTransaction();
+            try {
+                $newSubscription = Technician_subcripcion::create([
+                    'technicianId' => $technician->id,
+                    'subcriptionsId' => $subcription->id
+                ]);
+
+                $now = Carbon::now();
+                $newSubscription->starDate = $now;
+                $newSubscription->endDate = $now->addDay($subcription->duration);
+                $newSubscription->save();
+
+                DB::commit();
+                return [
+                    'message' => 'El registro de suscripción fue exitoso.',
+                    'technician' => $technician,
+                    'suscripcion' => $subcription
+                ];
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return [
+                    'message' => 'Sucedió un problema al registrar la suscripción. ' . $e->getMessage()
+                ];
+            }
         }
     }
 

@@ -16,17 +16,24 @@ class SubcriptionQuery
         $subcriptionData=$args['requestSubcription'];
         $technician = ValidationModels::validationTechnician($subcriptionData['id_technician']);
         $joint = Technician_subcripcion::where('technicianId',$technician->id)->where('status',1)->get();
-    
+        $join = Technician_subcripcion::where('technicianId',$technician->id)->where('status',0)->count();
+
         if($joint->IsEmpty()){
             return [
                 'message' => 'Todas las suscripciones.',
                 'suscripcion' => Suscripcion::orderBy('id','ASC')->get()
             ];
         }else{
-            return[
-                'message' => 'Todas las suscripciones menos la Free',
-                'suscripcion' => Suscripcion::where('codeSubcription','!=','FREE')->orderBy('id','ASC')->get()
-            ];
+            if($join == 1){
+                return[
+                    'message' => 'Todas las suscripciones menos la Free',
+                    'suscripcion' => Suscripcion::where('codeSubcription','!=','FREE')->orderBy('id','ASC')->get()
+                ];
+            }else{
+                return[
+                    'message' => 'Surgio problemas al momento de mostrar las suscripciones.'
+                ];
+            }
         }
     }
     public function validationDatePromotion($root,array $args){
