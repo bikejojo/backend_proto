@@ -48,7 +48,7 @@ class PagoMutations
                 'amount_promotion' => 0,
                 'amount_pay' => $paymentData['amount'],
                 'method_payment' => $paymentData['method_payment'],
-                'date_payment' => Carbon::now(),
+                'date_payment' => Carbon::now()->copy(),
                 'photo_qr' => $paymentData['photo_qr'] ?? null,
                 'subscriptionId' => $subscription->id,
                 'status' => 0, // Pendiente

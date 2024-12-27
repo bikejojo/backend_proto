@@ -234,7 +234,7 @@ class SubcritionMutations
             'message' => 'El técnico tiene una suscripción activa y vigente.',
             'result' => true,
             'technician' => $technician,
-            'subscription' => $subscriptionAssociation,
+            'suscripcion' => $subscriptionAssociation,
         ];
     }
 
@@ -262,7 +262,11 @@ class SubcritionMutations
 
             if ($existingSubscription > 0 && $subcription->codeSubcription == 'FREE') {
                 return [
-                    'message' => 'El técnico ya tiene una suscripción FREE activa y no puede inscribirse nuevamente.'
+                    'message' => 'El técnico realizo una suscripción FREE y no puede inscribirse nuevamente.'
+                ];
+            }else{
+                return [
+                    'message' => 'El técnico posee una suscripcion activa.'
                 ];
             }
 
@@ -273,9 +277,11 @@ class SubcritionMutations
                     'subcriptionsId' => $subcription->id
                 ]);
 
-                $now = Carbon::now();
-                $newSubscription->starDate = $now;
-                $newSubscription->endDate = $now->addDay($subcription->duration);
+                //$now = Carbon::now();
+                //dd($now);
+                $newSubscription->starDateSubcription = $this->now;
+                $newSubscription->endDateSubcription = $this->now->copy()->addDay($subcription->duration);
+                $newSubscription->status = StateCatalog::STATUS_ACTIVE;
                 $newSubscription->save();
 
                 DB::commit();

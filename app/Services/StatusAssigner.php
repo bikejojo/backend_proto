@@ -118,6 +118,7 @@ class StatusAssigner{
                     'clientId' => $objeto->clientId,
                     'technicianId' => $objeto->technicalId,
                     'stateId' => self::PENDING,
+                    'typeClient' => $objeto->typeClient,
                     'type' => $type_reference,
                     'descriptionState' => self::SERVICE_PENDING,
                     'observations' => $comments,
@@ -134,6 +135,7 @@ class StatusAssigner{
                     'technicianId' => $objeto->technicianId,
                     'stateId' => self::FINISH,
                     'type' => $type_reference,
+                    'typeClient' => $objeto->typeClient,
                     'descriptionState' => self::SERVICE_COMPLETED_T,
                     'observations' => $comments,
                     'dateCreate' => $now
@@ -149,6 +151,7 @@ class StatusAssigner{
                     'technicianId' => $objeto->technicianId,
                     'stateId' => self::FINISH,
                     'type' => $type_reference,
+                    'typeClient' => $objeto->typeClient,
                     'descriptionState' => self::SERVICE_COMPLETED_CI,
                     'observations' => $comments,
                     'dateCreate' => $now
@@ -164,6 +167,7 @@ class StatusAssigner{
                     'technicianId' => $objeto->technicianId,
                     'stateId' => self::FINISH,
                     'type' => $type_reference,
+                    'typeClient' => $objeto->typeClient,
                     'descriptionState' => self::SERVICE_COMPLETED_CE,
                     'observations' => $comments,
                     'dateCreate' => $now

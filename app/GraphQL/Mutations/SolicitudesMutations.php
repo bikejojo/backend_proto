@@ -41,7 +41,7 @@ class SolicitudesMutations
                 'requestDescription'=>$requestData['requestDescription'],
                 'latitude'=>$requestData['latitude'],
                 'longitude'=>$requestData['longitude'],
-                'requestLocation'=>$requestData['requestLocation'],
+                'serviceLocation'=>$requestData['serviceLocation'],
                 'reference_phone'=>$requestData['reference_phone'],
                 'status'=>StateCatalog::STATUS_ACTIVE,
                 'activityId' => $requestData['id_activity']
@@ -162,7 +162,7 @@ class SolicitudesMutations
                 'clientId' => $cliente->id,
                 'serviceId' => $serviceId,
                 'typeClient' => $service->typeClient,
-                'serviceDate' => $service->createdDateTime,
+                'serviceDate' => $service->updatedDateTime,
                 'createDate' => Carbon::now()
             ]);
 

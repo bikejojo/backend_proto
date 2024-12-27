@@ -48,7 +48,7 @@ final class PublicityMutations{
             $publicityComplete = $publicityId;
             $value=0;
             ImageHelper::createDirectorie($publicityComplete,$value);
-            $now = Carbon::now()->format('Ymd_His');
+            $now = Carbon::now()->copy()->format('Ymd_His');
             $manager = new ImageManager(new Driver());
             if (isset($args['logo']) && $args['logo'] instanceof UploadedFile) {
                 $frontIdPath = ImageHelper::processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/". "{$now}.png", $manager);
@@ -121,7 +121,7 @@ final class PublicityMutations{
                 Storage::disk('public')->delete($publicity->logo);
 
                 // Procesa y guarda la nueva imagen en el nuevo directorio
-                $now = Carbon::now()->format('Ymd_His');
+                $now = Carbon::now()->copy()->format('Ymd_His');
                 $logoPath = ImageHelper::processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/"."{$now}.png", $manager);
                 $publicity->logo =$this->app . '/storage' . str_replace('public/', '', $logoPath);
                 $publicity->save();
@@ -140,7 +140,7 @@ final class PublicityMutations{
     }
     public function delete($root,array $args){
         $publicityId = $args['requestPublicity']['id'];
-        $publicity = ValidationModels::validationPublicity($publicityId); 
+        $publicity = ValidationModels::validationPublicity($publicityId);
         // Realizar baja lógica
         $publicity->status = StateCatalog::STATUS_PUBLICITY_CANCELED;
         $publicity->save();

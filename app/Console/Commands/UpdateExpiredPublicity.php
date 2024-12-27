@@ -30,7 +30,7 @@ class UpdateExpiredPublicity extends Command
     {
         //
         $now = Carbon::now();
-        $expiredPublicity = Publicidad::where('finishDate' , '<' , $now )
+        $expiredPublicity = Publicidad::where('finishDate' , '<' , $now->copy() )
         ->where('status','!=',StateCatalog::STATUS_PUBLICITY_EXPIRATION)
         ->update(['status'=>StateCatalog::STATUS_PUBLICITY_EXPIRATION]);
 

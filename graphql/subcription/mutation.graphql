@@ -26,7 +26,15 @@ type responseTechnicianSuscription{
     message:String
     result:Boolean
     technician:Technician
-    suscripcion:Subcription
+    suscripcion:suscripcions
+}
+
+type suscripcions {
+    name:String
+    description:String
+    codeSubcription:String
+    starDateSubcription:String
+    endDateSubcription:String
 }
 
 type responseSuscripcion {

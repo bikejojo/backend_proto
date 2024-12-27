@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('requestDescription');  // Traducción de 'descripcion_solicitud' // Traducción de 'fecha_tiempo_registrado'
             $table->text('latitude')->nullable();
             $table->text('longitude')->nullable();
-            $table->text('requestLocation')->nullable();
+            $table->text('serviceLocation')->nullable();
             $table->text('reference_phone');
             $table->datetime('registrationDateTime')->nullable();
             $table->bigInteger('status');

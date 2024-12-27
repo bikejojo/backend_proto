@@ -38,7 +38,7 @@ class ClienteExternoMutations{
                     'status' => StateCatalog::STATUS_ACTIVE,
                 ]);
                 $asociacion = Asociacion_Cliente_Tecnico::create([
-                    'dateTimeCreated' => Carbon::now(),
+                    'dateTimeCreated' => Carbon::now()->copy(),
                     'technicalId' => $tecnico->id,
                     'clientId' => $cliente->id,
                 ]);
