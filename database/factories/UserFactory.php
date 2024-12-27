@@ -30,9 +30,9 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('123'),
             'remember_token' => Str::random(10),
-            #'ci' => $this->faker->unique()->numerify('########'),
+            #'ci' => $this->faker->unique()->numerify('########'), tecnico usa ci para su registro y cliente no
             #'ci' => $this->faker->unique()->numerify(''), // Cliente Internos usar
-            'type_user' => 2
+            'type_user' => 2 //codigos paara tecnico 1 y cliente interno 2
         ];
     }
 

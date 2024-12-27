@@ -245,7 +245,7 @@ class SubcritionMutations
             $technician = ValidationModels::validationTechnician($subcriptionData['technicianId']);
 
             $subcription = Suscripcion::find($subcriptionData['subcriptionId']);
-
+            //dd($subcription);
             if (!$subcription) {
                 return [
                     'message' => 'No existe la suscripción.',
@@ -253,20 +253,39 @@ class SubcritionMutations
             }
 
             // Validar que el técnico no tenga una suscripción FREE activa
-            $existingSubscription = DB::table('technician_subcription as ts')
+            /*$existingSubscription = DB::table('technician_subcription as ts')
                 ->join('subcriptions as s', 'ts.subcriptionsId', '=', 's.id')
                 ->where('ts.technicianId', $technician->id)
-                ->where('s.codeSubcription', 'FREE')
-                ->where('ts.status', 0)
-                ->count();
-
-            if ($existingSubscription > 0 && $subcription->codeSubcription == 'FREE') {
+                ->where('s.codeSubcription', 'FREE')  // No importa el status, solo si existe alguna suscripción FREE
+                ->select('s.*','ts.*')
+                ->exists();
+            if ($existingSubscription && $subcription->codeSubcription == 'FREE') {
                 return [
-                    'message' => 'El técnico realizo una suscripción FREE y no puede inscribirse nuevamente.'
+                    'message' => 'El técnico ya ha tenido una suscripción FREE y no puede inscribirse nuevamente.'
                 ];
-            }else{
-                return [
-                    'message' => 'El técnico posee una suscripcion activa.'
+            }*/
+            $existingSubscriptionFree = DB::table('technician_subcription as ts')
+            ->join('subcriptions as s', 'ts.subcriptionsId', '=', 's.id')
+            ->where('ts.technicianId', $technician->id)
+            ->where('s.codeSubcription','FREE')
+            ->where('ts.subcriptionsId',$subcription->id)
+            ->where('ts.status',0)
+            ->exists();
+            //dd($existingSubscriptionFree);
+            if($existingSubscriptionFree){
+                return[
+                    'message' => 'Usted realizo y utilizo una suscripcion FREE.'
+                ];
+            }
+            $existingSubscriptionAll = DB::table('technician_subcription as ts')
+            ->join('subcriptions as s', 'ts.subcriptionsId', '=', 's.id')
+            ->where('ts.technicianId', $technician->id)
+            ->where('ts.status',1)
+            ->exists();
+
+            if($existingSubscriptionAll){
+                return[
+                    'message' => 'Usted cuenta con una suscripcion activa en el sistema.'
                 ];
             }
 
@@ -277,18 +296,19 @@ class SubcritionMutations
                     'subcriptionsId' => $subcription->id
                 ]);
 
-                //$now = Carbon::now();
-                //dd($now);
                 $newSubscription->starDateSubcription = $this->now;
                 $newSubscription->endDateSubcription = $this->now->copy()->addDay($subcription->duration);
                 $newSubscription->status = StateCatalog::STATUS_ACTIVE;
                 $newSubscription->save();
-
+                $subcriptionNew  = Suscripcion::join('technician_subcription','subcriptions.id','=','technician_subcription.subcriptionsId')
+                    ->where('technician_subcription.id',$newSubscription->id)
+                    ->select('subcriptions.name','subcriptions.description','subcriptions.codeSubcription','technician_subcription.starDateSubcription','technician_subcription.endDateSubcription')
+                    ->first();
                 DB::commit();
                 return [
                     'message' => 'El registro de suscripción fue exitoso.',
                     'technician' => $technician,
-                    'suscripcion' => $subcription
+                    'suscripcion' => $subcriptionNew
                 ];
             } catch (\Exception $e) {
                 DB::rollBack();

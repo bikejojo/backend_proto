@@ -23,7 +23,7 @@ class ServicioFactory extends Factory
     {
         return [
             'stateId' => $this->faker->numberBetween(4, 5),
-            'requestsId' => $this->faker->numberBetween(2200,2439),
+            #'requestsId' => $this->faker->numberBetween(2200,2439),
             'technicalId'=> $this->faker->numberBetween(60), //'technicalId'=> rand(150,62)
             'clientId' =>  $this->faker->numberBetween(2, 13),
             'activityId' => $this->faker->numberBetween(1,4),

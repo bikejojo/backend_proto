@@ -15,26 +15,28 @@ class SubcriptionQuery
     public function getAllTechnician($root , array $args){
         $subcriptionData=$args['requestSubcription'];
         $technician = ValidationModels::validationTechnician($subcriptionData['id_technician']);
-        $joint = Technician_subcripcion::where('technicianId',$technician->id)->where('status',1)->get();
-        $join = Technician_subcripcion::where('technicianId',$technician->id)->where('status',0)->count();
-
-        if($joint->IsEmpty()){
+        $joint = Technician_subcripcion::where('technicianId',$technician->id)->exists();
+        $join = Technician_subcripcion::where('technicianId',$technician->id)->where('status',0)->where('subcriptionsId',1)->exists();
+        $joins = Technician_subcripcion::where('technicianId',$technician->id)->where('status',1)->exists();
+        //dd($joins);
+        if(!$joint){
             return [
                 'message' => 'Todas las suscripciones.',
                 'suscripcion' => Suscripcion::orderBy('id','ASC')->get()
             ];
-        }else{
-            if($join == 1){
-                return[
-                    'message' => 'Todas las suscripciones menos la Free',
-                    'suscripcion' => Suscripcion::where('codeSubcription','!=','FREE')->orderBy('id','ASC')->get()
-                ];
-            }else{
-                return[
-                    'message' => 'Surgio problemas al momento de mostrar las suscripciones.'
-                ];
-            }
         }
+
+        if($join && !$joins){
+            return[
+                'message' => 'Todas las suscripciones menos la Free',
+                'suscripcion' => Suscripcion::where('codeSubcription','!=','FREE')->orderBy('id','ASC')->get()
+            ];
+        }else{
+            return[
+                'message' => 'Surgio problemas al momento de mostrar las suscripciones.'
+            ];
+        }
+
     }
     public function validationDatePromotion($root,array $args){
         $promotionData = $args['requestPromotion'];
