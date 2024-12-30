@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Asociacion_Cliente_Tecnico extends Model
 {
+    use HasFactory;
+
     protected $PrimaryKey = 'id';
     protected $table = 'associationTechnClient';
     protected $fillable = [

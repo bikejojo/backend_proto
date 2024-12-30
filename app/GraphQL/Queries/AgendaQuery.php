@@ -31,11 +31,14 @@ class AgendaQuery{
                 'message' => 'El tecnico no tiene una agenda.'
             ];
         }
-        try{
-            $query = Detalle_Agenda_Tecnico::where('agendaTechnicalId', $agenda->id)
-                ->where('typeClient', 1); // Cliente interno
+        try{ //terminar despues de reunion
+            $query = Detalle_Agenda_Tecnico:://join('services','services.id','=','detail_technical_agenda.serviceId')
+                where('agendaTechnicalId', $agenda->id)
+                ->where('detail_technical_agenda.typeClient', 1); // Cliente interno
+                //where('services.status',1)
+                //->select('services.latitude','services.longitude');
             if ($dateFilter) {
-                $query = $this->dateHelper($dateFilter, $query, 'serviceDate');
+                $query = $this->dateHelper($dateFilter, $query, 'detail_technical_agenda.serviceDate');
             }
             $serviceDetails = $query->get();
             if ($serviceDetails->isEmpty()) {
@@ -59,6 +62,8 @@ class AgendaQuery{
                     'service' => [
                         'title' => $detail->service_title,
                         'description' => $detail->service_description,
+                        //'latitude' => $detail->latitude,
+                        //'longitude' => $detail->longitude,
                     ],
                 ];
             });
@@ -98,6 +103,9 @@ class AgendaQuery{
             $agenda = $service->map(function ($request){
                 $tecnico=Tecnico::leftjoin('technician_agenda', 'technician_agenda.technicianId', '=', 'technicians.id')
                 ->leftjoin('detail_technical_agenda', 'detail_technical_agenda.agendaTechnicalId', '=', 'technician_agenda.id')
+                //->leftjoin('services','services.id','=','detail_technical_agenda.serviceId')
+                //->where('services.status',1)
+                //->select('technicians.*','services.latitude','services.longitude')->first();
                 ->where('detail_technical_agenda.agendaTechnicalId', $request->agendaTechnicalId)
                 ->select('technicians.*')->first();
                 $client=DB::table('external_clients')
