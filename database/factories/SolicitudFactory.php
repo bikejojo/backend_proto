@@ -21,17 +21,14 @@ class SolicitudFactory extends Factory
     public function definition()
     {
         return [
-            'stateId' => 2,
-            'clientId' => rand(1,3),
-            'activityId'=>rand(1,2),
-            'titleRequests' => $this->faker->sentence,
-            'requestDescription' => $this->faker->sentence, // Utiliza $this->faker para acceder al generador de Faker
-            'technicianId' => 1,
-            'latitude'=> -89.12,
-            'longitude'=> -98.5678,
-            'reference_phone'=>rand(72066928,79836202),
-            'status' => 1,
-            'registrationDateTime' => now()->addDays(rand(0,2))->addMinutes(rand(2, 40)),
+            'titleRequests' => fake()->sentence(),
+            'requestDescription' => fake()->paragraph(),
+            'latitude' => fake()->latitude(),
+            'longitude' => fake()->longitude(),
+            'serviceLocation' => fake()->address(),
+            'reference_phone' => fake()->phoneNumber(),
+            'status' => 1,  // Estado activo
+            'registrationDateTime' => now(),
         ];
     }
 }

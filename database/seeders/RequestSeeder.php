@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Solicitud;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Database\Factories\RequestFactorySeeder;
 
 class RequestSeeder extends Seeder
 {
@@ -13,7 +13,10 @@ class RequestSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        Solicitud::factory()->count(2)->create();
+        try {
+            RequestFactorySeeder::create(20);  // Generar 20 solicitudes
+        } catch (\Exception $e) {
+            $this->command->info($e->getMessage());
+        }
     }
 }
