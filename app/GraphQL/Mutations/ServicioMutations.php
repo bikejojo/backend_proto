@@ -313,5 +313,6 @@ class ServicioMutations
         $clientId = $historyData['id_client'];
 
         $technician = ValidationModels::validationTechnician($technicianId);
+//$cliente = ;
     }
 }
