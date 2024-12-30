@@ -32,11 +32,10 @@ class AgendaQuery{
             ];
         }
         try{ //terminar despues de reunion
-            $query = Detalle_Agenda_Tecnico:://join('services','services.id','=','detail_technical_agenda.serviceId')
-                where('agendaTechnicalId', $agenda->id)
-                ->where('detail_technical_agenda.typeClient', 1); // Cliente interno
-                //where('services.status',1)
-                //->select('services.latitude','services.longitude');
+            $query = Detalle_Agenda_Tecnico::join('services','services.id','=','detail_technical_agenda.serviceId')
+                ->where('agendaTechnicalId', $agenda->id)
+                ->where('detail_technical_agenda.typeClient', self::servicioInternal) // Cliente interno
+                ->where('services.status',1);
             if ($dateFilter) {
                 $query = $this->dateHelper($dateFilter, $query, 'detail_technical_agenda.serviceDate');
             }
@@ -62,8 +61,6 @@ class AgendaQuery{
                     'service' => [
                         'title' => $detail->service_title,
                         'description' => $detail->service_description,
-                        //'latitude' => $detail->latitude,
-                        //'longitude' => $detail->longitude,
                     ],
                 ];
             });
@@ -86,8 +83,10 @@ class AgendaQuery{
             $tecnico = ValidationModels::validationTechnician($technicianId);
 
             $agenda = ValidationModels::validationAgenda($tecnico->id);
-            $query = Detalle_Agenda_Tecnico::where('agendaTechnicalId',$agenda->id)
-            ->where('typeClient',self::servicioExternal);
+            $query = Detalle_Agenda_Tecnico::join('services','services.id','=','detail_technical_agenda.serviceId')
+            ->where('detail_technical_agenda.agendaTechnicalId',$agenda->id)
+            ->where('detail_technical_agenda.typeClient',self::servicioExternal)
+            ->where('services.status',1);
 
             if($dateFilter){
                 $_query = self::dateHelper($dateFilter,$query,'serviceDate');
@@ -103,11 +102,11 @@ class AgendaQuery{
             $agenda = $service->map(function ($request){
                 $tecnico=Tecnico::leftjoin('technician_agenda', 'technician_agenda.technicianId', '=', 'technicians.id')
                 ->leftjoin('detail_technical_agenda', 'detail_technical_agenda.agendaTechnicalId', '=', 'technician_agenda.id')
-                //->leftjoin('services','services.id','=','detail_technical_agenda.serviceId')
-                //->where('services.status',1)
-                //->select('technicians.*','services.latitude','services.longitude')->first();
+                ->leftjoin('services','services.id','=','detail_technical_agenda.serviceId')
+                ->where('services.status',1)
                 ->where('detail_technical_agenda.agendaTechnicalId', $request->agendaTechnicalId)
-                ->select('technicians.*')->first();
+                //->select('technicians.*')->first();
+                ->select('technicians.*','services.latitude','services.longitude')->first();
                 $client=DB::table('external_clients')
                 ->leftJoin('associationTechnClient', function($join) use ($tecnico) {
                     $join->on('associationTechnClient.technicalId', '=', DB::raw($tecnico->id));

@@ -280,18 +280,18 @@ class ServicioMutations
         }
     }
 
-    /*public function updateService ($root , array $args ){
+    public function updateService ($root , array $args ){
         $serviceId = $args['id_service'];
         $service = ValidationModels::validationService($serviceId);
         $serviceData = $args['requestService'];
-        DB::beginTransaccion();
+        DB::beginTransaction();
         try{
             $service->titleService = $serviceData['titleService'] ?? $service->titleService;
             $service->serviceDescription= $serviceData['serviceDescription'] ?? $service->serviceDescription;
             $service->serviceLocation= $serviceData['serviceLocation'] ?? $service->serviceLocation;
             $service->longitude= $serviceData['longitude'] ?? $service->longitude;
             $service->latitude= $serviceData['latitude'] ?? $service->latitude;
-            $service->activityId = $serviceData['id_activity] ?? $service->activityId;
+            $service->activityId = $serviceData['id_activity'] ?? $service->activityId;
             $service->updatedDateTime= $serviceData['visitDateTime'] ?? $service->updatedDateTime;
             $service->save();
             DB::commit();
@@ -302,8 +302,8 @@ class ServicioMutations
         }catch (\Exception $e){
             DB::rollback();
             return [
-                'message' => 'Surgio un erro al momento de actualizar los servicio' . $e->getMessage()
+                'message' => 'Surgio un error al momento de actualizar el servicio' . $e->getMessage()
             ];
         }
-    }*/
+    }
 }

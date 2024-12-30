@@ -6,6 +6,7 @@ extend type Mutation {
     completServiceExternal(requestService:JSON):responseService @field(resolver: "ServicioMutations@finishServiceClientExternal")
     completServiceTechnician(requestService:JSON):responseServiceClient @field(resolver: "ServicioMutations@finishServiceTechnician")
     deleteService(requestService:JSON!):responseServiceDelete @field(resolver: "ServicioMutations@delete")
+    updateService(id_service:ID , requestService:JSON!):responseServiceDelete @field(resolver: "ServicioMutations@updateService")
 }
 
 type responseService {

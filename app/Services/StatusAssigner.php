@@ -38,6 +38,10 @@ class StatusAssigner{
     const SERVICE_COMPLETED_CE = 'servicio completado cliente externo.';
     const SERVICE_COMPLETED_T = 'servicio completado tecnico.';
 
+    // tipo de clientes
+    const cliente_internal=1;
+    const cliente_external=2;
+
     public static function assignStateRequest($objeto, $now, $type_reference,$comments,$number ){
         switch ($number) {
             case 1:
@@ -50,7 +54,7 @@ class StatusAssigner{
                     'technicianId' => $objeto->technicianId,
                     'stateId' => self::PENDING,
                     'type' => $type_reference,
-                    'typeClient' => 1,
+                    'typeClient' => self::cliente_internal,
                     'descriptionState' => self::REQUEST_PENDING,
                     'observations' => $comments,
                     'dateCreate' => $now

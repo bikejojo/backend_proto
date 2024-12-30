@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Queries;
 
+use App\GraphQL\Mutations\ServicioMutations;
 use App\Models\Agenda_Tecnico;
 use App\Models\Cliente_Externo;
 use App\Models\Cliente_Interno;
@@ -131,7 +132,7 @@ class ClientQuery{
         $finishDate = $clientData['finishDate'];
 
         $servicesExt = DB::table('services')
-            ->where('typeClient','2')
+            ->where('typeClient',ServicioMutations::clientExternal)
             ->leftjoin('external_clients', 'services.clientId', '=', 'external_clients.id')
             ->select(
                 'external_clients.fullName',
