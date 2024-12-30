@@ -134,7 +134,6 @@ class ClienteInternoMutations{
     }
     public function delete($root ,array $args){
         $id=Cliente_Interno::find($args['id']);
-        //dd($id);
         if(!$id){
             return ['message'=> 'Borrado no existoso'];
         }else{

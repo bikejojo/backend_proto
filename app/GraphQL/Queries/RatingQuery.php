@@ -29,14 +29,15 @@ class RatingQuery{
         $ratingsCount = Calificacion::where('technicialId', $technicianId)->count();
         $ratingsSum = Calificacion::where('technicialId', $technicianId)->sum('rating');
         $averageRating = $ratingsCount > 0 ? $ratingsSum / $ratingsCount : 0;
-
         // Redondear al múltiplo más cercano de 0.5
-        $roundedRating = round($averageRating * 2) / 2;
+        $roundedRating = round($averageRating * 4) / 4;
+        $formattedRating = number_format($roundedRating, 2);
 
         return [
             'message' => 'Calificación promedio del técnico.',
-            'average_rating' => $roundedRating, // Valor redondeado
+            'average_rating' => $formattedRating, // Valor redondeado
             'ratings_count' => $ratingsCount,
         ];
     }
+
 }

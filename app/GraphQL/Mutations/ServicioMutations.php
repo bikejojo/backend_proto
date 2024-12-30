@@ -306,4 +306,12 @@ class ServicioMutations
             ];
         }
     }
+
+    public function technicianHistory($root, array $args){
+        $historyData = $args['requestService'];
+        $technicianId = $historyData['id_technician'];
+        $clientId = $historyData['id_client'];
+
+        $technician = ValidationModels::validationTechnician($technicianId);
+    }
 }

@@ -18,7 +18,10 @@ class ClienteExternoMutations{
         $tecnicoId = $clienteData['technicalId'];
         $tecnico = ValidationModels::validationTechnician($tecnicoId);
         $phone = $clienteData['phoneNumber'];
-        $external = Asociacion_Cliente_Tecnico::join('external_clients','associationTechnClient.clientId','=','external_clients.id')->join('technicians','associationTechnClient.technicalId','=','technicians.id')->where('external_clients.phoneNumber',$phone)->where('associationTechnClient.technicalId',$tecnico->id)->get();
+        $external = Asociacion_Cliente_Tecnico::join('external_clients','associationTechnClient.clientId','=','external_clients.id')
+        ->join('technicians','associationTechnClient.technicalId','=','technicians.id')
+        ->where('external_clients.phoneNumber',$phone)
+        ->where('associationTechnClient.technicalId',$tecnico->id)->get();
         // Inicializar variable cliente
         $cliente = null;
         DB::beginTransaction();
