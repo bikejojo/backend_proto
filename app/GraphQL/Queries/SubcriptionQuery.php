@@ -26,7 +26,7 @@ class SubcriptionQuery
             ];
         }
 
-        if($join && !$joins){
+        if($join && $joins){
             return[
                 'message' => 'Todas las suscripciones menos la Free',
                 'suscripcion' => Suscripcion::where('codeSubcription','!=','FREE')->orderBy('id','ASC')->get()
