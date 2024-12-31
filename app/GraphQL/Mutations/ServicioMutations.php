@@ -292,7 +292,7 @@ class ServicioMutations
             $service->longitude= $serviceData['longitude'] ?? $service->longitude;
             $service->latitude= $serviceData['latitude'] ?? $service->latitude;
             $service->activityId = $serviceData['id_activity'] ?? $service->activityId;
-            $service->updatedDateTime= $serviceData['visitDateTime'] ?? $service->updatedDateTime;
+            $service->updatedDateTime= $serviceData['updatedDateTime'] ?? $service->updatedDateTime;
             $service->save();
             DB::commit();
             return [
@@ -305,14 +305,5 @@ class ServicioMutations
                 'message' => 'Surgio un error al momento de actualizar el servicio' . $e->getMessage()
             ];
         }
-    }
-
-    public function technicianHistory($root, array $args){
-        $historyData = $args['requestService'];
-        $technicianId = $historyData['id_technician'];
-        $clientId = $historyData['id_client'];
-
-        $technician = ValidationModels::validationTechnician($technicianId);
-//$cliente = ;
     }
 }

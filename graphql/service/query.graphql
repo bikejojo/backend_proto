@@ -3,8 +3,10 @@ extend type Query {
     getListClientExternalEarring(id:ID!):responseClientExternal @field (resolver: "ServiceQuery@getExternalClientEarring")
     getListClientExternalOver(id:ID!):responseClientExternal @field (resolver: "ServiceQuery@getExternalClientOver")
     getListClientExternalActivity(requestService:JSON):responseClientExternal @field (resolver: "ServiceQuery@getInternalClientActivity")
-
     getListClientInternalAll(id:ID!):responseClientInternal @field (resolver: "ServiceQuery@getInternalClient")
+
+    getHistoryInternalClient(requestService:JSON):historyServiceInternal @field (resolver: "ServiceQuery@technicianHistoryClientInternal")
+    getHistoryExternalClient(requestService:JSON):historyServiceExternal @field (resolver: "ServiceQuery@technicianHistoryClientExternal")
 }
 
 type responseClientExternal {
@@ -28,5 +30,38 @@ type services {
 type services_ {
     _service:Service
     customer_internal:InternalClient
+}
+
+type historyServiceInternal {
+    message:String
+    service:[Services_]
+}
+
+type historyServiceExternal {
+    message:String
+    service:[Service_]
+}
+
+type Services_{
+    service_id:String
+    titleService:String
+    serviceDescription:String
+    serviceLocation:String
+    technicalId:String
+    clientId:String
+    rating_id:String
+    rating:String
+    feedback:String
+}
+
+type Service_ {
+    service_id:String
+    titleService:String
+    serviceDescription:String
+    serviceLocation:String
+    latitude:String
+    longitude:String
+    technicalId:String
+    clientId:String
 }
 #import service.graphql

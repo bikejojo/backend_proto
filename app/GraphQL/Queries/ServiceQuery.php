@@ -281,4 +281,66 @@ class ServiceQuery
             'technician' => $technician
         ];
     }
+
+    public function technicianHistoryClientInternal($root, array $args){
+        $historyData = $args['requestService'];
+        $technicianId = $historyData['id_technician'];
+        $clientId = $historyData['id_client'];
+
+        // Validar técnico y cliente
+        $technician = ValidationModels::validationTechnician($technicianId);
+        $cliente = ValidationModels::validationclientInternal($clientId);
+
+        // Obtener servicios con calificación
+        $service = Servicio::leftJoin('rating', 'services.id', '=', 'rating.serviceId')
+            ->where('services.technicalId', $technician->id)
+            ->where('services.clientId', $cliente->id)
+            ->where('services.typeClient', self::client_internal)
+            ->select(
+                'services.id AS service_id',
+                'services.titleService',
+                'services.serviceDescription',
+                'services.serviceLocation',
+                'services.technicalId',
+                'services.clientId',
+                'rating.id AS rating_id',
+                'rating.rating',
+                'rating.feedback'
+            )
+            ->get();
+        //dd($service);
+        return [
+            'message' => 'Historial de servicios de un cliente',
+            'service' => $service
+        ];
+    }
+
+
+    public function technicianHistoryClientExternal($root, array $args){
+        $historyData = $args['requestService'];
+        $technicianId = $historyData['id_technician'];
+        $clientId = $historyData['id_client'];
+        $technician = ValidationModels::validationTechnician($technicianId);
+        $cliente = ValidationModels::validationclientExternal($clientId);
+        // Obtener servicios con calificación
+        $service = Servicio::where('services.technicalId', $technician->id)
+            ->where('services.clientId', $cliente->id)
+            ->where('services.typeClient', self::client_external)
+            ->select(
+                'services.id AS service_id',
+                'services.titleService',
+                'services.serviceDescription',
+                'services.serviceLocation',
+                'services.longitude',
+                'services.latitude',
+                'services.technicalId',
+                'services.clientId',
+            )
+            ->get();
+        //dd($service);
+        return [
+            'message' => 'Historial de servicios de un cliente',
+            'service' => $service
+        ];
+    }
 }

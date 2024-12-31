@@ -1,9 +1,9 @@
 type Service {
-    id:ID!
+    id:ID
     id_state:ID @rename(attribute: "stateId")
     id_requests:ID @rename(attribute: "requestsId")
     id_technician:ID! @rename(attribute: "technicalId")
-    id_client:ID! @rename(attribute: "clientId")
+    id_client:ID @rename(attribute: "clientId")
     id_activity: ID! @rename(attribute: "activityId")
     typeClient:String!
     titleService: String @trim
@@ -20,5 +20,5 @@ type Service {
     stateReference: StateReference
     request:[Request!]! @hasMany
 
-    ratings:[Rating] @hasOne
+    rating:Rating @hasOne
 }
