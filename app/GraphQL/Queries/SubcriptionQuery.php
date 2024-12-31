@@ -152,4 +152,31 @@ class SubcriptionQuery
             'suscripcion'=> $subcriptionData
         ];
     }
+
+    public function getSuscripcionHistorial($root , array $args){
+        $suscripcionData = $args['requestSubcription'];
+        $technicianId = $suscripcionData['id_technician'];
+        $technician = ValidationModels::validationTechnician($technicianId);
+        $suscripciones = Suscripcion::join('technician_subcription','subcriptions.id','=','technician_subcription.subcriptionsId')
+        ->where('technician_subcription.technicianId',$technician->id)
+        ->select('subcriptions.*','technician_subcription.*')
+        ->orderBy('technician_subcription.starDateSubcription','DESC')
+        ->get();
+            // Formato de respuesta
+        $formattedSuscripciones = $suscripciones->map(function ($suscripcion) {
+            return [
+                'name' => $suscripcion->name,
+                'durationDescription' => $suscripcion->durationDescription,
+                'codeSubcription' => $suscripcion->codeSubcription,
+                'starDateSubcription' => $suscripcion->starDateSubcription,
+                'endDateSubcription' => $suscripcion->endDateSubcription,
+                'status' => $suscripcion->status
+            ];
+        });
+
+        return [
+            'message' => 'Listado de las suscripciones que ha hecho el tecnico.',
+            'suscripcion' => $formattedSuscripciones
+        ];
+    }
 }

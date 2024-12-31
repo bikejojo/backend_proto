@@ -5,6 +5,7 @@ extend type Query {
     getPromotionFalse:responsePromotion @field(resolver: "SubcriptionQuery@falsePromotion")
     getPromotionValid:responsePromotion @field(resolver: "SubcriptionQuery@promotionValid")
     validationSuscriptionPromotion(requestSubcriptionPromotion:JSON):responseSuscription @field(resolver: "SubcriptionQuery@getSubcriptionPromotion")
+    getAllHistorySuscription(requestSubcription:JSON): responseSuscription_ @field(resolver: "SubcriptionQuery@getSuscripcionHistorial")
 }
 
 type responseValidityPromotion{
@@ -28,5 +29,19 @@ type responseSuscription {
 type responseSuscription {
     message:String
     suscripcion:[Subcription]
+}
+
+type responseSuscription_ {
+    message:String
+    suscripcion:[Subcription_]
+}
+
+type Subcription_ {
+    name:String
+    durationDescription:String
+    codeSubcription:String
+    starDateSubcription:String
+    endDateSubcription:String
+    status:String
 }
 #import subcription.graphql
