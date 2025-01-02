@@ -8,6 +8,7 @@ use App\Models\Tipo_Estado;
 use App\Models\StateReference;
 use Illuminate\Support\Facades\DB;
 use app\Helpers\StatusHelper;
+use App\Services\StateCatalog;
 use app\Services\StatusAssigner;
 use App\Services\ValidationModels;
 
@@ -286,13 +287,14 @@ class ServiceQuery
         $historyData = $args['requestService'];
         $technicianId = $historyData['id_technician'];
         $clientId = $historyData['id_client'];
+        $activityId = $historyData['id_activity'] ?? StateCatalog::CODE_ACT_ALL;
 
         // Validar técnico y cliente
         $technician = ValidationModels::validationTechnician($technicianId);
         $cliente = ValidationModels::validationclientInternal($clientId);
 
         // Obtener servicios con calificación
-        $service = Servicio::leftJoin('rating', 'services.id', '=', 'rating.serviceId')
+        $service_query = Servicio::leftJoin('rating', 'services.id', '=', 'rating.serviceId')
             ->where('services.technicalId', $technician->id)
             ->where('services.clientId', $cliente->id)
             ->where('services.typeClient', self::client_internal)
@@ -308,10 +310,17 @@ class ServiceQuery
                 'services.clientId',
                 'rating.id AS rating_id',
                 'rating.rating',
-                'rating.feedback'
-            )
-            ->get();
-        //dd($service);
+                'rating.feedback',
+                'services.activityId',
+            );
+            //->get();
+
+        if($activityId != StateCatalog::CODE_ACT_ALL){
+            $serv_query = $service_query->where('activityId',$activityId);
+        }else{
+            $serv_query = $service_query;
+        }
+        $service = $serv_query->get();
         return [
             'message' => 'Historial de servicios de un cliente',
             'service' => $service
@@ -324,9 +333,10 @@ class ServiceQuery
         $technicianId = $historyData['id_technician'];
         $clientId = $historyData['id_client'];
         $technician = ValidationModels::validationTechnician($technicianId);
+        $activityId = $historyData['id_activity'] ?? StateCatalog::CODE_ACT_ALL;
         $cliente = ValidationModels::validationclientExternal($clientId);
         // Obtener servicios con calificación
-        $service = Servicio::where('services.technicalId', $technician->id)
+        $service_query = Servicio::where('services.technicalId', $technician->id)
             ->where('services.clientId', $cliente->id)
             ->where('services.typeClient', self::client_external)
             ->select(
@@ -339,14 +349,75 @@ class ServiceQuery
                 'services.technicalId',
                 'services.clientId',
                 'services.updatedDateTime',
-                //http://192.168.100.17:8002/'services.finishDateTime_client',
-                //'services.finishDateTime_technician',
-            )
-            ->get();
-        //dd($service);
+                'services.activityId',
+            );
+
+        if($activityId != StateCatalog::CODE_ACT_ALL){
+            $serv_query = $service_query->where('activityId',$activityId);
+        }else{
+            $serv_query = $service_query;
+        }
+        $service = $serv_query->get();
         return [
             'message' => 'Historial de servicios de un cliente',
             'service' => $service
+        ];
+    }
+
+    public function listsServiceClient($root , array $args){
+        $clientId = $args['requestService']['id_client'];
+        $cliente = ValidationModels::validationclientInternal($clientId);
+        $service_query = Servicio::leftjoin('technicians','services.technicalId','=','technicians.id')
+                            ->where('services.clientId',$cliente->id)
+                            ->where('services.typeClient',self::client_internal)
+                            ->where('services.status',1)
+                            ->select('services.id',
+                            'services.titleService',
+                            'services.serviceDescription',
+                            'services.serviceLocation',
+                            'services.latitude',
+                            'services.longitude',
+                            'services.updatedDateTime',
+                            'services.finishDateTime_technician',
+                            'services.finishDateTime_client',
+                            'services.stateId as stateId' ,
+                            'technicians.firstName',
+                            'technicians.lastName',
+                            'technicians.phoneNumber',
+                            'technicians.photo',
+                        )->get();
+        //dd($service_query);
+        $count = Servicio::where('clientId',$cliente->id)
+                ->where('typeClient',self::client_internal)
+                ->where('status',1)
+                ->count();
+
+        $service = $service_query->map(function ($service) {
+            return [
+                'serviceContent' => [   'id' => $service->id,
+                                        'titleService' => $service->titleService ,
+                                        'serviceDescription' => $service->serviceDescription,
+                                        'serviceLocation'=>$service->serviceLocation,
+                                        'latitude'=>$service->latitude,
+                                        'longitude'=>$service->longitude,
+                                        'updatedDateTime'=>$service->updatedDateTime,
+                                        'finishDateTime_technician'=>$service->finishDateTime_technician,
+                                        'finishDateTime_client'=>$service->finishDateTime_client,
+                                        'id_state' => $service->stateId ?? 0   ,
+                                ],
+                'technician' => [
+                                    'firstName' => $service->firstName,
+                                    'lastName' => $service->lastName,
+                                    'phoneNumber' => $service->phoneNumber,
+                                    'photo' => $service->photo
+                                ],
+            ];
+        });
+        //dd($service);
+        return [
+            'message' => 'Listado de todos los servicios que el cliente hizo.!',
+            'counter' => $count,
+            'services' => $service
         ];
     }
 }

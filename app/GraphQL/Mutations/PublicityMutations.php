@@ -134,7 +134,7 @@ final class PublicityMutations{
         } catch(\Exception $e){
             DB::rollback();
             return [
-                'La falla es la siguiente: ' => $e->getMessage()
+                'message' => 'La falla es la siguiente: '. $e->getMessage()
             ];
         }
     }

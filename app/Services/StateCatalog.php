@@ -15,6 +15,7 @@ class StateCatalog {
     const STATUS_PUBLICITY_EXPIRATION = 0;
     const STATUS_PUBLICITY_CANCELED=2;
     //actividad
+    const CODE_ACT_ALL = 'all';
     //categoria de duration en suscripcion
     const DURATION_ANIO = "anio";
     const DURATION_ANIOS = "Anio";

@@ -1,8 +1,8 @@
 extend type Mutation {
     createClientExternal(clientRequest:JSON!): ClientsResponse @field(resolver: "ClienteExternoMutations@create")
     updateClientExternal(clientRequest:JSON!): ClientsResponse @field(resolver: "ClienteExternoMutations@update")
-    deleteClientExternal(id: ID! @whereKey): Response @field(resolver:"ClienteExternoMutations@delete")
-    reactiveClientExternal(clientRequest:JSON!): ClientsResponse @field(resolver: "ClienteExternoMutations@reactive")
+    deleteClientExternal(id: ID! @whereKey): Response @field(resolver: "ClienteExternoMutations@delete")
+    #reactiveClientExternal(clientRequest:JSON!): ClientsResponse @field(resolver: "ClienteExternoMutations@reactive")
 }
 
 type ClientsResponse {

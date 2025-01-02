@@ -22,16 +22,17 @@ class ServicioFactory extends Factory
     public function definition(): array
     {
         return [
-            'stateId' => $this->faker->numberBetween(4, 5),
+            'stateId' => $this->faker->numberBetween(4, 1),
             #'requestsId' => $this->faker->numberBetween(2200,2439),
-            'technicalId'=> $this->faker->numberBetween(60), //'technicalId'=> rand(150,62)
-            'clientId' =>  $this->faker->numberBetween(2, 13),
+            'technicalId'=> 1, //'technicalId'=> rand(150,62)
+            'clientId' =>  1,
             'activityId' => $this->faker->numberBetween(1,4),
             'typeClient' => 1,
             'titleService' => $this->faker->sentence,
             'serviceDescription' => $this->faker->sentence,
             'createdDateTime' => now(),
-            'finishDateTime' =>now()->addDays(4,7),
+            //'finishDateTime_technician' =>now()->addDays(4,7),
+            //'finishDateTime_client' =>now()->addDays(4,7),
             'updatedDateTime' =>now()->addDays(2,3),
             'status' => 1
             //

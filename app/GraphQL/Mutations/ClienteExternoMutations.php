@@ -91,7 +91,7 @@ class ClienteExternoMutations{
         }
     }
 
-    public function reactivate($root, array $args) {
+    /*public function reactivate($root, array $args) {
         $clienteData = $args['clientRequest'];
         $tecnicoId = $clienteData['technicalId'];
         $clientId  = $clienteData['clientId'];
@@ -134,5 +134,5 @@ class ClienteExternoMutations{
                 'customer_external' => null
             ];
         }
-    }
+    }*/
 }
