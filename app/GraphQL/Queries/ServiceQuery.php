@@ -380,13 +380,13 @@ class ServiceQuery
                             'services.updatedDateTime',
                             'services.finishDateTime_technician',
                             'services.finishDateTime_client',
-                            'services.stateId as stateId' ,
+                            DB::raw('COALESCE("services"."stateId", 0) as id_state'),
                             'technicians.firstName',
                             'technicians.lastName',
                             'technicians.phoneNumber',
                             'technicians.photo',
-                        )->get();
-        //dd($service_query);
+    )->get();
+        //dd($service_query->first());
         $count = Servicio::where('clientId',$cliente->id)
                 ->where('typeClient',self::client_internal)
                 ->where('status',1)
@@ -403,7 +403,7 @@ class ServiceQuery
                                         'updatedDateTime'=>$service->updatedDateTime,
                                         'finishDateTime_technician'=>$service->finishDateTime_technician,
                                         'finishDateTime_client'=>$service->finishDateTime_client,
-                                        'id_state' => $service->stateId ?? 0   ,
+                                        'id_state' => isset($service->id_state) ? $service->id_state : 0,
                                 ],
                 'technician' => [
                                     'firstName' => $service->firstName,

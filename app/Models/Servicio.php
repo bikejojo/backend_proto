@@ -30,11 +30,7 @@ class Servicio extends Model
         'status'
     ];
 
-    public function stateReference()
-    {
-        return $this->hasOne(StateReference::class, 'referenceId', 'id')
-                    ->where('type', 'service'); // Filtra por el tipo de referencia
-    }
+
 
     public function resquest(){
         return $this->hasMany(Solicitud::class,'requestsId');
