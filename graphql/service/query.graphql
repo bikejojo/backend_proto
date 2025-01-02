@@ -49,6 +49,9 @@ type Services_{
     serviceLocation:String
     technicalId:String
     clientId:String
+    updatedDateTime:String
+    finishDateTime_client:String
+    finishDateTime_technician:String
     rating_id:String
     rating:String
     feedback:String
@@ -63,5 +66,6 @@ type Service_ {
     longitude:String
     technicalId:String
     clientId:String
+    updatedDateTime:String
 }
 #import service.graphql

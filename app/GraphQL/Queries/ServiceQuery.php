@@ -301,6 +301,9 @@ class ServiceQuery
                 'services.titleService',
                 'services.serviceDescription',
                 'services.serviceLocation',
+                'services.updatedDateTime',
+                'services.finishDateTime_client',
+                'services.finishDateTime_technician',
                 'services.technicalId',
                 'services.clientId',
                 'rating.id AS rating_id',
@@ -335,6 +338,9 @@ class ServiceQuery
                 'services.latitude',
                 'services.technicalId',
                 'services.clientId',
+                'services.updatedDateTime',
+                //http://192.168.100.17:8002/'services.finishDateTime_client',
+                //'services.finishDateTime_technician',
             )
             ->get();
         //dd($service);
