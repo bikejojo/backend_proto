@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('clientId');
             $table->unsignedBigInteger('technicalId');
             $table->datetime('dateTimeCreated');
+            $table->text('status')->nullable();//1 activo y 0 eliminado
             $table->foreign('clientId')->references('id')->on('external_clients');
             $table->foreign('technicalId')->references('id')->on('technicians');
             $table->timestamps();

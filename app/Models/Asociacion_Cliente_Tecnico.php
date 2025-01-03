@@ -14,7 +14,8 @@ class Asociacion_Cliente_Tecnico extends Model
     protected $fillable = [
         'clientId',
         'technicalId',
-        'dateTimeCreated'
+        'dateTimeCreated',
+        'status'
     ];
 
     //tecnicos

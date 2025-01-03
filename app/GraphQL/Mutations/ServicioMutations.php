@@ -292,8 +292,13 @@ class ServicioMutations
             $service->longitude= $serviceData['longitude'] ?? $service->longitude;
             $service->latitude= $serviceData['latitude'] ?? $service->latitude;
             $service->activityId = $serviceData['id_activity'] ?? $service->activityId;
-            $service->updatedDateTime= $serviceData['updatedDateTime'] ?? $service->updatedDateTime;
+            $service->updatedDateTime = $serviceData['updatedDateTime'] ?? $service->updatedDateTime;
             $service->save();
+            ######################
+            $detail = Detalle_Agenda_Tecnico::where('serviceId',$service->id)->first();
+            $detail->serviceDate = $service->updatedDateTime;
+            $detail->save();
+            ######################
             DB::commit();
             return [
                 'message' => 'Servicio actualizado' ,

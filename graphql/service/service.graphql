@@ -17,7 +17,7 @@ type Service {
     finishDateTime_client:String
     finishDateTime_technician:String
 
-    
+
     request:[Request!]! @hasMany
 
     rating:Rating @hasOne

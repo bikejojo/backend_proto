@@ -385,7 +385,7 @@ class ServiceQuery
                             'technicians.lastName',
                             'technicians.phoneNumber',
                             'technicians.photo',
-    )->get();
+            )->get();
         //dd($service_query->first());
         $count = Servicio::where('clientId',$cliente->id)
                 ->where('typeClient',self::client_internal)

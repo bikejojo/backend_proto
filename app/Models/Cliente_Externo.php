@@ -24,7 +24,5 @@ class Cliente_Externo extends Model
         return $this->hasMany(Asociacion_Cliente_Tecnico::class,'clientId', 'id');
     }
 
-    public function contacts(){
-        return $this->belongsTo(Contacto::class,'clientId');
-    }
+
 }
