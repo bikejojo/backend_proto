@@ -3,6 +3,7 @@ type AssociationTechnClient {
     clientId:ID!
     technicalId:ID! @rename(attribute: "technicalId")
     dateTimeCreated:String!
+    status:String
 
     technicals: Technician @hasMany
     clients: [ExternalClient] @hasMany

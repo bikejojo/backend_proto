@@ -4,5 +4,4 @@ type ExternalClient {
     phoneNumber: String! @trim
     status: String
     associantions: AssociationTechnClient @belongsTo
-    contacts: Contact @belongsTo
 }
