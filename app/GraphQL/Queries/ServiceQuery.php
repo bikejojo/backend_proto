@@ -3,9 +3,6 @@
 namespace App\GraphQL\Queries;
 
 use App\Models\Servicio;
-use App\Models\Tecnico;
-use App\Models\Tipo_Estado;
-use App\Models\StateReference;
 use Illuminate\Support\Facades\DB;
 use app\Helpers\StatusHelper;
 use App\Services\StateCatalog;

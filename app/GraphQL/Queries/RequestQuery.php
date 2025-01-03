@@ -3,7 +3,6 @@
 namespace App\GraphQL\Queries;
 
 use App\Helpers\StatusHelper;
-use App\Models\Cliente_Interno;
 use App\Models\Tecnico;
 use App\Models\Solicitud;
 use Carbon\Carbon;

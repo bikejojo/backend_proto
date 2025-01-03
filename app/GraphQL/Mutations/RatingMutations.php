@@ -3,12 +3,10 @@
 namespace App\GraphQL\Mutations;
 
 use App\Helpers\StatusHelper;
-use Illuminate\Support\Facades\Validator;
 use App\Models\Tecnico;
 use App\Models\Servicio;
 use App\Models\Calificacion;
 use App\Services\StatusAssigner;
-use App\Services\StateCatalog;
 
 class RatingMutations{
     public function rateService($root, array $args){

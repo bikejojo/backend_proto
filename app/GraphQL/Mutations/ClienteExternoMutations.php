@@ -3,10 +3,8 @@
 namespace App\GraphQL\Mutations;
 
 
-use App\Models\User;
 use App\Models\Cliente_Externo;
 use App\Models\Asociacion_Cliente_Tecnico;
-use App\Models\Tecnico;
 use App\Services\StateCatalog;
 use App\Services\ValidationModels;
 use Carbon\Carbon;

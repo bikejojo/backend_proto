@@ -3,7 +3,6 @@
 namespace App\GraphQL\Mutations;
 
 use App\Models\Payment;
-use App\Models\Tecnico;
 use App\Services\ValidationModels;
 use App\Models\Suscripcion;
 use App\Models\Pago;

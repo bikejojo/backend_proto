@@ -4,7 +4,6 @@ namespace App\GraphQL\Queries;
 
 use App\Models\Habilidad;
 use App\Models\Tecnico;
-use App\Models\Cliente_Interno;
 use App\Models\Servicio;
 use Illuminate\Support\Facades\DB;
 

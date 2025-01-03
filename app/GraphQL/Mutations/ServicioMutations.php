@@ -1,13 +1,13 @@
 <?php declare(strict_types=1);
 
 namespace App\GraphQL\Mutations;
+
 use App\Models\Servicio;
 use App\Models\Cliente_Externo;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Models\Agenda_Tecnico;
 use App\Models\Asociacion_Cliente_Tecnico;
-use App\Models\Cliente_Interno;
 use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Historial_Servicios;
 use App\Models\Tecnico;

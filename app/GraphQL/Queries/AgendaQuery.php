@@ -6,8 +6,6 @@ use App\GraphQL\Mutations\ServicioMutations;
 
 use App\Helpers\StatusHelper;
 use App\Models\Agenda_Tecnico;
-USE App\Models\Cliente_Externo;
-USE App\Models\Cliente_Interno;
 use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Tecnico;
 use App\Services\ValidationModels;
