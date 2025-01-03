@@ -7,3 +7,5 @@ type requestAverage {
     average_rating:String
     ratings_count:String
 }
+
+#import rating.graphql

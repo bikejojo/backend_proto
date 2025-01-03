@@ -1,5 +1,3 @@
-#mutation.graphql
-
 extend type Mutation {
     createUser(userRequest: JSON!): User @field(resolver:"UserMutations@create")
     updateUser(id: ID!, userRequest: JSON!): User @field(resolver:"UserMutations@update")

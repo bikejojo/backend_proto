@@ -7,7 +7,7 @@ extend type Query {
 
     getHistoryInternalClient(requestService:JSON):historyServiceInternal @field (resolver: "ServiceQuery@technicianHistoryClientInternal")
     getHistoryExternalClient(requestService:JSON):historyServiceExternal @field (resolver: "ServiceQuery@technicianHistoryClientExternal")
-    collectClientServices(requestService:JSON):responseService @field (resolver: "ServiceQuery@listsServiceClient")
+    collectClientServices(requestService:JSON):responseServices @field (resolver: "ServiceQuery@listsServiceClient")
 }
 
 type responseClientExternal {
@@ -22,7 +22,7 @@ type responseClientInternal {
     technician:Technician
 }
 
-type responseService {
+type responseServices {
     message:String
     counter:String
     services:[serv]
