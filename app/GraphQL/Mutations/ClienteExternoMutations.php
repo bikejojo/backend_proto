@@ -6,43 +6,48 @@ namespace App\GraphQL\Mutations;
 use App\Models\Cliente_Externo;
 use App\Models\Asociacion_Cliente_Tecnico;
 use App\Services\StateCatalog;
+use App\Services\StatusAssigner;
 use App\Services\ValidationModels;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class ClienteExternoMutations{
     public function create($root, array $args) {
-            $clienteData = $args['clientRequest'];
-            $tecnicoId = $clienteData['technicalId'];
-            $tecnico = ValidationModels::validationTechnician($tecnicoId);
-            $phone = trim($clienteData['phoneNumber']);
-            $name_full = trim($clienteData['fullName']);
-            $external = Asociacion_Cliente_Tecnico::join('external_clients','associationTechnClient.clientId','=','external_clients.id')
-            ->join('technicians','associationTechnClient.technicalId','=','technicians.id')
-            ->where('external_clients.phoneNumber',$phone)
-            ->where('associationTechnClient.technicalId',$tecnico->id)->first();
+        $clienteData = $args['clientRequest'];
+        $tecnicoId = $clienteData['technicalId'];
+        $tecnico = ValidationModels::validationTechnician($tecnicoId);
+        $phone = trim($clienteData['phoneNumber']);
+        $name_full = trim($clienteData['fullName']);
 
-            DB::beginTransaction();
-            try{
-                if($external){
-                    DB::commit();
-                    return [
-                        'message' => 'Cliente registrado con anterioridad en su agenda.',
-                        'technical' => $tecnico
-                    ];
-                }
-                $cliente = Cliente_Externo::join('associationTechnClient', 'external_clients.id', '=', 'associationTechnClient.clientId')
-                ->where('associationTechnClient.full_name',$phone)
-                ->where('associationTechnClient.phone_number',$name_full)
+
+        DB::beginTransaction();
+        try{
+            $external = Asociacion_Cliente_Tecnico::join('external_clients','associationTechnClient.clientId','=','external_clients.id')
+                ->join('technicians','associationTechnClient.technicalId','=','technicians.id')
+                ->where('external_clients.phoneNumber',$phone)
+                ->where('associationTechnClient.technicalId',$tecnico->id)
+                ->where('associationTechnClient.status',StateCatalog::STATUS_ACTIVE)
+                ->first();
+
+            if($external){
+                DB::commit();
+                return [
+                    'message' => 'Cliente registrado con anterioridad en su agenda.',
+                    'technical' => $tecnico
+                ];
+            }
+            $cliente = Cliente_Externo::join('associationTechnClient', 'external_clients.id', '=', 'associationTechnClient.clientId')
+                ->where('associationTechnClient.full_name',$name_full)
+                ->where('associationTechnClient.phone_number',$phone)
                 ->where('associationTechnClient.technicalId', $tecnicoId)
                 ->where('associationTechnClient.status', StateCatalog::STATUS_LOW)
                 ->select('associationTechnClient.id','associationTechnClient.status','associationTechnClient.full_name','associationTechnClient.phone_number')
                 ->first();
-
+            if($cliente){
                 Asociacion_Cliente_Tecnico::where('id', $cliente->id)
-                ->update([
-                    'status' => StateCatalog::STATUS_ACTIVE
-                ]);
+                    ->update([
+                        'status' => StateCatalog::STATUS_ACTIVE
+                    ]);
 
                 DB::commit();
                 return [
@@ -53,76 +58,47 @@ class ClienteExternoMutations{
                     ],
                     'technical' => $tecnico
                 ];
-
-                $externo = Cliente_Externo::where('phoneNumber',$phone)->first();
-                if($externo){
-                    $asociacion  = Asociacion_Cliente_Tecnico::create([
-                        'full_name'=> $externo->fullName,
-                        'phone_number'=> $externo->phoneNumber,
-                        'updated_by_technician'=> 0,
-                        'version'=>1,
-                        'clientId'=>$externo->id,
-                        'technicalId'=>$tecnico->id,
-                        'dateTimeCreated'=>Carbon::now(),
-                        'status'=>1,
-                    ]);
-                    if($externo->fullName === $name_full){
-                        DB::commit();
-                        return [
-                            'message' => 'Cliente registrado correctamente.!',
-                            'technical' => $tecnico,
-                            'customer_external'=> $externo
-                        ];
-                    }else{
-                        $asociacion  = Asociacion_Cliente_Tecnico::create([
-                            'full_name'=> $name_full,
-                            'phone_number'=> $externo->phoneNumber,
-                            'updated_by_technician'=> 0,
-                            'version'=>1,
-                            'clientId'=>$externo->id,
-                            'technicalId'=>$tecnico->id,
-                            'dateTimeCreated'=>Carbon::now(),
-                            'status'=>1,
-                        ]);
-                        DB::commit();
-                        return [
-                            'message' => 'Se registro el contacto.!!',
-                            'technical' => $tecnico,
-                            'customer_external'=> $externo
-                        ];
-                    }
-                }
-                    // Crear cliente externo si no existe
-                    $nuevoCliente = Cliente_Externo::create([
-                        'fullName' => $name_full,
-                        'phoneNumber' => $phone,
-                        'status' => 1 ,
-                    ]);
-
-                    // Crear la asociación después de crear el cliente
-                    $asociacion = Asociacion_Cliente_Tecnico::create([
-                        'full_name' => $nuevoCliente->fullName,
-                        'phone_number' => $nuevoCliente->phoneNumber,
-                        'updated_by_technician' => 0,
-                        'version' => 1,
-                        'clientId' => $nuevoCliente->id,
-                        'technicalId' => $tecnico->id,
-                        'dateTimeCreated' => Carbon::now(),
-                        'status' => 1,
-                    ]);
-                DB::commit();
-                return [
-                    'message' => 'Cliente registrado correctamente.',
-                    'technical' => $tecnico,
-                    'customer_external'=> $nuevoCliente
-                ];
-
-            } catch (\Exception $e) {
-                DB::rollBack();
-                return [
-                    'message' => 'Se presento el siguiente error: ' . ' ' . $e->getMessage()
-                ];
             }
+            $externo = Cliente_Externo::where('phoneNumber',$phone)->first();
+            if (!$externo) {
+                // Crear cliente externo
+                $externo = Cliente_Externo::create([
+                    'fullName' => $name_full,
+                    'phoneNumber' => $phone,
+                    'status' => StateCatalog::STATUS_ACTIVE
+                ]);
+            }
+
+            // 4. Crear asociación con el técnico (nueva o si el nombre no coincide)
+            Asociacion_Cliente_Tecnico::create([
+                'full_name' => $name_full,
+                'phone_number' => $phone,
+                'updated_by_technician' => $tecnico->id,
+                'version' => 1,
+                'clientId' => $externo->id,
+                'technicalId' => $tecnico->id,
+                'dateTimeCreated' => Carbon::now(),
+                'status' => StateCatalog::STATUS_ACTIVE,
+            ]);
+
+            DB::commit();
+            return [
+                'message' => 'Cliente registrado correctamente.',
+                'technical' => $tecnico,
+                'customerExternal' => [
+                    'full_name' => $externo->fullName,
+                    'phone_number' => $externo->phoneNumber
+                ]
+            ];
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'message' => 'Se presentó el siguiente error: ' . $e->getMessage(),
+                'technical' => $tecnico,
+                'customerExternal' => null
+            ];
+        }
     }
 
 
