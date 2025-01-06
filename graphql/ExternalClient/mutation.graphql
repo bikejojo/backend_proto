@@ -1,6 +1,6 @@
 extend type Mutation {
     createClientExternal(clientRequest:JSON!): ClientsResponse @field(resolver: "ClienteExternoMutations@create")
-    updateClientExternal(clientRequest:JSON!): ClientsResponse @field(resolver: "ClienteExternoMutations@update")
+    updateClientExternal(clientRequest:JSON!): clientExternalResponse @field(resolver: "ClienteExternoMutations@update")
     deleteClientExternal(id_client: ID! , id_technician: ID!): Response @field(resolver: "ClienteExternoMutations@delete")
     #reactiveClientExternal(clientRequest:JSON!): ClientsResponse @field(resolver: "ClienteExternoMutations@reactive")
 }
@@ -13,5 +13,17 @@ type ClientsResponse {
 
 type Response {
   message: String
+}
+
+type clientExternalResponse {
+    message:String
+    technical: Technician
+    customerExternal: ExternalCustomer
+}
+
+type ExternalCustomer {
+    full_name:String
+    phone_number:String
+
 }
 #import ExternalClient.graphql

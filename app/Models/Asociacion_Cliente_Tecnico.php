@@ -15,7 +15,11 @@ class Asociacion_Cliente_Tecnico extends Model
         'clientId',
         'technicalId',
         'dateTimeCreated',
-        'status'
+        'full_name',
+        'phone_number',
+        'updated_by_technician',
+        'version',
+        'status',
     ];
 
     //tecnicos

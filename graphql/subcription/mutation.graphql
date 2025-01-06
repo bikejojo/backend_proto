@@ -30,6 +30,7 @@ type responseTechnicianSuscription{
 }
 
 type suscripcions {
+    id:String
     name:String
     description:String
     codeSubcription:String

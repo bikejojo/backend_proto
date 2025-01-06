@@ -2,8 +2,8 @@ type Technician @model(class: "App\\Models\\Tecnico"){
   id: ID
   firstName: String @trim
   lastName: String @trim
-  frontIdCard: String @trim
-  backIdCard: String @trim
+  frontIdCard: String
+  backIdCard: String
   email: String @trim
   phoneNumber: String
   password: String! @trim

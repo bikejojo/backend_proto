@@ -214,6 +214,7 @@ class SubcritionMutations
             ->leftjoin('subcriptions', 'technician_subcription.subcriptionsId', '=', 'subcriptions.id')
             ->whereDate('technician_subcription.endDateSubcription', '>=', Carbon::now()) // No vencida
             ->select(
+                'subcriptions.id',
                 'subcriptions.name',
                 'subcriptions.description',
                 'subcriptions.codeSubcription',
