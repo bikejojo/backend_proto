@@ -148,9 +148,7 @@ class UserMutations{
 
         // Obtener cliente asociado
         $client = $user->clientsExterns()->first();
-        //dd($user);
         $client1 =Cliente_Interno::where('internal_clients.userId',$user->id)->first();
-        //dd(Cliente_Interno::all());
 
         // Crear token con Sanctum
         $tokens = $user->createToken('authToken')->plainTextToken;

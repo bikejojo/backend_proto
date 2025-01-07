@@ -18,7 +18,6 @@ class RatingMutations{
                     ->where('state_reference.type','service')
                     ->where('descriptionState',StatusAssigner::SERVICE_COMPLETED_T)
                     ->first();
-        //dd($service->stateId);
         if (!$service) {
             return [
                 'message' => 'Servicio no encontrado.',

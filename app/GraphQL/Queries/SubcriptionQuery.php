@@ -18,7 +18,6 @@ class SubcriptionQuery
         $joint = Technician_subcripcion::where('technicianId',$technician->id)->exists();
         $join = Technician_subcripcion::where('technicianId',$technician->id)->where('status',0)->where('subcriptionsId',1)->exists();
         $joins = Technician_subcripcion::where('technicianId',$technician->id)->where('status',1)->exists();
-        //dd($joins);
         if(!$joint){
             return [
                 'message' => 'Todas las suscripciones.',

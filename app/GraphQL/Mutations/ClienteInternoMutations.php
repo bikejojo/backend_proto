@@ -111,7 +111,6 @@ class ClienteInternoMutations{
             ImageHelper::createDirectorie($clientId,$value);
             $manager = new ImageManager(new Driver());
             if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
-                //dd($technician->photo);
                 if ($client->photo) {
                     Storage::delete('public/' . $client->photo);
                 }

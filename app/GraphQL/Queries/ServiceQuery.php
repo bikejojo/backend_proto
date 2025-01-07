@@ -383,7 +383,6 @@ class ServiceQuery
                             'technicians.phoneNumber',
                             'technicians.photo',
             )->get();
-        //dd($service_query->first());
         $count = Servicio::where('clientId',$cliente->id)
                 ->where('typeClient',self::client_internal)
                 ->where('status',1)
@@ -410,7 +409,6 @@ class ServiceQuery
                                 ],
             ];
         });
-        //dd($service);
         return [
             'message' => 'Listado de todos los servicios que el cliente hizo.!',
             'counter' => $count,

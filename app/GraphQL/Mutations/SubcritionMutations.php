@@ -246,7 +246,6 @@ class SubcritionMutations
             $technician = ValidationModels::validationTechnician($subcriptionData['technicianId']);
 
             $subcription = Suscripcion::find($subcriptionData['subcriptionId']);
-            //dd($subcription);
             if (!$subcription) {
                 return [
                     'message' => 'No existe la suscripción.',
@@ -272,7 +271,6 @@ class SubcritionMutations
             ->where('ts.subcriptionsId',$subcription->id)
             ->where('ts.status',0)
             ->exists();
-            //dd($existingSubscriptionFree);
             if($existingSubscriptionFree){
                 return[
                     'message' => 'Usted realizo y utilizo una suscripcion FREE.'
@@ -284,14 +282,13 @@ class SubcritionMutations
             ->where('ts.status',1)
             //->select('s.id','s.name','s.description','s.codeSubcription','ts.starDateSubcription','ts.endDateSubcription')
             ->exists();
-            //dd($existingSubscriptionAll);
             if($existingSubscriptionAll){
                 $existingSubscriptionAll = DB::table('technician_subcription as ts')
                 ->join('subcriptions as s', 'ts.subcriptionsId', '=', 's.id')
                 ->where('ts.technicianId', $technician->id)
                 ->where('ts.status',1)
                 ->select('s.id','s.name','s.description','s.codeSubcription','ts.starDateSubcription','ts.endDateSubcription')->first();
-                //dd($existingSubscriptionAll);
+
                 return[
                     'message' => 'Usted cuenta con una suscripcion activa en el sistema.',
                     'suscripcion' => [

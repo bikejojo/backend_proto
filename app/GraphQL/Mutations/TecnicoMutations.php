@@ -236,7 +236,6 @@ class TecnicoMutations {
         $userId = $technicial->userId;
         $user = User::find($userId);
         $manager = new ImageManager(new Driver());
-        //dd($args['photo'] instanceof UploadedFile);
         $isPhotoUploaded = isset($args['photo']) && $args['photo'] instanceof UploadedFile;
         if ($isPhotoUploaded) {
             // Eliminar foto anterior

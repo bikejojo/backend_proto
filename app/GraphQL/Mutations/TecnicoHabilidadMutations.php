@@ -48,7 +48,7 @@ class TecnicoHabilidadMutations{
             ]);
             $habilidades[] = $habilidadTecnico;
         }
-        //dd($habilidades);
+
         $skill = Tecnico_Habilidad::where('technicianId',$id)
         ->leftjoin('skills','technician_skills.skillId','=','skills.id')->get();
         $technician = Tecnico::find($id);
@@ -91,7 +91,7 @@ class TecnicoHabilidadMutations{
             $habilidades = Tecnico_Habilidad::where('technicianId', $tecnicoId)
             ->leftjoin('skills','technician_skills.skillId','=','skills.id')->get();
             //return $habilidades;
-            //dd($habilidades);
+
             DB::commit();
             return [
                 'message' => 'habilidades actualizadas al tecnico OK' ,
@@ -107,13 +107,9 @@ class TecnicoHabilidadMutations{
     }
     public function userSkilsById($root , array $args){
         $userId = $args['id'];
-        #dd($userId);
         $user = User::find($userId);
-        #dd($user);
         $tecnico = Tecnico::where('userId',$user->id )->first();
-        #dd($tecnico->id);
         $skills = Tecnico_Habilidad::where('technicianId', $tecnico->id)->get();
-        //dd($skills);
         if($skills->isEmpty()){
             return [
                 'message' => 'No tiene habilidades asignadas a este usuario',
