@@ -12,8 +12,7 @@ class ImageHelper
     public static function validateImage($argumento){
         return Validator::make([
             'frontIdCard' => $argumento['frontIdCard'] ?? null ,
-            'backIdCard'=> $argumento['backIdCard'] ?? null ,
-            'profile' => $argumento['photo'] ?? null ,
+            'backIdCard'=> $argumento['backIdCard'] ?? null 
             ], [
                 'frontIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
                 'backIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp'

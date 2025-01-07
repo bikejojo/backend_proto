@@ -7,7 +7,7 @@ type Technician @model(class: "App\\Models\\Tecnico"){
   email: String @trim
   phoneNumber: String
   password: String! @trim
-  photo: String @trim
+  photo: String
   userId: String! @trim
   average_rating:String!
   id_city: String! @rename (attribute: "cityId")
