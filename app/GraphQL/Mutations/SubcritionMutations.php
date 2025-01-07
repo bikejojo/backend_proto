@@ -282,11 +282,26 @@ class SubcritionMutations
             ->join('subcriptions as s', 'ts.subcriptionsId', '=', 's.id')
             ->where('ts.technicianId', $technician->id)
             ->where('ts.status',1)
+            //->select('s.id','s.name','s.description','s.codeSubcription','ts.starDateSubcription','ts.endDateSubcription')
             ->exists();
-
+            //dd($existingSubscriptionAll);
             if($existingSubscriptionAll){
+                $existingSubscriptionAll = DB::table('technician_subcription as ts')
+                ->join('subcriptions as s', 'ts.subcriptionsId', '=', 's.id')
+                ->where('ts.technicianId', $technician->id)
+                ->where('ts.status',1)
+                ->select('s.id','s.name','s.description','s.codeSubcription','ts.starDateSubcription','ts.endDateSubcription')->first();
+                //dd($existingSubscriptionAll);
                 return[
-                    'message' => 'Usted cuenta con una suscripcion activa en el sistema.'
+                    'message' => 'Usted cuenta con una suscripcion activa en el sistema.',
+                    'suscripcion' => [
+                        'id'=>$existingSubscriptionAll->id,
+                        'name'=>$existingSubscriptionAll->name,
+                        'description'=>$existingSubscriptionAll->description,
+                        'codeSubcription'=>$existingSubscriptionAll->codeSubcription,
+                        'starDateSubcription'=>$existingSubscriptionAll->starDateSubcription,
+                        'endDateSubcription'=>$existingSubscriptionAll->endDateSubcription ] //$existingSubscriptionAll
+                        ,'technician' => $technician
                 ];
             }
 
