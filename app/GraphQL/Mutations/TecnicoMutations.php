@@ -59,7 +59,7 @@ class TecnicoMutations {
                 'email' => $email,
                 'password' => Hash::make($technicianData['password']),
                 'ci' => $technicianData['ci'],
-                'type_user' => $technicianData['type_user'],
+                'type_user' => 1,
             ]);
 
             // Crear token de acceso y guardar el usuario
@@ -250,7 +250,7 @@ class TecnicoMutations {
         $ha=[];
         foreach($skillsData as $habilidad_tec) {
             if ($habilidad_tec->skill) {
-                // Añadimos los detalles de la habilidad al array
+                // Añadimos los detalles de la habilidad al arr
                 $ha[] = [
                     'id_skill' => $habilidad_tec->skill->id,
                     'name' => $habilidad_tec->skill->name,
