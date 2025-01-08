@@ -1,5 +1,5 @@
 <?php
-namespace App\Helpers;
+namespace App\helpers;
 
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
