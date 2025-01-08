@@ -233,6 +233,7 @@ class TecnicoMutations {
             ];
         }
         $technicialId = $technicial->id;
+        ImageHelper::existDirectorie($technicialId);
         $userId = $technicial->userId;
         $user = User::find($userId);
         $manager = new ImageManager(new Driver());

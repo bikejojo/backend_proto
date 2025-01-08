@@ -12,7 +12,7 @@ class ImageHelper
     public static function validateImage($argumento){
         return Validator::make([
             'frontIdCard' => $argumento['frontIdCard'] ?? null ,
-            'backIdCard'=> $argumento['backIdCard'] ?? null 
+            'backIdCard'=> $argumento['backIdCard'] ?? null
             ], [
                 'frontIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
                 'backIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp'
@@ -46,6 +46,17 @@ class ImageHelper
         Storage::makeDirectory('public/publicidad/' . $objetoId . '/logo');
 
     }
+
+    public static function existDirectorie($objetoId){
+        $directoryPath = 'public/'. $objetoId . '/profile';
+
+        if (!Storage::exists($directoryPath)) {
+            // Si no existe, lo crea
+            Storage::makeDirectory($directoryPath);
+            return "Directorio 'profile' creado para el objeto: " . $objetoId;
+        }
+    }
+
     public static function deleteDirectoryIdCard($objetoId){
         Storage::deleteDirectory('public/' . $objetoId . '/id_card');
     }
