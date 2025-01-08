@@ -25,43 +25,43 @@ class ClientQuery{
         if (!empty($clientData['searchParameter'])) {
             $clientNamePhone = strtolower($clientData['searchParameter']);
 
-            // Aplicar el filtro por nombre o teléfono y también filtrar por estado
-            $clientExterno = Cliente_Externo::whereHas('associantions', function ($query) use ($tecnicoId) {
-                $query->where('technicalId', $tecnicoId)
-                ->where('status',1);  // Filtrar por ID del técnic
-            })
-            ->where(function($query) use ($clientNamePhone) {
-                $query->where(DB::raw('LOWER(external_clients."fullName")'), 'LIKE', "%{$clientNamePhone}%")
-                      ->orWhere(DB::raw('LOWER(external_clients."phoneNumber")'), 'LIKE', "%{$clientNamePhone}%");
-            })
-            ->where('external_clients.status', 1)
-            ->orderBy('external_clients.created_at', 'desc')  // Filtrar solo por clientes con estado 1
-            ->get();
+            // Realizar la búsqueda en la tabla de asociación
+            $clientExterno = Asociacion_Cliente_Tecnico::where('technicalId', $tecnicoId)
+                ->where('status', 1)  // Filtrar por técnico y estado activo
+                ->where(function($query) use ($clientNamePhone) {
+                    $query->where(DB::raw('LOWER(full_name)'), 'LIKE', "%{$clientNamePhone}%")
+                          ->orWhere(DB::raw('LOWER(phone_number)'), 'LIKE', "%{$clientNamePhone}%");
+                })
+                ->orderBy('created_at', 'desc')
+                ->get(['full_name', 'phone_number']);  // Obtener solo nombre y teléfono
         } else {
             // Si no hay parámetro de búsqueda, solo aplicar el filtro del técnico y estado
-            $clientExterno = Cliente_Externo::whereHas('associantions', function ($query) use ($tecnicoId) {
-                $query->where('technicalId', $tecnicoId)
-                    ->where('status',1);  // Filtrar por ID del técnico
-            })
-            ->where('external_clients.status', 1)
-            ->orderBy('external_clients.created_at', 'desc')  // Filtrar solo por clientes con estado 1
-            ->get();
+            $clientExterno = Asociacion_Cliente_Tecnico::where('technicalId', $tecnicoId)
+                ->where('status', 1)
+                ->orderBy('created_at', 'desc')
+                ->get(['full_name', 'phone_number']);  // Obtener solo nombre y teléfono
         }
 
         // Verificar si no se encontraron resultados
         if ($clientExterno->isEmpty()) {
             return [
                 'message' => 'No se encontraron resultados',
-                'customer_internal' => null
+                'customer_external' => null
             ];
         }
 
         // Retornar los resultados encontrados
         return [
             'message' => 'Resultados encontrados',
-            'customer_external' => $clientExterno
+            'customer_external' => $clientExterno->map(function ($client) {
+                return [
+                    'full_name' => $client->full_name,
+                    'phone_number' => $client->phone_number
+                ];
+            })
         ];
     }
+
 
     public function searchInternalByName($root, array $args){
         $clientData = $args['requestClient'];
@@ -114,7 +114,9 @@ class ClientQuery{
         ->where('associationTechnClient.status',1)
         ->leftjoin('external_clients','external_clients.id','=','clientId')
         ->orderBy('external_clients.created_at', 'desc')
+        ->select('associationTechnClient.full_name','associationTechnClient.phone_number','external_clients.id')
         ->get();
+        //dd($listado);
         if($listado->isEmpty()){
             return[
                 'message' => 'El tecnico no tiene una lista de clientes propios',
@@ -124,7 +126,13 @@ class ClientQuery{
 
         return[
             'message' => 'Clientes propios de los tecnicos',
-            'customer_external' => $listado
+            'customer_external' => $listado->map(function ($client) {
+                return [
+                    'id' => $client->id,
+                    'full_name' => $client->full_name,
+                    'phone_number' => $client->phone_number
+                ];
+            })
         ];
     }
 

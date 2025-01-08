@@ -36,7 +36,7 @@ class ClienteExternoMutations{
                     'technical' => $tecnico
                 ];
             }
-            $cliente = Cliente_Externo::join('associationTechnClient', 'external_clients.id', '=', 'associationTechnClient.clientId')
+            /*$cliente = Cliente_Externo::join('associationTechnClient', 'external_clients.id', '=', 'associationTechnClient.clientId')
                 ->where('associationTechnClient.full_name',$name_full)
                 ->where('associationTechnClient.phone_number',$phone)
                 ->where('associationTechnClient.technicalId', $tecnicoId)
@@ -58,7 +58,7 @@ class ClienteExternoMutations{
                     ],
                     'technical' => $tecnico
                 ];
-            }
+            }*/
             $externo = Cliente_Externo::where('phoneNumber',$phone)->first();
             if (!$externo) {
                 // Crear cliente externo

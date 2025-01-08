@@ -157,6 +157,7 @@ class ClienteInternoMutations{
         try{
             $manager = new ImageManager(new Driver());
             // Manejo de la imagen
+            ImageHelper::existDirectorieClient($client->id);
             DB::beginTransaction();
             if (isset($args['photo'])) {
                 if ($args['photo'] instanceof UploadedFile) {

@@ -67,6 +67,16 @@ class ImageHelper
         }
     }
 
+    public static function existDirectorieClient($objetoId){
+        $directoryPath = 'public/'. 'client_'.$objetoId . '/photo';
+
+        if (!Storage::exists($directoryPath)) {
+            // Si no existe, lo crea
+            Storage::makeDirectory($directoryPath);
+            return "Directorio 'id_card' creado para el objeto: " . $objetoId;
+        }
+    }
+
     public static function deleteDirectoryIdCard($objetoId){
         Storage::deleteDirectory('public/' . $objetoId . '/id_card');
     }
