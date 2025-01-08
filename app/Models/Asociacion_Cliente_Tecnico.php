@@ -31,8 +31,8 @@ class Asociacion_Cliente_Tecnico extends Model
         return $this->hasMany(Cliente_Externo::class,'clientId');
     } */
     // cliente externos
-public function client(){
-    return $this->belongsTo(Cliente_Externo::class, 'clientId', 'id');
-}
+    public function client(){
+        return $this->belongsTo(Cliente_Externo::class, 'clientId', 'id');
+    }
 
 }

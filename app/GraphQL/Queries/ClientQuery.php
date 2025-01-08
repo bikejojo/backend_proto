@@ -187,9 +187,17 @@ class ClientQuery{
         ->select('clientId', 'typeClient')
         ->get();
         $clienteExternoCount = $detailAgenda->where('typeClient', 2)
+        ->filter(function ($item) use ($technicialId){
+            return Asociacion_Cliente_Tecnico::where('associationTechnClient.clientId',$item->clientId)
+                    ->where('associationTechnClient.technicalId',$technicialId)
+                    ->where('associationTechnClient.status',1)
+                    ->exists();
+        })
         ->count();
+        //dd($clienteExternoCount);
         $clienteInternoCount = $detailAgenda->where('typeClient', 1)
         ->count();
+
         $clientSum = $clienteExternoCount + $clienteInternoCount;
 
         return [
@@ -202,8 +210,10 @@ class ClientQuery{
         $technicialId = $args['id_technician'];
         $agenda = Agenda_Tecnico::where('technicianId',$technicialId)->first();
 
-        $detailAgenda = Detalle_Agenda_Tecnico::where('agendaTechnicalId',$agenda->id)
-        ->whereNotNull('serviceDate')
+        $detailAgenda = Detalle_Agenda_Tecnico::join('services','detail_technical_agenda.serviceId','=','services.id')
+        ->where('detail_technical_agenda.agendaTechnicalId',$agenda->id)
+        ->where('services.status',1)
+        ->whereNotNull('detail_technical_agenda.serviceDate')
         ->count();
         return [
             'message' => 'Total de citas programas de tecnico',

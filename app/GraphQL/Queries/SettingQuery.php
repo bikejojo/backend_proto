@@ -7,8 +7,6 @@ use App\Models\Tecnico;
 
 class SettingQuery
 {
-
-
     public function list($root,array $args){
         $setting = Setting::all();
         return [
