@@ -22,8 +22,9 @@ type clientExternalResponse {
 }
 
 type ExternalCustomer {
-    full_name:String
-    phone_number:String
-
+    id:String
+    fullName:String
+    phoneNumber:String
+    status:String
 }
 #import ExternalClient.graphql

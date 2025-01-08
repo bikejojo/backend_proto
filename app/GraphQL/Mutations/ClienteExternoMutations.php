@@ -114,7 +114,7 @@ class ClienteExternoMutations{
         $cliente = ValidationModels::validationclientExternal($clienteId);
 
         // Buscar la asociación existente
-        $asoc = Asociacion_Cliente_Tecnico::where('clientId', $clienteId)
+        $asoc = Asociacion_Cliente_Tecnico::where('clientId', $cliente->id)
             ->where('technicalId', $tecnico->id)
             ->first();
 
@@ -138,8 +138,10 @@ class ClienteExternoMutations{
                     'message' => 'Cliente asociado correctamente.',
                     'technical' => $tecnico,
                     'customerExternal' => [
-                        'full_name' => $full_name,
-                        'phone_number' => $phone
+                        'id' => $asoc->clientId,
+                        'fullName' => $full_name,
+                        'phoneNumber' => $phone,
+                        'status'=> $asoc->status
                     ]
                 ];
             }
@@ -158,8 +160,10 @@ class ClienteExternoMutations{
                     'message' => 'Se realizó el cambio requerido.',
                     'technical' => $tecnico,
                     'customerExternal' => [
-                        'full_name' => $full_name,
-                        'phone_number' => $phone
+                        'id' => $asoc->clientId,
+                        'fullName' => $full_name,
+                        'phoneNumber' => $phone,
+                        'status' => $asoc->status
                     ]
                 ];
             }
@@ -170,8 +174,10 @@ class ClienteExternoMutations{
                 'message' => 'No se produjo ningún cambio.',
                 'technical' => $tecnico,
                 'customerExternal' => [
-                    'full_name' => $full_name,
-                    'phone_number' => $phone
+                    'id'=> $asoc->clientId ,
+                    'fullName' => $full_name,
+                    'phoneNumber' => $phone ,
+                    'status' => $asoc->status
                 ]
             ];
         } catch (\Exception $e) {
