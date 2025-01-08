@@ -85,7 +85,7 @@ class ClienteExternoMutations{
             return [
                 'message' => 'Cliente registrado correctamente.',
                 'technical' => $tecnico,
-                'customerExternal' => [
+                'customer_external' => [
                     'full_name' => $externo->fullName,
                     'phone_number' => $externo->phoneNumber
                 ]
@@ -96,7 +96,7 @@ class ClienteExternoMutations{
             return [
                 'message' => 'Se presentó el siguiente error: ' . $e->getMessage(),
                 'technical' => $tecnico,
-                'customerExternal' => null
+                'customer_external' => null
             ];
         }
     }
@@ -137,7 +137,7 @@ class ClienteExternoMutations{
                 return [
                     'message' => 'Cliente asociado correctamente.',
                     'technical' => $tecnico,
-                    'customerExternal' => [
+                    'customer_external' => [
                         'id' => $asoc->clientId,
                         'fullName' => $full_name,
                         'phoneNumber' => $phone,
@@ -159,7 +159,7 @@ class ClienteExternoMutations{
                 return [
                     'message' => 'Se realizó el cambio requerido.',
                     'technical' => $tecnico,
-                    'customerExternal' => [
+                    'customer_external' => [
                         'id' => $asoc->clientId,
                         'fullName' => $full_name,
                         'phoneNumber' => $phone,
@@ -173,7 +173,7 @@ class ClienteExternoMutations{
             return [
                 'message' => 'No se produjo ningún cambio.',
                 'technical' => $tecnico,
-                'customerExternal' => [
+                'customer_external' => [
                     'id'=> $asoc->clientId ,
                     'fullName' => $full_name,
                     'phoneNumber' => $phone ,
@@ -230,7 +230,7 @@ class ClienteExternoMutations{
         if (!$cliente) {
             return [
                 'message' => 'No se encontró un cliente inactivo con ese número de telefono para este técnico.',
-                'customerExternal' => null,
+                'customer_external' => null,
                 'technical' => $tecnico
             ];
         }
@@ -245,7 +245,7 @@ class ClienteExternoMutations{
             DB::commit();
             return [
                 'message' => 'Cliente reactivado exitosamente.',
-                'customerExternal'=> [
+                'customer_external'=> [
                     'full_name' => $cliente->full_name,
                     'phone_number' => $cliente->phone_number
                 ],
@@ -255,7 +255,7 @@ class ClienteExternoMutations{
             DB::rollBack();
             return [
                 'message' => 'Error al reactivar el cliente: ' . $e->getMessage(),
-                'customerExternal' => null
+                'customer_external' => null
             ];
         }
     }

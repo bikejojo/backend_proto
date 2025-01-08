@@ -18,7 +18,7 @@ type Response {
 type clientExternalResponse {
     message:String
     technical: Technician
-    customerExternal: ExternalCustomer
+    customer_external: ExternalCustomer
 }
 
 type ExternalCustomer {
