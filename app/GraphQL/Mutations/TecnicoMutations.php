@@ -185,6 +185,7 @@ class TecnicoMutations {
         $manager = new ImageManager(new Driver());
         if ($isFrontIdCardUploaded || $isBackIdCardUploaded) {
             // Procesar cada archivo solo si fue enviado en la solicitud
+            ImageHelper::existDirectorieCard($technicianId);
             if ($isFrontIdCardUploaded) {
 
                 $frontIdCardPath = ImageHelper::processImage($args['frontIdCard'], "/{$technicianId}/id_card/"."{$this->nowFront}.png", $manager);
