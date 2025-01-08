@@ -33,13 +33,13 @@ class ClientQuery{
                           ->orWhere(DB::raw('LOWER(phone_number)'), 'LIKE', "%{$clientNamePhone}%");
                 })
                 ->orderBy('created_at', 'desc')
-                ->get(['full_name', 'phone_number']);  // Obtener solo nombre y teléfono
+                ->get(['associationTechnClient.full_name', 'associationTechnClient.phone_number','associationTechnClient.status','associationTechnClient.clientId']);  // Obtener solo nombre y teléfono
         } else {
             // Si no hay parámetro de búsqueda, solo aplicar el filtro del técnico y estado
             $clientExterno = Asociacion_Cliente_Tecnico::where('technicalId', $tecnicoId)
                 ->where('status', 1)
                 ->orderBy('created_at', 'desc')
-                ->get(['full_name', 'phone_number']);  // Obtener solo nombre y teléfono
+                ->get(['associationTechnClient.full_name', 'associationTechnClient.phone_number','associationTechnClient.status','associationTechnClient.clientId']);  // Obtener solo nombre y teléfono
         }
 
         // Verificar si no se encontraron resultados
@@ -50,13 +50,16 @@ class ClientQuery{
             ];
         }
 
+
         // Retornar los resultados encontrados
         return [
             'message' => 'Resultados encontrados',
             'customer_external' => $clientExterno->map(function ($client) {
                 return [
-                    'full_name' => $client->full_name,
-                    'phone_number' => $client->phone_number
+                    'fullName' => $client->full_name,
+                    'phoneNumber' => $client->phone_number,
+                    'status' => $client->status,
+                    'id' => $client->clientId
                 ];
             })
         ];
@@ -114,7 +117,7 @@ class ClientQuery{
         ->where('associationTechnClient.status',1)
         ->leftjoin('external_clients','external_clients.id','=','clientId')
         ->orderBy('external_clients.created_at', 'desc')
-        ->select('associationTechnClient.full_name','associationTechnClient.phone_number','external_clients.id')
+        ->select('associationTechnClient.full_name','associationTechnClient.phone_number','external_clients.id','associationTechnClient.status')
         ->get();
         //dd($listado);
         if($listado->isEmpty()){
@@ -129,8 +132,9 @@ class ClientQuery{
             'customer_external' => $listado->map(function ($client) {
                 return [
                     'id' => $client->id,
-                    'full_name' => $client->full_name,
-                    'phone_number' => $client->phone_number
+                    'fullName' => $client->full_name,
+                    'phoneNumber' => $client->phone_number,
+                    'status' => $client->status
                 ];
             })
         ];
