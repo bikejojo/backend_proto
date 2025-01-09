@@ -27,6 +27,7 @@ class StatusAssigner{
     const REQUEST_PENDING = 'pendiente por aceptar.';
     const REQUEST_REJECTED_T = 'rechazado por tecnico.';
     const REQUEST_REJECTED_C = 'rechazado por cliente.';
+    const REQUEST_REJECTED_SYSTEM = 'solicitud rechazada por tiempo de espera';
     const REQUEST_ACCEPTED_T = 'aceptado por tecnico.';
 
     const ENTITY_REQUEST = 'request';
@@ -70,7 +71,7 @@ class StatusAssigner{
                     'technicianId' => $objeto->technicianId,
                     'stateId' => self::REJECTED,
                     'type' => $type_reference,
-                    'typeClient' => 1,
+                    'typeClient' => self::cliente_internal,
                     'descriptionState' => self::REQUEST_REJECTED_T,
                     'observations' => $comments,
                     'dateCreate' => $now
@@ -85,7 +86,7 @@ class StatusAssigner{
                     'clientId' => $objeto->clientId,
                     'technicianId' => $objeto->technicianId,
                     'stateId' => self::REJECTED,
-                    'typeClient' => 1,
+                    'typeClient' => self::cliente_internal,
                     'type' => $type_reference,
                     'descriptionState' => self::REQUEST_REJECTED_C,
                     'observations' => $comments,
@@ -102,12 +103,29 @@ class StatusAssigner{
                     'technicianId' => $objeto->technicianId,
                     'stateId' => self::ACCEPT,
                     'type' => $type_reference,
-                    'typeClient' => 1,
+                    'typeClient' => self::cliente_internal,
                     'descriptionState' => self::REQUEST_ACCEPTED_T,
                     'observations' => $comments,
                     'dateCreate' => $now
                 ]);
                 $objeto->stateId = $stateReference->stateId;
+                $objeto->save();
+            break;
+            case 5:
+                $stateReference = StateReference::create([
+                    'requestId' => $objeto->id,
+                    'serviceId' => null,
+                    'clientId' => $objeto->clientId,
+                    'technicianId' => null,
+                    'stateId' => self::REJECTED,
+                    'type' => $type_reference,
+                    'typeClient' => self::cliente_internal,
+                    'descriptionState' => self::REQUEST_REJECTED_SYSTEM,
+                    'observations' => $comments,
+                    'dateCreate' => $now
+                ]);
+                $objeto->stateId = $stateReference->stateId;
+                $objeto->status = 0;
                 $objeto->save();
             break;
         }

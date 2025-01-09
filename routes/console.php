@@ -19,3 +19,7 @@ Artisan::command('update:Expired',function(){
 Artisan::command('suscripcion:Expired',function(){
     $this->call(\App\Console\Commands\DisableExpiredSubscriptions::class);
 });
+
+Artisan::command('request:Expired',function(){
+    $this->call(\App\Console\Commands\UpdateExpiredRequests::class);
+});
