@@ -4,7 +4,7 @@ namespace App\GraphQL\Queries;
 
 use App\GraphQL\Mutations\ServicioMutations;
 use App\Models\Agenda_Tecnico;
-use App\Models\Cliente_Externo;
+use Illuminate\Support\Facades\Log;
 use App\Models\Cliente_Interno;
 use App\Models\Asociacion_Cliente_Tecnico;
 use App\Models\Detalle_Agenda_Tecnico;
@@ -165,20 +165,40 @@ class ClientQuery{
             ->where('technicalId',$technicalId)
             ->leftJoin('internal_clients', 'services.clientId', '=', 'internal_clients.id')
             ->select(
-                DB::raw('CONCAT(internal_clients."firstName", \' \', internal_clients."lastName") as fullName'),
+                DB::raw('CONCAT(COALESCE(internal_clients."firstName", \'\'), \' \', COALESCE(internal_clients."lastName", \'\')) as "fullName"'),
                 DB::raw('DATE(services."updatedDateTime") as date'),
                 DB::raw('COUNT(services.id) as servicecount'),
                 DB::raw("'Cliente Interno' as clienttype")
             )
             ->whereBetween('services.updatedDateTime', [$startDate, $finishDate])
-            ->groupBy(DB::raw('CONCAT(internal_clients."firstName", \' \', internal_clients."lastName")'), 'services.updatedDateTime')
+            ->groupBy(DB::raw('CONCAT(COALESCE(internal_clients."firstName", \'\'), \' \', COALESCE(internal_clients."lastName", \'\'))')
+            , 'services.updatedDateTime')
             ->orderBy('services.updatedDateTime')
             ->get();
+            //dd($servicesInt);
             //dd($servicesInt->toSql(), $servicesInt->getBindings());
-        return [
-            'servicesExternal' => $servicesExt->toArray(),
-            'servicesInternal' => $servicesInt->toArray(),
-        ];
+            Log::info('Respuesta final: ', [
+                'servicesExternal' => $servicesExt,
+                'servicesInternal' => $servicesInt,
+            ]);
+            return [
+                'servicesExternal' => $servicesExt->map(function ($service) {
+                    return [
+                        'fullName' => $service->fullName,
+                        'date' => $service->date,
+                        'servicecount' => $service->servicecount,
+                        'clienttype' => $service->clienttype,
+                    ];
+                })->toArray(),
+                'servicesInternal' => $servicesInt->map(function ($service) {
+                    return [
+                        'fullName' => $service->fullName ?? 'Sin nombre', // Usa "fullname" en minúsculas, como aparece en el dd.
+                        'date' => $service->date,
+                        'servicecount' => $service->servicecount,
+                        'clienttype' => $service->clienttype,
+                    ];
+                })->toArray(),
+            ];
     }
 
 
