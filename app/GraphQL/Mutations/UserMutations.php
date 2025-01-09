@@ -5,7 +5,7 @@ namespace App\GraphQL\Mutations;
 use App\Models\Cliente_Interno;
 use App\Models\Tecnico_Habilidad;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Log;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -79,6 +79,7 @@ class UserMutations{
         // Error en la contraseña
         $client = $user->clientsExterns()->first();
         if (!Hash::check($args['password'], $user->password)) {
+            Log::warning('Intento de login fallido: Contraseña incorrecta.', ['ci' => $args['ci']]);
             return [
                 'message' => "Credenciales invalidas" ,
             ];
@@ -126,6 +127,10 @@ class UserMutations{
                 'skills' => null
             ];
         }
+
+        return [
+            'message' => 'Ups! sucedio un problema en este endpoint.'
+        ];
     }
 
     public function loginClient($root, array $args)
