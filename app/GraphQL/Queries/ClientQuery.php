@@ -140,44 +140,47 @@ class ClientQuery{
         ];
     }
 
-    public function quantifyclient($root , array $args){
+    public function quantifyclient($root, array $args) {
         $clientData = $args['requestClient'];
         $startDate = $clientData['startDate'];
         $finishDate = $clientData['finishDate'];
-
+        $technicalId = $clientData['technicianId'];
         $servicesExt = DB::table('services')
-            ->where('typeClient',ServicioMutations::clientExternal)
+            ->where('typeClient', ServicioMutations::clientExternal)
+            ->where('technicalId',$technicalId)
             ->leftjoin('external_clients', 'services.clientId', '=', 'external_clients.id')
             ->select(
-                'external_clients.fullName',
-                DB::raw('DATE("services"."programDate")'),
-                DB::raw('COUNT(services.id) as serviceCount'),
-                DB::raw("'Cliente Externo' as clientType")
+                'external_clients.fullName as fullName', // Coincide con el esquema
+                DB::raw('DATE(services."updatedDateTime") as date'), // Coincide con el esquema
+                DB::raw('COUNT(services.id) as servicecount'), // Coincide con el esquema
+                DB::raw("'Cliente Externo' as clienttype") // Coincide con el esquema
             )
-            ->whereBetween('services.programDate', [$startDate, $finishDate])
-            ->groupBy('external_clients.fullName',"programDate")
-            ->orderBy("programDate")
+            ->whereBetween('services.updatedDateTime', [$startDate, $finishDate])
+            ->groupBy('external_clients.fullName', 'services.updatedDateTime')
+            ->orderBy('services.updatedDateTime')
             ->get();
-
+        //dd($servicesExt->toSql(), $servicesExt->getBindings());
         $servicesInt = DB::table('services')
-        ->where('typeClient','1')
-        ->leftjoin('internal_clients', 'services.clientId', '=', 'internal_clients.id')
-        ->select(
-            DB::raw('CONCAT(internal_clients."firstName", \' \', internal_clients."lastName") as "fullName"'),
-            DB::raw('DATE("services"."programDate")'),
-            DB::raw('COUNT(services.id) as serviceCount'),
-            DB::raw("'Cliente Interno' as clienttype")
-        )
-        ->whereBetween('services.programDate', [$startDate, $finishDate])
-        ->groupBy("fullName","programDate")
-        ->orderBy("programDate")
-        ->get();
-
+            ->where('typeClient', ServicioMutations::clientInternal)
+            ->where('technicalId',$technicalId)
+            ->leftJoin('internal_clients', 'services.clientId', '=', 'internal_clients.id')
+            ->select(
+                DB::raw('CONCAT(internal_clients."firstName", \' \', internal_clients."lastName") as fullName'),
+                DB::raw('DATE(services."updatedDateTime") as date'),
+                DB::raw('COUNT(services.id) as servicecount'),
+                DB::raw("'Cliente Interno' as clienttype")
+            )
+            ->whereBetween('services.updatedDateTime', [$startDate, $finishDate])
+            ->groupBy(DB::raw('CONCAT(internal_clients."firstName", \' \', internal_clients."lastName")'), 'services.updatedDateTime')
+            ->orderBy('services.updatedDateTime')
+            ->get();
+            //dd($servicesInt->toSql(), $servicesInt->getBindings());
         return [
-            'servicesExternal'=> $servicesExt,
-            'servicesInternal' => $servicesInt
+            'servicesExternal' => $servicesExt->toArray(),
+            'servicesInternal' => $servicesInt->toArray(),
         ];
     }
+
 
     public function quantityClient($root, array $args){
         $technicialId = $args['id_technician']['id'];

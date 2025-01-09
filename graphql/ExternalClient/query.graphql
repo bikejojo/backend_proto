@@ -9,15 +9,15 @@ extend type Query {
 
 
 type responseCities{
-    servicesExternal:[serv]
-    servicesInternal:[serv]
+    servicesExternal:[serv_]
+    servicesInternal:[serv_]
 }
 
-type serv {
+type serv_ {
     fullName:String
     date:String
     servicecount:Int
-    clientName:String
+    #clientName:String
     clienttype:String
 }
 
