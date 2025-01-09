@@ -59,7 +59,7 @@ class ClienteExternoMutations{
                     'technical' => $tecnico
                 ];
             }*/
-            $externo = Cliente_Externo::where('phoneNumber',$phone)->first();
+            $externo = Cliente_Externo::where('phoneNumber',$phone)->where('fullName',$name_full)->first();
             if (!$externo) {
                 // Crear cliente externo
                 $externo = Cliente_Externo::create([
@@ -86,8 +86,9 @@ class ClienteExternoMutations{
                 'message' => 'Cliente registrado correctamente.',
                 'technical' => $tecnico,
                 'customer_external' => [
-                    'full_name' => $externo->fullName,
-                    'phone_number' => $externo->phoneNumber
+                    'id' => $externo->id,
+                    'fullName' => $name_full,
+                    'phoneNumber' => $phone
                 ]
             ];
 

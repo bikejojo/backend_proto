@@ -7,7 +7,7 @@ extend type Mutation {
 
 type ClientsResponse {
   message: String
-  customer_external: ExternalClient
+  customer_external: ExternalCustomer
   technical: Technician
 }
 

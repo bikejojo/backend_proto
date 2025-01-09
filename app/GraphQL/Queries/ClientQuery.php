@@ -146,17 +146,18 @@ class ClientQuery{
         $finishDate = $clientData['finishDate'];
         $technicalId = $clientData['technicianId'];
         $servicesExt = DB::table('services')
-            ->where('typeClient', ServicioMutations::clientExternal)
-            ->where('technicalId',$technicalId)
-            ->leftjoin('external_clients', 'services.clientId', '=', 'external_clients.id')
+            ->where('services.typeClient', ServicioMutations::clientExternal)
+            ->where('services.technicalId',$technicalId)
+            ->where('associationTechnClient.technicalId',$technicalId)
+            ->leftjoin('associationTechnClient', 'services.clientId', '=', 'associationTechnClient.clientId')
             ->select(
-                'external_clients.fullName as fullName', // Coincide con el esquema
+                'associationTechnClient.full_name as fullName', // Coincide con el esquema
                 DB::raw('DATE(services."updatedDateTime") as date'), // Coincide con el esquema
                 DB::raw('COUNT(services.id) as servicecount'), // Coincide con el esquema
                 DB::raw("'Cliente Externo' as clienttype") // Coincide con el esquema
             )
             ->whereBetween('services.updatedDateTime', [$startDate, $finishDate])
-            ->groupBy('external_clients.fullName', 'services.updatedDateTime')
+            ->groupBy('associationTechnClient.full_name', 'services.updatedDateTime')
             ->orderBy('services.updatedDateTime')
             ->get();
         //dd($servicesExt->toSql(), $servicesExt->getBindings());
