@@ -105,12 +105,16 @@ class AgendaQuery{
                 ->where('detail_technical_agenda.agendaTechnicalId', $request->agendaTechnicalId)
                 //->select('technicians.*')->first();
                 ->select('technicians.*','services.latitude','services.longitude')->first();
-                $client=DB::table('external_clients')
-                ->leftJoin('associationTechnClient', function($join) use ($tecnico) {
-                    $join->on('associationTechnClient.technicalId', '=', DB::raw($tecnico->id));
-                })
+                $client = DB::table('associationTechnClient')
+                ->join('external_clients', 'external_clients.id', '=', 'associationTechnClient.clientId')
+                ->where('associationTechnClient.technicalId', $tecnico->id)
                 ->where('external_clients.id', $request->clientId)
-                ->select('external_clients.*')
+                ->select(
+                    'external_clients.id',
+                    'associationTechnClient.full_name as fullName',
+                    'associationTechnClient.phone_number as phoneNumber',
+                    'external_clients.status'
+                )
                 ->first();
                 return [
                     'agenda' => $request ,

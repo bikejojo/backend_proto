@@ -91,7 +91,8 @@ class ServicioMutations
         $now=Carbon::now();
         $technicalId = ValidationModels::validationTechnician($serviceData['id_technician']);
         $clientId = ValidationModels::validationclientExternal($serviceData['id_client']);
-
+        //$clientId = ValidationModels::validationExternalCLient($serviceData['id_client']);
+        //dd($clientId);
         $associant = Asociacion_Cliente_Tecnico::where('clientId',$serviceData['id_client'])
         ->where('technicalId',$serviceData['id_technician'])->first();
         if(is_null($associant)){

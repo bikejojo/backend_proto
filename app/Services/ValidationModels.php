@@ -51,6 +51,17 @@ class ValidationModels{
             return Cliente_Externo::find($objeto);
         }
     }
+
+    public static function validationExternalCLient($objeto){
+        if(!Asociacion_Cliente_Tecnico::where('clientId',$objeto)->first()){
+            return[
+                'message' => 'No existe Cliente Externo.'
+            ];
+        }else{
+            return Asociacion_Cliente_Tecnico::where('clientId',$objeto)->first();
+        }
+    }
+
     public static function validationPublicity($objeto){
         if(!Publicidad::find($objeto)){
             return[
