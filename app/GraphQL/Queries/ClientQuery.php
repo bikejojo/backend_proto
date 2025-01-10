@@ -143,11 +143,12 @@ class ClientQuery{
     public function quantifyclient($root, array $args) {
         $clientData = $args['requestClient'];
         $startDate = $clientData['startDate'];
-        $finishDate = Carbon::createFromFormat('Y-m-d', $clientData['finishDate'])->addDay()->format('Y-m-d');
+        $finishDate_ = Carbon::createFromFormat('Y-m-d', $clientData['finishDate'])->addDay()->format('Y-m-d');
         //$finishDate = $clientData['finishDate'];
         $technicalId = $clientData['technicianId'];
         $servicesExt = DB::table('services')
             ->where('services.typeClient', ServicioMutations::clientExternal)
+            ->where('services.status',1)
             ->where('services.technicalId',$technicalId)
             ->where('associationTechnClient.technicalId',$technicalId)
             ->leftjoin('associationTechnClient', 'services.clientId', '=', 'associationTechnClient.clientId')
@@ -157,12 +158,13 @@ class ClientQuery{
                 DB::raw('COUNT(services.id) as servicecount'), // Coincide con el esquema
                 DB::raw("'Cliente Externo' as clienttype") // Coincide con el esquema
             )
-            ->whereBetween('services.updatedDateTime', [$startDate, $finishDate])
+            ->whereBetween('services.updatedDateTime', [$startDate, $finishDate_])
             ->groupBy('associationTechnClient.full_name', 'services.updatedDateTime')
             ->orderBy('services.updatedDateTime')
             ->get();
         //dd($servicesExt->toSql(), $servicesExt->getBindings());
         $servicesInt = DB::table('services')
+            ->where('services.status',1)
             ->where('typeClient', ServicioMutations::clientInternal)
             ->where('technicalId',$technicalId)
             ->leftJoin('internal_clients', 'services.clientId', '=', 'internal_clients.id')
@@ -172,7 +174,7 @@ class ClientQuery{
                 DB::raw('COUNT(services.id) as servicecount'),
                 DB::raw("'Cliente Interno' as clienttype")
             )
-            ->whereBetween('services.updatedDateTime', [$startDate, $finishDate])
+            ->whereBetween('services.updatedDateTime', [$startDate, $finishDate_])
             ->groupBy(DB::raw('CONCAT(COALESCE(internal_clients."firstName", \'\'), \' \', COALESCE(internal_clients."lastName", \'\'))')
             , 'services.updatedDateTime')
             ->orderBy('services.updatedDateTime')
