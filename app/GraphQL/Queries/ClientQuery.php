@@ -211,14 +211,8 @@ class ClientQuery{
         $detailAgenda = Detalle_Agenda_Tecnico::where('agendaTechnicalId',$agenda->id)
         ->select('clientId', 'typeClient')
         ->get();
-        $filteredExternalClients = $detailAgenda->where('typeClient', 2)
-        ->unique('clientId') // Asegura clientes únicos
-        ->filter(function ($item) use ($technicialId) {
-            return Asociacion_Cliente_Tecnico::where('clientId', $item->clientId)
-                ->where('technicalId', $technicialId)
-                ->where('status', 1)
-                ->exists();
-        });
+        $filteredExternalClients =  Asociacion_Cliente_Tecnico::where('technicalId', $technicialId)
+                ->where('status', 1);
         $clienteExternoCount = $filteredExternalClients->count();
         //dd($clienteExternoCount);
         $clienteInternoCount = $detailAgenda->where('typeClient', 1)
