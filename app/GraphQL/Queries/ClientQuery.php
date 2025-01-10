@@ -143,7 +143,8 @@ class ClientQuery{
     public function quantifyclient($root, array $args) {
         $clientData = $args['requestClient'];
         $startDate = $clientData['startDate'];
-        $finishDate = $clientData['finishDate'];
+        $finishDate = Carbon::createFromFormat('Y-m-d', $clientData['finishDate'])->addDay()->format('Y-m-d');
+        //$finishDate = $clientData['finishDate'];
         $technicalId = $clientData['technicianId'];
         $servicesExt = DB::table('services')
             ->where('services.typeClient', ServicioMutations::clientExternal)
