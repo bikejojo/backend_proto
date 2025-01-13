@@ -35,6 +35,24 @@ class ServicioMutations
         $clientId = ValidationModels::validationclientInternal($serviceData['id_client']);
         DB::beginTransaction();
         try{
+
+            $existingService = Servicio::where('services.technicalId',$technicalId->id)
+            ->where('services.typeClient', self::clientInternal)
+            ->where(function ($query) use ($serviceData){
+                $query->whereBetween( 'services.updatedDateTime' , [
+                    Carbon::parse($serviceData['updatedDateTime'])->subMinutes(15), // 15 minutos antes
+                    Carbon::parse($serviceData['updatedDateTime'])->addMinutes(15)  // 15 minutos después
+                ])
+                ->orWhere('services.updatedDateTime','=', $serviceData['updatedDateTime']);
+            })->first();
+
+            if($existingService){
+                DB::rollBack();
+                return [
+                    'message' => 'Existe un servicio registrado previamente, ponga un plazo mas largo en su hora.'
+                ];
+            }
+
             $service = Servicio::create([
                 'technicalId' => $serviceData['id_technician'],
                 'clientId' => $serviceData['id_client'],
@@ -102,6 +120,23 @@ class ServicioMutations
         }
         DB::beginTransaction();
         try{
+            $existingService = Servicio::where('services.technicalId',$technicalId->id)
+            ->where('services.typeClient', self::clientExternal)
+            ->where(function ($query) use ($serviceData){
+                $query->whereBetween( 'services.updatedDateTime' , [
+                    Carbon::parse($serviceData['updatedDateTime'])->subMinutes(15), // 15 minutos antes
+                    Carbon::parse($serviceData['updatedDateTime'])->addMinutes(15)  // 15 minutos después
+                ])
+                ->orWhere('services.updatedDateTime','=', $serviceData['updatedDateTime']);
+            })->first();
+
+            if($existingService){
+                DB::rollBack();
+                return [
+                    'message' => 'Existe un servicio registrado previamente, ponga un plazo mas largo en su hora.'
+                ];
+            }
+
             $service = Servicio::create([
                 'technicalId' => $serviceData['id_technician'],
                 'clientId' => $serviceData['id_client'],
@@ -137,6 +172,7 @@ class ServicioMutations
                 'serviceDate' => $_service->updatedDateTime,
                 'createDate' => Carbon::now()
             ]);
+
             DB::commit();
             return[
                 'message'=>'Servicio registrado para cliente externo',
@@ -287,6 +323,23 @@ class ServicioMutations
         $serviceData = $args['requestService'];
         DB::beginTransaction();
         try{
+            $existingService = Servicio::where('services.technicalId',$service->technicalId)
+            ->where('services.typeClient', $service->typeClient)
+            ->where(function ($query) use ($serviceData){
+                $query->whereBetween( 'services.updatedDateTime' , [
+                    Carbon::parse($serviceData['updatedDateTime'])->subMinutes(15), // 15 minutos antes
+                    Carbon::parse($serviceData['updatedDateTime'])->addMinutes(15)  // 15 minutos después
+                ])
+                ->orWhere('services.updatedDateTime','=', $serviceData['updatedDateTime']);
+            })->first();
+
+            if($existingService){
+                DB::rollBack();
+                return [
+                    'message' => 'Existe un servicio registrado previamente, ponga un plazo mas largo en su hora.'
+                ];
+            }
+
             $service->titleService = $serviceData['titleService'] ?? $service->titleService;
             $service->serviceDescription= $serviceData['serviceDescription'] ?? $service->serviceDescription;
             $service->serviceLocation= $serviceData['serviceLocation'] ?? $service->serviceLocation;

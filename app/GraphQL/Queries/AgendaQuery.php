@@ -35,8 +35,10 @@ class AgendaQuery{
                 ->where('detail_technical_agenda.typeClient', self::servicioInternal) // Cliente interno
                 ->where('services.status',1);
             if ($dateFilter) {
-                $query = $this->dateHelper($dateFilter, $query, 'detail_technical_agenda.serviceDate');
+                // $query = $this->dateHelper($dateFilter, $query, 'detail_technical_agenda.serviceDate');
+                $query->whereDate('serviceDate',$dateFilter);
             }
+            $query->orderBy('serviceDate','asc');
             $serviceDetails = $query->get();
             if ($serviceDetails->isEmpty()) {
                 return [

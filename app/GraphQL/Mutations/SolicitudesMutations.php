@@ -130,7 +130,22 @@ class SolicitudesMutations
         $tecnico = ValidationModels::validationTechnician($tecnicoId);
         DB::beginTransaction();
         try{
-
+            $existingService = Servicio::where('services.technicalId',$tecnicoId)
+            ->where('services.typeClient', '1')
+            ->where(function ($query) use ($visitDateTime){
+                $query->whereBetween( 'services.updatedDateTime' , [
+                    Carbon::parse($visitDateTime)->subMinutes(15), // 15 minutos antes
+                    Carbon::parse($visitDateTime)->addMinutes(15)  // 15 minutos después
+                ])
+                ->orWhere('services.updatedDateTime','=',$visitDateTime);
+            })->first();
+ //dd($existingService);
+            if($existingService){
+                DB::rollBack();
+                return [
+                    'message' => 'Existe una cita registrada para el dia y hora que seleccionaste.'
+                ];
+            }
             StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,$comments,4);
             $request->save();
             $_request = Solicitud::find($request->id);
