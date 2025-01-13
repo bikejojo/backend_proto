@@ -40,8 +40,8 @@ class ServicioMutations
             ->where('services.typeClient', self::clientInternal)
             ->where(function ($query) use ($serviceData){
                 $query->whereBetween( 'services.updatedDateTime' , [
-                    Carbon::parse($serviceData['updatedDateTime'])->subMinutes(15), // 15 minutos antes
-                    Carbon::parse($serviceData['updatedDateTime'])->addMinutes(15)  // 15 minutos después
+                    Carbon::parse($serviceData['updatedDateTime'])->subMinutes(10), // 15 minutos antes
+                    Carbon::parse($serviceData['updatedDateTime'])->addMinutes(10)  // 15 minutos después
                 ])
                 ->orWhere('services.updatedDateTime','=', $serviceData['updatedDateTime']);
             })->first();
@@ -49,7 +49,7 @@ class ServicioMutations
             if($existingService){
                 DB::rollBack();
                 return [
-                    'message' => 'Existe un servicio registrado previamente, ponga un plazo mas largo en su hora.'
+                    'message' => 'Este horario ya está ocupado, elige uno con más de 10 minutos de diferencia.'
                 ];
             }
 
@@ -124,8 +124,8 @@ class ServicioMutations
             ->where('services.typeClient', self::clientExternal)
             ->where(function ($query) use ($serviceData){
                 $query->whereBetween( 'services.updatedDateTime' , [
-                    Carbon::parse($serviceData['updatedDateTime'])->subMinutes(15), // 15 minutos antes
-                    Carbon::parse($serviceData['updatedDateTime'])->addMinutes(15)  // 15 minutos después
+                    Carbon::parse($serviceData['updatedDateTime'])->subMinutes(10), // 15 minutos antes
+                    Carbon::parse($serviceData['updatedDateTime'])->addMinutes(10)  // 15 minutos después
                 ])
                 ->orWhere('services.updatedDateTime','=', $serviceData['updatedDateTime']);
             })->first();
@@ -133,7 +133,7 @@ class ServicioMutations
             if($existingService){
                 DB::rollBack();
                 return [
-                    'message' => 'Existe un servicio registrado previamente, ponga un plazo mas largo en su hora.'
+                    'message' => 'Este horario no está disponible. Selecciona otro con al menos 10 minutos de diferencia.'
                 ];
             }
 
@@ -327,8 +327,8 @@ class ServicioMutations
             ->where('services.typeClient', $service->typeClient)
             ->where(function ($query) use ($serviceData){
                 $query->whereBetween( 'services.updatedDateTime' , [
-                    Carbon::parse($serviceData['updatedDateTime'])->subMinutes(15), // 15 minutos antes
-                    Carbon::parse($serviceData['updatedDateTime'])->addMinutes(15)  // 15 minutos después
+                    Carbon::parse($serviceData['updatedDateTime'])->subMinutes(10), // 15 minutos antes
+                    Carbon::parse($serviceData['updatedDateTime'])->addMinutes(10)  // 15 minutos después
                 ])
                 ->orWhere('services.updatedDateTime','=', $serviceData['updatedDateTime']);
             })->first();
@@ -336,7 +336,7 @@ class ServicioMutations
             if($existingService){
                 DB::rollBack();
                 return [
-                    'message' => 'Existe un servicio registrado previamente, ponga un plazo mas largo en su hora.'
+                    'message' => 'Ya hay un servicio cerca de este horario. Selecciona una hora con al menos 10 minutos de diferencia.'
                 ];
             }
 

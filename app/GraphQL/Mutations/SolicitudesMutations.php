@@ -143,7 +143,7 @@ class SolicitudesMutations
             if($existingService){
                 DB::rollBack();
                 return [
-                    'message' => 'Existe una cita registrada para el dia y hora que seleccionaste.'
+                    'message' => 'El horario seleccionado ya está ocupado. Por favor, elige otro disponible.'
                 ];
             }
             StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,$comments,4);
