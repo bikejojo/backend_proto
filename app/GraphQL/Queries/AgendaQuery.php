@@ -84,7 +84,8 @@ class AgendaQuery{
             $query = Detalle_Agenda_Tecnico::join('services','services.id','=','detail_technical_agenda.serviceId')
             ->where('detail_technical_agenda.agendaTechnicalId',$agenda->id)
             ->where('detail_technical_agenda.typeClient',self::servicioExternal)
-            ->where('services.status',1);
+            ->where('services.status',1)
+            ->orderBy('serviceDate', 'asc');
 
             if($dateFilter){
                 $_query = self::dateHelper($dateFilter,$query,'serviceDate');
@@ -141,6 +142,6 @@ class AgendaQuery{
             return ($query->where('serviceDate','<=',$now)->orderBy('serviceDate','desc'));
         }
 
-        return ($query->whereDate('serviceDate',$dateFilter));
+        return ($query->orderBy('serviceDate','asc'));
     }
 }
