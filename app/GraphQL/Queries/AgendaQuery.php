@@ -135,10 +135,89 @@ class AgendaQuery{
         }
     }
 
+    public function listAgendaExternalClient_2($root , array $args){
+        try{
+            $agendaData = $args['requestAgenda'];
+            $technicianId = $agendaData['technicianId'];
+            $dateFilter = $agendaData['entryDate'];
+            $tecnico = ValidationModels::validationTechnician($technicianId);
+
+            $agenda = ValidationModels::validationAgenda($tecnico->id);
+            $query = Detalle_Agenda_Tecnico::join('services','services.id','=','detail_technical_agenda.serviceId')
+            ->where('detail_technical_agenda.agendaTechnicalId',$agenda->id)
+            ->where('detail_technical_agenda.typeClient',self::servicioExternal)
+            ->where('services.status',1)
+            ->orderBy('serviceDate', 'asc');
+
+            if($dateFilter){
+                $query->whereDate('serviceDate',$dateFilter);
+            }else {
+                return [
+                    'message' => 'No se especifico una fecha valida.',
+                    'agenda' => null
+                ];
+            }
+            $query->orderBy('serviceDate','asc');
+            $service = $query->get();
+            //dd($service);
+            if ($service->isEmpty()) {
+                return [
+                    'message' => 'No hay servicios en la agenda',
+                    'agenda' => null
+                ];
+            }
+
+            $agenda = $service->map(function ($request){
+                $tecnico=Tecnico::leftjoin('technician_agenda', 'technician_agenda.technicianId', '=', 'technicians.id')
+                ->leftjoin('detail_technical_agenda', 'detail_technical_agenda.agendaTechnicalId', '=', 'technician_agenda.id')
+                ->leftjoin('services','services.id','=','detail_technical_agenda.serviceId')
+                ->where('services.status',1)
+                ->where('detail_technical_agenda.agendaTechnicalId', $request->agendaTechnicalId)
+                //->select('technicians.*')->first();
+                ->select('technicians.*','services.latitude','services.longitude')->first();
+                $client = DB::table('associationTechnClient')
+                ->join('external_clients', 'external_clients.id', '=', 'associationTechnClient.clientId')
+                ->where('associationTechnClient.technicalId', $tecnico->id)
+                ->where('external_clients.id', $request->clientId)
+                ->select(
+                    'external_clients.id',
+                    'associationTechnClient.full_name as fullName',
+                    'associationTechnClient.phone_number as phoneNumber',
+                    'external_clients.status'
+                )
+                ->first();
+                return [
+                    'agenda' => $request ,
+                    'technician' => $tecnico ,
+                    'client'=> $client
+                ];
+            });
+
+            return [
+                'message' => 'Listado de agenda de clientes Externos',
+                'content' => $agenda
+            ];
+        } catch(\Exception $e){
+            return [
+                'message' => 'Fallas en las solicitudes ' . $e->getMessage()
+            ];
+        }
+    }
+
     private function dateHelper($dateFilter,$query,$nameAttribute){
         $now = Carbon::now()->toDateTimeString();
 
-        if($dateFilter ==='mas reciente'){
+        if($dateFilter ===  'mas reciente'){
+            return ($query->where('serviceDate','<=',$now)->orderBy('serviceDate','desc'));
+        }
+
+        return ($query->orderBy('serviceDate','asc'));
+    }
+
+    private function dateHelper_2($dateFilter,$query){
+        $now = Carbon::now()->toDateTimeString();
+
+        if($dateFilter !==  ""){
             return ($query->where('serviceDate','<=',$now)->orderBy('serviceDate','desc'));
         }
 

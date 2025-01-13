@@ -1,7 +1,7 @@
 extend type Query{
     getAgendaInternal(requestAgenda:JSON!):responseDetaiAgendaInternal @field(resolver: "App\\GraphQL\\Queries\\AgendaQuery@listAgendaInternalClient" )
     #   getAgendaInternal(requestAgenda:JSON!):responseDetaiAgendaInternal @field(resolver: "AgendaQuery@listAgendaInternalClient" )
-    getAgendaExternal(requestAgenda:JSON!):responseDetaiAgendaExternal @field(resolver: "AgendaQuery@listAgendaExternalClient" )
+    getAgendaExternal(requestAgenda:JSON!):responseDetaiAgendaExternal @field(resolver: "AgendaQuery@listAgendaExternalClient_2" )
 }
 
 type responseDetaiAgendaInternal {
