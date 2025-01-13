@@ -139,7 +139,6 @@ class SolicitudesMutations
                 ])
                 ->orWhere('services.updatedDateTime','=',$visitDateTime);
             })->first();
- //dd($existingService);
             if($existingService){
                 DB::rollBack();
                 return [

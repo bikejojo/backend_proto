@@ -169,13 +169,49 @@ class UserMutations{
             ];
         } else {
             return [
-                'message' => 'El usuario no tiene un cliente asociado',
+                'message' => 'El usuario no cuenta con una cuenta activa.',
                 'user' => $user,
                 'client' => null
             ];
         }
     }
 
+    public function loginAdmin($root,array $args){
+        // Verificar si el CI se encuentra registrado
+        $user = User::where('email', $args['email'])->first();
+
+        if ($user == null) {
+            return [
+                'message' => "El usuario con el correo no existe"
+            ];
+        }
+
+        // Verificar contraseña
+        if (!Hash::check($args['password'], $user->password)) {
+            return [
+                'message' => "Credenciales inválidas"
+            ];
+        }
+
+        // Crear token con Sanctum
+        $tokens = $user->createToken('authToken')->plainTextToken;
+        $user->token = $tokens;
+        $user->save();
+
+        // Retornar respuesta
+        if ($user !== null) {
+            return [
+                'message' => 'Login exitoso',
+                'user' => $user
+            ];
+        } else {
+            return [
+                'message' => 'El usuario no cuenta con una cuenta.',
+                'user' => $user
+            ];
+        }
+
+    }
     public function logout($root, array $args)
     {
         $user = Auth::user(); // Obtener el usuario autenticado

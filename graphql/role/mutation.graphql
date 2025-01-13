@@ -1,0 +1,12 @@
+extend type Mutation {
+    assignRoleToUser(userId: ID!, role: String!): responseRol @field(resolver: "RolMutations@assignRol")
+}
+
+type responseRol {
+    message: String
+    rol: Role
+    user: User
+}
+
+
+#import role.graphql
