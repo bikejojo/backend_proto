@@ -130,16 +130,18 @@ class SolicitudesMutations
         $tecnico = ValidationModels::validationTechnician($tecnicoId);
         DB::beginTransaction();
         try{
-            $existingService = Servicio::where('services.technicalId',$tecnicoId)
+            $existingServiceInternal = Servicio::where('services.technicalId',$tecnicoId)
             ->where('services.typeClient', '1')
+            ->where('services.status', 1) // Solo servicios activos
+            ->where('services.stateId', 1) // Solo servicios válidos
             ->where(function ($query) use ($visitDateTime){
                 $query->whereBetween( 'services.updatedDateTime' , [
-                    Carbon::parse($visitDateTime)->subMinutes(15), // 15 minutos antes
-                    Carbon::parse($visitDateTime)->addMinutes(15)  // 15 minutos después
+                    Carbon::parse($visitDateTime)->subMinutes(10), // 15 minutos antes
+                    Carbon::parse($visitDateTime)->addMinutes(10)  // 15 minutos después
                 ])
-                ->orWhere('services.updatedDateTime','=',$visitDateTime);
+                ->Where('services.updatedDateTime','=',$visitDateTime);
             })->first();
-            if($existingService){
+            if($existingServiceInternal){
                 DB::rollBack();
                 return [
                     'message' => 'El horario seleccionado ya está ocupado. Por favor, elige otro disponible.'
