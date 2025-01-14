@@ -192,6 +192,11 @@ class UserMutations{
                 'message' => "Credenciales inválidas"
             ];
         }
+        if(!($user->type_user === 3)){
+            return [
+                'message' => 'El usuario no es el permitido.'
+            ];
+        }
 
         // Crear token con Sanctum
         $tokens = $user->createToken('authToken')->plainTextToken;

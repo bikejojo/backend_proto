@@ -144,24 +144,29 @@ class ClientQuery{
         $clientData = $args['requestClient'];
         $startDate = $clientData['startDate'];
         $finishDate_ = Carbon::createFromFormat('Y-m-d', $clientData['finishDate'])->addDay()->format('Y-m-d');
-        //$finishDate = $clientData['finishDate'];
+        $finishDate = $clientData['finishDate'];
+        //dd($startDate);
         $technicalId = $clientData['technicianId'];
         $servicesExt = DB::table('services')
             ->where('services.typeClient', ServicioMutations::clientExternal)
-            ->where('services.status',1)
-            ->where('services.technicalId',$technicalId)
-            ->where('associationTechnClient.technicalId',$technicalId)
-            ->leftjoin('associationTechnClient', 'services.clientId', '=', 'associationTechnClient.clientId')
+            ->where('services.status', 1)
+            ->where('services.technicalId', $technicalId)
+            ->where('associationTechnClient.technicalId', $technicalId)
+            ->leftJoin('associationTechnClient', 'services.clientId', '=', 'associationTechnClient.clientId')
             ->select(
-                'associationTechnClient.full_name as fullName', // Coincide con el esquema
-                DB::raw('DATE(services."updatedDateTime") as date'), // Coincide con el esquema
-                DB::raw('COUNT(services.id) as servicecount'), // Coincide con el esquema
-                DB::raw("'Cliente Externo' as clienttype") // Coincide con el esquema
+                'associationTechnClient.full_name as fullName',
+                DB::raw('DATE(services."updatedDateTime") as date'), // Extraer solo la fecha
+                DB::raw('COUNT(services."clientId") as servicecount'), // Contar servicios por cliente y día
+                DB::raw("'Cliente Externo' as clienttype")
             )
-            ->whereBetween('services.updatedDateTime', [$startDate, $finishDate_])
-            ->groupBy('associationTechnClient.full_name', 'services.updatedDateTime')
-            ->orderBy('services.updatedDateTime')
+            ->whereBetween(DB::raw('DATE(services."updatedDateTime")'), [$startDate, $finishDate]) // Filtro solo por fechas
+            ->groupBy(
+                'associationTechnClient.full_name',
+                DB::raw('DATE(services."updatedDateTime")') // Agrupar por cliente y día
+            )
+            ->orderBy(DB::raw('DATE(services."updatedDateTime")'), 'asc') // Ordenar por fecha
             ->get();
+            //dd($servicesExt);
         //dd($servicesExt->toSql(), $servicesExt->getBindings());
         $servicesInt = DB::table('services')
             ->where('services.status',1)
@@ -181,6 +186,11 @@ class ClientQuery{
             ->get();
             //dd($servicesInt);
             //dd($servicesInt->toSql(), $servicesInt->getBindings());
+            $serviceCount = DB::table('services')
+                ->where('services.status', 1)
+                ->where('services.technicalId', $technicalId)
+                ->whereBetween('services.updatedDateTime', [$startDate, $finishDate_])
+                ->count('services.id');
             Log::info('Respuesta final: ', [
                 'servicesExternal' => $servicesExt,
                 'servicesInternal' => $servicesInt,

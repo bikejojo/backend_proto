@@ -38,12 +38,14 @@ class ServicioMutations
 
             $existingService = Servicio::where('services.technicalId',$technicalId->id)
             ->where('services.typeClient', self::clientInternal)
+            ->where('services.status',1)
+            ->where('services.stateId',1)
             ->where(function ($query) use ($serviceData){
                 $query->whereBetween( 'services.updatedDateTime' , [
                     Carbon::parse($serviceData['updatedDateTime'])->subMinutes(10), // 15 minutos antes
                     Carbon::parse($serviceData['updatedDateTime'])->addMinutes(10)  // 15 minutos después
                 ])
-                ->orWhere('services.updatedDateTime','=', $serviceData['updatedDateTime']);
+                ->where('services.updatedDateTime','=', $serviceData['updatedDateTime']);
             })->first();
 
             if($existingService){
@@ -120,16 +122,20 @@ class ServicioMutations
         }
         DB::beginTransaction();
         try{
-            $existingService = Servicio::where('services.technicalId',$technicalId->id)
-            ->where('services.typeClient', self::clientExternal)
-            ->where(function ($query) use ($serviceData){
-                $query->whereBetween( 'services.updatedDateTime' , [
-                    Carbon::parse($serviceData['updatedDateTime'])->subMinutes(10), // 15 minutos antes
-                    Carbon::parse($serviceData['updatedDateTime'])->addMinutes(10)  // 15 minutos después
-                ])
-                ->orWhere('services.updatedDateTime','=', $serviceData['updatedDateTime']);
-            })->first();
-
+            $existingService = Servicio::where('services.technicalId', $technicalId->id)
+                ->where('services.typeClient', self::clientExternal)
+                ->where('services.status', 1) // Solo servicios activos
+                ->where('services.stateId', 1) // Solo servicios válidos
+                ->where(function ($query) use ($serviceData) {
+                    $query->whereBetween('services.updatedDateTime', [
+                        Carbon::parse($serviceData['updatedDateTime'])->subMinutes(10),
+                        Carbon::parse($serviceData['updatedDateTime'])->addMinutes(10)
+                    ])
+                    ->where('services.updatedDateTime', '=', $serviceData['updatedDateTime']); // Coincidencia exacta
+                })
+                ->where('services.id', '!=', $serviceData['id'] ?? 0) // Excluir el mismo servicio si es una actualización
+                ->first();
+            //dd($existingService);
             if($existingService){
                 DB::rollBack();
                 return [
@@ -325,18 +331,20 @@ class ServicioMutations
         try{
             $existingService = Servicio::where('services.technicalId',$service->technicalId)
             ->where('services.typeClient', $service->typeClient)
+            ->where('services.status',1)
+            ->where('services.stateId',1)
             ->where(function ($query) use ($serviceData){
                 $query->whereBetween( 'services.updatedDateTime' , [
                     Carbon::parse($serviceData['updatedDateTime'])->subMinutes(10), // 15 minutos antes
                     Carbon::parse($serviceData['updatedDateTime'])->addMinutes(10)  // 15 minutos después
                 ])
-                ->orWhere('services.updatedDateTime','=', $serviceData['updatedDateTime']);
+                ->where('services.updatedDateTime','=', $serviceData['updatedDateTime']);
             })->first();
 
             if($existingService){
                 DB::rollBack();
                 return [
-                    'message' => 'Ya hay un servicio cerca de este horario. Selecciona una hora con al menos 10 minutos de diferencia.'
+                    'message' => 'Ya hay un servicio activo cerca de este horario. Selecciona una hora con al menos 10 minutos de diferencia.'
                 ];
             }
 
