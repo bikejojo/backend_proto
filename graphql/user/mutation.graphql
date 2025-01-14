@@ -1,10 +1,11 @@
 extend type Mutation {
-    createUser(userRequest: JSON!): User @field(resolver:"UserMutations@create")
-    updateUser(id: ID!, userRequest: JSON!): User @field(resolver:"UserMutations@update")
-    deleteUser(id:ID! @whereKey): Response @field(resolver:"UserMutations@delete")
-    login(ci: String! ,password:String!):responseLogin @field(resolver:"UserMutations@login")
-    loginClient(email: String! ,password:String!):responseClientLogin @field(resolver:"UserMutations@loginClient")
-    logout:Response @field(resolver:"UserMutations@logout")
+    createUser(userRequest: JSON!): User @field(resolver: "UserMutations@create")
+    updateUser(id: ID!, userRequest: JSON!): User @field(resolver: "UserMutations@update")
+    deleteUser(id:ID! @whereKey): Response @field(resolver: "UserMutations@delete")
+    login(ci: String! ,password:String!):responseLogin @field(resolver: "UserMutations@login")
+    loginClient(email: String! ,password:String!):responseClientLogin @field(resolver: "UserMutations@loginClient")
+    loginAdmin(email:String!,password:String!):responseAdminLogin @field(resolver: "UserMutations@loginAdmin")
+    logout:Response @field(resolver: "UserMutations@logout")
 }
 
 type Response {
@@ -24,6 +25,10 @@ type responseClientLogin {
     message:String
 }
 
+type responseAdminLogin {
+    message:String
+    user:User
+}
 type skills {
     id_skill:ID!
     name:String
