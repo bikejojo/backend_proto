@@ -15,7 +15,6 @@ type responseCities{
 
 type serv_ {
     fullName:String
-    date:String
     servicecount:Int
     #clientName:String
     clienttype:String

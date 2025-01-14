@@ -36,7 +36,18 @@ class RolMutations
         ];
     }
 
-    public function updateRoles($root,array $args){}
+    public function updateRoles($root,array $args){
+        $userData = $args['rolRequest'];
+        $userId=$userData['id_user'];
+        $nameRol = $userData['name'];
+        $user = User::find($userId);
+        $user->syncRoles([$nameRol]);
+        return [
+            'message' => 'Se actualizo el rol del usuario',
+            'rol'=> $userId->getRoleNames(),
+            'user' => $userId
+        ];
+    }
 
     public function removeRoles($root , array $args){}
 }

@@ -1,4 +1,15 @@
-#extend type Query {
+extend type Query {
+    getRolPermissions(name:String):responsePermissios @field (resolver: "RolQuery@getPermisse")
+    getRolAdmin:responseRole @field(resolver: "RolQuery@getRol")
+}
 
-#}
+type responsePermissios {
+    message:String
+    permissions:[Permission]
+}
+
+type responseRole {
+    message:String
+    rol:[Role]
+}
 #import role.graphql

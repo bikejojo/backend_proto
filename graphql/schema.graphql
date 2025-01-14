@@ -15,6 +15,7 @@ scalar Upload @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload
 #import InternalClient/*.graphql
 #import payment/*.graphql
 #import promotion/*.graphql
+#import permission/*.graphql
 #import publicity/*.graphql
 #import rating/*.graphql
 #import referenceState/*.graphql
@@ -28,3 +29,4 @@ scalar Upload @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload
 #import typeActivity/*.graphql
 #import typeState/*.graphql
 #import user/*.graphql
+

@@ -1,6 +1,6 @@
 extend type Mutation {
     assignRoleToUser(userId: ID!, role: String!): responseRol @field(resolver: "RolMutations@assignRol")
-    #updateRoleToUser(rolRequest:JSON):responseUpdateRol @field(resolver: "RolMutations@updateRol")
+    updateRoleToUser(rolRequest:JSON):responseRol @field(resolver: "RolMutations@updateRoles")
     #assignPermisseToUser(permiseRequest:JSON):responsePermisse @field(resolver: "RolMutations@assignPermise")
 }
 
