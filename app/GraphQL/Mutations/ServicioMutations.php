@@ -333,13 +333,15 @@ class ServicioMutations
             ->where('services.typeClient', $service->typeClient)
             ->where('services.status',1)
             ->where('services.stateId',1)
+
             ->where(function ($query) use ($serviceData){
                 $query->whereBetween( 'services.updatedDateTime' , [
                     Carbon::parse($serviceData['updatedDateTime'])->subMinutes(10), // 15 minutos antes
                     Carbon::parse($serviceData['updatedDateTime'])->addMinutes(10)  // 15 minutos después
                 ])
                 ->where('services.updatedDateTime','=', $serviceData['updatedDateTime']);
-            })->first();
+            })->where('services.id','!=',$serviceId)
+            ->first();
 
             if($existingService){
                 DB::rollBack();
