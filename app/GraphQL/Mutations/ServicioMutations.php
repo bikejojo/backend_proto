@@ -36,7 +36,7 @@ class ServicioMutations
         DB::beginTransaction();
         try{
 
-            $existingService = Servicio::where('services.technicalId',$technicalId->id)
+            $existingServiceInternal = Servicio::where('services.technicalId',$technicalId->id)
             ->where('services.typeClient', self::clientInternal)
             ->where('services.status',1)
             ->where('services.stateId',1)
@@ -48,13 +48,30 @@ class ServicioMutations
                 ->where('services.updatedDateTime','=', $serviceData['updatedDateTime']);
             })->first();
 
-            if($existingService){
+            if($existingServiceInternal){
                 DB::rollBack();
                 return [
-                    'message' => 'Este horario ya está ocupado, elige uno con más de 10 minutos de diferencia.'
+                    'message' => 'Este horario ya está ocupado en la agenda de cliente Interno, elige uno con más de 10 minutos de diferencia.'
                 ];
             }
+            $existingServiceExternal = Servicio::where('services.technicalId',$technicalId->id)
+            ->where('services.typeClient', self::clientExternal)
+            ->where('services.status',1)
+            ->where('services.stateId',1)
+            ->where(function ($query) use ($serviceData){
+                $query->whereBetween( 'services.updatedDateTime' , [
+                    Carbon::parse($serviceData['updatedDateTime'])->subMinutes(10), // 15 minutos antes
+                    Carbon::parse($serviceData['updatedDateTime'])->addMinutes(10)  // 15 minutos después
+                ])
+                ->where('services.updatedDateTime','=', $serviceData['updatedDateTime']);
+            })->first();
 
+            if($existingServiceExternal){
+                DB::rollBack();
+                return [
+                    'message' => 'Este horario ya está ocupado en la agenda de cliente Externo, elige uno con más de 10 minutos de diferencia.'
+                ];
+            }
             $service = Servicio::create([
                 'technicalId' => $serviceData['id_technician'],
                 'clientId' => $serviceData['id_client'],
@@ -122,7 +139,7 @@ class ServicioMutations
         }
         DB::beginTransaction();
         try{
-            $existingService = Servicio::where('services.technicalId', $technicalId->id)
+            $existingServiceExternal = Servicio::where('services.technicalId', $technicalId->id)
                 ->where('services.typeClient', self::clientExternal)
                 ->where('services.status', 1) // Solo servicios activos
                 ->where('services.stateId', 1) // Solo servicios válidos
@@ -133,13 +150,32 @@ class ServicioMutations
                     ])
                     ->where('services.updatedDateTime', '=', $serviceData['updatedDateTime']); // Coincidencia exacta
                 })
-                ->where('services.id', '!=', $serviceData['id'] ?? 0) // Excluir el mismo servicio si es una actualización
                 ->first();
             //dd($existingService);
-            if($existingService){
+            if($existingServiceExternal){
                 DB::rollBack();
                 return [
-                    'message' => 'Este horario no está disponible. Selecciona otro con al menos 10 minutos de diferencia.'
+                    'message' => 'Este horario no está disponible  en la agenda de cliente externo. Selecciona otro con al menos 10 minutos de diferencia.'
+                ];
+            }
+
+            $existingServiceInternal = Servicio::where('services.technicalId', $technicalId->id)
+                ->where('services.typeClient', self::clientInternal)
+                ->where('services.status', 1) // Solo servicios activos
+                ->where('services.stateId', 1) // Solo servicios válidos
+                ->where(function ($query) use ($serviceData) {
+                    $query->whereBetween('services.updatedDateTime', [
+                        Carbon::parse($serviceData['updatedDateTime'])->subMinutes(10),
+                        Carbon::parse($serviceData['updatedDateTime'])->addMinutes(10)
+                    ])
+                    ->where('services.updatedDateTime', '=', $serviceData['updatedDateTime']); // Coincidencia exacta
+                })
+                ->first();
+            //dd($existingService);
+            if($existingServiceInternal){
+                DB::rollBack();
+                return [
+                    'message' => 'Este horario no está disponible en la agenda de cliente interno. Selecciona otro con al menos 10 minutos de diferencia.'
                 ];
             }
 
@@ -329,7 +365,7 @@ class ServicioMutations
         $serviceData = $args['requestService'];
         DB::beginTransaction();
         try{
-            $existingService = Servicio::where('services.technicalId',$service->technicalId)
+            $existingServiceExternal = Servicio::where('services.technicalId',$service->technicalId)
             ->where('services.typeClient', $service->typeClient)
             ->where('services.status',1)
             ->where('services.stateId',1)
@@ -343,7 +379,7 @@ class ServicioMutations
             })->where('services.id','!=',$serviceId)
             ->first();
 
-            if($existingService){
+            if($existingServiceExternal){
                 DB::rollBack();
                 return [
                     'message' => 'Ya hay un servicio activo cerca de este horario. Selecciona una hora con al menos 10 minutos de diferencia.'
