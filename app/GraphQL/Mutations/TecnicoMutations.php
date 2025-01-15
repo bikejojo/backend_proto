@@ -242,8 +242,8 @@ class TecnicoMutations {
         if ($isPhotoUploaded) {
             // Eliminar foto anterior
             ImageHelper::deleteDirectoryProfile($technicialId);
-
-            $photoCardPath = ImageHelper::processImage($args['photo'], "/{$technicialId}/profile/"."{$this->nowFront}.png", $manager);
+            $this->nowProfile=$this->nowProfile->format('Ymd_His');
+            $photoCardPath = ImageHelper::processImage($args['photo'], "/{$technicialId}/profile/"."{$this->nowProfile}.png", $manager);
             $technicial->photo =$this->app.'/storage' . str_replace('public/', '', $photoCardPath);
         }
         $technicial->save();
