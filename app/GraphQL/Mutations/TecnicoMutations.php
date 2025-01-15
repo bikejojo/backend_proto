@@ -100,7 +100,7 @@ class TecnicoMutations {
                 $technician->backIdCard = $this->app . '/storage' . str_replace('public/', '', $backIdCardPath);
             }
 
-            //ImageHelper::existDirectorie($technicianId);
+            ImageHelper::existDirectorie($technicianId);
             //dd($args['photo']);
             if (isset($args['photo']) && $args['photo'] instanceof UploadedFile){
                 $profilePath = ImageHelper::processImage($args['photo'],"/{$technicianId}/profile/"."{$this->nowProfile}.png",$manager);
