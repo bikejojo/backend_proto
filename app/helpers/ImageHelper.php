@@ -12,10 +12,12 @@ class ImageHelper
     public static function validateImage($argumento){
         return Validator::make([
             'frontIdCard' => $argumento['frontIdCard'] ?? null ,
-            'backIdCard'=> $argumento['backIdCard'] ?? null
+            'backIdCard'=> $argumento['backIdCard'] ?? null,
+            'profile' => $argumento['photo'] ?? null ,
             ], [
                 'frontIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
-                'backIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp'
+                'backIdCard' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
+                'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp'
             ]);
     }
     public static function validateImagePhoto($argumento){
@@ -49,7 +51,6 @@ class ImageHelper
 
     public static function existDirectorie($objetoId){
         $directoryPath = 'public/'. $objetoId . '/profile';
-
         if (!Storage::exists($directoryPath)) {
             // Si no existe, lo crea
             Storage::makeDirectory($directoryPath);

@@ -18,11 +18,13 @@ class TecnicoMutations {
     protected $app;
     protected $nowFront;
     protected $nowBack;
+    protected $nowProfile;
 
     public function __construct() {
         $this->app= env('FULL_URL');
         $this->nowFront= Carbon::now()->format('Ymd_His');
         $this->nowBack=Carbon::now()->addMinute(1);
+        $this->nowProfile=Carbon::now()->addMinutes(2);
     }
 
     public function create($root, array $args)
@@ -30,18 +32,12 @@ class TecnicoMutations {
         $technicianData = $args['technicianRequest'];
         $skill = null;
         // Verificar si el CI ya existe
-        if (User::where('ci', $technicianData['ci'])->exists()) {
+        if (strlen($technicianData['ci']) != 7 || User::where('ci', $technicianData['ci'])->exists()) {
             return [
-                'message' => 'Esta cédula de identidad ya está en uso, por favor intenta con otro.'
+                'message' => 'El CI debe tener 7 digitos y no estar en uso.'
             ];
         }
 
-        // Validar longitud del CI
-        if (strlen($technicianData['ci']) != 7) {
-            return [
-                'message' => 'El CI debe tener exactamente 7 dígitos.'
-            ];
-        }
 
         // Validar imágenes
         $validators = ImageHelper::validateImage($args);
@@ -67,9 +63,6 @@ class TecnicoMutations {
             $user->token = $tokens;
             $user->save();
 
-            // Asociar el usuario creado al técnico
-            $technicianData['userId'] = $user->id;
-
             // Crear técnico
             $technician = Tecnico::create([
                 'firstName' => $technicianData['firstName'],
@@ -77,7 +70,7 @@ class TecnicoMutations {
                 'email' => $technicianData['email'],
                 'phoneNumber' => $technicianData['phoneNumber'],
                 'password' => Hash::make($technicianData['password']),
-                'userId' => $technicianData['userId'],
+                'userId' => $user->id,
                 'cityId' => $technicianData['cityId'],
                 'status' => 1,
             ]);
@@ -94,7 +87,8 @@ class TecnicoMutations {
             $manager = new ImageManager(new Driver());
             // Procesar imagen delantera del carnet
             $this->nowBack=$this->nowBack->format('Ymd_His');
-
+            $this->nowProfile=$this->nowProfile->format('Ymd_His');
+            ImageHelper::existDirectorieCard($technicianId);
             if (isset($args['frontIdCard']) && $args['frontIdCard'] instanceof UploadedFile) {
                 $frontIdCardPath = ImageHelper::processImage($args['frontIdCard'], "/{$technicianId}/id_card/"."{$this->nowFront}.png", $manager);
                 $technician->frontIdCard = $this->app . '/storage' . str_replace('public/', '', $frontIdCardPath);
@@ -106,6 +100,12 @@ class TecnicoMutations {
                 $technician->backIdCard = $this->app . '/storage' . str_replace('public/', '', $backIdCardPath);
             }
 
+            //ImageHelper::existDirectorie($technicianId);
+            //dd($args['photo']);
+            if (isset($args['photo']) && $args['photo'] instanceof UploadedFile){
+                $profilePath = ImageHelper::processImage($args['photo'],"/{$technicianId}/profile/"."{$this->nowProfile}.png",$manager);
+                $technician->photo = $this->app . '/storage' . str_replace('public/','',$profilePath);
+            }
             // Guardar las rutas de las imágenes en el registro del técnico
             $technician->save();
             // Crear la agenda para el técnico
@@ -150,8 +150,8 @@ class TecnicoMutations {
                 'message' => 'Archivo de imagen inválido.'
             ];
         }
-        $technicianId = $args['id'];
-        $technician = Tecnico::find($technicianId);
+        $technicianIds = $args['id'];
+        $technician = Tecnico::find($technicianIds);
         $userId = $technician->userId;
         $user = User::find($userId);
         if (empty($technicianData['password'])) {
