@@ -140,7 +140,7 @@ class ClientQuery{
         ];
     }
 
-    public function quantifyclient($root, array $args) {
+    public function quantifyclient_($root, array $args) {
         $clientData = $args['requestClient'];
         $startDate = $clientData['startDate'];
         $finishDate_ = Carbon::createFromFormat('Y-m-d', $clientData['finishDate'])->addDay()->format('Y-m-d');
