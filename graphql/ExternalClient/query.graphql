@@ -2,21 +2,23 @@ extend type Query {
     searchParameterExternalClient (requestClient:JSON!):responseClientExternalSearch @field(resolver: "ClientQuery@searchExternalByName")
     getExternalCustomerForIdTechnician(id_technician:String):responseClientExternalSearch @field(resolver: "ClientQuery@technicianByclient")
     clientExternalById(id:ID! @whereKey):ExternalClient @find(model: "App\\Models\\Cliente_Externo")
-    quantifyClient(requestClient:JSON!):responseCities @field(resolver: "ClientQuery@quantifyclient_")
+    #quantifyClient(requestClient:JSON!):responseCities @field(resolver: "ClientQuery@quantifyclient_")
+    quantifyClientInternal(requestClient:JSON!):[responseCitiesInternal] @field(resolver: "ClientQuery@quantifyclient_interno")
+    quantifyClientExternal(requestClient:JSON!):[responseCitiesExternal] @field(resolver: "ClientQuery@quantifyclient_externo")
     quantityClientAllow(id_technician:JSON):responseClient @field(resolver: "ClientQuery@quantityClient")
     quantityCitationsProgram(id_technician:JSON):responseClient @field(resolver: "ClientQuery@quantityCities")
 }
 
 
-type responseCities{
-    servicesExternal:[serv_]
-    servicesInternal:[serv_]
-}
-
-type serv_ {
+type responseCitiesExternal{
     fullName:String
     servicecount:Int
-    #clientName:String
+    clienttype:String
+}
+
+type responseCitiesInternal{
+    fullName:String
+    servicecount:Int
     clienttype:String
 }
 

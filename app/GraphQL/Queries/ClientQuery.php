@@ -140,7 +140,80 @@ class ClientQuery{
         ];
     }
 
-    public function quantifyclient_($root, array $args) {
+    public function quantifyclient_externo($root, array $args){
+        $clientData = $args['requestClient'];
+        $startDate = $clientData['startDate'];
+        $finishDate_ = Carbon::createFromFormat('Y-m-d', $clientData['finishDate'])->addDay()->format('Y-m-d');
+        $finishDate = $clientData['finishDate'];
+        //dd($startDate);
+        $technicalId = $clientData['technicianId'];
+        $servicesExt = DB::table('services')
+        ->where('services.typeClient', ServicioMutations::clientExternal)
+        ->where('associationTechnClient.status',1)
+        ->where('services.status', 1)
+        ->where('services.technicalId', $technicalId)
+        ->whereBetween(DB::raw('DATE(services."updatedDateTime")'), [$startDate, $finishDate_])
+        ->where('associationTechnClient.technicalId', $technicalId)
+        ->select(
+            'associationTechnClient.full_name as fullName',
+            //DB::raw('DATE(services."updatedDateTime") as date'), // Extraer solo la fecha
+            DB::raw('COUNT(services."id") as servicecount'), // Contar servicios por cliente y día
+            DB::raw("'Cliente Externo' as clienttype")
+        )
+        // Filtro solo por fechas
+        ->leftJoin('associationTechnClient', 'services.clientId', '=', 'associationTechnClient.clientId')
+        ->groupBy('associationTechnClient.full_name')
+        ->orderBy('servicecount', 'desc') // Ordenar por fecha
+        ->get();
+            //dd($servicesExt);
+            $result = $servicesExt->map(function ($service) {
+                return [
+                    'fullName' => $service->fullName,
+                    'servicecount' => $service->servicecount,
+                    'clienttype' => $service->clienttype,
+                ];
+            });
+
+            // Retornar el resultado como un array
+            return $result->toArray();
+    }
+
+    public function quantifyclient_interno($root, array $args) {
+        $clientData = $args['requestClient'];
+        $startDate = $clientData['startDate'];
+        $finishDate_ = Carbon::createFromFormat('Y-m-d', $clientData['finishDate'])->addDay()->format('Y-m-d');
+        $finishDate = $clientData['finishDate'];
+        //dd($startDate);
+        $technicalId = $clientData['technicianId'];
+
+        $servicesInt = DB::table('services')
+            ->where('services.status', 1) // Filtrar solo servicios activos
+            ->where('typeClient', ServicioMutations::clientInternal) // Filtrar por tipo de cliente interno
+            ->where('technicalId', $technicalId) // Filtrar por técnico específico
+            ->leftJoin('internal_clients', 'services.clientId', '=', 'internal_clients.id') // Unión con clientes internos
+            ->select(
+                DB::raw('CONCAT(COALESCE(internal_clients."firstName", \'\'), \' \', COALESCE(internal_clients."lastName", \'\')) as "fullName"'), // Nombre completo
+                DB::raw('COUNT(services."clientId") as servicecount'), // Contar servicios por cliente
+                DB::raw("'Cliente Interno' as clienttype") // Tipo de cliente
+            )
+            ->whereBetween(DB::raw('DATE(services."updatedDateTime")'), [$startDate, $finishDate_]) // Filtrar por rango de fechas
+            ->groupBy(DB::raw('CONCAT(COALESCE(internal_clients."firstName", \'\'), \' \', COALESCE(internal_clients."lastName", \'\'))')) // Agrupar solo por cliente
+            ->orderBy(DB::raw('COUNT(services."clientId")'), 'desc') // Ordenar por cantidad de servicios
+            ->get();
+            //dd($servicesInt);
+            //dd($servicesInt->toSql(), $servicesInt->getBindings());
+
+            $result = $servicesInt->map(function ($service) {
+                return [
+                    'fullName' => $service->fullName ?? 'Sin nombre', // Usa "fullname" en minúsculas, como aparece en el dd.
+                    'servicecount' => $service->servicecount,
+                    'clienttype' => $service->clienttype,
+                ];
+            });
+            return $result->toArray();
+    }
+
+    /*public function quantifyclient_interno($root, array $args) {
         $clientData = $args['requestClient'];
         $startDate = $clientData['startDate'];
         $finishDate_ = Carbon::createFromFormat('Y-m-d', $clientData['finishDate'])->addDay()->format('Y-m-d');
@@ -207,7 +280,7 @@ class ClientQuery{
                     ];
                 })->toArray(),
             ];
-    }
+    }*/
 
 
     public function quantityClient($root, array $args){

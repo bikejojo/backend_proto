@@ -244,4 +244,10 @@ class UserMutations{
         ];
     }
 
+    public function resetPasswordTechnicianAtSupport($root,array $args){
+
+    }
+    public function resetPasswordclientAtSupport($root,array $args){
+
+    }
 }
