@@ -238,12 +238,20 @@ class ServicioMutations
 
         DB::beginTransaction();
         try{
-            $client = Cliente_Externo::find($service->clientId);
+            $client = DB::table('associationTechnClient')
+                        ->join('external_clients', 'associationTechnClient.clientId', '=', 'external_clients.id')
+                        ->where('associationTechnClient.clientId', $service->clientId)
+                        ->where('associationTechnClient.technicalId', $service->technicalId)
+                        ->select(
+                            'external_clients.id',
+                            'associationTechnClient.full_name as fullName',
+                            'associationTechnClient.phone_number as phoneNumber'
+                        )
+                        ->first();
             $technician = Tecnico::find($service->technicalId);
             $service->finishDateTime_technician = $serviceDateTime;
-            $service->updatedDateTime = Carbon::now();
             $service->save();
-            StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'El servicio fue acabo para el cliente externo.',4);
+            StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'El servicio fue acabo, para el cliente externo.',4);
             $service->save();
             $_service = Servicio::find($service->id);
             DB::commit();
@@ -305,7 +313,7 @@ class ServicioMutations
             ];
         }
     }
-
+// cliente interno
     public function finishServiceTechnician($root,array $args){
         $serviceData = $args['requestService'];
         $serviceId = $serviceData['id_service'];
@@ -345,6 +353,8 @@ class ServicioMutations
             ];
         }
     }
+
+
     public function delete($root , array $args){
         $serviceData = $args['requestService'];
         $serviceId=$serviceData['id_service'];
