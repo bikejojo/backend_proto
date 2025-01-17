@@ -12,10 +12,14 @@ extend type Mutation {
 type responseService {
     message:String
     service:Service
-    customer_external:ExternalClient
+    customer_external:externalclient
     technician:Technician
 }
-
+type externalclient{
+    id:String
+    fullName:String
+    phoneNumber:String
+}
 type responseServiceClient {
     message:String
     messageN:String
