@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
             'password' => bcrypt('123'),
             'ci' => '123',
-            'type_user' => 1,
+            'type_user' => 3,
             'token' => "1"
         ]);
         #ciudad para tecnicos y clientes
