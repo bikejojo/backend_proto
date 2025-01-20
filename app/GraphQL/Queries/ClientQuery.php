@@ -152,7 +152,7 @@ class ClientQuery{
         ->where('associationTechnClient.status',1)
         ->where('services.status', 1)
         ->where('services.technicalId', $technicalId)
-        ->whereBetween(DB::raw('DATE(services."updatedDateTime")'), [$startDate, $finishDate_])
+        ->whereBetween(DB::raw('DATE(services."updatedDateTime")'), [$startDate, $finishDate])
         ->where('associationTechnClient.technicalId', $technicalId)
         ->select(
             'associationTechnClient.full_name as fullName',
@@ -196,7 +196,7 @@ class ClientQuery{
                 DB::raw('COUNT(services."clientId") as servicecount'), // Contar servicios por cliente
                 DB::raw("'Cliente Interno' as clienttype") // Tipo de cliente
             )
-            ->whereBetween(DB::raw('DATE(services."updatedDateTime")'), [$startDate, $finishDate_]) // Filtrar por rango de fechas
+            ->whereBetween(DB::raw('DATE(services."updatedDateTime")'), [$startDate, $finishDate]) // Filtrar por rango de fechas
             ->groupBy(DB::raw('CONCAT(COALESCE(internal_clients."firstName", \'\'), \' \', COALESCE(internal_clients."lastName", \'\'))')) // Agrupar solo por cliente
             ->orderBy(DB::raw('COUNT(services."clientId")'), 'desc') // Ordenar por cantidad de servicios
             ->get();
