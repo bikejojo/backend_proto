@@ -58,6 +58,9 @@ class ClienteInternoMutations{
 
         $userId = $user->id;
         $clienteData['userId'] = $userId;
+        $loginMethod=$clienteData['loginMethod'];
+        $clienteData['loginMethod'] = $this->methodLogin($loginMethod);
+        //dd($clientData['loginMethod']);
         $cliente = Cliente_Interno::create($clienteData);
         $clientId = $cliente->id;
         $value=$user->type_user;
@@ -209,5 +212,15 @@ class ClienteInternoMutations{
         ], [
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp',
         ]);
+    }
+    private function methodLogin($args):string{
+        switch($args){
+            case '1':
+                return 'Por formulario de la app';
+            case '2':
+                return 'Por gmail de google';
+            default:
+                return 'Método desconocido';
+        }
     }
 }

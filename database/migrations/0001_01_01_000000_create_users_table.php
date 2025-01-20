@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('ci')->nullable(); //solo cliente tendra en ci null
             $table->string('email')->nullable();
-            $table->bigInteger('type_user')->nullable(); // 1 tecnico 2 cliente interno
+            $table->bigInteger('type_user')->nullable(); // 1 tecnico 2 cliente interno 3 web
             $table->text('token')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
