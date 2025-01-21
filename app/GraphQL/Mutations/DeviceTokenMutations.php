@@ -6,40 +6,50 @@ use App\Models\DeviceToken;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DeviceTokenMutations
 {
     public function register($root , array $args){
-        $deviceData = $args['deviceTokenRequest'];
-        /*$user = Auth::user();
-        if(!$user){
-            return [
-                'message' => 'Usuario no autenticado',
-                'success' => false
-            ];
-        }*/
+        DB::beginTransaccion();
+        try {
+            $deviceData = $args['deviceTokenRequest'];
+            /*$user = Auth::user();
+            if(!$user){
+                return [
+                    'message' => 'Usuario no autenticado',
+                    'success' => false
+                ];
+            }*/
 
-        //$token = DeviceToken::generateUniqueToken();
-        $userId = $deviceData['userId'];
-        $user = User::find($userId);
-        if($user->token){
-            $deviceToken = DeviceToken::updateOrCreate([
-                'user_id' => $user->id,
-                'device_type'=>$deviceData['device_type'],
-                'device_name'=>$deviceData['device_name'],
-                'datetime_at' => Carbon::now(),
-                'token' => $user->token
-            ]);
-        }else{
+            //$token = DeviceToken::generateUniqueToken();
+            $userId = $deviceData['userId'];
+            $user = User::find($userId);
+            if($user->token){
+                $deviceToken = DeviceToken::updateOrCreate([
+                    'user_id' => $user->id,
+                    'device_type'=>$deviceData['device_type'],
+                    'device_name'=>$deviceData['device_name'],
+                    'datetime_at' => Carbon::now(),
+                    'token' => $user->token
+                ]);
+            }else{
+                DB::rollBack();
+                return [
+                    'message' => 'No existe el token del usuario.'
+                ];
+            }
+            DB::commit();
             return [
-                'message' => 'No existe.'
+                'token' => $deviceToken->token,
+                'message' => 'Token generado correctamente.',
+                'success' => true,
+            ];
+        } catch (\Exception $e){
+            DB::rollBack();
+            return [
+                'message' => 'El error es el siguiente ' . $e->getMessage()
             ];
         }
-
-        return [
-            'token' => $deviceToken->token,
-            'message' => 'Token generado correctamente.',
-            'success' => true,
-        ];
     }
 }

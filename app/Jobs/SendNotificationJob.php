@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\NotificationUser;
 use App\Models\TypeNotification;
+use Carbon\Carbon;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -46,6 +47,10 @@ class SendNotificationJob implements ShouldQueue
             'description' => $this->data['description'],
             'image' => $this->data['image'],
             'data' => $this->data['data'], // Aquí se almacena el JSON
+            'read' => $this->data['read'],
+            'status' => 1,
+            'read_at'=>Carbon::now(),
+            'date_time_at'=>Carbon::now()
         ]);
     }
 }
