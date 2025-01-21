@@ -213,9 +213,9 @@ class ClienteInternoMutations{
     private function methodLogin($args):string{
         switch($args){
             case '1':
-                return 'Por formulario de la app';
+                return 'formulario';
             case '2':
-                return 'Por gmail de google';
+                return 'google';
             default:
                 return 'Método desconocido';
         }
