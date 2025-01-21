@@ -58,6 +58,8 @@ class ClienteInternoMutations{
 
         $userId = $user->id;
         $clienteData['userId'] = $userId;
+        $loginMethod=$clienteData['loginMethod'];
+        $clienteData['loginMethod'] = $this->methodLogin($loginMethod);
         //dd($clientData['loginMethod']);
         $cliente = Cliente_Interno::create($clienteData);
         $clientId = $cliente->id;
