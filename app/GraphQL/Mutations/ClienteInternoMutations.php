@@ -58,8 +58,6 @@ class ClienteInternoMutations{
 
         $userId = $user->id;
         $clienteData['userId'] = $userId;
-        $loginMethod=$clienteData['loginMethod'];
-        $clienteData['loginMethod'] = $this->methodLogin($loginMethod);
         //dd($clientData['loginMethod']);
         $cliente = Cliente_Interno::create($clienteData);
         $clientId = $cliente->id;
@@ -108,7 +106,6 @@ class ClienteInternoMutations{
             $client->lastName=$lastName;
             $client->email=$email;
             $client->phoneNumber=$phone;
-            $client->loginMethod=$clientData['loginMethod'];
             $client->cityId = $clientData['cityId'];
             $value=$user->type_user;
             ImageHelper::createDirectorie($clientId,$value);
