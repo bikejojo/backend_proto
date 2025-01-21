@@ -32,7 +32,8 @@ class ClienteInternoMutations{
         // Crear el cliente en la base de datos
         if (User::where('email',$clienteData['email'])->exists()) {
             return [
-                 'message'=> 'Este email ya esta en uso, por favor intenta con otro.'
+                 'message'=> 'Este email ya esta en uso, por favor intenta con otro.',
+                 'status' => 1
             ];
          }
 
@@ -41,7 +42,8 @@ class ClienteInternoMutations{
         if ($validators->fails()) {
             return [
                 'message' => 'Archivo de imagen inválido.',
-                'upcomingmessage' => 'Registre su usuario'
+                'upcomingmessage' => 'Registre su usuario',
+                'status' => 1
             ];
         }
         DB::beginTransaction();
@@ -79,12 +81,16 @@ class ClienteInternoMutations{
         return [
             'message' => 'Creacion Cliente exitoso!',
             'client' => $cliente,
-            'user' => $user
+            'user' => $user,
+            'status' => 2
         ];
 
         }catch (\Exception $e){
             DB::rollBack();
-            return ['message' => 'El error es.'. $e->getMessage()];
+            return [
+                'message' => 'El error es.'. $e->getMessage(),
+                'status' => 3
+            ];
         }
     }
     public function update($root ,array $args){
@@ -126,11 +132,15 @@ class ClienteInternoMutations{
             DB::commit();
             return[
                 'message' => 'Cliente actualizado exitoso!!' ,
-                'client' => $client
+                'client' => $client ,
+                'status' => 2
             ];
         }catch (\Exception $e){
             DB::rollBack();
-            return ['message' => 'El error es.'. $e->getMessage()];
+            return [
+                'message' => 'El error es.'. $e->getMessage(),
+                'status' => 3
+            ];
         }
     }
     public function delete($root ,array $args){
@@ -151,7 +161,8 @@ class ClienteInternoMutations{
         if ($validators->fails()) {
             return [
                 'message' => 'Archivo de imagen inválido.',
-                'upcomingmessage' => 'Registre su usuario'
+                'upcomingmessage' => 'Registre su usuario',
+                'status' => 1
             ];
         }
         $client = Cliente_Interno::find($clientData['id']);
@@ -183,12 +194,14 @@ class ClienteInternoMutations{
             DB::commit();
             return[
                 'message' => 'Foto de cliente actualizado exitoso!!' ,
-                'client' => $client
+                'client' => $client,
+                'status' => 2
             ];
         } catch (\Exception $e) {
             DB::rollback();
             return [
-                'message'=>'El error es el siguiente. '. $e->getMessage()
+                'message'=>'El error es el siguiente. '. $e->getMessage(),
+                'status' => 3
             ];
         }
     }
