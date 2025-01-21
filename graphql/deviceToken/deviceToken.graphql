@@ -1,0 +1,9 @@
+type deviceToken {
+    id:ID
+    token:String
+    device_type:String
+    datetime_at:String
+    user_id:ID
+
+    user:User
+}

@@ -13,6 +13,7 @@ type ClientResponse {
   message: String
   client: InternalClient
   user: User
+  status:Int
 }
 
 #import InternalClient.graphql

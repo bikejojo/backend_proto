@@ -12,6 +12,7 @@ use App\Models\Suscripcion;
 use App\Models\Skills_group;
 use App\Models\Group;
 use App\Models\Sub_group;
+use App\Models\Type;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
 
@@ -144,5 +145,11 @@ class DatabaseSeeder extends Seeder
         Suscripcion::create(['name'=>'Suscripcion Basic','description'=>'Duracion de 14 dias por basico','createDate'=>Carbon::now(),'duration'=> 14,'status'=>1,'durationDescription'=>'14 dias','price'=>12.50,'codeSubcription'=>'BASIC']);
         Suscripcion::create(['name'=>'Suscripcion Esencial','description'=>'Duracion de 30 dias por esencial','createDate'=>Carbon::now(),'duration'=> 30,'status'=>1,'durationDescription'=>'30 dias','price'=>25.0,'codeSubcription'=>'ESENCIAL']);
         Suscripcion::create(['name'=>'Suscripcion Premiun','description'=>'Duracion de 60 dias por premium','createDate'=>Carbon::now(),'duration'=> 60,'status'=>1,'durationDescription'=>'60 dias','price'=>60.0,'codeSubcription'=>'PREMIUN']);
+
+        Type::create(['description'=>'Solicitud enviada por el cliente','code_notifications'=>'SOL_CL']);
+        Type::create(['description'=>'Solicitud enviada por el tecnico','code_notifications'=>'SOL_TC']);
+        Type::create(['description'=>'Publicidad enviada','code_notifications'=>'PUBLIC']);
+        Type::create(['description'=>'Solicitud enviada','code_notifications'=>'SOLIC']);
+
     }
 }

@@ -156,8 +156,8 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN'),
-
+    //'domain' => env('SESSION_DOMAIN'),
+    'domain' => env('192.168.100.17'),
     /*
     |--------------------------------------------------------------------------
     | HTTPS Only Cookies
@@ -169,8 +169,8 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE'),
-
+    //'secure' => env('SESSION_SECURE_COOKIE'),
+    'secure' => env('SESSION_SECURE_COOKIE',false),
     /*
     |--------------------------------------------------------------------------
     | HTTP Access Only
@@ -182,7 +182,8 @@ return [
     |
     */
 
-    'http_only' => env('SESSION_HTTP_ONLY', true),
+    //'http_only' => env('SESSION_HTTP_ONLY', true),
+    'http_only' =>false,
 
     /*
     |--------------------------------------------------------------------------
@@ -199,7 +200,8 @@ return [
     |
     */
 
-    'same_site' => env('SESSION_SAME_SITE', 'lax'),
+    //'same_site' => env('SESSION_SAME_SITE', 'lax'),
+    'same_site' => 'none',
 
     /*
     |--------------------------------------------------------------------------

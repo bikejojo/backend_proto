@@ -1,0 +1,19 @@
+extend type Mutation {
+    sendNotifications( input:sendNotificationInput ): notificationsResponse @field(resolver: "NotificationMutations@send")
+}
+
+input sendNotificationInput {
+    description:String
+    type_device:String
+    receiver_userid:ID
+    sender_userid:ID
+    type_id:String
+    title:string
+    image: String
+    data:JSON
+}
+
+type notificationsResponse {
+    message:String
+    sucess:Boolean
+}
