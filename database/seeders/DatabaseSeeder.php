@@ -148,8 +148,8 @@ class DatabaseSeeder extends Seeder
 
         Type::create(['description'=>'Solicitud enviada por el cliente','code_notifications'=>'SOL_CL']);
         Type::create(['description'=>'Solicitud enviada por el tecnico','code_notifications'=>'SOL_TC']);
-        Type::create(['description'=>'Publicidad enviada','code_notifications'=>'PUBLIC']);
-        Type::create(['description'=>'Solicitud enviada','code_notifications'=>'SOLIC']);
+        Type::create(['description'=>'Publicidad','code_notifications'=>'PUBLIC']);
+        Type::create(['description'=>'Solicitud','code_notifications'=>'SOLIC']);
 
     }
 }

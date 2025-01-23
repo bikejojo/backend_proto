@@ -28,6 +28,7 @@ scalar Upload @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Upload
 #import skillTechnician/*.graphql
 #import subcription/*.graphql
 #import technician/*.graphql
+#import type/*.graphql
 #import typeActivity/*.graphql
 #import typeState/*.graphql
 #import user/*.graphql
