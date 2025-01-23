@@ -33,7 +33,7 @@ class ClienteInternoMutations{
         if (User::where('email',$clienteData['email'])->exists()) {
             return [
                  'message'=> 'Este email ya esta en uso, por favor intenta con otro.',
-                 'status' => 1
+                 'status' => 2
             ];
          }
 
@@ -43,7 +43,7 @@ class ClienteInternoMutations{
             return [
                 'message' => 'Archivo de imagen inválido.',
                 'upcomingmessage' => 'Registre su usuario',
-                'status' => 1
+                'status' => 2
             ];
         }
         DB::beginTransaction();
@@ -82,7 +82,7 @@ class ClienteInternoMutations{
             'message' => 'Creacion Cliente exitoso!',
             'client' => $cliente,
             'user' => $user,
-            'status' => 2
+            'status' => 1
         ];
 
         }catch (\Exception $e){
