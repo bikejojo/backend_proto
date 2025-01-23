@@ -36,6 +36,14 @@ class ImageHelper
             ]);
     }
 
+    public static function validateImageNotification($argumento){
+        return Validator::make([
+            'image' => $argumento['image'] ?? null ,
+            ], [
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp'
+            ]);
+    }
+
     public static function createDirectorie($objetoId,$value){
         if($value == 1){
             Storage::makeDirectory('public/' . $objetoId . '/id_card');
@@ -47,6 +55,10 @@ class ImageHelper
 
         Storage::makeDirectory('public/publicidad/' . $objetoId . '/logo');
 
+    }
+
+    public static function createNotifications($objetoId){
+        Storage::makeDirectory('public/notifications/'.$objetoId);
     }
 
     public static function existDirectorie($objetoId){

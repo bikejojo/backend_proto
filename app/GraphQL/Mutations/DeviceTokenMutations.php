@@ -14,15 +14,6 @@ class DeviceTokenMutations
         DB::beginTransaccion();
         try {
             $deviceData = $args['deviceTokenRequest'];
-            /*$user = Auth::user();
-            if(!$user){
-                return [
-                    'message' => 'Usuario no autenticado',
-                    'success' => false
-                ];
-            }*/
-
-            //$token = DeviceToken::generateUniqueToken();
             $userId = $deviceData['userId'];
             $user = User::find($userId);
             if($user->token){
@@ -52,4 +43,5 @@ class DeviceTokenMutations
             ];
         }
     }
+
 }

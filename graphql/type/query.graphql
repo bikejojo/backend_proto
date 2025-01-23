@@ -1,0 +1,8 @@
+extend type Query {
+    getType:responsetype @field(resolver: "TypeNotificationQuery@getTypeNotifications")
+}
+type responsetype{
+    message:String
+    type:[Type]
+}
+#import type.graphql
