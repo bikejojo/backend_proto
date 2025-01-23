@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('notifications_user', function (Blueprint $table) {
             $table->id();
-            $table->text('token_user')->nullable();
+            $table->strig('token_user')->nullable();
             $table->string('type_device')->nullable();
             $table->unsignedBigInteger('notifications_id')->nullable();
             $table->dateTime('datetime')->nullable();

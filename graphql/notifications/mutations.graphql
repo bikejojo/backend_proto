@@ -5,15 +5,16 @@ extend type Mutation {
 input sendNotificationInput {
     description:String
     type_device:String
-    receiver_userid:ID
-    sender_userid:ID
+    token_user:String
+    receiver_userid:[ID]
+    sender_userid:[ID]
     type_id:String
-    title:string
-    image: String
+    title:String
+    image: Upload
     data:JSON
 }
 
 type notificationsResponse {
     message:String
-    sucess:Boolean
+    success:Boolean
 }

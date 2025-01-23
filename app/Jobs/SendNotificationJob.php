@@ -12,6 +12,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Helpers\ImageHelper;
@@ -23,14 +25,13 @@ class SendNotificationJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    protected $app;
     protected $notification;
     protected $userId;
     protected $data;
+    protected $url;
 
     public function __construct($notification,$userId,$data)
     {
-        $this->app= env('FULL_URL');
         $this->notification = $notification;
         $this->userId = $userId;
         $this->data = $data;
@@ -40,42 +41,41 @@ class SendNotificationJob implements ShouldQueue
      * Execute the job.
      */
     public function handle(): void
-    {
+{
+    try {
+
+        // Crear la notificación del usuario
         NotificationUser::create([
             'notifications_id' => $this->notification->id,
-            'token_user'=>$this->data->token,
-            'type_device'=>$this->data->device_type,
-            'datetime'=>Carbon::now(),
+            'token_user' => is_array($this->data['token_user']) ? json_encode($this->data['token_user']) : ($this->data['token_user'] ?? null),
+            'type_device' => is_array($this->data['type_device']) ? json_encode($this->data['type_device']) : ($this->data['type_device'] ?? null),
+            'datetime' => Carbon::now(),
             'receiver_userId' => $this->userId,
-            'sender_userid'=>$this->data->sender_userid,
+            'sender_userid' => is_array($this->data['sender_userid']) ? json_encode($this->data['sender_userid']) : ($this->data['sender_userid'] ?? null),
             'sent_at' => now(),
-            'read_at'=>now()
+            'read_at' => null
         ]);
 
+        // Crear el tipo de notificación
         $type = TypeNotification::create([
             'notifications_id' => $this->notification->id,
             'type_id' => $this->data['type_id'],
             'title' => $this->data['title'],
             'description' => $this->data['description'],
-            //'image' => $this->data['image'],
-            'data' => $this->data['data'], // Aquí se almacena el JSON
+            'data' => $this->data['data'], // Almacenar JSON
+            'image' => $this->url,
             'read' => 0,
             'status' => 1,
-            'read_at'=>null,
-            'date_time_at'=>Carbon::now()
+            'read_at' => null,
+            'date_time_at' => Carbon::now(),
         ]);
 
-        if(isset($data['image'])&& $data['image'] instanceof UploadedFile){
-
-            ImageHelper::createNotifications($type->id);
-            $manager = new ImageManager(new Driver());
-            $now=Carbon::now()->format('Ymd_His');
-            $notificationsImage=ImageHelper::processImage($data['image'],"notifications/{$type->id}"."{$now}.png",$manager);
-            $type->image=$this->app.'/storage' . str_replace('public/', '', $notificationsImage);
-            $type->save();
-
+        } catch (\Exception $e) {
+            Log::error('------------------------------------Error en SendNotificationJob: ' . $e->getMessage(), [
+                'notification_id' => $this->notification->id,
+                'user_id' => $this->userId,
+            ]);
         }
-
-
     }
+
 }
