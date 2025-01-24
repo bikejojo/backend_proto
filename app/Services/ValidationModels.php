@@ -89,4 +89,11 @@ class ValidationModels{
             return Servicio::find($objeto);
         }
     }
+    public static function validation_Technician($objeto){
+        return Tecnico::find($objeto);
+    }
+
+    public static function validation_clientInternal($objeto){
+        return Cliente_Interno::find($objeto);
+    }
 }

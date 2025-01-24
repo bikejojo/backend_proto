@@ -1,0 +1,20 @@
+extend type Query {
+    getNotificationsTechnician(requestNotification:JSON):response @field(resolver: "TypeNotificationQuery@getNotifications" )
+}
+
+type response {
+    message:String
+    technician:Technician
+    notification:[getnotify]
+}
+
+type getnotify {
+    sent_at:String
+    title:String
+    description:String
+    data:String
+    code_notifications:String
+    full_name:String
+    phoneNumber:String
+}
+

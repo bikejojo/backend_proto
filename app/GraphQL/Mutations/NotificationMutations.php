@@ -8,11 +8,14 @@ use Illuminate\Support\Facades\DB;
 use App\Helpers\ImageHelper;
 use Illuminate\Http\UploadedFile;
 use App\Models\NotificationUser;
+use App\Services\ValidationModels;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
+use function PHPUnit\Framework\isEmpty;
+use function PHPUnit\Framework\isNull;
 
 class NotificationMutations
 {
@@ -54,7 +57,32 @@ class NotificationMutations
             //dd($args);
 
             $imageUrl = env('APP_URL') . '/storage' . str_replace('public/', '', $imagePath);
+            //$invalidReceivers = [];
             foreach ($args['input']['receiver_userid'] as $userIds) {
+                //dd(ValidationModels::validationTechnician($args['input']['sender_userid']));
+                $technicianValidation = ValidationModels::validation_Technician($args['input']['sender_userid']);
+                //dd($args['input']['receiver_userid']);
+                if(!$technicianValidation){
+                    DB::rollBack();
+                    return [
+                        'message' => 'Tecnico no existe.',
+                        'success' => false
+                    ];
+                }
+
+                $clientValidation = ValidationModels::validation_clientInternal($userIds);
+                //dd($clientValidation);
+                if(!$clientValidation){
+                    DB::rollBack();
+                    return [
+                        'message'=> 'Cliente no existe  '. $userIds,
+                        'success'=> false
+                    ];
+                    /*
+                    $invalidRceriver[] = $userIds;
+                    continue;
+                    */
+                }
 
                 $serializedData = [
                     'token_user' => $args['input']['token_user'],
@@ -67,6 +95,8 @@ class NotificationMutations
                     'data' => $args['input']['data'], // Datos adicionales como JSON
                     'image_url' => $imageUrl // Ruta o URL de la imagen
                 ];
+
+
                 //dd($serializedData['receiver_userid']);
                 Log::info('Datos enviados al Job:', [
                     'notification' => $notifications,
@@ -78,7 +108,9 @@ class NotificationMutations
 
                 SendNotificationJob::dispatch($notifications, $userIds, $serializedData);
             }
-
+            /*if(!empty($invalidRceriver)){
+                Log::warning('Algunos de receiver_userid:',['invalidos'=>$invalidRceriver]);
+            }*/
             //dd($serializedData);
             DB::commit();
             return [
