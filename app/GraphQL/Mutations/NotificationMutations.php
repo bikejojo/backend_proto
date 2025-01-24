@@ -51,32 +51,35 @@ class NotificationMutations
                 $manager);
 
             }
+            //dd($args);
 
             $imageUrl = env('APP_URL') . '/storage' . str_replace('public/', '', $imagePath);
-            foreach ($args['input']['receiver_userid'] as $userId) {
+            foreach ($args['input']['receiver_userid'] as $userIds) {
+
                 $serializedData = [
                     'token_user' => $args['input']['token_user'],
                     'description' => $args['input']['description'],
                     'type_device' => $args['input']['type_device'],
-                    'receiver_userid' => $userId,
-                    'sender_userid' => $args['input']['sender_userid'],
+                    'receiver_userid' =>$userIds,
+                    'sender_userid' => $args['input']['sender_userid'][0] ?? null,
                     'type_id' => $args['input']['type_id'],
                     'title' => $args['input']['title'],
                     'data' => $args['input']['data'], // Datos adicionales como JSON
                     'image_url' => $imageUrl // Ruta o URL de la imagen
                 ];
-
+                //dd($serializedData['receiver_userid']);
                 Log::info('Datos enviados al Job:', [
                     'notification' => $notifications,
-                    'userId' => $userId,
+                    'userId' => $userIds,
                     'input' => $args['input'],
                     'image_url' => $imageUrl
                 ]);
 
-                SendNotificationJob::dispatch($notifications, $userId, $serializedData);
+
+                SendNotificationJob::dispatch($notifications, $userIds, $serializedData);
             }
 
-
+            //dd($serializedData);
             DB::commit();
             return [
                 'message' => 'Notificaciones enviadas exitosamente.',

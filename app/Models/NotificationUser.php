@@ -14,12 +14,12 @@ class NotificationUser extends Model
     protected $fillable = [
         'token_user',
         'type_device',
-        'notificacions_id',
+        'notifications_id',
         'datetime',
         'sender_userid',
-        'receiver_usrid',
-        'sent_ad',
-        'read_id',
+        'receiver_userid',
+        'sent_at',
+        'read_at',
         'status',
 
     ];

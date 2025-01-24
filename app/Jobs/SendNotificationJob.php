@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Helpers\ImageHelper;
+use App\Models\Type;
 
 class SendNotificationJob implements ShouldQueue
 {
@@ -41,41 +42,52 @@ class SendNotificationJob implements ShouldQueue
      * Execute the job.
      */
     public function handle(): void
-{
-    try {
+    {
 
-        // Crear la notificación del usuario
-        NotificationUser::create([
-            'notifications_id' => $this->notification->id,
-            'token_user' => is_array($this->data['token_user']) ? json_encode($this->data['token_user']) : ($this->data['token_user'] ?? null),
-            'type_device' => is_array($this->data['type_device']) ? json_encode($this->data['type_device']) : ($this->data['type_device'] ?? null),
-            'datetime' => Carbon::now(),
-            'receiver_userId' => $this->userId,
-            'sender_userid' => is_array($this->data['sender_userid']) ? json_encode($this->data['sender_userid']) : ($this->data['sender_userid'] ?? null),
-            'sent_at' => now(),
-            'read_at' => null
-        ]);
+        try {
+            Log::info('$this->userId: ' . $this->notification);
+            //dd($this->userId);
+            // Validar y procesar sender_userid
+            $senderId = is_array($this->data['sender_userid']) ? $this->data['sender_userid'][0] : $this->data['sender_userid'];
 
-        // Crear el tipo de notificación
-        $type = TypeNotification::create([
-            'notifications_id' => $this->notification->id,
-            'type_id' => $this->data['type_id'],
-            'title' => $this->data['title'],
-            'description' => $this->data['description'],
-            'data' => $this->data['data'], // Almacenar JSON
-            'image' => $this->url,
-            'read' => 0,
-            'status' => 1,
-            'read_at' => null,
-            'date_time_at' => Carbon::now(),
-        ]);
+            // Validar y procesar receiver_userid
+            $receiverIds = is_array($this->data['receiver_userid']) ? $this->data['receiver_userid'] : [$this->data['receiver_userid']];
+            // Guardar cada combinación de sender y receiver
 
+            foreach ($receiverIds as $receiverId) {
+                NotificationUser::create([
+                    'notifications_id' => $this->notification->id,
+                    'token_user' => $this->data['token_user'] ?? null,
+                    'type_device' => $this->data['type_device'] ?? null,
+                    'datetime' => Carbon::now(),
+                    'receiver_userid' => $receiverId, // Guardar correctamente el receiver actual
+                    'sender_userid' => $senderId,    // Guardar correctamente el sender
+                    'sent_at' => Carbon::now(),
+                    'read_at' => null,
+                ]);
+
+                TypeNotification::create([
+                    'notifications_id' => $this->notification->id,
+                    'type_id' => $this->data['type_id'],
+                    'title' => $this->data['title'],
+                    'description' => $this->data['description'],
+                    'data' => $this->data['data'],
+                    'read' => 0,
+                    'status' => "1",
+                    'read_at' => null,
+                    'date_time_at'=>Carbon::now(),
+                    'image' => $this->data['image_url']
+                ]);
+            }
         } catch (\Exception $e) {
-            Log::error('------------------------------------Error en SendNotificationJob: ' . $e->getMessage(), [
+            // Registrar el error en los logs
+            Log::error('Error en SendNotificationJob: ' . $e->getMessage(), [
                 'notification_id' => $this->notification->id,
                 'user_id' => $this->userId,
             ]);
         }
     }
+
+
 
 }
