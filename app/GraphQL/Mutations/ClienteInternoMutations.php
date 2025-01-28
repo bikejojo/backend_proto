@@ -156,14 +156,7 @@ class ClienteInternoMutations{
 
     public function updatePhoto($root , array $args){
     try{
-        if (!isset($args['clientRequest'])) {
-            return [
-                'message' => 'El campo clientRequest es obligatorio.',
-                'status' => 1,
-            ];
-        }
-
-        $clientData = $args['clientRequest'];
+        $clientId = $args['id_client'];
         $validators = $this->validateImage($args);
 
         if ($validators->fails()) {
@@ -173,7 +166,7 @@ class ClienteInternoMutations{
                 'status' => 1
             ];
         }
-        $client = Cliente_Interno::find($clientData['id']);
+        $client = Cliente_Interno::find($clientId);
         $user = User::find($client->userId);
 
             $manager = new ImageManager(new Driver());
