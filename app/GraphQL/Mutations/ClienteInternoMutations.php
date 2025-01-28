@@ -170,7 +170,7 @@ class ClienteInternoMutations{
             return [
                 'message' => 'Archivo de imagen inválido.',
                 'upcomingmessage' => 'Registre su usuario',
-                'status' => 1
+                'status' => 2
             ];
         }
         $client = Cliente_Interno::find($clientId);
@@ -204,7 +204,7 @@ class ClienteInternoMutations{
                 'message' => 'Foto de cliente actualizado exitoso!!' ,
                 'client' => $client,
                 'user'=>$user,
-                'status' => 2
+                'status' => 1
             ];
         } catch (\Exception $e) {
             DB::rollback();
