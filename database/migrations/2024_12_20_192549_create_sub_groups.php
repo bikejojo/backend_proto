@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('sub_groups', function (Blueprint $table) {
             $table->id();
+            $table->string('photo')->nullable();
             $table->String('description')->nullable();
             $table->datetime('createDate')->nullable();
             $table->timestamps();

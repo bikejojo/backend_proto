@@ -12,5 +12,6 @@ class Sub_group extends Model
     protected $fillable = [
         'description',
         'createDate',
+        'photo',
     ];
 }

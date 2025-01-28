@@ -11,7 +11,8 @@ class Habilidad extends Model
     protected $table = 'skills';
     protected $PrimaryKey="id";
     protected $fillable = [
-        'name'  // nombre
+        'name',  // nombre
+        'photo',
     ];
 
     // Relación con TechnicianSkill (Tecnico_Habilidad)

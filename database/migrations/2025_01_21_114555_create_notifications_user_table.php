@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('notifications_user', function (Blueprint $table) {
             $table->id();
-            $table->strig('token_user')->nullable();
+            $table->string('token_user')->nullable();
             $table->string('type_device')->nullable();
             $table->unsignedBigInteger('notifications_id')->nullable();
-            $table->dateTime('datetime')->nullable();
+            $table->datetime('datetime')->nullable();
             $table->unsignedBigInteger('sender_userid')->nullable();
             $table->unsignedBigInteger('receiver_userid')->nullable();
             $table->dateTime('sent_at');

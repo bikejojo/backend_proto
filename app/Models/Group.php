@@ -10,7 +10,8 @@ class Group extends Model
     protected $PrimaryKey = 'id';
     protected $table= 'group';
     protected $fillable = [
-        'name'
+        'name',
+        'photo',
     ];
 
     public function skillGroup(){
