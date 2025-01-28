@@ -1,11 +1,12 @@
 <?php
 namespace App\helpers;
 
+use Illuminate\Contracts\Cache\Store;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\UploadedFile;
-
+use PhpParser\Node\Expr\NullsafeMethodCall;
 
 class ImageHelper
 {
@@ -44,6 +45,30 @@ class ImageHelper
             ]);
     }
 
+    public static function validationImageSkill($argumento){
+        return Validator::make([
+            'photo' => $argumento['photo'] ?? null,
+        ],[
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp'
+        ]);
+    }
+
+    public static function validationImageGroup($argumento){
+        return Validator::make([
+            'photo' => $argumento['photo'] ?? null,
+        ],[
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp'
+        ]);
+    }
+
+    public static function validationImageSubGroup($argumento){
+        return Validator::make([
+            'photo' => $argumento['photo'] ?? null,
+        ],[
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp'
+        ]);
+    }
+
     public static function createDirectorie($objetoId,$value){
         if($value == 1){
             Storage::makeDirectory('public/' . $objetoId . '/id_card');
@@ -59,6 +84,42 @@ class ImageHelper
 
     public static function createNotifications($objetoId){
         Storage::makeDirectory('public/notifications/'.$objetoId);
+    }
+
+    public static function createSkill($objetoId){
+        Storage::makeDirectory('public/skill/'.$objetoId);
+    }
+
+    public static function createSubgroup($objetoId){
+        Storage::makeDirectory('public/subgroup/'.$objetoId);
+    }
+
+    public static function createGroup($objetoId){
+        Storage::makeDirectory('public/group/'.$objetoId);
+    }
+
+    public static function existSkill($objetoId){
+        $directoryPath ='public/skill/'. $objetoId;
+        if(!Storage::exists($directoryPath)){
+            Storage::makeDirectory($directoryPath);
+            return "Directorio 'skill' creado para el objeto: " . $objetoId;
+        }
+    }
+
+    public static function existSubgroup($objetoId){
+        $directoryPath ='public/subgroup/' . $objetoId;
+        if(!Storage::exists($directoryPath)){
+            Storage::makeDirectory($directoryPath);
+            return "Directorio 'subgrupo' creado para el objeto: " . $objetoId;
+        }
+    }
+
+    public static function existGroup($objetoId){
+        $directoryPath ='public/group/' . $objetoId;
+        if(!Storage::exists($directoryPath)){
+            Storage::makeDirectory($directoryPath);
+            return "Directorio 'grupo' creado para el objeto: " . $objetoId;
+        }
     }
 
     public static function existDirectorie($objetoId){
@@ -93,11 +154,20 @@ class ImageHelper
     public static function deleteDirectoryIdCard($objetoId){
         Storage::deleteDirectory('public/' . $objetoId . '/id_card');
     }
+
     public static function deleteDirectoryProfile($objetoId){
         $files=Storage::allFiles('public/' . $objetoId . '/profile');
         Storage::delete($files);
     }
 
+    public static function deleteDirectorySkill($objetoId){
+        $files=Storage::allFiles('public/skill/'.$objetoId);
+        Storage::delete($files);
+    }
+    public static function deleteDirectoryGrop($objetoId){
+        $files=Storage::allFiles('public/grup/'.$objetoId);
+        Storage::delete($files);
+    }
     public static function processImage(UploadedFile $file, $path, $manager){
         $image = $manager->read($file->getRealPath());
         $image->resize(750, 750, function ($constraint) {
