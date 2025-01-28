@@ -96,6 +96,12 @@ class ClienteInternoMutations{
     public function update($root ,array $args){
         $clientData = $args['clientRequest'];
         $client = ValidationModels::validationclientInternal($args['id']);
+        if (User::where('email',$clientData['email'])->exists()) {
+            return [
+                 'message'=> 'Este email ya esta en uso, por favor intenta con otro.',
+                 'status' => 2
+            ];
+         }
 
         $clientId = $client->id;
         $user = User::find($client->userId);
@@ -134,7 +140,7 @@ class ClienteInternoMutations{
                 'message' => 'Cliente actualizado exitoso!!' ,
                 'client' => $client ,
                 'user' => $user,
-                'status' => 2
+                'status' => 1
             ];
         }catch (\Exception $e){
             DB::rollBack();

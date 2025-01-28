@@ -140,14 +140,16 @@ class UserMutations{
 
         if ($user == null) {
             return [
-                'message' => "El usuario con el correo no existe"
+                'message' => "El usuario con el correo no existe",
+                'status' => 2
             ];
         }
 
         // Verificar contraseña
         if (!Hash::check($args['password'], $user->password)) {
             return [
-                'message' => "Credenciales inválidas"
+                'message' => "Credenciales inválidas",
+                'status' => 2
             ];
         }
 
@@ -165,13 +167,15 @@ class UserMutations{
             return [
                 'message' => 'Login exitoso',
                 'user' => $user,
-                'client' => $client1
+                'client' => $client1,
+                'status' => 1
             ];
         } else {
             return [
                 'message' => 'El usuario no cuenta con una cuenta activa.',
                 'user' => $user,
-                'client' => null
+                'client' => null,
+                'status' => 2
             ];
         }
     }
