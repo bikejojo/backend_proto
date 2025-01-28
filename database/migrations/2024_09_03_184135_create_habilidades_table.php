@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('photo')->nullable();
             $table->string('name');  // Traducción de 'nombre'
+            $table->bigInteger('status')->default(1);
             $table->timestamps();
         });
     }

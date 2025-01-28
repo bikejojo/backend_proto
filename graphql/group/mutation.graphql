@@ -1,10 +1,11 @@
 extend type Mutation {
-    createGroup(requestGroup:JSON):Group! @field(resolver: "GroupMutations@create")
+    createGroup(requestGroup:JSON):responseGroup @field(resolver: "GroupMutations@create")
+    updateGroup(id_group:ID,photo:Upload!):responseGroup @field(resolver: "GroupMutations@update")
 }
 
 type responseGroup {
     message: String
-    grupo2: Group
+    group: Group
 }
 
 #import Group.graphql

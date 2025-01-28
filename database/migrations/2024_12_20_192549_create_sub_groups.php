@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('photo')->nullable();
             $table->String('description')->nullable();
             $table->datetime('createDate')->nullable();
+            $table->bigInteger('status')->default(1);
             $table->timestamps();
         });
     }

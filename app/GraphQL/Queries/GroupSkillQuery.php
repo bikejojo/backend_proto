@@ -22,7 +22,7 @@ class GroupSkillQuery
     public function allGroupSkill_($root, array $args)
     {
         $groups = Group::with('skillGroup.skill')->get();
-
+        //dd($groups);
         if ($groups->isEmpty()) {
             return [
                 'message' => 'No se encontraron grupos.',
@@ -33,7 +33,8 @@ class GroupSkillQuery
         $result = $groups->map(function ($group) {
             return [
                 'id' => $group->id,
-                'nameCategoria' => $group->name,
+                'nameCategory' => $group->name,
+                'photo' => $group->photo,
                 'skill' => $group->skillGroup->map(function ($skillGroup) {
                     return [
                         'id' => $skillGroup->skill->id ?? null,

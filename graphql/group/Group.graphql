@@ -1,6 +1,7 @@
 type Group @model(class: "App\\Models\\Group"){
-    id:ID!
+    id:ID
     name:String @trim
+    photo:String
 
     skillGroup:[GroupSkill] @hasMany
 }
