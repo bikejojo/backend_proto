@@ -133,6 +133,7 @@ class ClienteInternoMutations{
             return[
                 'message' => 'Cliente actualizado exitoso!!' ,
                 'client' => $client ,
+                'user' => $user,
                 'status' => 2
             ];
         }catch (\Exception $e){
@@ -196,6 +197,7 @@ class ClienteInternoMutations{
             return[
                 'message' => 'Foto de cliente actualizado exitoso!!' ,
                 'client' => $client,
+                'user'=>$user,
                 'status' => 2
             ];
         } catch (\Exception $e) {
