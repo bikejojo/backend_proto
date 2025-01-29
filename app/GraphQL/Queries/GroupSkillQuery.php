@@ -15,7 +15,7 @@ class GroupSkillQuery
 
         return[
             'message' => 'Categorias de habilidades!.',
-            'subCategory' => $groups
+            'category' => $groups
         ];
     }
 
@@ -26,7 +26,7 @@ class GroupSkillQuery
         if ($groups->isEmpty()) {
             return [
                 'message' => 'No se encontraron grupos.',
-                'subCategory' => [],
+                'category' => [],
             ];
         }
 
@@ -46,7 +46,7 @@ class GroupSkillQuery
 
         return [
             'message' => 'Categorías obtenidas con éxito.',
-            'subCategory' => $result,
+            'category' => $result,
         ];
     }
 }

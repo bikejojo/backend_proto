@@ -6,12 +6,12 @@ extend type Query {
 
 type responseGroups{
     message:String
-    subCategory:[Group]
+    category:[Group]
 }
 
 type responseGroup_{
     message:String
-    subCategory:[responseSkills]
+    category:[responseSkills]
 }
 
 type responseSkills {
