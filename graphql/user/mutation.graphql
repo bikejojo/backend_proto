@@ -28,6 +28,7 @@ type responseClientLogin {
 type responseAdminLogin {
     message:String
     user:User
+    role:Role
 }
 type skills {
     id_skill:ID!

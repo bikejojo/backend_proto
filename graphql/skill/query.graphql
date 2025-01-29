@@ -13,19 +13,21 @@ type responseTechnician {
 
 type responseTechnician_ {
     message:String
-    content:[Content]
+    #technicians:[technicians_]
 }
 
-type Content {
-    technicians:Technician
-    feedback:[Feedback_]
-}
-
-type Feedback_ {
-    id_service:String
-    titleService:String
-    serviceDescription:String
-    rating:Float
-    feedback:String
+#type technicians_ {
+    #id:ID
+    #firstName:String
+    #lastName:String
+    #phoneNumber:
+    #photo:String
+    #avg_rating:String
+    #skill:[skillS_]
+#}
+type skillS_ {
+    id_skills:String
+    name:String
+    experience:String
 }
 #import skill.graphql

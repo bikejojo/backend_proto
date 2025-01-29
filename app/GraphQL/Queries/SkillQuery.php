@@ -16,19 +16,26 @@ class SkillQuery
             $parameter=strtolower(trim($technicianData['searchParameter']));
             $skill=Habilidad::join('technician_skills','skills.id','=','technician_skills.skillId')
             ->join('technicians','technician_skills.technicianId','=','technicians.id')
+            ->join('technician_subcription','technicians.id','=','technician_subcription.technicianId')
+            ->where('technician_subcription.status',1)
             ->where(function ($query) use ($parameter){
                 $query->where(DB::raw('LOWER("skills"."name")'),'LIKE',"%{$parameter}%");
             })
-            ->select('technicians.*','technician_skills.experience','skills.*')
+            ->select('technicians.*','technician_skills.experience','skills.name','skills.id')
+            ->distinct()
             ->orderBy('technician_skills.experience','DESC')
             ->get();
         }else{
             $skill=Habilidad::join('technician_skills','skills.id','=','technician_skills.skillId')
             ->join('technicians','technician_skills.technicianId','=','technicians.id')
-            ->select('technicians.*','technician_skills.experience','skills.*')
+            ->join('technician_subcription','technicians.id','=','technician_subcription.technicianId')
+            ->where('technician_subcription.status',1)
+            ->select('technicians.*','technician_skills.experience','skills.name','skills.id')
+            ->distinct()
             ->orderBy('technician_skills.experience','DESC')
             ->get();
         }
+
         return [
             'message'=>'Se encontro a los siguientes tecnicos.',
             'technicians' => $skill
@@ -38,10 +45,29 @@ class SkillQuery
 
     public function searchFilterSkillTechnician($root, array $args){
         $searchData = $args['requestSkillTechnician'];
-        $skillId = $searchData['skillsId'] ?? null;
-        $experience = $searchData['experience'] ?? null;
-        $qualification = $searchData['qualification'] ?? null; // Valor opcional
+// ----- Parametros
+        $searchParameter = $searchData['searchParameter'] ?? null;
+        $skillId         = $searchData['skillsId'] ?? null;
+        $experience      = $searchData['experience'] ?? null;
+        $qualification   = $searchData['qualification'] ?? null; // Valor opcional
 
+        $query = Tecnico::query();
+
+        if (!empty($searchParameter)) {
+            $query->leftJoin('technician_skills','technicianId','=','technicians.id')
+                    ->leftJoin('skills','technician_skills.skillId','=','skills.id')
+                    ->where(function ($query) use ($searchParameter){
+                    $query->where('technicians.firstName','ILIKE',"%{$searchParameter}%")
+                            ->orwhere('technicians.lastName','ILIKE',"%{$searchParameter}%");
+                    })
+                    ->orWhere('skills.name','ILIKE',"%{$searchParameter}%");
+        }
+        //dd($query->get());
+
+        /*if(!empty($skillId)){
+            $query->whereHas();
+        }*/
+/*
         // Consulta base
         $query = Tecnico::with(['technicianSkills' => function ($query) use ($skillId, $experience) {
             if ($skillId) {
@@ -98,6 +124,6 @@ class SkillQuery
         return [
             'message' => 'Se encontraron los técnicos con sus servicios.',
             'content' => $content
-        ];
+        ];*/
     }
 }

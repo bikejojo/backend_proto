@@ -206,12 +206,13 @@ class UserMutations{
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
         $user->save();
-
+        $role=$user->roles->first();
         // Retornar respuesta
         if ($user !== null) {
             return [
                 'message' => 'Login exitoso',
-                'user' => $user
+                'user' => $user,
+                'role' => $role,
             ];
         } else {
             return [

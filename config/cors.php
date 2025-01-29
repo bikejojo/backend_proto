@@ -16,14 +16,18 @@ return [
     */
 
     #'paths' => ['api/*', 'sanctum/csrf-cookie'],
-    'paths' => ['api/*','login', 'graphql', 'sanctum/csrf-cookie'],
+    'paths' => ['api/*','login', '/graphql', 'sanctum/csrf-cookie'],
     'allowed_methods' => ['*'],
 
     //'allowed_origins' => ['http://192.168.0.7:8080/'],
 
-    'allowed_origins' => ['http://localhost:3000'],
+    'allowed_origins' => [
+        'http://localhost:3000',
+        'http://192.168.100.17:3000',
+        'http://192.168.100.17:8002'
+    ],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => ['.*'],
 
     'allowed_headers' => ['*'],
 
