@@ -340,8 +340,6 @@ class SubcritionMutations
 
             foreach ($expiredSuscription as $suscripcion){
                 $suscripcion->update(['status'=>0]);
-                $technician = Tecnico::find($suscripcion->technicianId);
-                $technician->update(['status'=>0]);
             }
             return [
                 'message' => 'Suscripciones expiradas desactivadas exitosamente.',

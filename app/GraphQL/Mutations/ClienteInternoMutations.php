@@ -14,6 +14,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ImageHelper;
+use App\Models\Ciudad;
 use App\Services\ValidationModels;
 use Carbon\Carbon;
 
@@ -77,12 +78,17 @@ class ClienteInternoMutations{
         }
 
         $cliente=Cliente_Interno::find($clientId);
+        $ciudad = Ciudad::find($cliente->cityId);
         DB::commit();
         return [
             'message' => 'Creacion Cliente exitoso!',
             'client' => $cliente,
             'user' => $user,
-            'status' => 1
+            'status' => 1,
+            'city' =>[
+                    'id_city' => $ciudad->id,
+                    'name' => $ciudad->name
+                ]
         ];
 
         }catch (\Exception $e){
@@ -122,15 +128,8 @@ class ClienteInternoMutations{
             $client->phoneNumber=$phone;
             $client->cityId = $clientData['cityId'];
             $value=$user->type_user;
-            ImageHelper::createDirectorie($clientId,$value);
-            $manager = new ImageManager(new Driver());
-            if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
-                if ($client->photo) {
-                    Storage::delete('public/' . $client->photo);
-                }
-                $photoPath = $this->processImage($args['photo'], "/client_{$clientId}/photo/{$this->now}.png",$manager);
-                $client->photo = $this->app . '/storage' .str_replace('public/', '', $photoPath);
-            }
+            $ciudad = Ciudad::find($client->cityId);
+            
             $client->save();
             $user->email = $email ?? $user->email;
             $user->password = $hashedPassword;
@@ -140,7 +139,11 @@ class ClienteInternoMutations{
                 'message' => 'Cliente actualizado exitoso!!' ,
                 'client' => $client ,
                 'user' => $user,
-                'status' => 1
+                'status' => 1,
+                'city' =>[
+                    'id_city' => $ciudad->id,
+                    'name' => $ciudad->name
+                ]
             ];
         }catch (\Exception $e){
             DB::rollBack();
@@ -175,6 +178,7 @@ class ClienteInternoMutations{
         }
         $client = Cliente_Interno::find($clientId);
         $user = User::find($client->userId);
+        $ciudad = Ciudad::find($client->cityId);
 
             $manager = new ImageManager(new Driver());
             // Manejo de la imagen
@@ -204,7 +208,11 @@ class ClienteInternoMutations{
                 'message' => 'Foto de cliente actualizado exitoso!!' ,
                 'client' => $client,
                 'user'=>$user,
-                'status' => 1
+                'status' => 1,
+                'city' =>[
+                    'id_city' => $ciudad->id,
+                    'name' => $ciudad->name
+                ]
             ];
         } catch (\Exception $e) {
             DB::rollback();

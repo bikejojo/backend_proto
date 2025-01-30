@@ -21,8 +21,14 @@ type responseLogin {
 
 type responseClientLogin {
     user: User
+    city:citiess
     client: InternalClient
     message:String
+}
+
+type citiess {
+    id_city:ID
+    name:String
 }
 
 type responseAdminLogin {

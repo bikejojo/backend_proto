@@ -6,6 +6,7 @@ use App\Models\Cliente_Interno;
 use App\Models\Tecnico_Habilidad;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\Ciudad;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -156,7 +157,7 @@ class UserMutations{
         // Obtener cliente asociado
         $client = $user->clientsExterns()->first();
         $client1 =Cliente_Interno::where('internal_clients.userId',$user->id)->first();
-
+        $ciudad = Ciudad::find($client1->cityId);
         // Crear token con Sanctum
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
@@ -168,6 +169,10 @@ class UserMutations{
                 'message' => 'Login exitoso',
                 'user' => $user,
                 'client' => $client1,
+                'city' => [
+                        'id_city' => $ciudad->id,
+                        'name' => $ciudad->name,
+                ],
                 'status' => 1
             ];
         } else {
