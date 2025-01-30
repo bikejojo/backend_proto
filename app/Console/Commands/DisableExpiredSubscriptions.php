@@ -13,19 +13,20 @@ class DisableExpiredSubscriptions extends Command
      * @var string
      */
     protected $signature = 'subscriptions:disable-expired';
+    protected $description = 'Deshabilita la suscripcion y tecnico al momento que la fecha se haya vencido.';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Deshabilita suscripciones vencidas diariamente.';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        app(SubcritionMutations::class)->disableExpirateSuscription();
+        $result= app(SubcritionMutations::class)->disableExpirateSuscription();
+        $this->info($result['message']."Total desactivadas. " . $result['count']);
     }
 }

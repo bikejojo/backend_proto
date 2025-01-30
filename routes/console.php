@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Schedule;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
@@ -16,6 +17,9 @@ Artisan::command('update:Expired',function(){
     $this->call(\App\Console\Commands\UpdateExpiredPublicity::class);
 });
 
+// uso de tareas programas
+Schedule::command('subcription:disable-expired')->daily();
+// uso de manera manual
 Artisan::command('suscripcion:Expired',function(){
     $this->call(\App\Console\Commands\DisableExpiredSubscriptions::class);
 });
