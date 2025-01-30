@@ -18,9 +18,10 @@ Artisan::command('update:Expired',function(){
 });
 
 // uso de tareas programas
-Schedule::command('subcription:disable-expired')->daily();
+Schedule::command('suscription:disable-expired')->everyThreeMinutes() // Ejecutar cada 3 minutos
+                                                ->withoutOverlapping();
 // uso de manera manual
-Artisan::command('suscripcion:Expired',function(){
+Artisan::command('subscriptions:disable-expired',function(){
     $this->call(\App\Console\Commands\DisableExpiredSubscriptions::class);
 });
 
