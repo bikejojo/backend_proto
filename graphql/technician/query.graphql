@@ -1,6 +1,12 @@
 extend type Query {
     getAllTechnicians: [Technician] @all (model: "App\\Models\\Tecnico")
     getTechnicianById(id: ID! @whereKey): Technician @find (model: "App\\Models\\Tecnico")
+    getFeaturedTechnicians(id_city:String) : responseListTechnician @field (resolver: "ServiceQuery@getAverageTechnical")
 }
 
+type responseListTechnician {
+    message:String
+    status:Int
+    technician:[Technician]
+}
 #import technician.graphql

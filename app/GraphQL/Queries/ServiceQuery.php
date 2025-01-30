@@ -5,6 +5,7 @@ namespace App\GraphQL\Queries;
 use App\Models\Servicio;
 use Illuminate\Support\Facades\DB;
 use app\Helpers\StatusHelper;
+use App\Models\Tecnico;
 use App\Services\StateCatalog;
 use app\Services\StatusAssigner;
 use App\Services\ValidationModels;
@@ -414,5 +415,33 @@ class ServiceQuery
             'counter' => $count,
             'services' => $service
         ];
+    }
+
+    public function getAverageTechnical($root, array $args){
+        try{
+            $cityId = $args['id_city'] ?? null;
+
+            if(!$cityId){
+                return [
+                    'message' => 'No existe ID de ciudad',
+                    'status' => 2,
+                ];
+            }
+             // Corrección en los operadores de comparación y la consulta
+            $listTechnician = Tecnico::whereBetween('technicians.average_rating', [4, 5])
+            ->where('technicians.cityId', $cityId)
+            ->get();
+
+            return [
+                'message' => 'Listado de técnicos destacados.',
+                'status' => 1,
+                'technician' => $listTechnician
+            ];
+        } catch (\Exception $e){
+            return [
+                'message' => 'El siguiente error:' . $e->getMessage() ,
+                'status' => 3
+            ];
+        }
     }
 }
