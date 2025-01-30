@@ -17,6 +17,7 @@ class SubcriptionQuery
         $technician = ValidationModels::validationTechnician($subcriptionData['id_technician']);
         $joint = Technician_subcripcion::where('technicianId',$technician->id)->exists();
         $join = Technician_subcripcion::where('technicianId',$technician->id)->where('status',0)->where('subcriptionsId',1)->exists();
+        //dd($join);
         $joins = Technician_subcripcion::where('technicianId',$technician->id)->where('status',1)->exists();
         if(!$joint){
             return [

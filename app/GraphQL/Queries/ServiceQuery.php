@@ -6,6 +6,7 @@ use App\Models\Servicio;
 use Illuminate\Support\Facades\DB;
 use app\Helpers\StatusHelper;
 use App\Models\Tecnico;
+use App\Models\Tecnico_Habilidad;
 use App\Services\StateCatalog;
 use app\Services\StatusAssigner;
 use App\Services\ValidationModels;
@@ -428,14 +429,30 @@ class ServiceQuery
                 ];
             }
              // Corrección en los operadores de comparación y la consulta
-            $listTechnician = Tecnico::whereBetween('technicians.average_rating', [4, 5])
+            $listTechnician = Tecnico::where('technicians.average_rating', '>=',4.0)
+            ->where('technicians.average_rating', '<=',5.0)
             ->where('technicians.cityId', $cityId)
             ->get();
 
+            $technicianIds = $listTechnician->pluck('id')->toArray();
+            if(!empty($technicianIds)){
+                $listSkill = Tecnico_Habilidad::join('technicians','technicians.id','=','technician_skills.technicianId')
+                    ->join('skills','skills.id','=','technician_skills.skillId')
+                    ->whereIn('technician_skills.technicianId', $technicianIds)
+                    ->select('technicians.id','technician_skills.experience','skills.name')
+                    ->get();
+            }
             return [
                 'message' => 'Listado de técnicos destacados.',
                 'status' => 1,
-                'technician' => $listTechnician
+                'technician' => $listTechnician,
+                'skillss' =>  $listSkill->map(function ($skill) {
+                    return[
+                        'id' => $skill->id ,
+                        'name' => $skill->name ,
+                        'experience' => $skill->experience
+                    ];
+                })
             ];
         } catch (\Exception $e){
             return [

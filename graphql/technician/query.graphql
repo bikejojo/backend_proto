@@ -8,5 +8,12 @@ type responseListTechnician {
     message:String
     status:Int
     technician:[Technician]
+    skillss:[skillss]
+}
+
+type skillss {
+    id:ID
+    name:String
+    experience:String
 }
 #import technician.graphql
