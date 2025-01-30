@@ -13,18 +13,19 @@ type responseTechnician {
 
 type responseTechnician_ {
     message:String
-    #technicians:[technicians_]
+    technicians:[technicians_]
 }
 
-#type technicians_ {
-    #id:ID
-    #firstName:String
-    #lastName:String
-    #phoneNumber:
-    #photo:String
-    #avg_rating:String
-    #skill:[skillS_]
-#}
+type technicians_ {
+    id:ID
+    firstName:String
+    lastName:String
+    phoneNumber:String
+    photo:String
+    avg_rating:String
+    skill:[skillS_]
+}
+
 type skillS_ {
     id_skills:String
     name:String
