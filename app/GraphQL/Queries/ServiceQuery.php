@@ -428,11 +428,14 @@ class ServiceQuery
                     'status' => 2,
                 ];
             }
+
              // Corrección en los operadores de comparación y la consulta
-            $listTechnician = Tecnico::where('technicians.average_rating', '>=',4.00)
-            ->where('technicians.average_rating', '<=',5.00)
-            ->where('technicians.cityId', $cityId)
-            ->get();
+             $listTechnician = Tecnico::selectRaw("ROUND(average_rating::NUMERIC, 2) as average_rating")
+             ->select('technicians.*')
+             ->where('average_rating', '>=', 4.00)
+             ->where('average_rating', '<=', 5.00)
+             ->where('cityId', $cityId)
+             ->get();
 
             $technicianIds = $listTechnician->pluck('id')->toArray();
             if(!empty($technicianIds)){
