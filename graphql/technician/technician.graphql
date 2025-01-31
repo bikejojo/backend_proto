@@ -9,7 +9,7 @@ type Technician @model(class: "App\\Models\\Tecnico"){
   password: String! @trim
   photo: String
   userId: String! @trim
-  average_rating:String!
+  average_rating:String
   id_city: String! @rename (attribute: "cityId")
 
   city: City! @belongsTo

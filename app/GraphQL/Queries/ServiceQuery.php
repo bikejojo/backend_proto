@@ -418,51 +418,80 @@ class ServiceQuery
         ];
     }
 
-    public function getAverageTechnical($root, array $args){
-        try{
+    public function getAverageTechnical($root, array $args)
+    {
+        try {
             $cityId = $args['id_city'] ?? null;
 
-            if(!$cityId){
+            if (!$cityId) {
                 return [
                     'message' => 'No existe ID de ciudad',
                     'status' => 2,
+                    'technicianss' => []
                 ];
             }
 
-             // Corrección en los operadores de comparación y la consulta
-             $listTechnician = Tecnico::selectRaw("ROUND(average_rating::NUMERIC, 2) as average_rating")
-             ->select('technicians.*')
-             ->where('average_rating', '>=', 4.00)
-             ->where('average_rating', '<=', 5.00)
-             ->where('cityId', $cityId)
-             ->get();
+            // 🔹 Obtener la lista de técnicos destacados con promedio redondeado
+            $listTechnician = Tecnico::selectRaw("ROUND(average_rating::NUMERIC, 2) as average_rating")
+                ->addSelect('technicians.*') // Asegura que se incluyan todos los campos del técnico
+                ->whereBetween('average_rating', [4.00, 5.00])
+                ->where('cityId', $cityId)
+                ->get();
 
+            // 🔹 Obtener los IDs de técnicos para buscar sus habilidades
             $technicianIds = $listTechnician->pluck('id')->toArray();
-            if(!empty($technicianIds)){
-                $listSkill = Tecnico_Habilidad::join('technicians','technicians.id','=','technician_skills.technicianId')
-                    ->join('skills','skills.id','=','technician_skills.skillId')
+
+            // 🔹 Obtener habilidades de los técnicos si existen
+            $listSkill = collect(); // Inicia vacío
+            if (!empty($technicianIds)) {
+                $listSkill = Tecnico_Habilidad::join('skills', 'skills.id', '=', 'technician_skills.skillId')
                     ->whereIn('technician_skills.technicianId', $technicianIds)
-                    ->select('technicians.id','technician_skills.experience','skills.name','skills.id AS id_skills')
+                    ->select(
+                        'technician_skills.technicianId as id_technician',
+                        'technician_skills.experience',
+                        'skills.name',
+                        'skills.id as id_skills'
+                    )
                     ->get();
             }
+
+            // 🔹 Formatear la salida según GraphQL
+            $content = $listTechnician->map(function ($technician) use ($listSkill) {
+                // Filtrar las habilidades que pertenecen a este técnico
+                $technicianSkills = $listSkill->where('id_technician', $technician->id)->values();
+
+                return [
+                    'technician' => [
+                        'id'           => $technician->id,
+                        'firstName'    => $technician->firstName,
+                        'lastName'     => $technician->lastName,
+                        'phoneNumber'  => $technician->phoneNumber,
+                        'photo'        => $technician->photo,
+                        'average_rating'   => $technician->average_rating
+                    ],
+                    'skillss' => $technicianSkills->map(function ($skill) {
+                        return [
+                            'id_technician' => $skill->id_technician ?? null,
+                            'id_skillss'    => $skill->id_skills ?? null,
+                            'name'          => $skill->name ?? null,
+                            'experience'    => $skill->experience ?? null
+                        ];
+                    })->toArray()
+                ];
+            });
+
             return [
                 'message' => 'Listado de técnicos destacados.',
                 'status' => 1,
-                'technician' => $listTechnician,
-                'skillss' =>  $listSkill->map(function ($skill) {
-                    return[
-                        'id_technician' => $skill->id ,
-                        'id_skillss' => $skill->id_skills,
-                        'name' => $skill->name ,
-                        'experience' => $skill->experience
-                    ];
-                })
+                'technicianss' => $content
             ];
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             return [
-                'message' => 'El siguiente error:' . $e->getMessage() ,
-                'status' => 3
+                'message' => 'Error en la consulta: ' . $e->getMessage(),
+                'status' => 3,
+                'technicianss' => []
             ];
         }
     }
+
 }

@@ -7,8 +7,7 @@ extend type Query {
 type responseListTechnician {
     message:String
     status:Int
-    technician:[Technician]
-    skillss:[skillss]
+    technicianss:[_technicians]
 }
 
 type skillss {
@@ -16,5 +15,10 @@ type skillss {
     id_skillss:ID
     name:String
     experience:String
+}
+
+type _technicians {
+    technician:Technician
+    skillss:[skillss]
 }
 #import technician.graphql

@@ -1,10 +1,10 @@
 extend type Query {
-    getAllSubcription(requestSubcription:JSON):responseSuscriptions @field(resolver: "SubcriptionQuery@getAllTechnician")
+    getAllSubcription(requestSubcription:JSON):responseSuscription @field(resolver: "SubcriptionQuery@getAllTechnician")
     promotionValidity(requestPromotion:JSON):responseValidityPromotion @field (resolver: "SubcriptionQuery@validationDatePromotion")
     getDateExpiration:responsePromotion @field(resolver: "SubcriptionQuery@expirationPromotion")
     getPromotionFalse:responsePromotion @field(resolver: "SubcriptionQuery@falsePromotion")
     getPromotionValid:responsePromotion @field(resolver: "SubcriptionQuery@promotionValid")
-    validationSuscriptionPromotion(requestSubcriptionPromotion:JSON):responseSuscription @field(resolver: "SubcriptionQuery@getSubcriptionPromotion")
+    validationSuscriptionPromotion(requestSubcriptionPromotion:JSON):responseSuscriptions @field(resolver: "SubcriptionQuery@getSubcriptionPromotion")
     getAllHistorySuscription(requestSubcription:JSON): responseSuscription_ @field(resolver: "SubcriptionQuery@getSuscripcionHistorial")
 }
 

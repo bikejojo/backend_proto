@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Suscripcion extends Model
 {
     //
-    protected $id='id';
+    protected $primaryKey='id';
     protected $table = 'subcriptions';
     protected $fillable=[
         'name',

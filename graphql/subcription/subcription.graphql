@@ -1,4 +1,4 @@
-type Subcription {
+type Subcription @model(class: "App\\Models\\Suscripcion"){
         id:ID!
         name:String @trim
         description:String @trim
