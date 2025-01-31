@@ -429,8 +429,8 @@ class ServiceQuery
                 ];
             }
              // Corrección en los operadores de comparación y la consulta
-            $listTechnician = Tecnico::where('technicians.average_rating', '>=',4.0)
-            ->where('technicians.average_rating', '<=',5.0)
+            $listTechnician = Tecnico::where('technicians.average_rating', '>=',4.00)
+            ->where('technicians.average_rating', '<=',5.00)
             ->where('technicians.cityId', $cityId)
             ->get();
 
