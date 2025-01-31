@@ -21,7 +21,7 @@ class SubcriptionQuery
         //dd($join , $joint);
         if(!$joint){
             return [
-                'message' => 'Todas las suscripciones.',
+                'message' => 'Todas las suscripciones!.',
                 'suscripcion' => Suscripcion::orderBy('subcriptions.id','ASC')->get()
             ];
         }

@@ -494,4 +494,162 @@ class ServiceQuery
         }
     }
 
+    /*public function getAverageTechnicalFilter($root, array $args)
+    {
+        try {
+            $filter = $args['requestFilterTechnicial'];
+            $cityId = $filter['id_city'] ?? null;
+            $skillsId = (!empty($filter['id_skills'])) ? $filter['id_skills']:null;
+            $experience = $filter['experience'] ?? null;
+
+            //(!empty($searchData['skillsId'])) ? $searchData['skillsId'] : null;
+            if (!$cityId) {
+                return [
+                    'message' => 'No existe tecnicos en esta ciudad.',
+                    'status' => 2,
+                    'technicians_' => []
+                ];
+            }
+*/
+            // 🔹 Obtener la lista de técnicos destacados con promedio redondeado
+            /*$listTechnician = Tecnico::join('technician_skills','technician_skills.technicianId','=','technicians.id')
+                ->join('skills','technician_skills.skillId','=','skills.id')
+                ->selectRaw("ROUND(average_rating::NUMERIC, 2) as average_rating")
+                ->addSelect('technicians.*','technician_skills.experience','skills.id As id_skill','skills.name AS name_skills')
+                ->whereBetween('average_rating', [4.00, 5.01])
+                ->where('cityId', $cityId);*/
+        /*    $listTechnician = Tecnico::join('technician_skills', 'technician_skills.technicianId', '=', 'technicians.id')
+                ->join('skills', 'technician_skills.skillId', '=', 'skills.id')
+                ->selectRaw("CAST(ROUND(average_rating::NUMERIC, 2) AS FLOAT) as average_rating") // Forzar conversión a FLOAT
+                ->addSelect('technicians.*', 'technician_skills.experience', 'skills.id As id_skill', 'skills.name AS name_skills')
+                ->whereRaw("CAST(ROUND(average_rating::NUMERIC, 2) AS FLOAT) BETWEEN 4.00 AND 5.01") // Usar FLOAT en comparación
+                ->where('cityId', $cityId);
+            //dd($listTechnician->get());
+            if(!Empty($skillsId)){
+                $listTechnician->whereIn('technician_skills.skillId',$skillsId);
+            }
+
+            if(!is_null($experience)){
+                $listTechnician->where('technician_skills.experience','>=',$experience );
+            }
+
+            $content = $listTechnician->distinct()->get();
+            $technicians = $content->groupBy('id')->map(function ($group){
+                $technician = $group->first();
+                return [
+                    'id' => $technician->id,
+                    'firstName' => $technician->firstName,
+                    'lastName' => $technician->lastName,
+                    'phoneNumber' => $technician->phoneNumber,
+                    'photo' => $technician->photo,
+                    'average_rating' => $technician->average_rating,
+                    'skills_' => $group->map(function ($skill) {
+                        return [
+                            'id_skills' => $skill->id_skill,
+                            'experience' => $skill->experience,
+                            'name_skills' => $skill->name_skills
+                        ];
+                    })->unique('id_skills')->values()
+                ];
+            })->values();
+
+            return [
+                'message' => 'Listado de técnicos destacados.',
+                'status' => 1,
+                'technicians_' => $technicians
+            ];
+        } catch (\Exception $e) {
+            return [
+                'message' => 'Error en la consulta: ' . $e->getMessage(),
+                'status' => 3,
+                'technicians_' => []
+            ];
+        }
+    }*/
+    public function getAverageTechnicalFilter($root, array $args)
+{
+    try {
+        $filter = $args['requestFilterTechnicial'];
+        $cityId = $filter['id_city'] ?? null;
+        $skillsId = !empty($filter['id_skills']) ? $filter['id_skills'] : null;
+        $experience = $filter['experience'] ?? null;
+
+        if (!$cityId) {
+            return [
+                'message' => 'No existe técnicos en esta ciudad.',
+                'status' => 2,
+                'technicians_' => []
+            ];
+        }
+
+        // 🔹 Obtener la lista de técnicos destacados
+        $listTechnician = Tecnico::selectRaw("ROUND(technicians.average_rating::NUMERIC, 2) as average_rating")
+        ->addSelect('technicians.id', 'technicians.firstName', 'technicians.lastName', 'technicians.phoneNumber', 'technicians.photo')
+        ->join('technician_skills', 'technician_skills.technicianId', '=', 'technicians.id')
+        ->join('skills', 'technician_skills.skillId', '=', 'skills.id')
+        //->whereBetween('technicians.average_rating', [4.00, 5.01])
+        ->where('technicians.average_rating','>=' ,4.00)
+        ->where('technicians.cityId', $cityId)
+        ->groupBy('technicians.id', 'technicians.firstName', 'technicians.lastName', 'technicians.phoneNumber', 'technicians.photo');
+
+
+        if (!empty($skillsId)) {
+            $listTechnician->whereIn('technician_skills.skillId', $skillsId);
+        }
+
+        if (!is_null($experience)) {
+            $listTechnician->where('technician_skills.experience', '>=', $experience);
+        }
+
+        // 🔹 Obtener datos de técnicos
+        $_listTechnician = $listTechnician->distinct()->get();
+        // 🔹 Verificar si hay datos antes de continuar
+        if ($_listTechnician->isEmpty()) {
+            return [
+                'message' => 'No se encontraron técnicos en esta ciudad.',
+                'status' => 2,
+                'technicians_' => []
+            ];
+        }
+
+        // 🔹 Obtener lista de habilidades asociadas
+        $listSkill = Tecnico_Habilidad::join('skills', 'skills.id', '=', 'technician_skills.skillId')
+            ->whereIn('technician_skills.technicianId', $listTechnician->pluck('id')->toArray())
+            ->select('technician_skills.technicianId as id_technician', 'skills.id as id_skills', 'skills.name as name_skills', 'technician_skills.experience')
+            ->get();
+
+        // 🔹 Retornar los datos formateados
+        $content = $_listTechnician->map(function ($te)use ($listSkill){
+
+            return [
+                'id_technicians'=>$te->id,
+                'firstName'=>$te->firstName,
+                'lastName'=>$te->lastName,
+                'phoneNumber'=>$te->phoneNumber,
+                'photo'=>$te->photo,
+                'average_rating'=>$te->average_rating,
+                'skills_' => $listSkill->where('id_technician', $te->id)->map(function ($skill) {
+                    return [
+                        'id_skills' => $skill->id_skills,
+                        'name_skills' =>$skill->name_skills,
+                        'experience' =>$skill->experience,
+                    ];
+                })->values()->toArray()
+            ];
+        });
+        return [
+            'message' => 'Listado de técnicos destacados.',
+            'status' => 1,
+            'technicians_' => $content
+        ];
+    } catch (\Exception $e) {
+        return [
+            'message' => 'Error en la consulta: ' . $e->getMessage(),
+            'status' => 3,
+            'technicians_' => []
+        ];
+    }
+}
+
+
 }

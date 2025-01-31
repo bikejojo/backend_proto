@@ -2,6 +2,7 @@ extend type Query {
     getAllTechnicians: [Technician] @all (model: "App\\Models\\Tecnico")
     getTechnicianById(id: ID! @whereKey): Technician @find (model: "App\\Models\\Tecnico")
     getFeaturedTechnicians(id_city:String) : responseListTechnician @field (resolver: "ServiceQuery@getAverageTechnical")
+    getFeaturedFilterTechnicians(requestFilterTechnicial:JSON):responsesTechnician @field(resolver: "ServiceQuery@getAverageTechnicalFilter")
 }
 
 type responseListTechnician {
@@ -20,5 +21,28 @@ type skillss {
 type _technicians {
     technician:Technician
     skillss:[skillss]
+}
+
+type responsesTechnician {
+    message:String
+    status:Int
+    technicians_:[techniciann]
+}
+
+
+type techniciann {
+    id_technicians:ID
+    firstName:String
+    lastName:String
+    phoneNumber:String
+    photo:String
+    average_rating:String
+    skills_:[skils]
+}
+
+type skils {
+    id_skills:ID
+    name_skills:String
+    experience:String
 }
 #import technician.graphql
