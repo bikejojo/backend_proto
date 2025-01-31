@@ -53,6 +53,11 @@ class RatingMutations{
         // Calcular promedio de calificaciones del técnico
         $ratingsCount = Calificacion::where('technicialId', $technician->id)->count();
         $ratingsSum = Calificacion::where('technicialId', $technician->id)->sum('rating');
+
+        if (isset($newRating)) {
+            $ratingsSum += $newRating; // Sumar la nueva calificación
+            $ratingsCount += 1; // Incrementar el conteo de calificaciones
+        }
         $averageRating = $ratingsCount > 0 ? $ratingsSum / $ratingsCount : 0;
         $roundedRating = round($averageRating * 2) / 2;
         $technician->average_rating = $roundedRating;

@@ -439,7 +439,7 @@ class ServiceQuery
                 $listSkill = Tecnico_Habilidad::join('technicians','technicians.id','=','technician_skills.technicianId')
                     ->join('skills','skills.id','=','technician_skills.skillId')
                     ->whereIn('technician_skills.technicianId', $technicianIds)
-                    ->select('technicians.id','technician_skills.experience','skills.name')
+                    ->select('technicians.id','technician_skills.experience','skills.name','skills.id AS id_skills')
                     ->get();
             }
             return [
@@ -448,7 +448,8 @@ class ServiceQuery
                 'technician' => $listTechnician,
                 'skillss' =>  $listSkill->map(function ($skill) {
                     return[
-                        'id' => $skill->id ,
+                        'id_technician' => $skill->id ,
+                        'id_skillss' => $skill->id_skills,
                         'name' => $skill->name ,
                         'experience' => $skill->experience
                     ];

@@ -12,7 +12,8 @@ type responseListTechnician {
 }
 
 type skillss {
-    id:ID
+    id_technician:ID
+    id_skillss:ID
     name:String
     experience:String
 }
