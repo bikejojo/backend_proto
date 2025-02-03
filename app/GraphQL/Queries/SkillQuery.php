@@ -6,6 +6,7 @@ use App\Models\Habilidad;
 use App\Models\Tecnico;
 use App\Models\Servicio;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Expr\Empty_;
 
 class SkillQuery
 {
@@ -67,7 +68,7 @@ class SkillQuery
                     ->orWhere('technicians.lastName', 'ILIKE', "%{$searchParameter}%");
                 });
             }
-            //DD($query->get());
+            //dd($query->get());
 
             if (!empty($skillsIds)) {
                 $query->whereIn('skills.id', $skillsIds);
@@ -93,8 +94,13 @@ class SkillQuery
             // Obtener los técnicos y sus habilidades relacionadas
 
             $technicians = $query->distinct()->get();
-
+            //dd($technicians);
             // Formatear la respuesta
+            if($technicians->isEmpty()){
+                return [
+                    'message' => 'No hay coincidencia en la busqueda.'
+                ];
+            }
             $content = $technicians->map(function ($technician) {
                 return [
                     'id'         => $technician->id,
