@@ -3,6 +3,12 @@ extend type Query {
     getTechnicianById(id: ID! @whereKey): Technician @find (model: "App\\Models\\Tecnico")
     getFeaturedTechnicians(id_city:String) : responseListTechnician @field (resolver: "ServiceQuery@getAverageTechnical")
     getFeaturedFilterTechnicians(requestFilterTechnicial:JSON):responsesTechnician @field(resolver: "ServiceQuery@getAverageTechnicalFilter")
+    getVerificationTechnician(id_city:String):responseVerification @field(resolver: "TechnicianQuery@verifactionCityTechnician")
+}
+
+type responseVerification{
+    message:String,
+    value:Int
 }
 
 type responseListTechnician {
