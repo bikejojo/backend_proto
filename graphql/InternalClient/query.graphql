@@ -3,6 +3,21 @@ extend type Query {
     searchClientInternalByName(requestClient:JSON):responseClientInternalSearch @field(resolver: "ClientQuery@searchInternalByName")
     clientInternalById(id:ID! @whereKey):InternalClient @find(model: "App\\Models\\Cliente_Interno")
     historyClientInternal(clientRequest:JSON):responseHistorial @field( resolver: "clientQuery@list_requests_services")
+    listRequestAccept(id_client:String):responseGetRequest @field(resolver: "clientQuery@clientInternalAcept")
+}
+
+type responseGetRequest{
+    message:String
+    contentClient:[clientContent]
+}
+
+type clientContent{
+    id_request:String
+    date:String
+    title:String
+    description:String
+    state_name:String
+    full_name:String
 }
 
 type responseClientInternalSearch{

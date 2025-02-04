@@ -384,4 +384,43 @@ class ClientQuery{
         ];
     }
 
+    public function clientInternalAcept($root,array $args){
+        try{
+            $clietn_id  = $args['id_client'];
+            $request = Solicitud::join('state_types','requests.stateId','=','state_types.id')
+            ->join('technicians','requests.technicianId','=','technicians.id')
+            ->where('clientId',$clietn_id)
+            ->where('stateId',3)
+            ->select(
+                'requests.id As id_request',
+                'requests.registrationDateTime As date',
+                'requests.titleRequests As title',
+                'requests.requestDescription As description',
+                'state_types.description AS state_name',
+                DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) As full_name'))
+            ->get();
+            //dd($request);
+            $content = $request->map(function ($response) {
+                return [
+                    'id_request' => $response->id_request,
+                    'date' => $response->date,
+                    'title' => $response->title,
+                    'description' => $response->description,
+                    'state_name' => $response->state_name, // Renombrado para evitar ambigüedades
+                    'full_name' => $response->full_name
+                ];
+            });
+
+            return [
+                'message' => 'Solicitudes obtenidas correctamente.',
+                'contentClient' => $content
+            ];
+
+        } catch (\Exception $e) {
+            return [
+                'message' => 'Fallas en la base de datos :'.$e->getMessage()
+            ];
+        }
+    }
+
 }
