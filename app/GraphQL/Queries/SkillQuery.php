@@ -98,7 +98,8 @@ class SkillQuery
             // Formatear la respuesta
             if($technicians->isEmpty()){
                 return [
-                    'message' => 'No hay coincidencia en la busqueda.'
+                    'message' => 'No hay coincidencia en la busqueda.',
+                    'status' => 2
                 ];
             }
             $content = $technicians->map(function ($technician) {
