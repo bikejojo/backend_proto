@@ -3,7 +3,7 @@ extend type Query {
     searchClientInternalByName(requestClient:JSON):responseClientInternalSearch @field(resolver: "ClientQuery@searchInternalByName")
     clientInternalById(id:ID! @whereKey):InternalClient @find(model: "App\\Models\\Cliente_Interno")
     historyClientInternal(clientRequest:JSON):responseHistorial @field( resolver: "clientQuery@list_requests_services")
-    listRequestAccept(id_client:String):responseGetRequest @field(resolver: "clientQuery@clientInternalAcept")
+    listRequestAccept(id_client:String):responseGetRequest @field( resolver: "App\\GraphQL\\Queries\\ClientQuery@clientInternalAcept")
 }
 
 type responseGetRequest{

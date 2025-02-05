@@ -1,10 +1,9 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace App\GraphQL\Queries;
 
 use App\GraphQL\Mutations\ServicioMutations;
 use App\Models\Agenda_Tecnico;
-use Illuminate\Support\Facades\Log;
 use App\Models\Cliente_Interno;
 use App\Models\Asociacion_Cliente_Tecnico;
 use App\Models\Detalle_Agenda_Tecnico;
