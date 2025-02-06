@@ -56,11 +56,12 @@ class SkillQuery
             $cityId          = $searchData['cityId'] ?? null;
 
             $query = Tecnico::query()
-                ->select('technicians.*')
-                ->leftJoin('technician_skills', 'technician_skills.technicianId', '=', 'technicians.id')
-                ->leftJoin('skills', 'skills.id', '=', 'technician_skills.skillId')
-                ->leftJoin('technician_subcription','technicians.id','=','technician_subcription.technicianId' )
+                ->select('technicians.*','skills.icons As icon_sk')
+                ->join('technician_skills', 'technician_skills.technicianId', '=', 'technicians.id')
+                ->join('skills', 'skills.id', '=', 'technician_skills.skillId')
+                ->join('technician_subcription','technicians.id','=','technician_subcription.technicianId' )
                 ->where('technician_subcription.status',1);
+
 
             if (!empty($searchParameter)) {
                 $query->where(function ($q) use ($searchParameter) {
@@ -101,8 +102,8 @@ class SkillQuery
                     'status' => 2
                 ];
             }
-            //
 
+            //dd($technicians);
             $content = $technicians->map(function ($technician) {
                 return [
                     'id'         => $technician->id,
@@ -116,12 +117,12 @@ class SkillQuery
                             'id_skills'   => $skill->skillId,
                             'name'        => $skill->skill->name,
                             'experience'  => $skill->experience,
-                            'icons'       => $skill->icons
+                            'icons'       => $skill->skill->icons
                         ];
                     })
                 ];
             });
-            dd($content);
+
                 return [
                     'message' => 'Se encontraron los técnicos con sus habilidades.',
                     'status'=>1,
