@@ -51,17 +51,50 @@ class TechnicianQuery
                             ->join('technician_subcription','technicians.id','=','technician_subcription.technicianId')
                             ->join('subcriptions','technician_subcription.subcriptionsId','=','subcriptions.id')
                             ->select(
-                                'users.ci','cities.name',DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) As full_name'),'technicians.phoneNumber',
-                                'technicians.email','technicians.frontIdCard','technicians.backIdCard','technicians.photo',
-                                'cities.name','subcriptions.name','subcriptions.codeSubcription',
-                                'technician_subcription.status','technician_subcription.starDateSubcription','technician_subcription.endDateSubcription'
+                                'users.ci As ci_tech','technicians.cityId As city_id',DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) As full_name'),'technicians.phoneNumber',
+                                'technicians.id As id_technician','technicians.phoneNumber As phone','technicians.email As email_tech','technicians.frontIdCard As frontCard','technicians.backIdCard As backCard','technicians.photo As photoCard',
+                                'cities.name As name_city','subcriptions.codeSubcription As code_sub','technician_subcription.id As id_sub_tech',
+                                'technician_subcription.status As status_sub','technician_subcription.starDateSubcription As startDate','technician_subcription.endDateSubcription As endDate'
                             )
+                            ->orderBy('id_technician','ASC')
                             ->get();
+            if($technician->isEmpty()){
+                return [
+                    'message' =>'No existen tecnicos',
+                    'status' => 2,
+                    'technicians'  => []
+                ];
+            }
+            //dd($technician);
+            $content = $technician->map(function ($technician) {
+                return [
+                    'id_technician' => $technician->id_technician,
+                    'full_name'=>$technician->full_name,
+                    'frontCard'=>$technician->frontCard,
+                    'backCard'=>$technician->backCard,
+                    'phoneNumber' => $technician->phone,
+                    'photoCard'=>$technician->photoCard,
+                    'email'=>$technician->email_tech,
+                    'ci'=>$technician->ci_tech,
+                    'id_city'=>$technician->city_id,
+                    'name_city'=>$technician->name_city,
+                    'id_subcription_tech'=>$technician->id_sub_tech,
+                    'status_sub'=>$technician->status_sub,
+                    'startDate'=>$technician->startDate,
+                    'endDate'=>$technician->endDate,
+                    'code_sub'=>$technician->code_sub,
+                ];
+            });
+            return [
+                'message' =>'Listado de tecnicos',
+                'status' => 1,
+                'technicians'  => $content
+            ];
         } catch (\Exception $e) {
             return [
-                'message' =>'No existen tecnicos en la ' . $e->getMessage(),
+                'message' =>'Problemas en la conexion del servidor ' . $e->getMessage(),
                 'status' => 3,
-                'technicians'  => []
+                'technicians'  => null
             ];
         }
     }

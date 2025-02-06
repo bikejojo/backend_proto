@@ -2,6 +2,7 @@ type Skill {
   id_skill: ID @rename (attribute: "id")
   name: String!
   photo:String
+  icons:String
 
   technicianSkills: [TechnicianSkill] @hasMany
   groupSkill:[Skill] @hasMany

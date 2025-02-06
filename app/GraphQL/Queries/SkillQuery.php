@@ -54,21 +54,21 @@ class SkillQuery
             $experience      = $searchData['experience'] ?? null;
             $qualification   = $searchData['qualification'] ?? null;
             $cityId          = $searchData['cityId'] ?? null;
-            //dd($qualification);
+
             $query = Tecnico::query()
                 ->select('technicians.*')
                 ->leftJoin('technician_skills', 'technician_skills.technicianId', '=', 'technicians.id')
                 ->leftJoin('skills', 'skills.id', '=', 'technician_skills.skillId')
                 ->leftJoin('technician_subcription','technicians.id','=','technician_subcription.technicianId' )
                 ->where('technician_subcription.status',1);
-                //dd($query->get());
+
             if (!empty($searchParameter)) {
                 $query->where(function ($q) use ($searchParameter) {
                     $q->where('technicians.firstName', 'ILIKE', "%{$searchParameter}%")
                     ->orWhere('technicians.lastName', 'ILIKE', "%{$searchParameter}%");
                 });
             }
-            //dd($query->get());
+
 
             if (!empty($skillsIds)) {
                 $query->whereIn('skills.id', $skillsIds);
@@ -79,10 +79,9 @@ class SkillQuery
                 $query->where('technician_skills.experience', '>=', $experience);
             }
 
-            // 🔹 Filtro por calificación promedio (si `qualification` tiene valor)
+            //Filtro por calificación promedio (si `qualification` tiene valor)
             if (!empty($qualification)) {
                 $qualification = floatval($qualification);
-                //dd($qualification);
                 $query->where('technicians.average_rating', '<=', $qualification);
             }
 
@@ -94,7 +93,7 @@ class SkillQuery
             // Obtener los técnicos y sus habilidades relacionadas
 
             $technicians = $query->distinct()->get();
-            //dd($technicians);
+
             // Formatear la respuesta
             if($technicians->isEmpty()){
                 return [
@@ -102,6 +101,8 @@ class SkillQuery
                     'status' => 2
                 ];
             }
+            //
+
             $content = $technicians->map(function ($technician) {
                 return [
                     'id'         => $technician->id,
@@ -114,11 +115,13 @@ class SkillQuery
                         return [
                             'id_skills'   => $skill->skillId,
                             'name'        => $skill->skill->name,
-                            'experience'  => $skill->experience
+                            'experience'  => $skill->experience,
+                            'icons'       => $skill->icons
                         ];
                     })
                 ];
             });
+            dd($content);
                 return [
                     'message' => 'Se encontraron los técnicos con sus habilidades.',
                     'status'=>1,

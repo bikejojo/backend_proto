@@ -31,5 +31,6 @@ type skillS_ {
     id_skills:String
     name:String
     experience:String
+    icons:String
 }
 #import skill.graphql
