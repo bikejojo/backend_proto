@@ -1,9 +1,33 @@
 extend type Query {
     getAllTechnicians: [Technician] @all (model: "App\\Models\\Tecnico")
+    getAllTechnicians_: getTechnicianTable @field(resolver: "TechnicianQuery@")
     getTechnicianById(id: ID! @whereKey): Technician @find (model: "App\\Models\\Tecnico")
     getFeaturedTechnicians(id_city:String) : responseListTechnician @field (resolver: "ServiceQuery@getAverageTechnical")
     getFeaturedFilterTechnicians(requestFilterTechnicial:JSON):responsesTechnician @field(resolver: "ServiceQuery@getAverageTechnicalFilter")
     getVerificationTechnician(id_city:String):responseVerification @field(resolver: "TechnicianQuery@verifactionCityTechnician")
+}
+
+type getTechnicianTable {
+    message:String
+    technicians:[techniciaData]
+    status:Int
+}
+
+type techniciaData {
+    id_technician:String
+    full_name:String
+    frontCard:String
+    backCard:String
+    photoCard:String
+    email:String
+    ci:String
+    id_city:String
+    name_city:String
+    id_subcription_tech:String
+    status_sub:String
+    startDate:String
+    endDate:String
+    code_sub:String
 }
 
 type responseVerification{
