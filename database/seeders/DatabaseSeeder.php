@@ -49,26 +49,54 @@ class DatabaseSeeder extends Seeder
         Group::create(['name'=>'Automotriz']);
         Group::create(['name'=>'Servicios Especializados']);
         #habilidades para tecnicos
-        Habilidad::create(['name' => 'Plomeria']); //1
-        Habilidad::create(['name' => 'Electricista']); //1
-        Habilidad::create(['name' => 'Carpinteria']); //1
-        Habilidad::create(['name' => 'Pintor']); //1
-        Habilidad::create(['name' => 'Mecanico automotriz']); //3
-        Habilidad::create(['name' => 'Soldador']); //3
-        Habilidad::create(['name' => 'Jardineria']); //4
-        Habilidad::create(['name' => 'Albanileria']); //1
-        Habilidad::create(['name' => 'Cocinero']);
-        Habilidad::create(['name' => 'Cerrajero']); //4
-        Habilidad::create(['name' => 'Pintor de obras']); //4
-        Habilidad::create(['name' => 'Fumigador']); //4
-        Habilidad::create(['name' => 'Vidriero']); //4
-        Habilidad::create(['name' => 'Tecnico en computacion']); //2
-        Habilidad::create(['name' => 'Tecnico en redes electricas']); //2
-        Habilidad::create(['name' => 'Tecnico en electrodomesticos']); //2
-        Habilidad::create(['name' => 'Limpieza General']); //1
-        Habilidad::create(['name' => 'Tecnico en telefonia movil']); //2
-        Habilidad::create(['name' => 'Veterinario(a)']); //2
+        /**
+                     *carpinteria: hammer
+            *pintor: format-paint
+            *mecanico automotriz: car-cog, car-wrench
+            *soldador: soldering-iron
+            *jardineria: gate, mower-bag
+            *albañileria:account-hart-hat, hammer-screwdriver,
+            *cocinero: chef-hat
+            *cerrajero: key-chain-variant
+            *pintor de obras: format-color-fill
+            *fumigador:sprinkler-variant,
+            *vidriero: google-glass
+            *tecnico en computacion: cable-data
+            *tecnica en redes electricas:connection, lightning-bolt-circle
+            *tecnico en electrodomestico: fridge-alert-outline
+            *limpieza general:format-clear
+            *tecnico en telefonia movil:cellphone-cog
+            *veterinario: doctor
+            *plomeria:account-wrench-outline
+            *electricista: fuse-alert
+         */
+        Habilidad::create(['name' => 'Plomeria','status'=>1]); //1
+        Habilidad::create(['name' => 'Electricista','status'=>1]); //1
+        Habilidad::create(['name' => 'Carpinteria','status'=>1]); //1
+        Habilidad::create(['name' => 'Pintor','status'=>1]); //1
+        Habilidad::create(['name' => 'Mecanico automotriz','status'=>1]); //3
+        Habilidad::create(['name' => 'Soldador','status'=>1]); //3
+        Habilidad::create(['name' => 'Jardineria','status'=>1]); //4
+        Habilidad::create(['name' => 'Albanileria','status'=>1]); //1
+        Habilidad::create(['name' => 'Cocinero','status'=>1]);
+        Habilidad::create(['name' => 'Cerrajero','status'=>1]); //4
+        Habilidad::create(['name' => 'Pintor de obras','status'=>1]); //4
+        Habilidad::create(['name' => 'Fumigador','status'=>1]); //4
+        Habilidad::create(['name' => 'Vidriero','status'=>1]); //4
+        Habilidad::create(['name' => 'Tecnico en computacion','status'=>1]); //2
+        Habilidad::create(['name' => 'Tecnico en redes electricas','status'=>1]); //2
+        Habilidad::create(['name' => 'Tecnico en electrodomesticos','status'=>1]); //2
+        Habilidad::create(['name' => 'Limpieza General','status'=>1]); //1
+        Habilidad::create(['name' => 'Tecnico en telefonia movil','status'=>1]); //2
+        Habilidad::create(['name' => 'Veterinario(a)','status'=>1]); //2
 
+        Habilidad::create(['name' => 'piscenero','status'=>1]); //2
+        Habilidad::create(['name' => 'limpieza general en vehiculo','status'=>1]); //2
+        Habilidad::create(['name' => 'mesero / camarero / mozo','status'=>1]); //2
+        Habilidad::create(['name' => 'Organizador de eventos','status'=>1]); //2
+        Habilidad::create(['name' => 'Arrendador  de mobiliario','status'=>1]); //2
+        Habilidad::create(['name' => 'bartender / barman','status'=>1]); //2
+        Habilidad::create(['name' => 'Vocalista','status'=>1]); //2
 
         Sub_group::create(['description' => 'Aires Acondicionados', 'createDate' => now()]);
         Sub_group::create(['description' => 'Calefonos', 'createDate' => now()]);

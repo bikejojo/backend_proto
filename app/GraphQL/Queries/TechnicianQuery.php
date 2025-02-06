@@ -44,58 +44,85 @@ class TechnicianQuery
 
     }
 
-    public function get_technician($root,array $args){
+    public function get_technician($root, array $args)
+    {
         try {
-            $technician = Tecnico::join('users','technicians.userId','=','users.id')
-                            ->join('cities','technicians.cityId','=','cities.id')
-                            ->join('technician_subcription','technicians.id','=','technician_subcription.technicianId')
-                            ->join('subcriptions','technician_subcription.subcriptionsId','=','subcriptions.id')
-                            ->select(
-                                'users.ci As ci_tech','technicians.cityId As city_id',DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) As full_name'),'technicians.phoneNumber',
-                                'technicians.id As id_technician','technicians.phoneNumber As phone','technicians.email As email_tech','technicians.frontIdCard As frontCard','technicians.backIdCard As backCard','technicians.photo As photoCard',
-                                'cities.name As name_city','subcriptions.codeSubcription As code_sub','technician_subcription.id As id_sub_tech',
-                                'technician_subcription.status As status_sub','technician_subcription.starDateSubcription As startDate','technician_subcription.endDateSubcription As endDate'
-                            )
-                            ->orderBy('id_technician','ASC')
-                            ->get();
-            if($technician->isEmpty()){
+            // Subconsulta para obtener la última suscripción de cada técnico
+            $latestSubscription = DB::table('technician_subcription as ts1')
+                ->select('ts1.technicianId', DB::raw('MAX(ts1."endDateSubcription") as last_end_date'))
+                ->groupBy('ts1.technicianId');
+
+            $technician = Tecnico::join('users', 'technicians.userId', '=', 'users.id')
+                ->join('cities', 'technicians.cityId', '=', 'cities.id')
+                ->joinSub($latestSubscription, 'latest_sub', function ($join) {
+                    $join->on('technicians.id', '=', 'latest_sub.technicianId');
+                })
+                ->join('technician_subcription', function ($join) {
+                    $join->on('technicians.id', '=', 'technician_subcription.technicianId')
+                        ->on('technician_subcription.endDateSubcription', '=', 'latest_sub.last_end_date');
+                })
+                ->join('subcriptions', 'technician_subcription.subcriptionsId', '=', 'subcriptions.id')
+                ->select(
+                    'users.ci AS ci_tech',
+                    'technicians.cityId AS city_id',
+                    DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name'),
+                    'technicians.phoneNumber',
+                    'technicians.id AS id_technician',
+                    'technicians.phoneNumber AS phone',
+                    'technicians.email AS email_tech',
+                    'technicians.frontIdCard AS frontCard',
+                    'technicians.backIdCard AS backCard',
+                    'technicians.photo AS photoCard',
+                    'cities.name AS name_city',
+                    'subcriptions.codeSubcription AS code_sub',
+                    'technician_subcription.id AS id_sub_tech',
+                    'technician_subcription.status AS status_sub',
+                    'technician_subcription.starDateSubcription AS startDate',
+                    'technician_subcription.endDateSubcription AS endDate'
+                )
+                ->orderBy('id_technician', 'ASC')
+                ->get();
+
+            if ($technician->isEmpty()) {
                 return [
-                    'message' =>'No existen tecnicos',
+                    'message' => 'No existen técnicos',
                     'status' => 2,
-                    'technicians'  => []
+                    'technicians' => []
                 ];
             }
-            //dd($technician);
+
             $content = $technician->map(function ($technician) {
                 return [
                     'id_technician' => $technician->id_technician,
-                    'full_name'=>$technician->full_name,
-                    'frontCard'=>$technician->frontCard,
-                    'backCard'=>$technician->backCard,
+                    'full_name' => $technician->full_name,
+                    'frontCard' => $technician->frontCard,
+                    'backCard' => $technician->backCard,
                     'phoneNumber' => $technician->phone,
-                    'photoCard'=>$technician->photoCard,
-                    'email'=>$technician->email_tech,
-                    'ci'=>$technician->ci_tech,
-                    'id_city'=>$technician->city_id,
-                    'name_city'=>$technician->name_city,
-                    'id_subcription_tech'=>$technician->id_sub_tech,
-                    'status_sub'=>$technician->status_sub,
-                    'startDate'=>$technician->startDate,
-                    'endDate'=>$technician->endDate,
-                    'code_sub'=>$technician->code_sub,
+                    'photoCard' => $technician->photoCard,
+                    'email' => $technician->email_tech,
+                    'ci' => $technician->ci_tech,
+                    'id_city' => $technician->city_id,
+                    'name_city' => $technician->name_city,
+                    'id_subcription_tech' => $technician->id_sub_tech,
+                    'status_sub' => $technician->status_sub,
+                    'startDate' => $technician->startDate,
+                    'endDate' => $technician->endDate,
+                    'code_sub' => $technician->code_sub,
                 ];
             });
+
             return [
-                'message' =>'Listado de tecnicos',
+                'message' => 'Listado de técnicos',
                 'status' => 1,
-                'technicians'  => $content
+                'technicians' => $content
             ];
         } catch (\Exception $e) {
             return [
-                'message' =>'Problemas en la conexion del servidor ' . $e->getMessage(),
+                'message' => 'Problemas en la conexión del servidor ' . $e->getMessage(),
                 'status' => 3,
-                'technicians'  => null
+                'technicians' => null
             ];
         }
     }
+
 }
