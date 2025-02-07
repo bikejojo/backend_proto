@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('phoneNumber')->nullable();  // Traducción de 'telefono'
             $table->string('password');     // Traducción de 'contrasenia'
             $table->string('photo')->nullable();  // Traducción de 'foto'
-            $table->decimal('average_rating')->default(0)->nullable();
+            $table->decimal('average_rating')->default(5)->nullable();
             $table->bigInteger('status')->nullable();
             $table->unsignedBigInteger('userId');  // Traducción de 'users_id'
             $table->unsignedBigInteger('cityId')->nullable();  // Traducción de 'ciudades_id'
