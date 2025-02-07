@@ -18,6 +18,7 @@ class Servicio extends Model
         'activityId',
         'clientId',
         'typeClient',
+        'service_origin',
         'titleService',
         'serviceDescription',
         'serviceLocation',

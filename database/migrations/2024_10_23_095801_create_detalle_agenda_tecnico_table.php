@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('agendaTechnicalId');
             $table->unsignedBigInteger('serviceId')->nullable();
             $table->unsignedInteger('typeClient');
+            $table->unsignedInteger('service_origin')->nullable();
             $table->datetime('createDate');
             $table->datetime('serviceDate')->nullable();
             $table->foreign('agendaTechnicalId')->references('id')->on('technician_agenda');

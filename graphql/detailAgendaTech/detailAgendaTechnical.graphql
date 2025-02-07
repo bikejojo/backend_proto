@@ -4,6 +4,7 @@ type DetailAgendaTechnical  @model(class: "App\\Models\\Detalle_Agenda_Tecnico")
     id_client:ID @rename (attribute: "clientId")
     id_service:ID @rename (attribute: "serviceId")
     typeClient:String!
+    service_origin:String
     serviceDate:String!
     createDate:String!
 

@@ -16,6 +16,7 @@ class Detalle_Agenda_Tecnico extends Model
         'agendaTechnicalId',
         'serviceId',
         'typeClient',
+        'service_origin',
         'createDate',
         'serviceDate'
     ];

@@ -252,18 +252,6 @@ class SubcritionMutations
                 ];
             }
 
-            // Validar que el técnico no tenga una suscripción FREE activa
-            /*$existingSubscription = DB::table('technician_subcription as ts')
-                ->join('subcriptions as s', 'ts.subcriptionsId', '=', 's.id')
-                ->where('ts.technicianId', $technician->id)
-                ->where('s.codeSubcription', 'FREE')  // No importa el status, solo si existe alguna suscripción FREE
-                ->select('s.*','ts.*')
-                ->exists();
-            if ($existingSubscription && $subcription->codeSubcription == 'FREE') {
-                return [
-                    'message' => 'El técnico ya ha tenido una suscripción FREE y no puede inscribirse nuevamente.'
-                ];
-            }*/
             $existingSubscriptionFree = DB::table('technician_subcription as ts')
             ->join('subcriptions as s', 'ts.subcriptionsId', '=', 's.id')
             ->where('ts.technicianId', $technician->id)

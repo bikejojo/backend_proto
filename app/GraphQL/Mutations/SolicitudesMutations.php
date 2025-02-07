@@ -158,6 +158,7 @@ class SolicitudesMutations
                 'clientId' => $cliente->id,
                 'activityId' => $request->activityId,
                 'typeClient' => ServicioMutations::clientInternal,
+                'service_origin'=> 1,
                 'titleService' => $request->titleRequests,
                 'serviceDescription' => $request->requestDescription,
                 'serviceLocation' => $request->serviceLocation,
@@ -178,6 +179,7 @@ class SolicitudesMutations
                 'clientId' => $cliente->id,
                 'serviceId' => $serviceId,
                 'typeClient' => $service->typeClient,
+                'service_origin' => 1,
                 'serviceDate' => $service->updatedDateTime,
                 'createDate' => Carbon::now()
             ]);

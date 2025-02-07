@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('clientId');
             $table->unsignedBigInteger('activityId');
             $table->string('typeClient');
+            $table->string('service_origin');//diferencia entre servicio creado por cliente y tecnico
             $table->text('titleService')->nullable();
             $table->string('serviceDescription')->nullable();
             $table->text('serviceLocation')->nullable();

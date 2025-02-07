@@ -12,6 +12,12 @@ use Carbon\Carbon;
 
 class SubcriptionQuery
 {
+    public function allSuscriptionExceptFree(){
+        $suscripcion=Suscripcion::whereNot('codeSubcription','FREE')
+                                ->orderBy('id','asc')
+                                ->get();
+        return $suscripcion;
+    }
     public function getAllTechnician($root , array $args){
         $subcriptionData=$args['requestSubcription'];
         $technician = ValidationModels::validationTechnician($subcriptionData['id_technician']);

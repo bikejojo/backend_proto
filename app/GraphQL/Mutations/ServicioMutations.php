@@ -77,6 +77,7 @@ class ServicioMutations
                 'clientId' => $serviceData['id_client'],
                 'activityId' => $serviceData['id_activity'],
                 'typeClient' => self::clientInternal,
+                'service_origin' => 2,
                 'titleService' => trim($serviceData['titleService']),
                 'serviceDescription' => trim($serviceData['serviceDescription']),
                 'latitude' => isset($serviceData['latitude']) ? $serviceData['latitude'] : null,
@@ -86,6 +87,7 @@ class ServicioMutations
                 'updatedDateTime' => $serviceData['updatedDateTime'],
                 'status' => StateCatalog::STATUS_ACTIVE
             ]);
+            //dd($service);
             StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'El servicio fue creado por el tecnico para cliente interno.',1);
             $_service = Servicio::find($service->id);
             $_service->save();
@@ -101,6 +103,7 @@ class ServicioMutations
             $detailAgenda = Detalle_Agenda_Tecnico::create([
                 'agendaTechnicalId' => $agendaId,
                 'clientId' => $serviceData['id_client'],
+                'service_origin'=>2,
                 'serviceId' => $_service->id,
                 'typeClient' => self::clientInternal,
                 'serviceDate' => $_service->updatedDateTime,
@@ -128,8 +131,7 @@ class ServicioMutations
         $now=Carbon::now();
         $technicalId = ValidationModels::validationTechnician($serviceData['id_technician']);
         $clientId = ValidationModels::validationclientExternal($serviceData['id_client']);
-        //$clientId = ValidationModels::validationExternalCLient($serviceData['id_client']);
-        //dd($clientId);
+
         $associant = Asociacion_Cliente_Tecnico::where('clientId',$serviceData['id_client'])
         ->where('technicalId',$serviceData['id_technician'])->first();
         if(is_null($associant)){
@@ -151,7 +153,7 @@ class ServicioMutations
                     ->where('services.updatedDateTime', '=', $serviceData['updatedDateTime']); // Coincidencia exacta
                 })
                 ->first();
-            //dd($existingService);
+
             if($existingServiceExternal){
                 DB::rollBack();
                 return [
@@ -171,7 +173,7 @@ class ServicioMutations
                     ->where('services.updatedDateTime', '=', $serviceData['updatedDateTime']); // Coincidencia exacta
                 })
                 ->first();
-            //dd($existingService);
+
             if($existingServiceInternal){
                 DB::rollBack();
                 return [
@@ -184,6 +186,7 @@ class ServicioMutations
                 'clientId' => $serviceData['id_client'],
                 'activityId' => $serviceData['id_activity'],
                 'typeClient' => self::clientExternal,
+                'service_origin'=>2,
                 'titleService' => trim($serviceData['titleService']),
                 'serviceDescription' => trim($serviceData['serviceDescription']),
                 'latitude' => isset($serviceData['latitude']) ? $serviceData['latitude'] : null,
@@ -211,6 +214,7 @@ class ServicioMutations
                 'clientId' => $serviceData['id_client'],
                 'serviceId' => $_service->id,
                 'typeClient' => self::clientExternal,
+                'service_origin' => 2,
                 'serviceDate' => $_service->updatedDateTime,
                 'createDate' => Carbon::now()
             ]);
@@ -353,7 +357,6 @@ class ServicioMutations
             ];
         }
     }
-
 
     public function delete($root , array $args){
         $serviceData = $args['requestService'];
