@@ -4,6 +4,7 @@ namespace App\GraphQL\Queries;
 
 use App\Models\Habilidad;
 use App\Models\Tecnico;
+use App\Models\Tecnico_Habilidad;
 use App\Models\Servicio;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Expr\Empty_;
@@ -136,4 +137,86 @@ class SkillQuery
         }
     }
 
+    public function getListTechnicians($root, array $args){
+        try {
+        $id_skill=$args['id_skills'];
+        $technicians = Tecnico::leftJoin('technician_skills','technician_skills.technicianId','=','technicians.id')
+                        ->where('technician_skills.skillId',$id_skill)
+                        ->select(
+                                DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name')
+                                ,'technicians.average_rating As average_rating'
+                                ,'technician_skills.experience As experience')
+                        ->get();
+        if($technicians->isEmpty()){
+            return [
+                'message' => 'No existen tecnicos relacionados con esta habilidad.',
+                'techResponse' => [],
+                'status' => 1
+            ];
+        }
+
+        $content = $technicians->map( function($technician) {
+            return [
+                'full_name' => $technician->full_name,
+                'average_rating' => $technician->average_rating ,
+                'experience' => $technician->experience
+            ];
+        });
+
+        return [
+            'message' => 'Lista de tecnicos por la habilidad',
+            'status' => 1 ,
+            'techResponse' => $content
+        ];
+
+        } catch (\Exception $e) {
+            return [
+                'message' => 'Se produjo una falla en lo siguiente: ' . $e->getMessage(),
+                'techResponse' => [] ,
+                'status' => 3
+            ];
+        }
+    }
+
+    public function getFeaturedListTechnicians($root, array $args){
+        try {
+        $id_skill=$args['id_skills'];
+        $technicians = Tecnico::leftJoin('technician_skills','technician_skills.technicianId','=','technicians.id')
+                        ->where('technicians.average_rating' , '>=' , 4)
+                        ->where('technician_skills.skillId',$id_skill)
+                        ->select(
+                                DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name')
+                                ,'technicians.average_rating As average_rating'
+                                ,'technician_skills.experience As experience')
+                        ->get();
+        if($technicians->isEmpty()){
+            return [
+                'message' => 'No existen tecnicos relacionados con esta habilidad.',
+                'techResponse' => [],
+                'status' => 1
+            ];
+        }
+
+        $content = $technicians->map( function($technician) {
+            return [
+                'full_name' => $technician->full_name,
+                'average_rating' => $technician->average_rating ,
+                'experience' => $technician->experience
+            ];
+        });
+
+        return [
+            'message' => 'Lista de tecnicos por la habilidad',
+            'status' => 1 ,
+            'techResponse' => $content
+        ];
+
+        } catch (\Exception $e) {
+            return [
+                'message' => 'Se produjo una falla en lo siguiente: ' . $e->getMessage(),
+                'techResponse' => [] ,
+                'status' => 3
+            ];
+        }
+    }
 }

@@ -6,7 +6,9 @@ extend type Query {
     getPromotionValid:responsePromotion @field(resolver: "SubcriptionQuery@promotionValid")
     validationSuscriptionPromotion(requestSubcriptionPromotion:JSON):responseSuscriptions @field(resolver: "SubcriptionQuery@getSubcriptionPromotion")
     getAllHistorySuscription(requestSubcription:JSON): responseSuscription_ @field(resolver: "SubcriptionQuery@getSuscripcionHistorial")
+    allSuscription:[Subcription] @field(resolver: "SubcriptionQuery@")
 }
+
 
 type responseValidityPromotion{
     message:String

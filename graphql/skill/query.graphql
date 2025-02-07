@@ -4,7 +4,21 @@ extend type Query {
     searchSkillTechnician(requestSkillTechnician:JSON):responseTechnician @field (resolver: "SkillQuery@searchSkillTechnician")
 
     filterSkillTechnician(requestSkillTechnician:JSON):responseTechnician_ @field (resolver: "SkillQuery@searchFilterSkillTechnician")
-}
+    listTechnicianBySkill(id_skills:ID):response_Tech @field (resolver: "SkillQuery@getListTechnicians")
+        listFeaturedTechnicianBySkill(id_skills:ID):response_Tech @field (resolver: "SkillQuery@getFeaturedListTechnicians")
+    }
+
+    type response_Tech {
+        message:String
+        status:Int
+        techResponse:[contentTech]
+    }
+
+    type contentTech {
+        full_name:String
+        average_rating:String
+        experience:String
+    }
 
 type responseTechnician {
     message:String
