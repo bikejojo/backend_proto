@@ -57,12 +57,15 @@ class SkillQuery
             $cityId          = $searchData['cityId'] ?? null;
 
             $query = Tecnico::query()
-                ->select('technicians.*','skills.icons As icon_sk')
-                ->join('technician_skills', 'technician_skills.technicianId', '=', 'technicians.id')
-                ->join('skills', 'skills.id', '=', 'technician_skills.skillId')
-                ->join('technician_subcription','technicians.id','=','technician_subcription.technicianId' )
-                ->where('technician_subcription.status',1)
-                ->distinct();
+            ->select('technicians.*', DB::raw('MAX(skills.icons) AS icon_sk') // 🔹 Se usa MAX para evitar el error de PostgreSQL
+            )
+            ->join('technician_skills', 'technician_skills.technicianId', '=', 'technicians.id')
+            ->join('skills', 'skills.id', '=', 'technician_skills.skillId')
+            ->join('technician_subcription', 'technicians.id', '=', 'technician_subcription.technicianId')
+            ->where('technician_subcription.status', 1)
+            ->whereIn('skills.id', $skillsIds)
+            ->where('technicians.cityId', '=', $cityId)
+            ->groupBy('technicians.id'); // 🔹 Agrupar solo por técnicos
 
         //dd($query->get());
             if (!empty($searchParameter)) {
@@ -95,7 +98,7 @@ class SkillQuery
 
             // Obtener los técnicos y sus habilidades relacionadas
 
-            $technicians = $query->distinct()->get();
+            $technicians = $query->get();
             //dd($technicians);
             // Formatear la respuesta
             if($technicians->isEmpty()){
