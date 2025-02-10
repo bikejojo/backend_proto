@@ -267,6 +267,31 @@ class TecnicoMutations {
             'skills' => $ha
         ];
     }
+
+    public function resetPasswordTechnicianAtSupport($root,array $args){
+        DB::beginTransaction();
+        try{
+            $id_technician=$args['id_technician'];
+            $new_password = $args['new_password'];
+            $technician = Tecnico::where('id',$id_technician)->first();
+            //dd($technician);
+            $user=User::where('id',$technician->userId)->first();
+            $user->password=Hash::make($new_password);
+            $user->save();
+            DB::commit();
+            return [
+                'message' => 'Contraseña restablecida para el tecnico.',
+                'result' => true
+            ];
+        } catch(\Exception $e){
+            DB::rollback();
+            return [
+                'message' => 'Errores en el proceso. ' . $e->getMessage(),
+                'result' => false
+            ];
+        }
+    }
+
     public function delete($root, array $args){
         $technician = Tecnico::find($args['id']);
         if (!$technician) {

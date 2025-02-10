@@ -129,7 +129,7 @@ class ClienteInternoMutations{
             $client->cityId = $clientData['cityId'];
             $value=$user->type_user;
             $ciudad = Ciudad::find($client->cityId);
-            
+
             $client->save();
             $user->email = $email ?? $user->email;
             $user->password = $hashedPassword;
@@ -222,6 +222,31 @@ class ClienteInternoMutations{
             ];
         }
     }
+
+    public function resetPasswordclientAtSupport($root,array $args){
+        $id_technician=$args['id_client'];
+        $new_password = $args['new_password'];
+        try{
+            DB::beginTransaction();
+            $client=Cliente_Interno::where('id',$id_technician)->first();
+            $user=User::where('id',$client->userId)->first();
+            $user->password = Hash::make($new_password);
+            $user->save();
+            DB::commit();
+            return [
+                'message' => 'Contraseña restablecida para el cliente interno.',
+                'result' => true
+            ];
+
+        } catch(\Exception $e){
+            DB::rollback();
+            return [
+                'message' => 'Errores en el proceso. ' . $e->getMessage(),
+                'result' => false
+            ];
+        }
+    }
+
     // Procesamiento de imágenes
     private function processImage(UploadedFile $file, $path, $manager){
         $image = $manager->read($file->getRealPath());

@@ -6,6 +6,7 @@ extend type Query {
     getFeaturedFilterTechnicians(requestFilterTechnicial:JSON):responsesTechnician @field(resolver: "ServiceQuery@getAverageTechnicalFilter")
     getVerificationTechnician(id_city:String):responseVerification @field(resolver: "TechnicianQuery@verifactionCityTechnician")
     getAllTechnicians_: getTechnicianTable @field(resolver: "TechnicianQuery@get_technician")
+    filtersTechnician(requestFilterTechnician:JSON):getTechnicianTable @field(resolver: "TechnicianQuery@filterListTechnician")
 }
 
 type getTechnicianTable {

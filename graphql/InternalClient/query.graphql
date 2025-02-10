@@ -4,6 +4,23 @@ extend type Query {
     clientInternalById(id:ID! @whereKey):InternalClient @find(model: "App\\Models\\Cliente_Interno")
     historyClientInternal(clientRequest:JSON):responseHistorial @field( resolver: "ClientQuery@list_requests_services")
     listRequestAccept(id_client:String):responseGetRequest @field( resolver: "App\\GraphQL\\Queries\\ClientQuery@clientInternalAcept")
+    listClientAllow:response_cliente @field (resolver: "ClientQuery@getListClientsInterns")
+}
+
+type response_cliente {
+    message:String
+    result:Boolean
+    clients_content:[contentsClient]
+}
+
+type contentsClient{
+    id_clientInternal:String
+    full_name:String
+    phoneNumber:String
+    email:String
+    loginMethod:String
+    photo:String
+    city_name:String
 }
 
 type responseGetRequest{

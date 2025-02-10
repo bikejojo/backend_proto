@@ -3,11 +3,12 @@
 namespace App\GraphQL\Mutations;
 
 use App\Models\Cliente_Interno;
+use Illuminate\Support\Facades\DB;
 use App\Models\Tecnico_Habilidad;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Ciudad;
-
+use App\Models\Tecnico;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -254,10 +255,4 @@ class UserMutations{
         ];
     }
 
-    public function resetPasswordTechnicianAtSupport($root,array $args){
-
-    }
-    public function resetPasswordclientAtSupport($root,array $args){
-
-    }
 }

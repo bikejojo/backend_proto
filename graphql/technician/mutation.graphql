@@ -3,6 +3,12 @@ extend type Mutation {
     updateTechnician(id: ID!, technicianRequest: JSON, frontIdCard: Upload, backIdCard: Upload): TechnicianResponse @field(resolver: "TecnicoMutations@update")
     deleteTecnico(id:ID! @whereKey): Response @field(resolver: "TecnicoMutations@delete")
     updatePhotoTechnician(id:ID!,photo:Upload):TechnicianResponse @field(resolver: "TecnicoMutations@photoUpdate")
+    resetPasswordTechnician(id_technician:ID,new_password:String):responsePassTechnician @field(resolver: "TecnicoMutations@resetPasswordTechnicianAtSupport")
+}
+
+type responsePassTechnician{
+    message:String
+    result:Int
 }
 
 type Response {
@@ -22,4 +28,6 @@ type technicianskills {
     name:String
     experience:String
 }
+
+
 #import technician.graphql

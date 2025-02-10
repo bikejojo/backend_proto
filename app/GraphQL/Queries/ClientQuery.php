@@ -422,4 +422,39 @@ class ClientQuery{
         }
     }
 
+    public function getListClientsInterns($root,$args){
+        try{
+            $client=Cliente_Interno::join('cities','internal_clients.cityId','=','cities.id')
+            ->select(
+                    DB::raw('CONCAT(COALESCE(internal_clients."firstName", \'\'), \' \', COALESCE(internal_clients."lastName", \'\')) As full_name')
+                    ,'internal_clients.*',
+                    'cities.name as name_city'
+                    )
+            ->get();
+
+            $content = $client->map(function($clients){
+                return [
+                    'id_clientInternal' => $clients->id,
+                    'full_name' => $clients->full_name,
+                    'phoneNumber' => $clients->phoneNumber,
+                    'email' => $clients->email,
+                    'loginMethod'=>$clients->loginMethod,
+                    'photo'=>$clients->photo,
+                    'city_name'=>$clients->name_city
+                ];
+            });
+
+            return [
+                'message' => 'Listado exitoso de clientes',
+                'result' => true,
+                'clients_content' => $content
+            ];
+        } catch(\Exception $e){
+            return [
+                'message' => 'Fallas al momento del consumo: ' . $e->getMessage(),
+                'result' => false,
+                'clients_content' => []
+            ];
+        }
+    }
 }

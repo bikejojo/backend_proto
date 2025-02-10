@@ -3,6 +3,13 @@ extend type Mutation {
     updateClient(id: ID,clientRequest:JSON!): ClientResponse @field(resolver: "ClienteInternoMutations@update")
     deleteClient(id: ID! @whereKey): Response @field(resolver: "ClienteInternoMutations@delete")
     updatePhoto(id_client:ID, photo:Upload):ClientResponse @field(resolver: "ClienteInternoMutations@updatePhoto")
+    resetPasswordClient(id_client:ID,new_password:String):responsePassClient @field(resolver: "ClienteInternoMutations@resetPasswordclientAtSupport")
+}
+
+
+type responsePassClient{
+    message:String
+    result:Int
 }
 
 type Response {
