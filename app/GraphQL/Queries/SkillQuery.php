@@ -51,7 +51,9 @@ class SkillQuery
 
             // Parámetros asegurando que no sean arrays vacíos o valores no definidos
             $searchParameter = $searchData['searchParameter'] ?? null;
-            $skillsIds       = (!empty($searchData['skillsId'])) ? $searchData['skillsId'] : null;
+            $skillsIds = isset($searchData['skillsId']) && is_array($searchData['skillsId']) && count($searchData['skillsId']) > 0
+            ? $searchData['skillsId']
+            : null;
             $experience      = $searchData['experience'] ?? null;
             $qualification   = $searchData['qualification'] ?? null;
             $cityId          = $searchData['cityId'] ?? null;
@@ -76,7 +78,7 @@ class SkillQuery
             }
 
 
-            if (!empty($skillsIds)) {
+            if (!is_null($skillsIds)) {
                 $query->whereIn('skills.id', $skillsIds);
             }
 
