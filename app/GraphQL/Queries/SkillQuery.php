@@ -61,9 +61,10 @@ class SkillQuery
                 ->join('technician_skills', 'technician_skills.technicianId', '=', 'technicians.id')
                 ->join('skills', 'skills.id', '=', 'technician_skills.skillId')
                 ->join('technician_subcription','technicians.id','=','technician_subcription.technicianId' )
-                ->where('technician_subcription.status',1);
+                ->where('technician_subcription.status',1)
+                ->groupBy('technicians.id');
 
-
+        //dd($query->get());
             if (!empty($searchParameter)) {
                 $query->where(function ($q) use ($searchParameter) {
                     $q->where('technicians.firstName', 'ILIKE', "%{$searchParameter}%")
@@ -95,7 +96,7 @@ class SkillQuery
             // Obtener los técnicos y sus habilidades relacionadas
 
             $technicians = $query->distinct()->get();
-
+            //dd($technicians);
             // Formatear la respuesta
             if($technicians->isEmpty()){
                 return [

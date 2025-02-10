@@ -249,6 +249,7 @@ class SubcritionMutations
             if (!$subcription) {
                 return [
                     'message' => 'No existe la suscripción.',
+                    'result' => false
                 ];
             }
 
@@ -286,7 +287,8 @@ class SubcritionMutations
                         'codeSubcription'=>$existingSubscriptionAll->codeSubcription,
                         'starDateSubcription'=>$existingSubscriptionAll->starDateSubcription,
                         'endDateSubcription'=>$existingSubscriptionAll->endDateSubcription ] //$existingSubscriptionAll
-                        ,'technician' => $technician
+                        ,'technician' => $technician,
+                    'result' => false
                 ];
             }
 
@@ -309,12 +311,14 @@ class SubcritionMutations
                 return [
                     'message' => 'El registro de suscripción fue exitoso.',
                     'technician' => $technician,
-                    'suscripcion' => $subcriptionNew
+                    'suscripcion' => $subcriptionNew,
+                    'result' => true
                 ];
             } catch (\Exception $e) {
                 DB::rollBack();
                 return [
-                    'message' => 'Sucedió un problema al registrar la suscripción. ' . $e->getMessage()
+                    'message' => 'Sucedió un problema al registrar la suscripción. ' . $e->getMessage(),
+                    'result' => false
                 ];
             }
         }
