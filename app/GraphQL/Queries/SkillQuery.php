@@ -65,7 +65,6 @@ class SkillQuery
             ->join('skills', 'skills.id', '=', 'technician_skills.skillId')
             ->join('technician_subcription', 'technicians.id', '=', 'technician_subcription.technicianId')
             ->where('technician_subcription.status', 1)
-            ->whereIn('skills.id', $skillsIds)
             ->where('technicians.cityId', '=', $cityId)
             ->groupBy('technicians.id'); // 🔹 Agrupar solo por técnicos
 
