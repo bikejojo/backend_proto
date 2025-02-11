@@ -15,6 +15,12 @@ final readonly class PublicityQuery
 
     public function getAllowPublicity($root,array $args){
         $publicidad = Publicidad::all();
+        if(!empty($publicidad)){
+            return [
+                'message' => 'No encuentran publicidades',
+                'publicity' => []
+            ];
+        }
         return [
             'message' => 'Se esta devolviendo todas las publicaciones.',
             'publicity' => $publicidad

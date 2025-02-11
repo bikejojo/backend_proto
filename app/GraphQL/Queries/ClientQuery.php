@@ -12,6 +12,7 @@ use App\Models\Solicitud;
 use App\Models\Historial_Servicios;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Exception;
 
 class ClientQuery{
 
@@ -454,6 +455,55 @@ class ClientQuery{
                 'message' => 'Fallas al momento del consumo: ' . $e->getMessage(),
                 'result' => false,
                 'clients_content' => []
+            ];
+        }
+    }
+
+    public function searchClientInterno($root,$args){
+        try{
+            $searchData = $args['requestSearchData'];
+            $parameterSearch=$searchData['parameterSearch'];
+            //$phoneNumber=$searchData['phoneNumber'];
+            //$email=$searchData['email'];
+            //$ciudad=$searchData['ciudad'];
+
+            $query=Cliente_Interno::join('cities','internal_clients.cityId','=','cities.id')
+                    ->select(
+                        DB::raw('CONCAT(COALESCE(internal_clients."firstName", \'\'), \' \', COALESCE(internal_clients."lastName", \'\')) as "full_name"') // Nombre completo
+                        ,'internal_clients.*',
+                        'internal_clients.id As id_clientInternal',
+                        'cities.name as city_name'
+                    );
+
+            if (!empty($parameterSearch)) {
+                $query->where(function ($q) use ($parameterSearch) {
+                    $q->where('cities.name', 'ILIKE', '%' . $parameterSearch . '%')
+                        ->orWhere('internal_clients.phoneNumber', 'ILIKE', '%' . $parameterSearch . '%')
+                        ->orWhere('internal_clients.email', 'ILIKE', '%' . $parameterSearch . '%')
+                        ->orWhereRaw("CONCAT(internal_clients.\"firstName\", ' ', internal_clients.\"lastName\") ILIKE ?", ['%' . $parameterSearch . '%']);
+                });
+            }
+
+            $client = $query->get();
+
+            if ($client->isEmpty()) {
+                return [
+                    'message' => 'No se encontraron técnicos con los filtros aplicados',
+                    'result' => false,
+                    'clients_content' => []
+                ];
+            }
+
+            return[
+                'message'=>'Clientes encontrados con los filtros aplicados',
+                'result'=> true,
+                'clients_content'=>$client
+            ];
+        } catch(\Exception $e ){
+            return [
+                'message' => 'Fallas al momento del consumo: '. $e->getMessage(),
+                'result' => false,
+                'clients_content' => null
             ];
         }
     }

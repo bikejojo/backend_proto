@@ -129,45 +129,49 @@ class TechnicianQuery
             try {
                 $searchData = $args['requestFilterTechnician'];
                 $searchParameter = $searchData['searchParameter'] ?? null;
-                $ci = $searchData['ci'];
-                $phoneNumber = $searchData['phoneNumber'];
+                //$ci = $searchData['ci'];
+                //$phoneNumber = $searchData['phoneNumber'];
                 $code_sub = $searchData['code_sub'];
-                // Iniciar la consulta base
-            // Iniciar la consulta base
+            $latestSubscription = DB::table('technician_subcription as ts1')
+            ->select('ts1.technicianId', DB::raw('MAX(ts1."endDateSubcription") as last_end_date'))
+            ->groupBy('ts1.technicianId');
             $query = Tecnico::join('users', 'technicians.userId', '=', 'users.id')
             ->join('cities', 'technicians.cityId', '=', 'cities.id')
-            ->join('technician_subcription', 'technicians.id', '=', 'technician_subcription.technicianId')
+            ->joinSub($latestSubscription, 'latest_sub', function ($join) {
+                $join->on('technicians.id', '=', 'latest_sub.technicianId');
+            })
+            ->join('technician_subcription', function ($join) {
+                $join->on('technicians.id', '=', 'technician_subcription.technicianId')
+                     ->on('technician_subcription.endDateSubcription', '=', 'latest_sub.last_end_date');
+            })
             ->join('subcriptions', 'technician_subcription.subcriptionsId', '=', 'subcriptions.id')
-            ->where('technician_subcription.status',1)
+            //->where('technician_subcription.status', 1)
             ->select(
                 'users.ci AS ci_tech',
                 'technicians.cityId AS city_id',
                 DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name'),
-                'technicians.phoneNumber',
-                'technicians.id AS id_technician',
                 'technicians.phoneNumber AS phone',
+                'technicians.id AS id_technician',
                 'technicians.email AS email_tech',
                 'cities.name AS name_city',
+                'technician_subcription.status AS status_sub',
                 'subcriptions.codeSubcription AS code_sub',
                 'technician_subcription.starDateSubcription AS startDate',
                 'technician_subcription.endDateSubcription AS endDate'
             );
 
         // Aplicar filtros solo si existen valores
-        if (!empty($ci)) {
-            $query->where('users.ci', 'LIKE', '%' . $ci . '%');
-        }
-        if (!empty($phoneNumber)) {
-            $query->where('technicians.phoneNumber', 'LIKE', '%' . $phoneNumber . '%');
-        }
+
+
         if (!empty($code_sub)) {
-            $query->where('subcriptions.codeSubcription', '=', $code_sub);
+            $query->where('subcriptions.codeSubcription', 'ILIKE','%'. $code_sub.'%');
         }
         if (!empty($searchParameter)) {
             $query->where(function ($q) use ($searchParameter) {
                 $q->where('users.ci', 'LIKE', '%' . $searchParameter . '%')
                     ->orWhereRaw("CONCAT(technicians.\"firstName\", ' ', technicians.\"lastName\") ILIKE ?", ['%' . $searchParameter . '%'])
-                    ->orWhere('technicians.phoneNumber', 'LIKE', '%' . $searchParameter . '%');
+                    ->orWhere('technicians.phoneNumber', 'LIKE', '%' . $searchParameter . '%')
+                    ->orWhere('users.ci', 'LIKE', '%' . $searchParameter . '%');
             });
         }
 
@@ -192,6 +196,7 @@ class TechnicianQuery
                 'ci' => $technician->ci_tech,
                 'id_city' => $technician->city_id,
                 'name_city' => $technician->name_city,
+                'status_sub' => $technician->status_sub,
                 'startDate' => $technician->startDate,
                 'endDate' => $technician->endDate,
                 'code_sub' => $technician->code_sub,

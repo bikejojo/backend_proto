@@ -37,7 +37,7 @@ final class PublicityMutations{
                 'descriptionPublicity' => $publicityDate['descriptionPublicity'],
                 'commercialName' =>       $publicityDate['commercialName'],
                 'link'=>                  $publicityDate['link'],
-                'createdDate'=>           $publicityDate['createdDate'],
+                'createdDate'=>           Carbon::now(),
                 'startDate' =>            $publicityDate['startDate'],
                 'finishDate' =>           $publicityDate['finishDate'],
                 'categoryId' =>           $publicityDate['id_category'],
