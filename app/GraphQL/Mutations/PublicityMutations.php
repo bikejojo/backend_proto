@@ -12,6 +12,8 @@ use Intervention\Image\Drivers\Gd\Driver;
 use App\Helpers\ImageHelper;
 use App\Services\StateCatalog;
 use App\Services\ValidationModels;
+use Illuminate\Support\Facades\Log;
+
 
 final class PublicityMutations{
 
@@ -23,6 +25,7 @@ final class PublicityMutations{
     }
 
     public function create($root,array $args){
+
         $publicityDate = $args['requestPublicity'];
         DB::beginTransaction();
         try{
@@ -32,7 +35,7 @@ final class PublicityMutations{
                     'message' => 'Archivo de imagen inválido.'
                 ];
             }
-
+            //log::info( $publicityDate['descriptionPublicity']);
             $publicity = Publicidad::create([
                 'descriptionPublicity' => $publicityDate['descriptionPublicity'],
                 'commercialName' =>       $publicityDate['commercialName'],
@@ -43,8 +46,9 @@ final class PublicityMutations{
                 'categoryId' =>           $publicityDate['id_category'],
                 'status'=>                StateCatalog::STATUS_PUBLICITY_ACTIVE
             ]);
-
+            //dd($publicity);
             $publicityId = $publicity->id;
+
             $publicityComplete = $publicityId;
             $value=0;
             ImageHelper::createDirectorie($publicityComplete,$value);
@@ -63,7 +67,7 @@ final class PublicityMutations{
         }catch(\Exception $e){
             DB::rollback();
             return [
-                'La falla es la siguiente: ' => $e->getMessage()
+                'message' => 'La falla es la siguiente: '. $e->getMessage()
             ];
         }
     }
