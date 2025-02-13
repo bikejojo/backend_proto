@@ -181,7 +181,6 @@ class AgendaQuery{
                 ->leftjoin('services','services.id','=','detail_technical_agenda.serviceId')
                 ->where('services.status',1)
                 ->where('detail_technical_agenda.agendaTechnicalId', $request->agendaTechnicalId)
-                //->select('technicians.*')->first();
                 ->select('technicians.*','services.latitude','services.longitude')->first();
                 $client = DB::table('associationTechnClient')
                 ->join('external_clients', 'external_clients.id', '=', 'associationTechnClient.clientId')

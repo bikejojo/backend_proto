@@ -463,9 +463,6 @@ class ClientQuery{
         try{
             $searchData = $args['requestSearchData'];
             $parameterSearch=$searchData['parameterSearch'];
-            //$phoneNumber=$searchData['phoneNumber'];
-            //$email=$searchData['email'];
-            //$ciudad=$searchData['ciudad'];
 
             $query=Cliente_Interno::join('cities','internal_clients.cityId','=','cities.id')
                     ->select(

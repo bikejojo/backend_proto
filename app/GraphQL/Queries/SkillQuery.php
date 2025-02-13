@@ -100,8 +100,6 @@ class SkillQuery
             // Obtener los técnicos y sus habilidades relacionadas
 
             $technicians = $query->get();
-            //dd($technicians);
-            // Formatear la respuesta
             if($technicians->isEmpty()){
                 return [
                     'message' => 'No hay coincidencia en la busqueda.',

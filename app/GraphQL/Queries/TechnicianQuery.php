@@ -2,11 +2,9 @@
 
 namespace App\GraphQL\Queries;
 
-use App\Models\Ciudad;
+
 use App\Models\Tecnico;
-use App\Models\User;
-use App\Models\Technician_subcripcion;
-use App\Models\Suscripcion;
+
 use Illuminate\Support\Facades\DB;
 
 class TechnicianQuery
