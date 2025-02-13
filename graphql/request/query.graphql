@@ -2,6 +2,22 @@ extend type Query {
     requestTechnicalAll(id:ID!):responseTechnicalId @field (resolver: "RequestQuery@requestsTechnicalId")
     requestClientAll(id:ID!):responseClientId @field (resolver: "RequestQuery@requestsClientId")
     getListStatusRequest(requestRequest:JSON):responseTechnicalId @field (resolver: "RequestQuery@listStatusPendingComplet")
+    getAgendaRequest(parameterSearch:JSON):responseAgendaRequest @field(resolver: "RequestQuery@agenda_requests")
+}
+
+type responseAgendaRequest{
+    message:String
+    status:Int
+    request:[requestagenda]
+}
+
+type requestagenda {
+    activity_name:String
+    title:String
+    description:String
+    full_name:String
+    phoneNumber:String
+    stateAgenda:String
 }
 
 type responseTechnicalId {

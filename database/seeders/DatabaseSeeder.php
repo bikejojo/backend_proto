@@ -70,33 +70,33 @@ class DatabaseSeeder extends Seeder
             *plomeria:account-wrench-outline
             *electricista: fuse-alert
          */
-        Habilidad::create(['name' => 'Plomeria','status'=>1]); //1
-        Habilidad::create(['name' => 'Electricista','status'=>1]); //1
-        Habilidad::create(['name' => 'Carpinteria','status'=>1]); //1
-        Habilidad::create(['name' => 'Pintor','status'=>1]); //1
-        Habilidad::create(['name' => 'Mecanico automotriz','status'=>1]); //3
-        Habilidad::create(['name' => 'Soldador','status'=>1]); //3
-        Habilidad::create(['name' => 'Jardineria','status'=>1]); //4
-        Habilidad::create(['name' => 'Albanileria','status'=>1]); //1
-        Habilidad::create(['name' => 'Cocinero','status'=>1]);
-        Habilidad::create(['name' => 'Cerrajero','status'=>1]); //4
-        Habilidad::create(['name' => 'Pintor de obras','status'=>1]); //4
-        Habilidad::create(['name' => 'Fumigador','status'=>1]); //4
-        Habilidad::create(['name' => 'Vidriero','status'=>1]); //4
-        Habilidad::create(['name' => 'Tecnico en computacion','status'=>1]); //2
-        Habilidad::create(['name' => 'Tecnico en redes electricas','status'=>1]); //2
-        Habilidad::create(['name' => 'Tecnico en electrodomesticos','status'=>1]); //2
-        Habilidad::create(['name' => 'Limpieza General','status'=>1]); //1
-        Habilidad::create(['name' => 'Tecnico en telefonia movil','status'=>1]); //2
-        Habilidad::create(['name' => 'Veterinario(a)','status'=>1]); //2
+        Habilidad::create(['name' => 'Plomeria','status'=>1,'icons'=>'account-wrench-outline']); //1
+        Habilidad::create(['name' => 'Electricista','status'=>1,'icons'=>'fuse-alert']); //1
+        Habilidad::create(['name' => 'Carpinteria','status'=>1,'icons'=>'hammer']); //1
+        Habilidad::create(['name' => 'Pintor','status'=>1,'icons'=>'format-paint']); //1
+        Habilidad::create(['name' => 'Mecanico automotriz','status'=>1,'icons'=>'car-cog']); //3
+        Habilidad::create(['name' => 'Soldador','status'=>1,'icons'=>'soldering-iron']); //3
+        Habilidad::create(['name' => 'Jardineria','status'=>1,'icons'=>'mower-bag']); //4
+        Habilidad::create(['name' => 'Albanileria','status'=>1,'icons'=>'hammer-screwdriver']); //1
+        Habilidad::create(['name' => 'Cocinero','status'=>1,'icons'=>'chef-hat']);
+        Habilidad::create(['name' => 'Cerrajero','status'=>1 ,'icons'=>'key-chain-variant']); //4
+        Habilidad::create(['name' => 'Pintor de obras','status'=>1 ,'icons'=>'format-color-fill']); //4
+        Habilidad::create(['name' => 'Fumigador','status'=>1 ,'icons'=>'sprinkler-variant']); //4
+        Habilidad::create(['name' => 'Vidriero','status'=>1 ,'icons'=>'google-glass']); //4
+        Habilidad::create(['name' => 'Tecnico en computacion','status'=>1,'icons'=>'cable-data']); //2
+        Habilidad::create(['name' => 'Tecnico en redes electricas','status'=>1 ,'icons'=>'lightning-bolt-circle']); //2
+        Habilidad::create(['name' => 'Tecnico en electrodomesticos','status'=>1 ,'icons'=>'fridge-alert-outline']); //2
+        Habilidad::create(['name' => 'Limpieza General','status'=>1 ,'icons'=>'format-clear']); //1
+        Habilidad::create(['name' => 'Tecnico en telefonia movil','status'=>1 ,'icons'=>'cellphone-cog']); //2
+        Habilidad::create(['name' => 'Veterinario(a)','status'=>1 ,'icons'=>'doctor']); //2
 
-        Habilidad::create(['name' => 'piscenero','status'=>1]); //2
-        Habilidad::create(['name' => 'limpieza general en vehiculo','status'=>1]); //2
-        Habilidad::create(['name' => 'mesero / camarero / mozo','status'=>1]); //2
-        Habilidad::create(['name' => 'Organizador de eventos','status'=>1]); //2
-        Habilidad::create(['name' => 'Arrendador  de mobiliario','status'=>1]); //2
-        Habilidad::create(['name' => 'bartender / barman','status'=>1]); //2
-        Habilidad::create(['name' => 'Vocalista','status'=>1]); //2
+        Habilidad::create(['name' => 'piscenero','status'=>1 ,'icons'=>'pool']); //2
+        Habilidad::create(['name' => 'limpieza general en vehiculo','status'=>1 ,'icons'=>'spray-bottle' ]); //2
+        Habilidad::create(['name' => 'mesero / camarero / mozo','status'=>1 ,'icons'=>'silverware-fork-knife' ]); //2
+        Habilidad::create(['name' => 'Organizador de eventos','status'=>1 ,'icons'=>'party-popper']); //2
+        Habilidad::create(['name' => 'Arrendador  de mobiliario','status'=>1 ,'icons'=>'sofa-single']); //2
+        Habilidad::create(['name' => 'bartender / barman','status'=>1 ,'icons'=>'glass-cocktail']); //2
+        Habilidad::create(['name' => 'Vocalista','status'=>1 ,'icons'=>'microphone-message']); //2
 
         Sub_group::create(['description' => 'Aires Acondicionados', 'createDate' => now()]);
         Sub_group::create(['description' => 'Calefonos', 'createDate' => now()]);
@@ -159,8 +159,8 @@ class DatabaseSeeder extends Seeder
         Tipo_Actividad::create(['description'=>'inspeccion','entity_type'=>'service']);
         #solicitud
         Tipo_Estado::create(['description'=>'Pendiente']);
-        Tipo_Estado::create(['description'=>'Rechazado']);
         Tipo_Estado::create(['description'=>'Aceptado']);
+        Tipo_Estado::create(['description'=>'Rechazado']);
         Tipo_Estado::create(['description'=>'Terminado']);
 
         Categoria_Publicidad::create(['description'=>'tecnologia','entity_type'=>'publicity','code'=>'PUB001']);

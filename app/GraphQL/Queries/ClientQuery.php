@@ -390,7 +390,7 @@ class ClientQuery{
             $request = Solicitud::join('state_types','requests.stateId','=','state_types.id')
             ->join('technicians','requests.technicianId','=','technicians.id')
             ->where('clientId',$clietn_id)
-            ->where('stateId',3)
+            ->where('stateId',2)
             ->select(
                 'requests.id As id_request',
                 'requests.registrationDateTime As date',
