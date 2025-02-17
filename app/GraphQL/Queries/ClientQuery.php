@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Exception;
 
+use function PHPUnit\Framework\isEmpty;
+
 class ClientQuery{
 
     public function searchExternalByName($root, array $args)
@@ -501,6 +503,58 @@ class ClientQuery{
                 'message' => 'Fallas al momento del consumo: '. $e->getMessage(),
                 'result' => false,
                 'clients_content' => null
+            ];
+        }
+    }
+
+    public function listRequestByClient($root,array $args){
+        try{
+            //$now=Carbon::now()->format('Y-m-d');
+            $parameter=$args['searchParameter'];
+            $id_client = $args['id_client'];
+            $stateId=$parameter['id_state'] ?? 1;
+            //$dateFilter=$parameter['date'] ?? $now;
+                // Contar solicitudes por estado
+            $countByState = Solicitud::where('requests.clientId', $id_client)
+                                        ->where('requests.stateId',$stateId)
+                                        ->count();
+
+            $request = Solicitud::join('technicians','requests.technicianId','=','technicians.id')
+                                ->where('requests.clientId',$id_client)
+                                ->where('requests.stateId',$stateId)
+                                ->select('requests.titleRequests',
+                                        'requests.requestDescription',
+                                        'requests.serviceLocation',
+                                        'requests.reference_phone',
+                                        'requests.registrationDateTime'
+                                        );
+            if($stateId == 2){
+                $request->join('services','requests.id','=','services.requestsId')
+                                    ->addSelect('services.updatedDateTime');
+            }
+            $requests= $request->get();
+
+            $content = $requests->map( function($req) use ($stateId) {
+                return [
+                    'titleRequests'=>$req->titleRequests,
+                    'requestDescription'=>$req->requestDescription,
+                    'serviceLocation'=>$req->serviceLocation,
+                    'reference_phone'=>$req->reference_phone,
+                    'date' => $stateId == 2 ? $req->updatedDateTime : $req->registrationDateTime,
+                ];
+            });
+
+            return [
+                'message' => 'Listado de las solicitudes.',
+                'count' => $countByState,
+                'requests' => $content
+            ];
+
+        } catch(\Exception $e) {
+            return [
+                'message' => 'Las fallas son las siguientes: ' . $e->getMessage(),
+                'count' => 0 ,
+                'requests' => []
             ];
         }
     }
