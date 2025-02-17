@@ -512,25 +512,26 @@ class ClientQuery{
             //$now=Carbon::now()->format('Y-m-d');
             $parameter=$args['searchParameter'];
             $id_client = $args['id_client'];
-            $stateId=$parameter['id_state'] ?? 1;
-            //$dateFilter=$parameter['date'] ?? $now;
-                // Contar solicitudes por estado
-            $countByState = Solicitud::where('requests.clientId', $id_client)
-                                        ->where('requests.stateId',$stateId)
-                                        ->count();
+            $stateId=$parameter['id_state'] ?? "";
+            
+            $countByState = Solicitud::where('requests.clientId', $id_client);
 
             $request = Solicitud::join('technicians','requests.technicianId','=','technicians.id')
                                 ->where('requests.clientId',$id_client)
-                                ->where('requests.stateId',$stateId)
                                 ->select('requests.titleRequests',
                                         'requests.requestDescription',
                                         'requests.serviceLocation',
                                         'requests.reference_phone',
                                         'requests.registrationDateTime'
                                         );
+            if($stateId == 1 || $stateId == 3 ){
+                $request->where('requests.stateId',$stateId);
+                $countByState->where('requests.stateId',$stateId);
+            }
             if($stateId == 2){
                 $request->join('services','requests.id','=','services.requestsId')
-                                    ->addSelect('services.updatedDateTime');
+                        ->addSelect('services.updatedDateTime');
+                $countByState->where('requests.stateId',$stateId);
             }
             $requests= $request->get();
 
@@ -546,7 +547,7 @@ class ClientQuery{
 
             return [
                 'message' => 'Listado de las solicitudes.',
-                'count' => $countByState,
+                'count' => $countByState->count(),
                 'requests' => $content
             ];
 
