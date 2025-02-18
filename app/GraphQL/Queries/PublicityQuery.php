@@ -12,6 +12,36 @@ final readonly class PublicityQuery
     {
         // TODO implement the resolver
     }
+    public function getListPublicitySearch($root, array $args)
+    {
+        try {
+            $parameterData = $args['searchParameter'];
+            $parameter = $parameterData['parameter'];
+
+            // Ejecutar la consulta y obtener los resultados
+            $publicity = Publicidad::where('commercialName', 'LIKE', '%' . $parameter . '%')
+                ->orWhere('link', 'LIKE', '%' . $parameter . '%')
+                ->get(); // Aquí llamamos a get() para obtener una colección
+
+            // Verificar si la colección está vacía
+            if ($publicity->isEmpty()) {
+                return [
+                    'message' => 'No existen publicidades que coincidan con tu búsqueda.',
+                    'publicity' => []
+                ];
+            }
+
+            return [
+                'message' => 'Resultados de la búsqueda',
+                'publicity' => $publicity
+            ];
+        } catch (\Exception $e) {
+            return [
+                'message' => 'Fallas en el servidor: ' . $e->getMessage(),
+                'publicity' => []
+            ];
+        }
+    }
 
     public function getAllowPublicity($root,array $args){
         $publicidad = Publicidad::all();
