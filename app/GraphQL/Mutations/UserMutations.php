@@ -26,14 +26,11 @@ class UserMutations{
     public function create($root , array $args){
         $userData = $args['userRequest'];
         $email = strtolower(trim($userData['email']));
-        if (strlen($userData['ci']) != 7) {
-            throw new \Exception('El CI debe tener exactamente 7 dígitos.');
-        }
+
         $user = User::create([
             'email' => $email,
             'password' => Hash::make($userData['password']),
-            'ci' => $userData['ci'],
-            'type_user' =>$userData['type_user'],
+            'type_user' => 3,
         ]);
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
