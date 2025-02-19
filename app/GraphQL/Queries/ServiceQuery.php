@@ -583,36 +583,42 @@ class ServiceQuery
         try {
             $clientId= $args['id_client'];
             $requestData = Solicitud::join('services', 'requests.id', '=', 'services.requestsId')
-                                    ->join('technicians', 'requests.technicianId', '=', 'technicians.id')
-                                    ->where('requests.clientId',$clientId)
-                                    ->where('requests.stateId',2)
-                                    ->select(
-                                        'requests.id As id_requests',
-                                        'services.id As id_services',
-                                        DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name'),
-                                        'requests.titleRequests As titleRequests',
-                                        DB::raw('COALESCE(MAX(services."updatedDateTime"), NOW()) AS visitDate'),
-                                        'requests.stateId As status'
-                                    )
-                                    ->groupBy('requests.id', 'services.id', 'technicians.firstName', 'technicians.lastName', 'requests.titleRequests', 'requests.stateId')
-                                    ->get();
+                                ->join('technicians', 'requests.technicianId', '=', 'technicians.id')
+                                ->where('requests.clientId', $clientId)
+                                ->where('requests.stateId', 2)
+                                ->whereBetween('services.updatedDateTime', [
+                                    now()->subDay(), // Un día antes
+                                    now()->addDay()  // Un día después
+                                ])
+                                ->select(
+                                    'requests.id AS id_requests',
+                                    'services.id AS id_services',
+                                    DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name'),
+                                    'requests.titleRequests AS titleRequests',
+                                    'services.updatedDateTime AS visitDate',
+                                    'requests.stateId AS status'
+                                )
+                                ->orderBy('services.updatedDateTime', 'ASC') // Ordenar de más cercano a más lejano
+                                ->get();
+
+                                    //dd($requestData->toArray());
+
             if($requestData->isEmpty()){
                 return [
                     'message' =>'No existen solicitudes hoy.',
                     'requests' =>[]
                 ];
             }
-            $content = $requestData->map(function($request){
-                $date = Carbon::parse($request->visitDate)->toDateTimeString();
+            $requestArray = $requestData->toArray();
+            $content = collect($requestArray)->map(function ($request) {
                 return [
-                    'id_requests'=>$request->id_requests,
-                    'id_services'=>$request->id_services,
-                    'full_name'=>$request->full_name,
-                    'titleRequests'=>$request->titleRequests,
-                    'visitDate'=>$date,
-                    'status'=>$request->status,
+                    'id_requests' => $request['id_requests'],
+                    'id_services' => $request['id_services'],
+                    'full_name' => $request['full_name'],
+                    'titleRequests' => $request['titleRequests'],
+                    'visitDate' => $request['visitDate'],
+                    'status' => $request['status'],
                 ];
-
             });
 
             return [
