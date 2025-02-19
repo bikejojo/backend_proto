@@ -3,13 +3,13 @@
 namespace App\GraphQL\Queries;
 
 use App\Models\Servicio;
+use App\Models\Solicitud;
 use Illuminate\Support\Facades\DB;
-use app\Helpers\StatusHelper;
 use App\Models\Tecnico;
 use App\Models\Tecnico_Habilidad;
 use App\Services\StateCatalog;
-use app\Services\StatusAssigner;
 use App\Services\ValidationModels;
+use Carbon\Carbon;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -494,78 +494,6 @@ class ServiceQuery
         }
     }
 
-    /*public function getAverageTechnicalFilter($root, array $args)
-    {
-        try {
-            $filter = $args['requestFilterTechnicial'];
-            $cityId = $filter['id_city'] ?? null;
-            $skillsId = (!empty($filter['id_skills'])) ? $filter['id_skills']:null;
-            $experience = $filter['experience'] ?? null;
-
-            //(!empty($searchData['skillsId'])) ? $searchData['skillsId'] : null;
-            if (!$cityId) {
-                return [
-                    'message' => 'No existe tecnicos en esta ciudad.',
-                    'status' => 2,
-                    'technicians_' => []
-                ];
-            }
-*/
-            // 🔹 Obtener la lista de técnicos destacados con promedio redondeado
-            /*$listTechnician = Tecnico::join('technician_skills','technician_skills.technicianId','=','technicians.id')
-                ->join('skills','technician_skills.skillId','=','skills.id')
-                ->selectRaw("ROUND(average_rating::NUMERIC, 2) as average_rating")
-                ->addSelect('technicians.*','technician_skills.experience','skills.id As id_skill','skills.name AS name_skills')
-                ->whereBetween('average_rating', [4.00, 5.01])
-                ->where('cityId', $cityId);*/
-        /*    $listTechnician = Tecnico::join('technician_skills', 'technician_skills.technicianId', '=', 'technicians.id')
-                ->join('skills', 'technician_skills.skillId', '=', 'skills.id')
-                ->selectRaw("CAST(ROUND(average_rating::NUMERIC, 2) AS FLOAT) as average_rating") // Forzar conversión a FLOAT
-                ->addSelect('technicians.*', 'technician_skills.experience', 'skills.id As id_skill', 'skills.name AS name_skills')
-                ->whereRaw("CAST(ROUND(average_rating::NUMERIC, 2) AS FLOAT) BETWEEN 4.00 AND 5.01") // Usar FLOAT en comparación
-                ->where('cityId', $cityId);
-            //dd($listTechnician->get());
-            if(!Empty($skillsId)){
-                $listTechnician->whereIn('technician_skills.skillId',$skillsId);
-            }
-
-            if(!is_null($experience)){
-                $listTechnician->where('technician_skills.experience','>=',$experience );
-            }
-
-            $content = $listTechnician->distinct()->get();
-            $technicians = $content->groupBy('id')->map(function ($group){
-                $technician = $group->first();
-                return [
-                    'id' => $technician->id,
-                    'firstName' => $technician->firstName,
-                    'lastName' => $technician->lastName,
-                    'phoneNumber' => $technician->phoneNumber,
-                    'photo' => $technician->photo,
-                    'average_rating' => $technician->average_rating,
-                    'skills_' => $group->map(function ($skill) {
-                        return [
-                            'id_skills' => $skill->id_skill,
-                            'experience' => $skill->experience,
-                            'name_skills' => $skill->name_skills
-                        ];
-                    })->unique('id_skills')->values()
-                ];
-            })->values();
-
-            return [
-                'message' => 'Listado de técnicos destacados.',
-                'status' => 1,
-                'technicians_' => $technicians
-            ];
-        } catch (\Exception $e) {
-            return [
-                'message' => 'Error en la consulta: ' . $e->getMessage(),
-                'status' => 3,
-                'technicians_' => []
-            ];
-        }
-    }*/
     public function getAverageTechnicalFilter($root, array $args)
 {
     try {
@@ -651,5 +579,100 @@ class ServiceQuery
     }
 }
 
+    public function getListRequestNow($root,array $args){
+        try {
+            $clientId= $args['id_client'];
+            $requestData = Solicitud::join('services', 'requests.id', '=', 'services.requestsId')
+                                    ->join('technicians', 'requests.technicianId', '=', 'technicians.id')
+                                    ->where('requests.clientId',$clientId)
+                                    ->where('requests.stateId',2)
+                                    ->select(
+                                        'requests.id As id_requests',
+                                        'services.id As id_services',
+                                        DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name'),
+                                        'requests.titleRequests As titleRequests',
+                                        DB::raw('COALESCE(MAX(services."updatedDateTime"), NOW()) AS visitDate'),
+                                        'requests.stateId As status'
+                                    )
+                                    ->groupBy('requests.id', 'services.id', 'technicians.firstName', 'technicians.lastName', 'requests.titleRequests', 'requests.stateId')
+                                    ->get();
+            if($requestData->isEmpty()){
+                return [
+                    'message' =>'No existen solicitudes hoy.',
+                    'requests' =>[]
+                ];
+            }
+            $content = $requestData->map(function($request){
+                $date = Carbon::parse($request->visitDate)->toDateTimeString();
+                return [
+                    'id_requests'=>$request->id_requests,
+                    'id_services'=>$request->id_services,
+                    'full_name'=>$request->full_name,
+                    'titleRequests'=>$request->titleRequests,
+                    'visitDate'=>$date,
+                    'status'=>$request->status,
+                ];
+
+            });
+
+            return [
+                'message' => 'Lista de solicitudes aceptadas',
+                'requests' => $content
+            ];
+
+        } catch (\Exception $e){
+            return [
+                'message' => 'La siguiente falla es: ' . $e ,
+                'requests' => []
+            ];
+        }
+    }
+
+    public function getServiceById($root, array $args){
+        try {
+            $serviceId = $args['id_service'];
+            $service = Servicio::join('activity_types','services.activityId','=','activity_types.id')
+            ->where('services.id', $serviceId)
+            ->select(
+                    'services.technicalId As id_technician',
+                    'services.titleService As titleService',
+                    'services.serviceDescription As serviceDescription',
+                    'services.updatedDateTime As visitDate',
+                    'activity_types.description As descripcionActivity'
+                )
+            ->first();
+
+            $technicianId = $service->id_technician;
+            $technician = Tecnico::find($technicianId);
+            // Formatear el técnico
+            $contenTech = [
+                'full_name' => $technician->firstName . ' ' . $technician->lastName,
+                'photo' => $technician->photo,
+                'phoneNumber' => $technician->phoneNumber,
+                'average_rating' => $technician->average_rating
+            ];
+
+            // Formatear el servicio
+            $date = Carbon::parse($service->visitDate)->toDateTimeString();
+            $contentService = [
+                'titleService' => $service->titleService,
+                'serviceDescription' => $service->serviceDescription,
+                'visitDate' => $date,
+                'descripcionActivity' => $service->descripcionActivity,
+            ];
+
+            return [
+                'message' => 'Contenido del servicio',
+                'cont_services' => $contentService,
+                'cont_technician' => $contenTech
+            ];
+        } catch (\Exception $e){
+            return [
+                'message'=>'Paso lo siguiente ' . $e->getMessage(),
+                'cont_services'=>null,
+                'cont_technician'=>null
+            ];
+        };
+    }
 
 }

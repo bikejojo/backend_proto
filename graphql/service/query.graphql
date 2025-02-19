@@ -4,10 +4,45 @@ extend type Query {
     getListClientExternalOver(id:ID!):responseClientExternal @field (resolver: "ServiceQuery@getExternalClientOver")
     getListClientExternalActivity(requestService:JSON):responseClientExternal @field (resolver: "ServiceQuery@getInternalClientActivity")
     getListClientInternalAll(id:ID!):responseClientInternal @field (resolver: "ServiceQuery@getInternalClient")
-
     getHistoryInternalClient(requestService:JSON):historyServiceInternal @field (resolver: "ServiceQuery@technicianHistoryClientInternal")
     getHistoryExternalClient(requestService:JSON):historyServiceExternal @field (resolver: "ServiceQuery@technicianHistoryClientExternal")
     collectClientServices(requestService:JSON):responseServices @field (resolver: "ServiceQuery@listsServiceClient")
+    listRequestsAccept(id_client:String):responseListService @field(resolver: "ServiceQuery@getListRequestNow")
+    getServiceId(id_service:String):responseServiceId @field (resolver: "ServiceQuery@getServiceById")
+}
+
+type responseServiceId{
+    message:String
+    cont_services:conService
+    cont_technician:conTechnician
+}
+
+type conService {
+    titleService:String
+    serviceDescription:String
+    visitDate:String
+    descripcionActivity:String
+}
+
+type conTechnician {
+    full_name:String
+    photo:String
+    phoneNumber:String
+    average_rating:String
+}
+
+type responseListService {
+    message:String
+    requests:[listRequest]
+}
+
+type listRequest {
+    id_requests:String
+    id_services:String
+    full_name:String
+    titleRequests:String
+    visitDate:String
+    status:String
 }
 
 type responseClientExternal {
