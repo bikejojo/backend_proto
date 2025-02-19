@@ -15,6 +15,7 @@ use App\Models\Sub_group;
 use App\Models\Type;
 use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -49,27 +50,7 @@ class DatabaseSeeder extends Seeder
         Group::create(['name'=>'Automotriz']);
         Group::create(['name'=>'Servicios Especializados']);
         #habilidades para tecnicos
-        /**
-                     *carpinteria: hammer
-            *pintor: format-paint
-            *mecanico automotriz: car-cog, car-wrench
-            *soldador: soldering-iron
-            *jardineria: gate, mower-bag
-            *albañileria:account-hart-hat, hammer-screwdriver,
-            *cocinero: chef-hat
-            *cerrajero: key-chain-variant
-            *pintor de obras: format-color-fill
-            *fumigador:sprinkler-variant,
-            *vidriero: google-glass
-            *tecnico en computacion: cable-data
-            *tecnica en redes electricas:connection, lightning-bolt-circle
-            *tecnico en electrodomestico: fridge-alert-outline
-            *limpieza general:format-clear
-            *tecnico en telefonia movil:cellphone-cog
-            *veterinario: doctor
-            *plomeria:account-wrench-outline
-            *electricista: fuse-alert
-         */
+
         Habilidad::create(['name' => 'Plomeria','status'=>1,'icons'=>'account-wrench-outline']); //1
         Habilidad::create(['name' => 'Electricista','status'=>1,'icons'=>'fuse-alert']); //1
         Habilidad::create(['name' => 'Carpinteria','status'=>1,'icons'=>'hammer']); //1
@@ -118,10 +99,6 @@ class DatabaseSeeder extends Seeder
         Sub_group::create(['description' => 'Alquiler sillas, mesas, vajillas', 'createDate' => now()]);
         Sub_group::create(['description' => 'Barra de bebidas / Licorería', 'createDate' => now()]);
         Sub_group::create(['description' => 'Grupo musical, mariachi, bandas', 'createDate' => now()]);
-
-
-/*
-
 
 /*
         Group::create(['name'=>'Servicios Técnicos y de Mantenimiento']);
@@ -179,5 +156,8 @@ class DatabaseSeeder extends Seeder
         Type::create(['description'=>'Publicidad','code_notifications'=>'PUBLIC']);
         Type::create(['description'=>'Solicitud','code_notifications'=>'SOLIC']);
 
+        Role::create(['name'=>'Soporte']);
+        Role::create(['name'=>'Comerial']);
+        Role::create(['name'=>'Administrativo']);
     }
 }

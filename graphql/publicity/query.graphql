@@ -3,7 +3,7 @@ extend type Query {
 
     listCategoryPublicidad(requestPublicity:JSON):responsePublicity @field (resolver: "PublicityQuery@getCategoryPublicity")
     searchPublicity(searchParameter: JSON):responsePublicity @field (resolver: "PublicityQuery@getListPublicitySearch")
-    getPublicityId(id:ID!):responsePublicit @field (resolver: "PublicityQuery@getIdPublicity")
+    getPublicityId(id:ID):responsePublicit @field (resolver: "PublicityQuery@getIdPublicity")
 }
 
 type responsePublicity {
