@@ -181,7 +181,7 @@ class SubcriptionQuery
                 'codeSubcription' => $suscripcion->codeSubcription,
                 'starDateSubcription' => $suscripcion->starDateSubcription,
                 'endDateSubcription' => $suscripcion->endDateSubcription,
-                'status' => $suscripcion->status
+                'status' => $suscripcion->status //
             ];
         });
 

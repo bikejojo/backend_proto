@@ -227,6 +227,7 @@ class TechnicianQuery
                                                         'technician_subcription.endDateSubcription As endSubcription',
                                                         'technician_subcription.status As statusSubcription',
                                                         'subcriptions.description As description_subcription',
+                                                        'subcriptions.name As name_subcription',
                                                     )
                                                     ->orderBy('technician_subcription.starDateSubcription', 'DESC')
                                                     ->get();

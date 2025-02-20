@@ -7,6 +7,7 @@ extend type Query {
     validationSuscriptionPromotion(requestSubcriptionPromotion:JSON):responseSuscriptions @field(resolver: "SubcriptionQuery@getSubcriptionPromotion")
     getAllHistorySuscription(requestSubcription:JSON): responseSuscription_ @field(resolver: "SubcriptionQuery@getSuscripcionHistorial")
     allSuscription:[Subcription] @field(resolver: "SubcriptionQuery@allSuscriptionExceptFree")
+    allSubcriptionPlain:[Subcription] @all
 }
 
 

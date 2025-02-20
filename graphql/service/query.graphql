@@ -41,7 +41,7 @@ type listRequest {
     id_services:String
     full_name:String
     titleRequests:String
-    getListRequestNow:String
+    descripcionActivity:String
     visitDate:String
     status:String
 }

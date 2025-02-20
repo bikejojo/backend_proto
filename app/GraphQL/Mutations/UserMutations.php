@@ -37,6 +37,7 @@ class UserMutations{
         $user->token = $tokens;
         $user->save();
         // Asignar rol usando Spatie
+        //
         if (!empty($userData['role'])) {
             $role = Role::whereRaw("name ILIKE ?", ["%{$userData['role']}%"])->first();
             if ($role) {

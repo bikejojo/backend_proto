@@ -17,6 +17,7 @@ type responseHistory {
 
 type historySubcription{
     id_subcription:String
+    name_subcription:String
     description_subcription:String
     price_subcription:String
     startSubcription:String

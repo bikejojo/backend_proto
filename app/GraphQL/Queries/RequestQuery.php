@@ -229,7 +229,7 @@ class RequestQuery
                 'full_name' => $solict->full_name,
                 'phoneNumber' => $solict->phoneNumber,
                 'stateAgenda' => $solict->stateAgenda
-            ];
+            ]; //
         });
     }
 

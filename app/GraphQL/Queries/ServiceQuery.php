@@ -678,7 +678,7 @@ class ServiceQuery
             return [
                 'message'=>'Paso lo siguiente ' . $e->getMessage(),
                 'cont_services'=>null,
-                'cont_technician'=>null
+                'cont_technician'=>null //
             ];
         };
     }
