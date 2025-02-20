@@ -2,7 +2,7 @@
 
 namespace App\GraphQL\Queries;
 
-
+use App\Models\Technician_subcripcion;
 use App\Models\Tecnico;
 
 use Illuminate\Support\Facades\DB;
@@ -212,6 +212,39 @@ class TechnicianQuery
             'status' => 3,
             'technicians' => null
         ];
+        }
+    }
+
+    public function recordSubcriptionTechnician($root,array $args){
+        try{
+            $technicianId=$args['id_technician'];
+            $suscriptionTech=Technician_subcripcion::join('subcriptions','technician_subcription.subcriptionsId','=','subcriptions.id')
+                                                    ->where('technicianId',$technicianId)
+                                                    ->select(
+                                                        'technician_subcription.id As id_subcription',
+                                                        'subcriptions.price As price_subcription',
+                                                        'technician_subcription.starDateSubcription As startSubcription',
+                                                        'technician_subcription.endDateSubcription As endSubcription',
+                                                        'technician_subcription.status As statusSubcription',
+                                                        'subcriptions.description As description_subcription',
+                                                    )
+                                                    ->orderBy('technician_subcription.starDateSubcription', 'DESC')
+                                                    ->get();
+            if($suscriptionTech->isEmpty()){
+                return [
+                    'message' => 'No existen suscripciones.',
+                    'suscriptionTech' => []
+                ];
+            }
+            return [
+                'message' => 'Historial de suscripciones.',
+                'suscriptionTech' => $suscriptionTech
+            ];
+        } catch(\Exception $e){
+            return [
+                'message' => 'Se presento la siguiente falla: '. $e->getMessage(),
+                'suscriptionTech' => null
+            ];
         }
     }
 }

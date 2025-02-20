@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Ciudad;
 use App\Models\Tecnico;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 
 
@@ -35,6 +36,13 @@ class UserMutations{
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
         $user->save();
+        // Asignar rol usando Spatie
+        if (!empty($userData['role'])) {
+            $role = Role::whereRaw("name ILIKE ?", ["%{$userData['role']}%"])->first();
+            if ($role) {
+                $user->assignRole($role);
+            }
+        }
         return $user;
     }
 

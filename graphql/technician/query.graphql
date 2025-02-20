@@ -7,6 +7,21 @@ extend type Query {
     getVerificationTechnician(id_city:String):responseVerification @field(resolver: "TechnicianQuery@verifactionCityTechnician")
     getAllTechnicians_: getTechnicianTable @field(resolver: "TechnicianQuery@get_technician")
     filtersTechnician(requestFilterTechnician:JSON):getTechnicianTable @field(resolver: "TechnicianQuery@filterListTechnician")
+    getRecordSubcriptionTechnician(id_technician:String):responseHistory @field(resolver: "TechnicianQuery@recordSubcriptionTechnician")
+}
+
+type responseHistory {
+    message:String
+    suscriptionTech:[historySubcription]
+}
+
+type historySubcription{
+    id_subcription:String
+    description_subcription:String
+    price_subcription:String
+    startSubcription:String
+    endSubcription:String
+    statusSubcription:String
 }
 
 type getTechnicianTable {

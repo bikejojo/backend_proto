@@ -583,6 +583,7 @@ class ServiceQuery
         try {
             $clientId= $args['id_client'];
             $requestData = Solicitud::join('services', 'requests.id', '=', 'services.requestsId')
+                                ->join('activity_types','services.activityId','=','activity_types.id')
                                 ->join('technicians', 'requests.technicianId', '=', 'technicians.id')
                                 ->where('requests.clientId', $clientId)
                                 ->where('requests.stateId', 2)
@@ -596,12 +597,12 @@ class ServiceQuery
                                     DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name'),
                                     'requests.titleRequests AS titleRequests',
                                     'services.updatedDateTime AS visitDate',
-                                    'requests.stateId AS status'
+                                    'requests.stateId AS status',
+                                    'activity_types.description As descripcionActivity'
                                 )
                                 ->orderBy('services.updatedDateTime', 'ASC') // Ordenar de más cercano a más lejano
                                 ->get();
 
-                                    //dd($requestData->toArray());
 
             if($requestData->isEmpty()){
                 return [
@@ -616,6 +617,7 @@ class ServiceQuery
                     'id_services' => $request['id_services'],
                     'full_name' => $request['full_name'],
                     'titleRequests' => $request['titleRequests'],
+                    'descripcionActivity' => $request['descripcionActivity'],
                     'visitDate' => $request['visitDate'],
                     'status' => $request['status'],
                 ];
