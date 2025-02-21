@@ -151,7 +151,7 @@ class RequestQuery
             $dateParameter = $parameter['visitDate'] ?? $now;
 
             // Verifica si existen solicitudes en la fecha dada
-            
+            //dd(!Solicitud::join('services','requests.id','=','services.requestsId')->where('requests.clientId', $clientId)->whereDate('services.updatedDateTime',$dateParameter)->exists());
             if (!Solicitud::join('services','requests.id','=','services.requestsId')->where('requests.clientId', $clientId)->whereDate('services.updatedDateTime',$dateParameter)->exists()) {
                 return [
                     'message' => "No existen solicitudes en la agenda del cliente: ",
@@ -219,7 +219,7 @@ class RequestQuery
                 break;
 
             default:
-                return collect(); // Retorna colección vacía si el estado no es válido
+                return collect(); // Retorna colección vacía si el estado no es válido// aqui hace el cambio plox
         }
 
         return $query->distinct()->get()->map(function ($solict) {
