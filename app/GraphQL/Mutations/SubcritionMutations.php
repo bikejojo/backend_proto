@@ -171,13 +171,13 @@ class SubcritionMutations
 
 
     public function lowSubcription($root,array $args){
-        $subcriptionData = $args['requestSubcription'];
-        if(!Suscripcion::find($subcriptionData['id'])){
+        $subcriptionData = $args['requestSubcription']['id'];
+        if(!Suscripcion::find($subcriptionData)){
             return[
                 'message'=>'No existe suscripcion!.'
             ];
         }
-        $subcription=Suscripcion::find($subcriptionData['id']);
+        $subcription=Suscripcion::find($subcriptionData);
         DB::beginTransaction();
         try{
             $subcription->status=0;

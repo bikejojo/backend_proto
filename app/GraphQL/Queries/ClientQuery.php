@@ -12,7 +12,6 @@ use App\Models\Solicitud;
 use App\Models\Historial_Servicios;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use Exception;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -513,7 +512,7 @@ class ClientQuery{
             $parameter=$args['searchParameter'];
             $id_client = $args['id_client'];
             $stateId=$parameter['id_state'] ?? "";
-            
+
             $countByState = Solicitud::where('requests.clientId', $id_client);
 
             $request = Solicitud::join('technicians','requests.technicianId','=','technicians.id')

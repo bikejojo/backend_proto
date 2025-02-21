@@ -156,8 +156,8 @@ class DatabaseSeeder extends Seeder
         Type::create(['description'=>'Publicidad','code_notifications'=>'PUBLIC']);
         Type::create(['description'=>'Solicitud','code_notifications'=>'SOLIC']);
 
-        Role::create(['name'=>'Soporte']);
+        /*Role::create(['name'=>'Soporte']);
         Role::create(['name'=>'Comerial']);
-        Role::create(['name'=>'Administrativo']);
+        Role::create(['name'=>'Administrativo']);*/
     }
 }

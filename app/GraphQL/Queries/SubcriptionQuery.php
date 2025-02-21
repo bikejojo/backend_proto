@@ -8,6 +8,7 @@ use App\Models\Technician_subcripcion;
 use App\Models\Promocion;
 use App\Models\Promocion_suscripcion;
 use App\Services\ValidationModels;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class SubcriptionQuery
@@ -189,5 +190,56 @@ class SubcriptionQuery
             'message' => 'Listado de las suscripciones que ha hecho el tecnico.',
             'suscripcion' => $formattedSuscripciones
         ];
+    }
+
+    public function detailSubcriptionAll($root,array $args){
+        try{
+            $id_suscription = $args['suscriptionId'];
+            $detailsSubcription = Technician_subcripcion::join('technicians','technician_subcription.technicianId','=','technicians.id')
+                                ->join('subcriptions','technician_subcription.subcriptionsId','=','subcriptions.id')
+                                ->where('technician_subcription.subcriptionsId',$id_suscription)
+                                ->select(
+                                    DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name'),
+                                    //'subcriptions.name As name_sub',
+                                    'technician_subcription.starDateSubcription As startdate',
+                                    'technician_subcription.endDateSubcription As enddate',
+                                    'technicians.phoneNumber As phone',
+                                    'technicians.average_rating As avg',
+                                )
+                                ->get();
+            $name = Suscripcion::where('id',$id_suscription)->first();
+            //dd($name);
+            if($detailsSubcription->isEmpty()){
+                return [
+                    'message'=>'No existe listado de tecnicos',
+                    'count'=>0,
+                    'details'=>[],
+                ];
+            }
+
+            $content = $detailsSubcription->map(function($details){
+                return [
+                    'full_name'=>$details->full_name,
+                    //'name_sub'=>$details->name_sub,
+                    'startdate'=>$details->startdate,
+                    'enddate'=>$details->enddate,
+                    'phone'=>$details->phone,
+                    'avg'=>$details->avg,
+                ];
+            });
+
+            return [
+                'message'=>'Listado de tecnicos con la suscripciones',
+                'count'=>count($content),
+                'name_sub'=>$name->name,
+                'content'=>$content,
+            ];
+        }catch(\Exception $error){
+            return [
+                'message'=>'Falla en el servidor'. $error->getMessage(),
+                'count'=>0,
+                'details'=>[],
+            ];
+        }
     }
 }

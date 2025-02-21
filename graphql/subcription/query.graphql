@@ -8,8 +8,22 @@ extend type Query {
     getAllHistorySuscription(requestSubcription:JSON): responseSuscription_ @field(resolver: "SubcriptionQuery@getSuscripcionHistorial")
     allSuscription:[Subcription] @field(resolver: "SubcriptionQuery@allSuscriptionExceptFree")
     allSubcriptionPlain:[Subcription] @all
+    getLstTechnicianSuscrip(suscriptionId:String):responseTechnicianSus @field(resolver: "SubcriptionQuery@detailSubcriptionAll")
+}
+type responseTechnicianSus {
+    message:String
+    count:Int
+    name_sub:String
+    content:[contTech]
 }
 
+type contTech{
+    full_name:String
+    startdate:String
+    enddate:String
+    phone:String
+    avg:String
+}
 
 type responseValidityPromotion{
     message:String

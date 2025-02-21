@@ -646,6 +646,9 @@ class ServiceQuery
                     'services.titleService As titleService',
                     'services.serviceDescription As serviceDescription',
                     'services.updatedDateTime As visitDate',
+                    'services.longitude As longitude',
+                    'services.latitude As latitude',
+                    'services.serviceLocation As serviceLocation',
                     'activity_types.description As descripcionActivity'
                 )
             ->first();
@@ -666,6 +669,9 @@ class ServiceQuery
                 'titleService' => $service->titleService,
                 'serviceDescription' => $service->serviceDescription,
                 'visitDate' => $date,
+                'longitude'=>$service->longitude,
+                'latitude'=>$service->latitude,
+                'serviceLocation'=>$service->serviceLocation,
                 'descripcionActivity' => $service->descripcionActivity,
             ];
 

@@ -21,6 +21,9 @@ type conService {
     titleService:String
     serviceDescription:String
     visitDate:String
+    latitude:String
+    longitude:String
+    serviceLocation:String
     descripcionActivity:String
 }
 
