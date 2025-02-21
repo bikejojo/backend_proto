@@ -151,9 +151,10 @@ class RequestQuery
             $dateParameter = $parameter['visitDate'] ?? $now;
 
             // Verifica si existen solicitudes en la fecha dada
-            if (!Solicitud::where('requests.clientId', $clientId)->whereDate('registrationDateTime', $dateParameter)->exists()) {
+            
+            if (!Solicitud::join('services','requests.id','=','services.requestsId')->where('requests.clientId', $clientId)->whereDate('services.updatedDateTime',$dateParameter)->exists()) {
                 return [
-                    'message' => "No existen solicitudes en la agenda para: $dateParameter",
+                    'message' => "No existen solicitudes en la agenda del cliente: ",
                     'status' => 2,
                     'request' => []
                 ];

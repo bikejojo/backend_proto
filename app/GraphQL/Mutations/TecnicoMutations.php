@@ -73,6 +73,7 @@ class TecnicoMutations {
                 'userId' => $user->id,
                 'cityId' => $technicianData['cityId'],
                 'status' => 1,
+                'average_rating'=>5.00
             ]);
 
             if (!$technician) {
