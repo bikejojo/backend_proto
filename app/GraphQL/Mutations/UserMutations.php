@@ -27,7 +27,10 @@ class UserMutations{
     public function create($root , array $args){
         $userData = $args['userRequest'];
         $email = strtolower(trim($userData['email']));
-
+        //dd(User::where('email',$email)->first()->exists());
+        if(User::where('email',$email)->exists()){
+            return null;
+        }
         $user = User::create([
             'email' => $email,
             'password' => Hash::make($userData['password']),

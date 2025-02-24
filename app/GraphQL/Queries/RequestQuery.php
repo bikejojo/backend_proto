@@ -193,7 +193,7 @@ class RequestQuery
                 'requests.requestDescription AS description',
                 DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name'),
                 'technicians.phoneNumber AS phoneNumber',
-                'state_types.description AS stateAgenda'
+                'state_types.id AS stateAgenda'
             );
             //dd($query->get());
         switch ($stateParameter) {
