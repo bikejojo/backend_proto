@@ -203,6 +203,7 @@ class SubcriptionQuery
                                     //'subcriptions.name As name_sub',
                                     'technician_subcription.starDateSubcription As startdate',
                                     'technician_subcription.endDateSubcription As enddate',
+                                    'technician_subcription.status As status',
                                     'technicians.phoneNumber As phone',
                                     'technicians.average_rating As avg',
                                 )
@@ -220,7 +221,7 @@ class SubcriptionQuery
             $content = $detailsSubcription->map(function($details){
                 return [
                     'full_name'=>$details->full_name,
-                    //'name_sub'=>$details->name_sub,
+                    'status'=>$details->status,
                     'startdate'=>$details->startdate,
                     'enddate'=>$details->enddate,
                     'phone'=>$details->phone,

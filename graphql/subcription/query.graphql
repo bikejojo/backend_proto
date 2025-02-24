@@ -19,6 +19,7 @@ type responseTechnicianSus {
 
 type contTech{
     full_name:String
+    status:String
     startdate:String
     enddate:String
     phone:String

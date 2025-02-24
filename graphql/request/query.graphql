@@ -12,12 +12,14 @@ type responseAgendaRequest{
 }
 
 type requestagenda {
+    id_requests:String
     activity_name:String
     title:String
     description:String
     full_name:String
     phoneNumber:String
     stateAgenda:String
+    datetime:String
 }
 
 type responseTechnicalId {

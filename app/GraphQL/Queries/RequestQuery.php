@@ -186,8 +186,8 @@ class RequestQuery
             ->join('state_types', 'requests.stateId', '=', 'state_types.id')
             ->join('activity_types', 'requests.activityId', '=', 'activity_types.id')
             ->where('requests.clientId', $clientId)
-            //->whereDate('requests.registrationDateTime', $dateParameter)
             ->select(
+                'requests.id As id_requests',
                 'activity_types.description AS name_activity',
                 'requests.titleRequests AS title',
                 'requests.requestDescription AS description',
@@ -199,35 +199,42 @@ class RequestQuery
         switch ($stateParameter) {
             case self::$stateRequestPeding:
                 $query->where('requests.stateId', self::$stateRequestPeding)
-                ->whereDate('requests.registrationDateTime', $dateParameter);
+                ->whereDate('requests.registrationDateTime', $dateParameter)
+                ->addSelect('requests.registrationDateTime As datetime');
                 break;
 
             case self::$stateRequestAccept:
                 $query->join('services', 'services.requestsId', '=', 'requests.id')
                     ->where('requests.stateId', self::$stateRequestAccept)
-                    ->whereDate('services.updatedDateTime',$dateParameter);
+                    ->whereDate('services.updatedDateTime',$dateParameter)
+                    ->addSelect('services.updatedDateTime As datetime');
                 break;
 
             case self::$stateRequestCancel:
-                $query->where('requests.stateId', self::$stateRequestCancel);
+                $query->where('requests.stateId', self::$stateRequestCancel)
+                ->whereDate('requests.registrationDateTime', $dateParameter)
+                ->addSelect('requests.registrationDateTime As datetime');
                 break;
             default:
                 $query->leftJoin('services', 'services.requestsId', '=', 'requests.id')
-                ->whereDate('requests.registrationDateTime', $dateParameter)
-                ->orWhereDate('services.updatedDateTime',$dateParameter);
-                //->whereRaw('DATE("services"."updatedDateTime") = ?', [$dateParameter]);
-                //dd($query->get());
+                ->where(function ($q) use ($dateParameter) {
+                    $q->whereDate('requests.registrationDateTime', $dateParameter)
+                    ->orWhereDate('services.updatedDateTime', $dateParameter);
+                })
+                ->addSelect(DB::raw('COALESCE(requests."registrationDateTime", services."updatedDateTime") AS datetime'));
                 break;
         }
 
         return $query->distinct()->get()->map(function ($solict) {
             return [
+                'id_requests'=>$solict->id_requests,
                 'activity_name' => $solict->name_activity,
                 'title' => $solict->title,
                 'description' => $solict->description,
                 'full_name' => $solict->full_name,
                 'phoneNumber' => $solict->phoneNumber,
-                'stateAgenda' => $solict->stateAgenda
+                'stateAgenda' => $solict->stateAgenda,
+                'datetime'=>$solict->datetime,
             ]; //
         });
     }

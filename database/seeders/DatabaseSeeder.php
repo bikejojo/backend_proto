@@ -159,5 +159,6 @@ class DatabaseSeeder extends Seeder
         /*Role::create(['name'=>'Soporte']);
         Role::create(['name'=>'Comerial']);
         Role::create(['name'=>'Administrativo']);*/
+        $this->call(RoleSeeder::class);
     }
 }
