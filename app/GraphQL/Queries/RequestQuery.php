@@ -150,19 +150,11 @@ class RequestQuery
             $stateParameter = $parameter['stateId'] ?? null;
             $dateParameter = $parameter['visitDate'] ?? $now;
 
-            // Verifica si existen solicitudes en la fecha dada
             //dd(!Solicitud::join('services','requests.id','=','services.requestsId')->where('requests.clientId', $clientId)->whereDate('services.updatedDateTime',$dateParameter)->exists());
-            if (!Solicitud::join('services','requests.id','=','services.requestsId')->where('requests.clientId', $clientId)->whereDate('services.updatedDateTime',$dateParameter)->exists()) {
-                return [
-                    'message' => "No existen solicitudes en la agenda del cliente: ",
-                    'status' => 2,
-                    'request' => []
-                ];
-            }
 
             // Obtiene solicitudes por estado
             $requests = $this->getSolicitudesPorEstado($clientId, $stateParameter, $dateParameter);
-
+            //dd($requests);
             if ($requests->isEmpty()) {
                 return [
                     'message' => "No existen solicitudes con el estado solicitado.",
@@ -194,7 +186,7 @@ class RequestQuery
             ->join('state_types', 'requests.stateId', '=', 'state_types.id')
             ->join('activity_types', 'requests.activityId', '=', 'activity_types.id')
             ->where('requests.clientId', $clientId)
-            ->whereDate('requests.registrationDateTime', $dateParameter)
+            //->whereDate('requests.registrationDateTime', $dateParameter)
             ->select(
                 'activity_types.description AS name_activity',
                 'requests.titleRequests AS title',
@@ -203,23 +195,29 @@ class RequestQuery
                 'technicians.phoneNumber AS phoneNumber',
                 'state_types.description AS stateAgenda'
             );
-
+            //dd($query->get());
         switch ($stateParameter) {
             case self::$stateRequestPeding:
-                $query->where('requests.stateId', self::$stateRequestPeding);
+                $query->where('requests.stateId', self::$stateRequestPeding)
+                ->whereDate('requests.registrationDateTime', $dateParameter);
                 break;
 
             case self::$stateRequestAccept:
                 $query->join('services', 'services.requestsId', '=', 'requests.id')
-                    ->where('requests.stateId', self::$stateRequestAccept);
+                    ->where('requests.stateId', self::$stateRequestAccept)
+                    ->whereDate('services.updatedDateTime',$dateParameter);
                 break;
 
             case self::$stateRequestCancel:
                 $query->where('requests.stateId', self::$stateRequestCancel);
                 break;
-
             default:
-                return collect(); // Retorna colección vacía si el estado no es válido// aqui hace el cambio plox
+                $query->leftJoin('services', 'services.requestsId', '=', 'requests.id')
+                ->whereDate('requests.registrationDateTime', $dateParameter)
+                ->orWhereDate('services.updatedDateTime',$dateParameter);
+                //->whereRaw('DATE("services"."updatedDateTime") = ?', [$dateParameter]);
+                //dd($query->get());
+                break;
         }
 
         return $query->distinct()->get()->map(function ($solict) {
