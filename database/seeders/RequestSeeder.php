@@ -14,7 +14,7 @@ class RequestSeeder extends Seeder
     public function run(): void
     {
         try {
-            RequestFactorySeeder::create(20);  // Generar 20 solicitudes
+            RequestFactorySeeder::create(10011);  // Generar 20 solicitudes
         } catch (\Exception $e) {
             $this->command->info($e->getMessage());
         }

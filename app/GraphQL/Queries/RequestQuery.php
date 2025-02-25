@@ -147,13 +147,12 @@ class RequestQuery
             $parameter = $args['parameterSearch'];
 
             $clientId = $parameter['id_client'];
-            $stateParameter = $parameter['stateId'] ?? null;
             $dateParameter = $parameter['visitDate'] ?? $now;
 
             //dd(!Solicitud::join('services','requests.id','=','services.requestsId')->where('requests.clientId', $clientId)->whereDate('services.updatedDateTime',$dateParameter)->exists());
 
             // Obtiene solicitudes por estado
-            $requests = $this->getSolicitudesPorEstado($clientId, $stateParameter, $dateParameter);
+            $requests = $this->getSolicitudesPorEstado($clientId,  $dateParameter);
             //dd($requests);
             if ($requests->isEmpty()) {
                 return [
@@ -180,12 +179,13 @@ class RequestQuery
     /**
      * Obtiene las solicitudes en base al estado proporcionado.
      */
-    private function getSolicitudesPorEstado($clientId, $stateParameter, $dateParameter)
+    private function getSolicitudesPorEstado($clientId,  $dateParameter)
     {
         $query = Solicitud::join('technicians', 'requests.technicianId', '=', 'technicians.id')
             ->join('state_types', 'requests.stateId', '=', 'state_types.id')
             ->join('activity_types', 'requests.activityId', '=', 'activity_types.id')
             ->where('requests.clientId', $clientId)
+            ->whereDate('requests.registrationDateTime', $dateParameter)
             ->select(
                 'requests.id As id_requests',
                 'activity_types.description AS name_activity',
@@ -193,46 +193,10 @@ class RequestQuery
                 'requests.requestDescription AS description',
                 DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name'),
                 'technicians.phoneNumber AS phoneNumber',
-                'state_types.id AS stateAgenda'
+                'state_types.id AS stateAgenda',
+                'requests.registrationDateTime As datetime'
             );
             //dd($query->get());
-        switch ($stateParameter) {
-            case self::$stateRequestPeding:
-                $query->where('requests.stateId', self::$stateRequestPeding)
-                ->whereDate('requests.registrationDateTime', $dateParameter)
-                ->addSelect('requests.registrationDateTime As datetime');
-                break;
-
-            case self::$stateRequestAccept:
-                $query->join('services', 'services.requestsId', '=', 'requests.id')
-                    ->where('requests.stateId', self::$stateRequestAccept)
-                    ->whereDate('services.updatedDateTime',$dateParameter)
-                    ->addSelect('services.updatedDateTime As datetime');
-                break;
-
-            case self::$stateRequestCancel:
-                $query->where('requests.stateId', self::$stateRequestCancel)
-                ->whereDate('requests.registrationDateTime', $dateParameter)
-                ->addSelect('requests.registrationDateTime As datetime');
-                break;
-            default:
-                $query->leftJoin('services', 'services.requestsId', '=', 'requests.id')
-                ->where(function ($q) use ($dateParameter) {
-                    $q->whereDate('requests.registrationDateTime', $dateParameter)
-                    ->orWhereDate('services.updatedDateTime', $dateParameter);
-                })
-                ->addSelect(DB::raw("
-                    COALESCE(
-                        (CASE
-                            WHEN DATE(services.\"updatedDateTime\") = DATE('$dateParameter')
-                            THEN services.\"updatedDateTime\"
-                        END),
-                        requests.\"registrationDateTime\"
-                    ) AS datetime
-                "));
-            break;
-        }
-
         return $query->distinct()->get()->map(function ($solict) {
             return [
                 'id_requests'=>$solict->id_requests,

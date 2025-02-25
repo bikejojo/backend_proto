@@ -31,24 +31,24 @@ class RequestFactorySeeder
       // Crear solicitudes y registrar historial
       foreach (range(1, $count) as $index) {
         $client = $clients->random();
-        $technician = 2;
+        $technician = $technicians->random();
         $activity = $activities->random();
         $state = $states->random();
 
         // Crear la solicitud
         $request = Solicitud::factory()->create([
-            'clientId' => $client->id,
-            'technicianId' => 1,
+            'clientId' => 3,
+            'technicianId' => $technician->id,
             'activityId' => $activity->id,
-            'stateId' => 1,
+            'stateId' =>  rand(1,3),
             'status' => 1,  // Estado activo
-            'registrationDateTime' => Carbon::now(),
+            'registrationDateTime' => Carbon::create(2025, rand(2, 3), rand(1, 28), rand(0, 23), rand(0, 59), rand(0, 59))
         ]);
 
         // Crear el historial de la solicitud
         Historial_Servicios::create([
-            'clientId' => $client->id,
-            'technicianId' => 1,
+            'clientId' => $request->clientId,
+            'technicianId' => $request->technicianId,
             'jobId' => $request->id,
             'descriptionJob' => 1,  // 1 = solicitud creada
             'stateId' => $request->stateId,
