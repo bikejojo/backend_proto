@@ -6,7 +6,7 @@ extend type Query {
     listRequestAccept(id_client:String):responseGetRequest @field( resolver: "App\\GraphQL\\Queries\\ClientQuery@clientInternalAcept")
     listClientAllow:response_cliente @field (resolver: "ClientQuery@getListClientsInterns")
     filterSearchclient(requestSearchData:JSON):response_cliente @field (resolver: "ClientQuery@searchClientInterno")
-    getListRequestByClient(id_client:String searchParameter:JSON):responseListByClient @field(resolver: "ClientQuery@listRequestByClient")
+    getListRequestByClient(id_client:String ,id_state:String):responseListByClient @field(resolver: "ClientQuery@listRequestByClient")
 }
 
 type responseListByClient {

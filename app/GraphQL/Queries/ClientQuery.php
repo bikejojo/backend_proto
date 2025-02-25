@@ -509,9 +509,8 @@ class ClientQuery{
     public function listRequestByClient($root,array $args){
         try{
             //$now=Carbon::now()->format('Y-m-d');
-            $parameter=$args['searchParameter'];
             $id_client = $args['id_client'];
-            $stateId=$parameter['id_state'] ?? "";
+            $stateId=$args['id_state'] ?? "";
 
             $countByState = Solicitud::where('requests.clientId', $id_client);
 
