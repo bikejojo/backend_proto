@@ -37,7 +37,7 @@ class RequestFactorySeeder
 
         // Crear la solicitud
         $request = Solicitud::factory()->create([
-            'clientId' => 3,
+            'clientId' => 41,
             'technicianId' => $technician->id,
             'activityId' => $activity->id,
             'stateId' =>  rand(1,3),
