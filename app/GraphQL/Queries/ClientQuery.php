@@ -523,12 +523,12 @@ class ClientQuery{
                                         'requests.registrationDateTime'
                                         );
             if($stateId == 1 || $stateId == 3 ){
-                $request->where('requests.stateId',$stateId);
+                $request->where('requests.stateId',$stateId)->addSelect('requests.stateId As state');
                 $countByState->where('requests.stateId',$stateId);
             }
             if($stateId == 2){
                 $request->join('services','requests.id','=','services.requestsId')
-                        ->addSelect('services.updatedDateTime');
+                        ->addSelect('services.updatedDateTime','requests.stateId As state');
                 $countByState->where('requests.stateId',$stateId);
             }
             $requests= $request->get();
@@ -539,6 +539,7 @@ class ClientQuery{
                     'requestDescription'=>$req->requestDescription,
                     'serviceLocation'=>$req->serviceLocation,
                     'reference_phone'=>$req->reference_phone,
+                    'state'=>$req->state,
                     'date' => $stateId == 2 ? $req->updatedDateTime : $req->registrationDateTime,
                 ];
             });

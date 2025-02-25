@@ -20,6 +20,7 @@ type contentByClient {
     requestDescription:String
     serviceLocation:String
     reference_phone:String
+    state:String
     date:String
 }
 
