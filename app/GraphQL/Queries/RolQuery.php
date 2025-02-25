@@ -39,4 +39,28 @@ class RolQuery
             ];
         }
     }
+
+    public function getUserPermissionId($root,array $args){
+        try {
+            $user_id = $args['id_users'];
+            $user= User::find($user_id);
+            $permissions=$user->getAllPermissions();
+            //dd($permissions);
+            return[
+                'message'=>'Los permisos del usuario',
+                'status' => 2,
+                'permissions' => $permissions
+            ];
+        } catch (\Exception $e){
+            return [
+                'message'=>'Siguiente errores :'. $e->getMessage(),
+                'status' => 3,
+                'permissions' => null
+            ];
+        }
+    }
+
+    public function updatePermissionUser($root,array $args){
+        
+    }
 }

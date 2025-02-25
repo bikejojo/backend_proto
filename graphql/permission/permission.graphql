@@ -1,4 +1,5 @@
 type Permission{
     id:ID
     name:String
+    guard_name:String
 }

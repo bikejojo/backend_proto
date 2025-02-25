@@ -1,6 +1,13 @@
 extend type Query {
     getRolPermissions(name:String):responsePermissios @field (resolver: "RolQuery@getPermisse")
     getRolAdmin:responseRole @field(resolver: "RolQuery@getRol")
+    getPermission(id_users:String):permissionResponse @field(resolver: "RolQuery@getUserPermissionId")
+}
+
+type permissionResponse {
+    message:String
+    status:Int
+    permissions:[Permission]
 }
 
 type responsePermissios {
