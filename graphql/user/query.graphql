@@ -1,6 +1,24 @@
 extend type Query {
   getAllUsers: [User] @all
   getUserById(id: ID! @whereKey): User @find
+  getUserRol: responseRolUser @field(resolver: "UserQuery@getUserRol")
 }
 
+type responseRolUser {
+    message:String
+    succes:String
+    user:[Usser]
+}
+
+type Usser {
+    id:String
+    name:String
+    email:String
+    roles:Roleee
+    permissions:[Permission]
+}
+
+type Roleee {
+    name:String
+}
 #import user.graphql
