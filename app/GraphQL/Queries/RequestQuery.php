@@ -221,8 +221,16 @@ class RequestQuery
                     $q->whereDate('requests.registrationDateTime', $dateParameter)
                     ->orWhereDate('services.updatedDateTime', $dateParameter);
                 })
-                ->addSelect(DB::raw('COALESCE(requests."registrationDateTime", services."updatedDateTime") AS datetime'));
-                break;
+                ->addSelect(DB::raw("
+                    COALESCE(
+                        (CASE
+                            WHEN DATE(services.\"updatedDateTime\") = DATE('$dateParameter')
+                            THEN services.\"updatedDateTime\"
+                        END),
+                        requests.\"registrationDateTime\"
+                    ) AS datetime
+                "));
+            break;
         }
 
         return $query->distinct()->get()->map(function ($solict) {
