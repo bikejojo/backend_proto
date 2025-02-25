@@ -14,7 +14,7 @@ type Usser {
     id:String
     name:String
     email:String
-    roles:Roleee
+    roles:[Roleee]
     permissions:[Permission]
 }
 

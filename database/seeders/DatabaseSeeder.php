@@ -139,6 +139,7 @@ class DatabaseSeeder extends Seeder
         Tipo_Estado::create(['description'=>'Aceptado']);
         Tipo_Estado::create(['description'=>'Rechazado']);
         Tipo_Estado::create(['description'=>'Terminado']);
+        Tipo_Estado::create(['description'=>'Completado']);
 
         Categoria_Publicidad::create(['description'=>'tecnologia','entity_type'=>'publicity','code'=>'PUB001']);
         Categoria_Publicidad::create(['description'=>'servicios','entity_type'=>'publicity','code'=>'PUB002']);

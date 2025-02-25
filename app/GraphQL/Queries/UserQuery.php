@@ -25,9 +25,9 @@ class UserQuery{
     public function getUserRol($root,array $args){
         try{
             $userList = User::where('type_user',$this->admins)
-            ->with(['roles', 'permissions'])
+            ->with(['roles:id,name', 'permissions:id,name'])
             ->get();
-            //dd($userList);
+           // dd($userList);
 
             if($userList->isEmpty()){
                 return [
@@ -38,12 +38,15 @@ class UserQuery{
             }
 
             $formattedUsers = $userList->map(function ($user) {
+                //dd($user->getAllPermissions());
                 return [
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
-                    'roles' => $user->roles->pluck('name')->filter()->values()->toArray(), // Asegura que no haya valores nulos // Solo nombres de roles
-                    'permissions' => $user->permissions->pluck('name'), // Solo nombres de permisos
+                    'roles' => $user->roles->map(function ($role) {
+                                return ['name' => $role->name]; // Devuelve objetos en lugar de un array plano
+                            })->toArray(),
+                    'permissions' => $user->getAllPermissions()->map(fn($perm) => ['name' => $perm->name])->toArray(),
                 ];
             });
             //dd($formattedUsers);
