@@ -16,6 +16,7 @@ type responseListByClient {
 }
 
 type contentByClient {
+    id_requests:String ##
     titleRequests:String
     requestDescription:String
     serviceLocation:String
