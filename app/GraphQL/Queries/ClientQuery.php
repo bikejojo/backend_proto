@@ -528,7 +528,15 @@ class ClientQuery{
                                         'requests.registrationDateTime',
                                         DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) As full_name')
                                         );
-            if($stateId == 1 || $stateId == 3 ){
+
+            if($stateId ==! ""){
+                $request->where('requests.stateId',$stateId)->addSelect('requests.stateId As state');
+                $countByState->where('requests.stateId',$stateId);
+            }else{
+                $request->addSelect('requests.stateId As state');
+                $countByState->count();
+            }
+                /*if($stateId == 1 || $stateId == 3 ){
                 $request->where('requests.stateId',$stateId)->addSelect('requests.stateId As state');
                 $countByState->where('requests.stateId',$stateId);
             }
@@ -537,7 +545,7 @@ class ClientQuery{
                 //->join('services','requests.id','=','services.requestsId')
                         ->addSelect('requests.registrationDateTime','requests.stateId As state');
                 $countByState->where('requests.stateId',$stateId);
-            }
+            }*/
             $requests= $request->distinct()->get();
 
             $content = $requests->map( function($req) use ($stateId) {
