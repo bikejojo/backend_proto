@@ -516,7 +516,9 @@ class ClientQuery{
 
             $request = Solicitud::join('technicians','requests.technicianId','=','technicians.id')
                                 ->where('requests.clientId',$id_client)
-                                ->select('requests.titleRequests',
+                                ->select(
+                                        'requests.id As id_requests',
+                                        'requests.titleRequests',
                                         'requests.requestDescription',
                                         'requests.serviceLocation',
                                         'requests.latitude',
@@ -540,6 +542,7 @@ class ClientQuery{
 
             $content = $requests->map( function($req) use ($stateId) {
                 return [
+                    'id_requests'=>$req->id_requests,
                     'titleRequests'=>$req->titleRequests,
                     'requestDescription'=>$req->requestDescription,
                     'serviceLocation'=>$req->serviceLocation,
