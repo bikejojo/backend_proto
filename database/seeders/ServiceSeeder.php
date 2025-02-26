@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Servicio;
+use App\Models\Solicitud;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,7 +14,19 @@ class ServiceSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        Servicio::factory()->count(12000)->create();
+        $solicitudes = Solicitud::where('stateId', 2)->get();
+
+        // Si no hay solicitudes, no hacer nada
+        if ($solicitudes->isEmpty()) {
+            return;
+        }
+
+        foreach ($solicitudes as $solicitud) {
+            Servicio::factory()->create([
+                'requestsId' => $solicitud->id,
+                'titleService' => $solicitud->titleRequests,
+                'serviceDescription' => $solicitud->requestDescription,
+            ]);
+        }
     }
 }

@@ -6,6 +6,7 @@ use App\Models\DeviceToken;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Service\NotificationService;
 use Illuminate\Support\Facades\DB;
 
 class DeviceTokenMutations
@@ -44,4 +45,40 @@ class DeviceTokenMutations
         }
     }
 
+    public function sendNotification($root,array $args){
+        $user = Auth::user();
+        if(!$user){
+            return false;
+        }
+        $notificationService = new NotificationService();
+
+        $sent = $notificationService->sendToUser(
+            $user,
+            'Nueva Notificacion',
+            $args['message']
+        );
+
+        return $sent;
+    }
+
+    public function updateDeviceTokens($root,array $args){
+        //$content
+        $user = Auth::user();
+        if (!$user) {
+            return null; // Maneja el caso de usuario no autenticado
+        }
+        $deviceToken = DeviceToken::updateOrCreate(
+            [
+                'device_id' => $args['deviceId'],
+                'tokenable_id' => $user->id,
+                'tokenable_type' => get_class($user),
+            ],
+            [
+                'token' => $args['token'],
+                'is_active' => true,
+                'datetime_at' => now(),
+            ]
+        );
+        return $deviceToken;
+    }
 }

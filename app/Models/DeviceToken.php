@@ -14,17 +14,23 @@ class DeviceToken extends Model
     protected $primaryKey='id';
     protected $table='device_token';
     protected $fillable =[
+        'tokenable_type',
+        'tokenable_id',
         'token',
-        'device_type',
-        'device_name',
-        'datetime_at',
-        'user_id',
+        'device_id',
+        'is_active' => 'boolean',
+        'datetime_at' => 'datetime',
     ];
 
-    public function user()
+    protected $casts = [
+        'is_active' => 'boolean',
+        'datetime_at' => 'datetime',
+    ];
+
+    /*public function user()
     {
         return $this->belongsTo(User::class);
-    }
+    }*/
 
     public static function generateUniqueToken()
     {
@@ -33,5 +39,10 @@ class DeviceToken extends Model
         } while (self::where('token', $token)->exists()); // Verifica que sea único
 
         return $token;
+    }
+
+    public function tokenable()
+    {
+        return $this->morphTo();
     }
 }

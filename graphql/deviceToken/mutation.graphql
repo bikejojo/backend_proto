@@ -1,5 +1,7 @@
 extend type Mutation {
     registerDeviceToken(deviceTokenRequest:JSON):DeviceTokenResponse @field(resolver: "DeviceTokenMutations@register")
+    sendPushNotification(message:String):Boolean @field(resolver: "DeviceTokenMutations@sendNotification")
+    deviceUpdateToken(deviceId:String, token:String):deviceToken @field(resolver: "DeviceTokenMutations@updateDeviceTokens")
 }
 
 type DeviceTokenResponse {

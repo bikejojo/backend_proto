@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Servicio;
+use App\Models\Solicitud;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Carbon\Carbon;
 use Faker\Generator as Faker;
@@ -21,21 +22,24 @@ class ServicioFactory extends Factory
 
     public function definition(): array
     {
-        return [
-            'stateId' => $this->faker->numberBetween(4, 1),
-            #'requestsId' => $this->faker->numberBetween(2200,2439),
-            'technicalId'=> 1, //'technicalId'=> rand(150,62)
-            'clientId' =>  1,
-            'activityId' => $this->faker->numberBetween(1,4),
+         // Filtrar solicitudes con stateId = 2 y clientId = 2
+         $solicitud = Solicitud::where('stateId', 2)
+         ->where('clientId', 2) // Asegurar que la solicitud pertenece al cliente correcto
+         ->inRandomOrder()
+         ->first();
+         return [
+            'stateId' => $this->faker->numberBetween(1, 4),
+            'requestsId' => $solicitud?->id,  // Si no hay solicitudes, asigna null
+            'technicalId' => 1,
+            'clientId' => 2,  // Cliente correcto
+            'activityId' => $this->faker->numberBetween(1, 4),
             'typeClient' => 1,
-            'titleService' => $this->faker->sentence,
-            'serviceDescription' => $this->faker->sentence,
+            'titleService' => $solicitud?->titleRequests ?? $this->faker->sentence,
+            'serviceDescription' => $solicitud?->requestDescription ?? $this->faker->sentence,
             'createdDateTime' => now(),
-            //'finishDateTime_technician' =>now()->addDays(4,7),
-            //'finishDateTime_client' =>now()->addDays(4,7),
-            'updatedDateTime' =>now()->addDays(2,3),
-            'status' => 1
-            //
+            'updatedDateTime' => now()->addDays(rand(2, 3)),
+            'status' => 1,
+            'service_origin' => 1
         ];
     }
 }

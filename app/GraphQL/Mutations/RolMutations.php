@@ -50,70 +50,71 @@ class RolMutations
         ];
     }
 
-    public function assignPermise($root, array $args)
-    {
-        try{
-            $rolData = $args['permiseRequest'];
-            $userId = $rolData['userId'];
-            $permissions = $rolData['permissions']; // Array de permisos enviado en la solicitud
+    public function assignPermise($root, array $args){
+        try {
+            if (!isset($args['permiseRequest']['userId']) || !isset($args['permiseRequest']['permissions'])) {
+                return [
+                    'message' => 'Faltan datos en la solicitud.',
+                    'status' => false
+                ];
+            }
 
-            // Validar que el usuario existe
-            $user = User::find($userId);
+            $userId = $args['permiseRequest']['userId'];
+            $permissions = $args['permiseRequest']['permissions']; // Lista de permisos a asignar
+
+            // Buscar usuario con roles y permisos
+            $user = User::with('roles.permissions')->find($userId);
             if (!$user) {
                 return [
                     'message' => 'Usuario no encontrado.',
+                    'status' => false
                 ];
             }
 
-            // Validar que los permisos existen en la base de datos
-            $validPermissions = Permission::whereIn('name', $permissions)->get();
-            if ($validPermissions->isEmpty()) {
+            // Obtener todos los permisos de los roles del usuario
+            $rolePermissions = $user->roles->flatMap(function ($role) {
+                return $role->permissions;
+            })->pluck('name')->unique();
+
+            // Obtener permisos que existen en la base de datos
+            $validPermissions = Permission::whereIn('name', $permissions)->pluck('name')->toArray();
+
+            if (empty($validPermissions)) {
                 return [
-                    'message' => 'No se encontraron permisos válidos en la solicitud.',
+                    'message' => 'No se encontraron permisos válidos.',
+                    'status' => false
                 ];
             }
 
-            // Obtener permisos de roles ya asignados al usuario
-            $roles = $user->roles; // Puede ser null si el usuario no tiene roles asignados
-            if (!$roles || $roles->isEmpty()) {
-                $rolePermissions = collect(); // Crear una colección vacía si no hay roles
-            } else {
-                $rolePermissions = $roles->flatMap(function ($role) {
-                    return $role->permissions->pluck('name');
-                })->unique();
-            }
-
-            // Filtrar los permisos que no están en los roles del usuario
-            $permissionsToAssign = $validPermissions->filter(function ($permissions)use ($rolePermissions){
-                return !$rolePermissions->contains($permissions->name);
+            // **Validar que los permisos asignados correspondan a los roles del usuario**
+            $permissionsToAssign = array_filter($validPermissions, function ($perm) use ($rolePermissions) {
+                return $rolePermissions->contains($perm);
             });
-            if ($permissionsToAssign->isEmpty()) {
+
+            if (empty($permissionsToAssign)) {
                 return [
-                    'message' => 'Todos los permisos ya están asociados a roles del usuario.',
+                    'message' => 'No tienes roles que permitan asignar estos permisos.',
+                    'status' => false
                 ];
             }
 
-            // Asignar los permisos restantes al usuario
-            $user->givePermissionTo($permissionsToAssign->pluck('name')->toArray());
-
-            // Opcional: Obtener los permisos asignados al usuario para devolver como respuesta
-            $assignedPermissions = $permissionsToAssign->map(function ($permissions){
-                return [
-                    'id'=>$permissions->id,
-                    'name'=>$permissions->name
-                ];
-            });
+            // **Actualizar permisos dinámicamente**
+            $user->syncPermissions($permissionsToAssign); // Quita permisos antiguos y asigna los nuevos
 
             return [
-                'message' => 'Permisos asignados exitosamente.',
-                'user' => $user ,
-                'permissions' => $assignedPermissions,
+                'message' => 'Permisos actualizados correctamente.',
+                'status' => true,
+                'user' => $user,
+                'permissions' => $permissionsToAssign
             ];
         } catch (\Exception $e) {
+            //Log::error("Error actualizando permisos: " . $e->getMessage());
             return [
-                'message' => 'Error en la conexion en la base de datos' . $e->getMessage()
+                'message' => 'Error en la actualización de permisos.' . $e->getMessage(),
+                'status' => false
             ];
         }
     }
+
 
 }

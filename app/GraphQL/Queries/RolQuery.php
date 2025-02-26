@@ -43,9 +43,14 @@ class RolQuery
     public function getUserPermissionId($root,array $args){
         try {
             $user_id = $args['id_users'];
-            $user= User::find($user_id);
-            $permissions=$user->getAllPermissions();
+            //$user= User::find($user_id);
+            $user = User::with('roles.permissions','permissions')->find($user_id);
+            //$permissions=$user->getAllPermissions();
             //dd($permissions);
+
+            $permissions = $user->roles->flatMap(function ($role){
+                return $role->permissions;
+            })->unique();
             return[
                 'message'=>'Los permisos del usuario',
                 'status' => 2,
@@ -60,7 +65,28 @@ class RolQuery
         }
     }
 
-    public function updatePermissionUser($root,array $args){
-        
+    /*public function updatePermissionUser($root,array $args){
+
+    }*/
+    public function getPermissions($root,array $args){
+        try{
+            $userId = $args['userId'];
+            $user = User::with('roles.permissions','permissions')->find($userId);
+
+            $rolePermissions = $user->roles->flatMap(function ($role){
+                return $role->permissions;
+            })->unique();
+
+            return [
+                'message'=>'Permisos obtenidos por el rol',
+                'user'=>$user,
+                'permissions'=>$rolePermissions,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'message'=>'Se presenta las siguientes fallas:  ' . $e->getMessage(),
+                'permissions'=>[],
+            ];
+        }
     }
 }
