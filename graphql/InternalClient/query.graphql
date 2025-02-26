@@ -19,6 +19,10 @@ type contentByClient {
     titleRequests:String
     requestDescription:String
     serviceLocation:String
+    latitude:String
+    longitude:String
+    full_name:String
+    photo:String
     reference_phone:String
     state:String
     date:String

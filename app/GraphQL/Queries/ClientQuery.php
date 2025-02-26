@@ -519,28 +519,37 @@ class ClientQuery{
                                 ->select('requests.titleRequests',
                                         'requests.requestDescription',
                                         'requests.serviceLocation',
+                                        'requests.latitude',
+                                        'requests.longitude',
+                                        'technicians.photo',
                                         'requests.reference_phone',
-                                        'requests.registrationDateTime'
+                                        'requests.registrationDateTime',
+                                        DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) As full_name')
                                         );
             if($stateId == 1 || $stateId == 3 ){
                 $request->where('requests.stateId',$stateId)->addSelect('requests.stateId As state');
                 $countByState->where('requests.stateId',$stateId);
             }
             if($stateId == 2){
-                $request->join('services','requests.id','=','services.requestsId')
-                        ->addSelect('services.updatedDateTime','requests.stateId As state');
+                $request->where('requests.stateId',$stateId)
+                //->join('services','requests.id','=','services.requestsId')
+                        ->addSelect('requests.registrationDateTime','requests.stateId As state');
                 $countByState->where('requests.stateId',$stateId);
             }
-            $requests= $request->get();
+            $requests= $request->distinct()->get();
 
             $content = $requests->map( function($req) use ($stateId) {
                 return [
                     'titleRequests'=>$req->titleRequests,
                     'requestDescription'=>$req->requestDescription,
                     'serviceLocation'=>$req->serviceLocation,
+                    'latitude'=>$req->latitude,
+                    'longitude'=>$req->longitude,
+                    'full_name'=>$req->full_name,
+                    'photo'=>$req->photo,
                     'reference_phone'=>$req->reference_phone,
                     'state'=>$req->state,
-                    'date' => $stateId == 2 ? $req->updatedDateTime : $req->registrationDateTime,
+                    'date' => $req->registrationDateTime,
                 ];
             });
 
