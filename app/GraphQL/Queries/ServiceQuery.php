@@ -589,17 +589,19 @@ class ServiceQuery
                                 ->where('requests.stateId', 2)
                                 ->whereBetween('services.updatedDateTime', [
                                     now()->subDay(), // Un día antes
-                                    now()->addDay()  // Un día después
+                                    now()->addDays(5)  // Un día después
                                 ])
                                 ->select(
                                     'requests.id AS id_requests',
                                     'services.id AS id_services',
+                                    'technicians.photo',
                                     DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name'),
                                     'requests.titleRequests AS titleRequests',
                                     'services.updatedDateTime AS visitDate',
                                     'requests.stateId AS status',
                                     'activity_types.description As descripcionActivity'
                                 )
+                                ->distinct()
                                 ->orderBy('services.updatedDateTime', 'ASC') // Ordenar de más cercano a más lejano
                                 ->get();
 
@@ -616,6 +618,7 @@ class ServiceQuery
                     'id_requests' => $request['id_requests'],
                     'id_services' => $request['id_services'],
                     'full_name' => $request['full_name'],
+                    'photo' => $request['photo'],
                     'titleRequests' => $request['titleRequests'],
                     'descripcionActivity' => $request['descripcionActivity'],
                     'visitDate' => $request['visitDate'],

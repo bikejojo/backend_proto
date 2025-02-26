@@ -512,11 +512,11 @@ class ClientQuery{
             $id_client = $args['id_client'];
             $stateId=$args['id_state'] ?? "";
 
-            $countByState = Solicitud::where('requests.clientId', $id_client);
+            //$countByState = Solicitud::where('requests.clientId', $id_client);
 
-            $request = Solicitud::join('technicians','requests.technicianId','=','technicians.id')
-                                ->where('requests.clientId',$id_client)
-                                ->select(
+            $request = Solicitud::where('requests.clientId',$id_client)
+                                ->leftJoin('technicians','requests.technicianId','=','technicians.id')
+                                ->select([
                                         'requests.id As id_requests',
                                         'requests.titleRequests',
                                         'requests.requestDescription',
@@ -527,25 +527,11 @@ class ClientQuery{
                                         'requests.reference_phone',
                                         'requests.registrationDateTime',
                                         DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) As full_name')
-                                        );
-
-            if($stateId ==! ""){
-                $request->where('requests.stateId',$stateId)->addSelect('requests.stateId As state');
-                $countByState->where('requests.stateId',$stateId);
-            }else{
-                $request->addSelect('requests.stateId As state');
-                $countByState->count();
+                                    ]);
+            if (!empty($stateId)) {
+                $request->where('requests.stateId', $stateId);
             }
-                /*if($stateId == 1 || $stateId == 3 ){
-                $request->where('requests.stateId',$stateId)->addSelect('requests.stateId As state');
-                $countByState->where('requests.stateId',$stateId);
-            }
-            if($stateId == 2){
-                $request->where('requests.stateId',$stateId)
-                //->join('services','requests.id','=','services.requestsId')
-                        ->addSelect('requests.registrationDateTime','requests.stateId As state');
-                $countByState->where('requests.stateId',$stateId);
-            }*/
+           
             $requests= $request->distinct()->get();
 
             $content = $requests->map( function($req) use ($stateId) {
@@ -566,7 +552,7 @@ class ClientQuery{
 
             return [
                 'message' => 'Listado de las solicitudes.',
-                'count' => $countByState->count(),
+                'count' => count($requests),
                 'requests' => $content
             ];
 

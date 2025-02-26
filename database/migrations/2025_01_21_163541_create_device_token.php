@@ -14,9 +14,12 @@ return new class extends Migration
         Schema::create('device_token', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->text('token');
+            $table->morphs('tokenable');
+            $table->string('token');
             $table->string('device_type');
             $table->string('device_name');
+            $table->string('device_id')->unique();
+            $table->boolean('is_active')->default(true);
             $table->datetime('datetime_at');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
