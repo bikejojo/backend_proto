@@ -541,7 +541,7 @@ class ClientQuery{
             $requests= $request->distinct()->get();
 
             $content = $requests->map( function($req) use ($stateId) {
-                return [
+                return [//
                     'id_requests'=>$req->id_requests,
                     'titleRequests'=>$req->titleRequests,
                     'requestDescription'=>$req->requestDescription,
