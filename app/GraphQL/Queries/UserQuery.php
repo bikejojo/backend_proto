@@ -3,14 +3,15 @@
 namespace App\GraphQL\Queries;
 
 use App\Models\User;
+use App\Services\StateCatalog;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
 class UserQuery{
 
-    protected $client = 2;
-    protected $technician = 1;
-    protected $admins = 3;
+    protected $active = StateCatalog::STATUS_ACTIVE;
+    protected $low = StateCatalog::STATUS_LOW;
+    protected $admins = StateCatalog::USER_ADMINS;
 
     /** @param  array{}  $args */
     public function __invoke(null $_, array $args)
@@ -43,6 +44,7 @@ class UserQuery{
                     'id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
+                    'status' => $user->status,
                     'roles' => $user->roles->map(function ($role) {
                                 return ['name' => $role->name]; // Devuelve objetos en lugar de un array plano
                             })->toArray(),

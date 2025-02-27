@@ -6,6 +6,13 @@ extend type Mutation {
     loginClient(email: String! ,password:String!):responseClientLogin @field(resolver: "UserMutations@loginClient")
     loginAdmin(email:String!,password:String!):responseAdminLogin @field(resolver: "UserMutations@loginAdmin")
     logout:Response @field(resolver: "UserMutations@logout")
+    anullUserAdm(id_user:String):userResponseStat @field(resolver: "UserMutations@anullUser")
+    upUserAdm(id_user:String):userResponseStat @field(resolver: "UserMutations@setUpUser")
+}
+
+type userResponseStat {
+    message:String
+    users:User
 }
 
 type Response {

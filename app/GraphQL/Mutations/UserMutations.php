@@ -12,7 +12,7 @@ use App\Models\Tecnico;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
-
+use App\Services\StateCatalog;
 
 class UserMutations{
 
@@ -24,6 +24,9 @@ class UserMutations{
      * @return string
      * @throws ValidationException
      */
+
+    protected $active = StateCatalog::STATUS_ACTIVE;
+    protected $low = StateCatalog::STATUS_LOW;
     public function create($root , array $args){
         $userData = $args['userRequest'];
         $email = strtolower(trim($userData['email']));
@@ -72,6 +75,62 @@ class UserMutations{
             $user=User::where('id',$id)->delete();
             return ['message'=> 'Borrado existoso'];
         }
+    }
+
+    public function setUpUser($root,array $args){
+        try{
+            $user = User::where('id',$args['id_user'])
+                        ->where('status',$this->low)
+                        ->first();
+            //dd($user);
+            if(is_null($user)){
+                return [
+                    'message' => 'Se presento fallas al encontrar el ID del usuario'
+                ];
+            }
+            $user['status'] = $this->active;
+            $user->save();
+
+            return [
+                'message'=>'Se restablecio con exito al usuario',
+                'users'=> $user
+            ];
+
+        } catch (\Exception $err) {
+            return [
+                'message'=>'Se presentaron las siguientes fallas : '. $err->getMessage(),
+                'users'=>[]
+            ];
+        };
+    }
+
+    public function anullUser($root,array $args){
+        try{
+            $user = User::where('id',$args['id_user'])->first();
+            if(is_null($user)){
+                return [
+                    'message' => 'Se presento fallas al encontrar el ID del usuario'
+                ];
+            }
+            if( $user['status'] != $this->low ){
+                $user['status'] = $this->low;
+                $user->save();
+            }else{
+                return [
+                    'message' => 'El usuario esta inhabilitado'
+                ];
+            }
+            return [
+                'message'=>'Se dio de baja con exito al usuario',
+                'users'=> $user
+            ];
+
+        } catch (\Exception $err) {
+            return [
+                'message'=>'Se presentaron las siguientes fallas : '.$err->getMessage(),
+                'users'=>[]
+            ];
+        };
     }
 
     public function login($root, array $args)

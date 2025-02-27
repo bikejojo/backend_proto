@@ -3,8 +3,11 @@
 namespace App\Services;
 
 class StateCatalog {
+
     const INTERNAL_CLIENT = 1;
     const EXTERNAL_CLIENT = 2;
+    //codigo de user
+    const USER_ADMINS = 3;
     const USER_CLIENT = 2;
     const USER_TECHNICIAN=1;
     //general
