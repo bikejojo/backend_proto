@@ -588,8 +588,8 @@ class ServiceQuery
                                 ->where('requests.clientId', $clientId)
                                 ->where('requests.stateId', 2)
                                 ->whereBetween('services.updatedDateTime', [
-                                    now()->subDay(), // Un día antes
-                                    now()->addDays(5)  // Un día después
+                                    now()->subDays(7), // Un día antes
+                                    now()->addDays(7)  // Un día después
                                 ])
                                 ->select(
                                     'requests.id AS id_requests',
