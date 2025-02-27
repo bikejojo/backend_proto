@@ -19,6 +19,7 @@ class User extends Authenticatable
         'ci',
         'type_user',
         'token',
+        'status',
         //'code',
     ];
     protected $appends = ['token'];

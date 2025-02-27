@@ -46,7 +46,7 @@ class UserQuery{
                     'roles' => $user->roles->map(function ($role) {
                                 return ['name' => $role->name]; // Devuelve objetos en lugar de un array plano
                             })->toArray(),
-                    'permissions' => $user->getAllPermissions()->map(fn($perm) => ['name' => $perm->name])->toArray(),
+                    'permissions' => $user->permissions->map(fn($perm) => ['name' => $perm->name])->toArray(), // Solo permisos del usuario
                 ];
             });
             //dd($formattedUsers);

@@ -47,6 +47,7 @@ class RolQuery
             $user = User::with('roles.permissions','permissions')->find($user_id);
             //$permissions=$user->getAllPermissions();
             //dd($permissions);
+            $userPermissions = $user->permissions;
 
             $permissions = $user->roles->flatMap(function ($role){
                 return $role->permissions;
@@ -54,7 +55,8 @@ class RolQuery
             return[
                 'message'=>'Los permisos del usuario',
                 'status' => 2,
-                'permissions' => $permissions
+                'permissions' => $permissions,
+                'permissions1' => $userPermissions
             ];
         } catch (\Exception $e){
             return [
@@ -76,7 +78,7 @@ class RolQuery
             $rolePermissions = $user->roles->flatMap(function ($role){
                 return $role->permissions;
             })->unique();
-
+//$userPermissions = $user->permissions;
             return [
                 'message'=>'Permisos obtenidos por el rol',
                 'user'=>$user,
