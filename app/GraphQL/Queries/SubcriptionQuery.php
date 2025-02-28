@@ -19,6 +19,12 @@ class SubcriptionQuery
                                 ->get();
         return $suscripcion;
     }
+
+    public function allSuscription(){
+        $suscripcion=Suscripcion::select('id','name','codeSubcription')->get();
+        return $suscripcion;
+    }
+
     public function getAllTechnician($root , array $args){
         $subcriptionData=$args['requestSubcription'];
         $technician = ValidationModels::validationTechnician($subcriptionData['id_technician']);
