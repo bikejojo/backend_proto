@@ -2,6 +2,14 @@ extend type Query {
   getAllUsers: [User] @all
   getUserById(id: ID! @whereKey): User @find
   getUserRol: responseRolUser @field(resolver: "UserQuery@getUserRol")
+  me:responseAdminLogin @field(resolver: "UserQuery@me")
+}
+
+type responseAdminLogin {
+    id:ID
+    email:String
+    role:Role
+    permissions:[Permission]
 }
 
 type responseRolUser {

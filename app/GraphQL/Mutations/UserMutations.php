@@ -3,7 +3,6 @@
 namespace App\GraphQL\Mutations;
 
 use App\Models\Cliente_Interno;
-use Illuminate\Support\Facades\DB;
 use App\Models\Tecnico_Habilidad;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -282,11 +281,19 @@ class UserMutations{
         $user->save();
         $role=$user->roles->first();
         // Retornar respuesta
+        $permissions = $user->permissions->map(function ($permission) {
+            return [
+                'id' => $permission->id,
+                'name' => $permission->name
+            ];
+        });
+
         if ($user !== null) {
             return [
                 'message' => 'Login exitoso',
                 'user' => $user,
                 'role' => $role,
+                'permissions'  => $permissions,
             ];
         } else {
             return [
@@ -296,6 +303,7 @@ class UserMutations{
         }
 
     }
+
     public function logout($root, array $args)
     {
         $user = Auth::user(); // Obtener el usuario autenticado

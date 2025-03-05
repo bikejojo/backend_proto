@@ -4,6 +4,7 @@ namespace App\GraphQL\Queries;
 
 use App\Models\User;
 use App\Services\StateCatalog;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -65,6 +66,24 @@ class UserQuery{
                 'user'=>null,
             ];
         }
+    }
+
+    public function me($root,array $args){
+        $user = Auth::user();
+        if(!$user){
+            return null;
+        }
+        //dd($user);
+        return [
+            'id' => $user->id,
+            'email' => $user->email,
+            'role' => $user->roles->first(),
+            'permissions' => $user->permissions->map(fn($perm) => [
+                'id' => $perm->id, // Agregar el ID del permiso
+                'name' => $perm->name
+            //'permissions' => $user->permissions->get(),
+            ]),
+        ];
     }
 
 }

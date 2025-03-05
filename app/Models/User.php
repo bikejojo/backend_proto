@@ -20,7 +20,6 @@ class User extends Authenticatable
         'type_user',
         'token',
         'status',
-        //'code',
     ];
     protected $appends = ['token'];
 
