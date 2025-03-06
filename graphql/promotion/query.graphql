@@ -1,0 +1,8 @@
+extend type Query{
+    promotionAllw:messagePromo @field(resolver: "PromotionQuery@promotionAll")
+}
+
+type messagePromo {
+    message:String
+    promotion:[Promotion]
+}

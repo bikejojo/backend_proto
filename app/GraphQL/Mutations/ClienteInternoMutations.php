@@ -17,6 +17,7 @@ use App\Helpers\ImageHelper;
 use App\Models\Ciudad;
 use App\Services\ValidationModels;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ClienteInternoMutations{
     //variables
@@ -63,7 +64,7 @@ class ClienteInternoMutations{
         $clienteData['userId'] = $userId;
         $loginMethod=$clienteData['loginMethod'];
         $clienteData['loginMethod'] = $this->methodLogin($loginMethod);
-        //dd($clientData['loginMethod']);
+        $clienteData['status'] = 1;
         $cliente = Cliente_Interno::create($clienteData);
         $clientId = $cliente->id;
         $value=$user->type_user;
@@ -73,12 +74,13 @@ class ClienteInternoMutations{
         if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
             $fotoPath = $this->processImage($args['photo'], "/client_{$clientId}/photo/{$this->now}.png",$manager);
             $cliente->photo = $this->app . '/storage' . str_replace('public/', '', $fotoPath);  // Guardar la ruta de la imagen
-            $cliente->status = 1;
             $cliente->save();
         }
 
-        $cliente=Cliente_Interno::find($clientId);
+        //$cliente=Cliente_Interno::find($clientId);
         $ciudad = Ciudad::find($cliente->cityId);
+        //Log::info('------- Falla ----', $cliente->toArray());
+
         DB::commit();
         return [
             'message' => 'Creacion Cliente exitoso!',
@@ -273,6 +275,8 @@ class ClienteInternoMutations{
                 return 'formulario';
             case '2':
                 return 'google';
+            case '3':
+                return 'facebook';
             default:
                 return 'Método desconocido';
         }
