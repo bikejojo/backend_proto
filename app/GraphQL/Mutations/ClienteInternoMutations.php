@@ -65,7 +65,18 @@ class ClienteInternoMutations{
         $loginMethod=$clienteData['loginMethod'];
         $clienteData['loginMethod'] = $this->methodLogin($loginMethod);
         $clienteData['status'] = 1;
-        $cliente = Cliente_Interno::create($clienteData);
+
+        $cliente = Cliente_Interno::create([
+            'firstName' => $clienteData['firstName'],
+            'lastName' => $clienteData['lastName'],
+            'email' => $clienteData['email'],
+            'phoneNumber' => $clienteData['phoneNumber'],
+            'cityId'=>$clienteData['cityId'],
+            'loginMethod'=>$clienteData['loginMethod'],
+            'userId'=>$clienteData['userId'],
+            'status'=>$clienteData['status'],
+        ]);
+        
         $clientId = $cliente->id;
         $value=$user->type_user;
 
