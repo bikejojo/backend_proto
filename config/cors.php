@@ -23,8 +23,8 @@ return [
 
     'allowed_origins' => [
         'http://localhost:3000',
-        'http://192.168.100.17:3000',
-        'http://192.168.100.17:8002'
+        'http://192.168.0.107:3000',
+        'http://192.168.100.17:3000'
     ],
 
     'allowed_origins_patterns' => ['.*'],
