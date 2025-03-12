@@ -17,35 +17,34 @@ class RoleSeeder extends Seeder
     {
         // Crear o actualizar roles
         $adminRole = Role::updateOrCreate(
-            ['name' => 'administrativo', 'guard_name' => 'web'],
-            ['name' => 'administrativo']
+            ['name' => 'Soporte', 'guard_name' => 'web'],
+            ['name' => 'Soporte']
         );
 
         $supportRole = Role::updateOrCreate(
-            ['name' => 'soporte', 'guard_name' => 'web'],
-            ['name' => 'soporte']
+            ['name' => 'Comercial', 'guard_name' => 'web'],
+            ['name' => 'Comercial']
         );
 
         $commercialRole = Role::updateOrCreate(
-            ['name' => 'comercial', 'guard_name' => 'web'],
-            ['name' => 'comercial']
+            ['name' => 'Administrativo', 'guard_name' => 'web'],
+            ['name' => 'Administrativo']
         );
 
         // Crear o actualizar permisos
-        Permission::updateOrCreate(['name' => 'manage-users', 'guard_name' => 'web']);
-        Permission::updateOrCreate(['name' => 'manage-roles', 'guard_name' => 'web']);
-        Permission::updateOrCreate(['name' => 'view-reports', 'guard_name' => 'web']);
         Permission::updateOrCreate(['name' => 'access-dashboard', 'guard_name' => 'web']);
-
-        Permission::updateOrCreate(['name' => 'view-client-data', 'guard_name' => 'web']);
-        Permission::updateOrCreate(['name' => 'log-incidents', 'guard_name' => 'web']);
+        Permission::updateOrCreate(['name' => 'manage-technician', 'guard_name' => 'web']);
+        Permission::updateOrCreate(['name' => 'manage-clients', 'guard_name' => 'web']);
 
         Permission::updateOrCreate(['name' => 'view-publicity', 'guard_name' => 'web']);
-        Permission::updateOrCreate(['name' => 'view-client-history', 'guard_name' => 'web']);
+        Permission::updateOrCreate(['name' => 'manage-users-roles', 'guard_name' => 'web']);
+        Permission::updateOrCreate(['name' => 'manage-subcription', 'guard_name' => 'web']);
+
+        Permission::updateOrCreate(['name' => 'view-promotion', 'guard_name' => 'web']);
 
         // Asignar permisos a roles
-        $adminRole->syncPermissions(['manage-users', 'manage-roles', 'view-reports', 'access-dashboard']);
-        $supportRole->syncPermissions(['view-client-data', 'log-incidents']);
-        $commercialRole->syncPermissions(['view-publicity', 'view-client-history']);
+        $adminRole->syncPermissions(['view-publicity', 'manage-clients', 'manage-technician', 'access-dashboard','manage-users-roles','manage-subcription','view-promotion']);
+        $supportRole->syncPermissions(['manage-technician', 'manage-clients']);
+        $commercialRole->syncPermissions(['view-publicity', 'manage-subcription','view-promotion']);
     }
 }
