@@ -76,7 +76,7 @@ class ClienteInternoMutations{
             'userId'=>$clienteData['userId'],
             'status'=>$clienteData['status'],
         ]);
-        
+
         $clientId = $cliente->id;
         $value=$user->type_user;
 
@@ -115,22 +115,17 @@ class ClienteInternoMutations{
     public function update($root ,array $args){
         $clientData = $args['clientRequest'];
         $client = ValidationModels::validationclientInternal($args['id']);
-        if (User::where('email',$clientData['email'])->exists()) {
-            return [
-                 'message'=> 'Este email ya esta en uso, por favor intenta con otro.',
-                 'status' => 2
-            ];
-         }
 
         $clientId = $client->id;
         $user = User::find($client->userId);
         DB::beginTransaction();
         try{
+
             $firstName = trim($clientData['firstName']);
             $lastName = trim($clientData['lastName']);
             $email = trim($clientData['email']);
             $phone = trim($clientData['phoneNumber']);
-            if (empty($technicianData['password'])) {
+            if (empty($clientData['password'])) {
                 $hashedPassword = $user->password;
             } else {
                 $hashedPassword = Hash::make($clientData['password']);
