@@ -1,6 +1,5 @@
 extend type Query {
     getAllTechnicians: [Technician] @all (model: "App\\Models\\Tecnico")
-
     getTechnicianById(id: ID! @whereKey): Technician @find (model: "App\\Models\\Tecnico")
     getFeaturedTechnicians(id_city:String) : responseListTechnician @field (resolver: "ServiceQuery@getAverageTechnical")
     getFeaturedFilterTechnicians(requestFilterTechnicial:JSON):responsesTechnician @field(resolver: "ServiceQuery@getAverageTechnicalFilter")
@@ -8,6 +7,17 @@ extend type Query {
     getAllTechnicians_: getTechnicianTable @field(resolver: "TechnicianQuery@get_technician")
     filtersTechnician(requestFilterTechnician:JSON):getTechnicianTable @field(resolver: "TechnicianQuery@filterListTechnician")
     getRecordSubcriptionTechnician(id_technician:String):responseHistory @field(resolver: "TechnicianQuery@recordSubcriptionTechnician")
+    dashboardTechnicianMonth:responseTech @field(resolver: "TechnicianQuery@getTechnicianExpiredByMouth")
+}
+
+type responseTech {
+    message:String
+    content:[responde]
+}
+
+type responde {
+    month:String
+    technicians_count:String
 }
 
 type responseHistory {

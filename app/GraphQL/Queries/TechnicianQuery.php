@@ -4,7 +4,7 @@ namespace App\GraphQL\Queries;
 
 use App\Models\Technician_subcripcion;
 use App\Models\Tecnico;
-
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class TechnicianQuery
@@ -245,6 +245,43 @@ class TechnicianQuery
             return [
                 'message' => 'Se presento la siguiente falla: '. $e->getMessage(),
                 'suscriptionTech' => null
+            ];
+        }
+    }
+
+    public function getTechnicianExpiredByMouth($root,array $args){
+        try{
+            $currenMouth = Carbon::now()->format('Y-m');
+            $nextMouth = Carbon::now()->addMonth()->format('Y-m');
+            $twoMouth = Carbon::now()->addMonths(2)->format('Y-m');
+
+            $months =[
+                Carbon::now()->format('F') => $currenMouth,
+                Carbon::now()->addMonth()->format('F') => $nextMouth,
+                Carbon::now()->addMonths(2)->format('F') => $twoMouth
+            ];
+
+            $resul = [];
+
+            foreach ($months as $monthName => $monthValue){
+                $count = Technician_subcripcion::where('endDateSubcription','LIKE',"{$monthValue}%")
+                                            ->where('status',1)
+                                            ->distinct('technicianId')
+                                            ->count();
+
+                $result[] = [
+                    'month' => $monthName,
+                    'technicians_count' => $count
+                ];
+            }
+
+            return [
+                'message' => 'conteo exitoso de tecnicos',
+                'content' => $result
+            ];
+        }catch(\Exception $e){
+            return[
+                'message'=> 'Se presentaron las siguientes fallas:' . $e->getMessage()
             ];
         }
     }

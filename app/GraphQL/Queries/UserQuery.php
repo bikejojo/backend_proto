@@ -2,6 +2,10 @@
 
 namespace App\GraphQL\Queries;
 
+use App\Models\Cliente_Interno;
+use App\Models\Servicio;
+use App\Models\Solicitud;
+use App\Models\Tecnico;
 use App\Models\User;
 use App\Services\StateCatalog;
 use Illuminate\Support\Facades\Auth;
@@ -86,4 +90,11 @@ class UserQuery{
         ];
     }
 
+    public function countParams($root,array $args){
+        $technicians = Tecnico::count();
+        $client = Cliente_Interno::count();
+        $request = Solicitud::where('stateId',3)->count();
+        $service = Servicio::where('stateId',5)->count();
+        dd($technicians,$client,$request,$service);
+    }
 }
