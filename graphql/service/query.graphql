@@ -9,6 +9,27 @@ extend type Query {
     collectClientServices(requestService:JSON):responseServices @field (resolver: "ServiceQuery@listsServiceClient")
     listRequestsAccept(id_client:String):responseListService @field(resolver: "ServiceQuery@getListRequestNow")
     getServiceId(id_service:String):responseServiceId @field (resolver: "ServiceQuery@getServiceById")
+    getCountService:responseServ @field(resolver: "ServiceQuery@getCountServicesStateActivity")
+}
+
+type responseServ{
+    message:String
+    contAll:String
+    contState:countState
+    contActivity:countActivity
+}
+
+type countState{
+    servicePending:String
+    serviceFinish:String
+    serviceComplt:String
+}
+
+type countActivity{
+    serviceMant:String
+    serviceRepa:String
+    serviceInst:String
+    serviceInsp:String
 }
 
 type responseServiceId{

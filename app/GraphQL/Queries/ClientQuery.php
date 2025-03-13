@@ -587,4 +587,23 @@ class ClientQuery{
             ];
         }
     }
+
+    public function clientCont(){
+        try{
+            $content = [
+                'clientAll' => Cliente_Interno::count(),
+                'clientActive' => Cliente_Interno::where('status',1)->count(),
+                'clientLow' => Cliente_Interno::where('status',0)->count(),
+            ];
+            //dd($content);
+            return [
+                'message' => 'conteo exitoso!',
+                'cont' => $content
+            ];
+        }catch(\Exception $e){
+            return [
+               'message' => 'Se presento las siguientes fallas: ' . $e->getMessage()
+            ];
+        }
+    }
 }

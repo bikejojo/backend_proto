@@ -692,4 +692,32 @@ class ServiceQuery
         };
     }
 
+    public function getCountServicesStateActivity($root,array $args){
+        try{
+            $serviceAll= Servicio::count();
+            $contentState = [
+                'servicePending' => Servicio::where('stateId',1)->count(),
+                'serviceFinish' => Servicio::where('stateId',4)->count(),
+                'serviceComplt' => Servicio::where('stateId',5)->count(),
+            ];
+            $contentActivity = [
+                'serviceMant' => Servicio::where('activityId',1)->count(),
+                'serviceRepa' => Servicio::where('activityId',2)->count(),
+                'serviceInst' => Servicio::where('activityId',3)->count(),
+                'serviceInsp' => Servicio::where('activityId',4)->count(),
+            ];
+
+            return [
+                'message'       => 'conteo exitoso de servicios',
+                'contAll'       => $serviceAll,
+                'contState'     => $contentState,
+                'contActivity'  => $contentActivity,
+            ];
+
+        }catch(\Exception $e){
+            return [
+                'message' => 'Surgio las siguientes fallas: ' . $e->getMessage()
+            ];
+        }
+    }
 }

@@ -211,4 +211,24 @@ class RequestQuery
         });
     }
 
+    public function getRequestData($root,array $args){
+        try{
+            $conten = [
+                'requestAll'     => Solicitud::count(),
+                'requestPending' => Solicitud::where('stateId',1)->count(),
+                'requestAccept'  => Solicitud::where('stateId',2)->count(),
+                'requestCancel'  => Solicitud::where('stateId',3)->count(),
+            ];
+
+            return [
+                'message' => 'conteo exitoso de las solicitudes',
+                'conteo' => $conten
+            ];
+
+        }catch(\Exception $e){
+            return [
+                'message' => 'Se presentaron las siguientes fallas:' . $e->getMessage()
+            ];
+        }
+    }
 }

@@ -8,8 +8,19 @@ extend type Query {
     filterSearchclient(requestSearchData:JSON):response_cliente @field (resolver: "ClientQuery@searchClientInterno")
     getListRequestByClient(id_client:String ,id_state:String):responseListByClient @field(resolver: "ClientQuery@listRequestByClient")
     getClientId(id:String):responseGetClient @field(resolver: "ClientQuery@dataClient")
+    getContClient:respondeClient @field(resolver: "ClientQuery@clientCont")
 }
 
+type respondeClient {
+    message:String
+    cont:clientConte
+}
+
+type clientConte {
+    clientAll:String
+    clientActive:String
+    clientLow:String
+}
 type responseGetClient {
     message:String
     client_int:InternalClient
