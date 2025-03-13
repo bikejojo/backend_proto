@@ -285,4 +285,24 @@ class TechnicianQuery
             ];
         }
     }
+
+    public function contDetailsTechnician(){
+        try{
+
+            $content = [
+                'countTotal'=> Tecnico::count() ,
+                'countActive'=> Tecnico::join('technician_subcription','technician_subcription.technicianId','=','technicians.id')->where('technicians.status',1)->where('technician_subcription.status',1)->distinct()->count(),
+                'countLow'=> Tecnico::join('technician_subcription','technician_subcription.technicianId','=','technicians.id')->where('technician_subcription.status',0)->where('technicians.status',0)->distinct()->count(),
+            ];
+
+            return [
+                'messge' => 'El conteo es exitoso',
+                'countTech' => $content
+            ];
+        }catch(\Exception $e){
+            return [
+                'message' => 'Las fallas son las siguientes:  ' . $e->getMessage()
+            ];
+        }
+    }
 }

@@ -3,9 +3,13 @@ extend type Query {
   getUserById(id: ID! @whereKey): User @find
   getUserRol: responseRolUser @field(resolver: "UserQuery@getUserRol")
   me:responseAdminLogin @field(resolver: "UserQuery@me")
-  countParams:paramsCount @field(resolver: "UserQuery@countParams")
+  countParams:responseCont @field(resolver: "UserQuery@countParams")
 }
 
+type responseCont {
+    message:String
+    conteo:paramsCount
+}
 type paramsCount{
     technician:String
     client:String

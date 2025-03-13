@@ -8,8 +8,19 @@ extend type Query {
     filtersTechnician(requestFilterTechnician:JSON):getTechnicianTable @field(resolver: "TechnicianQuery@filterListTechnician")
     getRecordSubcriptionTechnician(id_technician:String):responseHistory @field(resolver: "TechnicianQuery@recordSubcriptionTechnician")
     dashboardTechnicianMonth:responseTech @field(resolver: "TechnicianQuery@getTechnicianExpiredByMouth")
+    countTechnicianDashboard:responseToTech @field(resolver: "TechnicianQuery@contDetailsTechnician")
 }
 
+type responseToTech {
+    messge:String
+    countTech:paramsTech
+}
+
+type paramsTech {
+    countTotal:String
+    countActive:String
+    countLow:String
+}
 type responseTech {
     message:String
     content:[responde]

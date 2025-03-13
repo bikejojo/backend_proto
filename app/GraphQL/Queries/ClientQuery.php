@@ -531,7 +531,7 @@ class ClientQuery{
             if (!empty($stateId)) {
                 $request->where('requests.stateId', $stateId);
             }
-           
+
             $requests= $request->distinct()->get();
 
             $content = $requests->map( function($req) use ($stateId) {
@@ -561,6 +561,29 @@ class ClientQuery{
                 'message' => 'Las fallas son las siguientes: ' . $e->getMessage(),
                 'count' => 0 ,
                 'requests' => []
+            ];
+        }
+    }
+
+    public function dataClient($root,array $args){
+        try{
+            $clientId = $args['id'];
+            $clientData = Cliente_Interno::where('id',$clientId)
+                        ->select(
+                            'internal_clients.id',
+                            'internal_clients.firstName',
+                            'internal_clients.lastName',
+                            'internal_clients.phoneNumber',
+                            'internal_clients.email'
+                        )
+                        ->first();
+            return [
+                'message' => 'Envio de datos exitoso',
+                'client_int' => $clientData
+            ];
+        }catch(\Exception $e){
+            return [
+                'message' => 'Se presento las siguientes fallas: ' . $e->getMessage()
             ];
         }
     }

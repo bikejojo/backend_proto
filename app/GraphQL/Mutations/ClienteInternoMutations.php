@@ -118,45 +118,45 @@ class ClienteInternoMutations{
 
         $clientId = $client->id;
         $user = User::find($client->userId);
-        DB::beginTransaction();
-        try{
 
-            $firstName = trim($clientData['firstName']);
-            $lastName = trim($clientData['lastName']);
-            $email = trim($clientData['email']);
-            $phone = trim($clientData['phoneNumber']);
-            if (empty($clientData['password'])) {
-                $hashedPassword = $user->password;
-            } else {
-                $hashedPassword = Hash::make($clientData['password']);
-            }
-            $client->firstName=$firstName;
-            $client->lastName=$lastName;
-            $client->email=$email;
-            $client->phoneNumber=$phone;
-            $client->cityId = $clientData['cityId'];
-            $value=$user->type_user;
+        DB::beginTransaction();
+        try {
+            // Asignar los datos del cliente
+            $client->update([
+                'firstName'   => $clientData['firstName'] ?? $client->firstName,
+                'lastName'    => $clientData['lastName'] ?? $client->lastName,
+                'email'       => $clientData['email'] ?? $client->email,
+                'phoneNumber' => $clientData['phoneNumber'] ?? $client->phoneNumber,
+                'cityId'      => $clientData['cityId'] ?? $client->cityId,
+            ]);
+
+            // Actualizar el usuario
+            $user->update([
+                'email'    => $clientData['email'] ?? $user->email,
+                'password' => !empty($clientData['password'])
+                    ? Hash::make($clientData['password'])
+                    : $user->password,
+            ]);
+
             $ciudad = Ciudad::find($client->cityId);
 
-            $client->save();
-            $user->email = $email ?? $user->email;
-            $user->password = $hashedPassword;
-            $user->save();
             DB::commit();
-            return[
-                'message' => 'Cliente actualizado exitoso!!' ,
-                'client' => $client ,
-                'user' => $user,
-                'status' => 1,
-                'city' =>[
+
+            return [
+                'message' => 'Cliente actualizado exitosamente!',
+                'client'  => $client,
+                'user'    => $user,
+                'status'  => 1,
+                'city'    => [
                     'id_city' => $ciudad->id,
-                    'name' => $ciudad->name
+                    'name'    => $ciudad->name
                 ]
             ];
-        }catch (\Exception $e){
+
+        } catch (\Exception $e) {
             DB::rollBack();
             return [
-                'message' => 'El error es.'. $e->getMessage(),
+                'message' => 'El error es: ' . $e->getMessage(),
                 'status' => 3
             ];
         }

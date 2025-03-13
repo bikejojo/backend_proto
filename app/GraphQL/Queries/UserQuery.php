@@ -91,10 +91,23 @@ class UserQuery{
     }
 
     public function countParams($root,array $args){
-        $technicians = Tecnico::count();
-        $client = Cliente_Interno::count();
-        $request = Solicitud::where('stateId',3)->count();
-        $service = Servicio::where('stateId',5)->count();
-        dd($technicians,$client,$request,$service);
+        try {
+            $content = [
+                'technician' => Tecnico::count(),
+                'client' => Cliente_Interno::count(),
+                'requests' => Solicitud::count(),
+                'service' => Servicio::count()
+            ];
+
+            return [
+                'message' => 'Conteo exitoso del conteo.',
+                'conteo' => $content
+            ];
+        } catch (\Exception $e) {
+            return [
+                'message' => 'Error durante el conteo: ' . $e->getMessage(),
+                'status' => 'error'
+            ];
+        }
     }
 }

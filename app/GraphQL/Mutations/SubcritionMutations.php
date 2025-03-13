@@ -325,21 +325,29 @@ class SubcritionMutations
     }
 
     public function disableExpirateSuscription(){
-        try{
-            $expiredSuscription = Technician_subcripcion::where('technician_subcription.endDateSubcription','<',$this->now)
-            ->where('status',1)
-            ->get();
+        try {
+            // Obtener suscripciones expiradas
+            $expiredSuscriptions = Technician_subcripcion::where('endDateSubcription', '<', now())
+                ->where('status', 1)
+                ->get();
 
-            foreach ($expiredSuscription as $suscripcion){
-                $suscripcion->update(['status'=>0]);
-            }
+            // Desactivar suscripciones directamente en una sola consulta
+            Technician_subcripcion::whereIn('id', $expiredSuscriptions->pluck('id'))
+                ->update(['status' => 0]);
+
+            // Desactivar técnicos directamente en una sola consulta
+            Tecnico::whereIn('id', $expiredSuscriptions->pluck('technicianId'))
+                ->update(['status' => 0]);
+
             return [
                 'message' => 'Suscripciones expiradas desactivadas exitosamente.',
-                'count' => count($expiredSuscription)
+                'count' => $expiredSuscriptions->count()
             ];
-        } catch (\Exception $e){
+
+        } catch (\Exception $e) {
             return [
-                'message' => 'Se presentaron las siguientes fallas. ' . $e->getMessage()
+                'message' => 'Se presentaron las siguientes fallas: ' . $e->getMessage(),
+                'error_details' => $e->getTraceAsString(),  // Para una depuración más clara
             ];
         }
     }
