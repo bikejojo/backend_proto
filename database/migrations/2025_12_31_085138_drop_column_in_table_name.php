@@ -38,7 +38,7 @@ return new class extends Migration
 
             });
         }*/
-        public function up(): void
+        /*public function up(): void
         {
             Schema::table('settings', function (Blueprint $table) {
                 $table->string('url_app_tecnico');
@@ -52,7 +52,7 @@ return new class extends Migration
                 $table->string('url_app_tecnico');
                 $table->string('url_app_cliente');
             });
-        }
+        }*/
     /**
      * Reverse the migrations.
      */
