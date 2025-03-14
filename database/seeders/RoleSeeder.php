@@ -16,17 +16,17 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         // Crear o actualizar roles
-        $adminRole = Role::updateOrCreate(
+        $supportRole = Role::updateOrCreate(
             ['name' => 'Soporte', 'guard_name' => 'web'],
             ['name' => 'Soporte']
         );
 
-        $supportRole = Role::updateOrCreate(
+        $commercialRole = Role::updateOrCreate(
             ['name' => 'Comercial', 'guard_name' => 'web'],
             ['name' => 'Comercial']
         );
 
-        $commercialRole = Role::updateOrCreate(
+        $adminRole = Role::updateOrCreate(
             ['name' => 'Administrativo', 'guard_name' => 'web'],
             ['name' => 'Administrativo']
         );

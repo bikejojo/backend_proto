@@ -9,6 +9,7 @@ use App\Models\Tecnico;
 use App\Models\Tipo_Actividad;
 use App\Models\Tipo_Estado;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 
 class RequestFactorySeeder
 {
@@ -37,7 +38,7 @@ class RequestFactorySeeder
 
         // Crear la solicitud
         $request = Solicitud::factory()->create([
-            'clientId' => 41,
+            'clientId' => $client->id,
             'technicianId' => $technician->id,
             'activityId' => $activity->id,
             'stateId' =>  rand(1,3),

@@ -314,8 +314,7 @@ class UserMutations{
 
             if ($currentToken) {
                 $currentToken->delete(); // Eliminar el token actual
-                $user->token = null;
-                $user->save();
+                $user->update(['token' => null]);
                 return [
                     'message' => 'Logout exitoso'
                 ];

@@ -28,13 +28,6 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'email' => 'test@example.com',
-            'password' => bcrypt('123'),
-            'ci' => '123',
-            'type_user' => 3,
-            'token' => "1"
-        ]);
         #ciudad para tecnicos y clientes
         Ciudad::create(['name'=>'Santa Cruz']);
         Ciudad::create(['name'=>'Cochabamba']);
@@ -221,9 +214,19 @@ class DatabaseSeeder extends Seeder
         Type::create(['description'=>'Publicidad','code_notifications'=>'PUBLIC']);
         Type::create(['description'=>'Solicitud','code_notifications'=>'SOLIC']);
 
-        /*Role::create(['name'=>'Soporte']);
-        Role::create(['name'=>'Comerial']);
-        Role::create(['name'=>'Administrativo']);*/
         $this->call(RoleSeeder::class);
+
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('123'),
+            'ci' => '123',
+            'type_user' => 3,
+            'token' => "1"
+        ]);
+
+        // Asignar el rol al usuario
+        $user->assignRole('Administrativo');
+
+        $user->givePermissionTo('view-publicity', 'manage-clients', 'manage-technician', 'access-dashboard','manage-users-roles','manage-subcription','view-promotion');
     }
 }
