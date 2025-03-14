@@ -27,53 +27,64 @@ class SolicitudesMutations
     }
 
     public function createRequestClient($root,array $args){
-        $requestData = $args['requestRequest'];
-        $technicianId=$requestData['id_technician'];
-        $clientId =$requestData['id_client'];
-        $technician = ValidationModels::validationTechnician($technicianId);
-        $client = ValidationModels::validationclientInternal($clientId);
-        DB::beginTransaction();
-        try{
-            $request = Solicitud::create([
-                'clientId' => $client->id,
-                'technicianId' => $technician->id,
-                'titleRequests'=> $requestData['titleRequests'],
-                'requestDescription'=>$requestData['requestDescription'],
-                'latitude'=>$requestData['latitude'],
-                'longitude'=>$requestData['longitude'],
-                'serviceLocation'=>$requestData['serviceLocation'],
-                'reference_phone'=>$requestData['reference_phone'],
-                'status'=>StateCatalog::STATUS_ACTIVE,
-                'activityId' => $requestData['id_activity']
-            ]);
-            StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El cliente creo una solicitud nueva.',1);
-            $request->registrationDateTime = $this->now;
-            $request->save();
 
-            $historial = Historial_Servicios::create([
-                'clientId' => $client->id,
-                'technicianId' => $technician->id,
-                'jobId'=>$request->id,
-                'descriptionJob'=>1, // request
-                'stateId'=> $request->stateId,
-                'outsetDate'=>$request->registrationDateTime,
-                'description'=>$request->requestDescription
-            ]);
+            $requestData = $args['requestRequest'];
+            $keys = array_keys($requestData);
 
-            $request = Solicitud::find($request->id);
-            DB::commit();
-            return [
-                'message' => 'Solicitud registrada',
-                'requests' => $request,
-                'client' => $client,
-                'technician' => $technician
-            ];
-        } catch(\Exception $e){
-            DB::rollBack();
-            return[
-                'message' => 'El error es.'. $e->getMessage()
-            ];
-        }
+            for($i=0;$i < count($requestData);$i++){
+                $indexName = $keys[$i];
+                if(empty($requestData[$indexName])){
+                    return [
+                        'message' => "El campo '{$indexName}' esta vacio"
+                    ];
+                }
+            }
+            $technicianId=$requestData['id_technician'];
+            $clientId =$requestData['id_client'];
+            $technician = ValidationModels::validationTechnician($technicianId);
+            $client = ValidationModels::validationclientInternal($clientId);
+            DB::beginTransaction();
+            try{
+                $request = Solicitud::create([
+                    'clientId' => $client->id,
+                    'technicianId' => $technician->id,
+                    'titleRequests'=> $requestData['titleRequests'],
+                    'requestDescription'=>$requestData['requestDescription'],
+                    'latitude'=>$requestData['latitude'],
+                    'longitude'=>$requestData['longitude'],
+                    'serviceLocation'=>$requestData['serviceLocation'],
+                    'reference_phone'=>$requestData['reference_phone'],
+                    'status'=>StateCatalog::STATUS_ACTIVE,
+                    'activityId' => $requestData['id_activity']
+                ]);
+                StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El cliente creo una solicitud nueva.',1);
+                $request->registrationDateTime = $this->now;
+                $request->save();
+
+                $historial = Historial_Servicios::create([
+                    'clientId' => $client->id,
+                    'technicianId' => $technician->id,
+                    'jobId'=>$request->id,
+                    'descriptionJob'=>1, // request
+                    'stateId'=> $request->stateId,
+                    'outsetDate'=>$request->registrationDateTime,
+                    'description'=>$request->requestDescription
+                ]);
+
+                $request = Solicitud::find($request->id);
+                DB::commit();
+                return [
+                    'message' => 'Solicitud registrada',
+                    'requests' => $request,
+                    'client' => $client,
+                    'technician' => $technician
+                ];
+            } catch(\Exception $e){
+                DB::rollBack();
+                return[
+                    'message' => 'El error es.'. $e->getMessage()
+                ];
+            }
     }
 
     public function cancelRequestTechnician($root,array $args){

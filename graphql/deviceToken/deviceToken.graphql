@@ -1,13 +1,8 @@
 type deviceToken {
     id:ID
-    token:String
-    tokenable:String
-    device_type:String
-    device_name:String
-    device_id:String
-    datetime_at:String
-    is_active:String
+    expo_token:String
+    type_device:String
+    name_device:String
     user_id:ID
 
-    user:User
 }

@@ -10,7 +10,7 @@ class SubGroup_skill extends Model
     protected $PrimaryKey = 'id';
     protected $table = 'sub_groups_skill';
     protected $fillable =[
-        'groupId',
+        'skillId',
         'subGroupId',
         'createDate',
     ];

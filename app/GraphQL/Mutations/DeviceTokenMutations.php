@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 class DeviceTokenMutations
 {
     public function register($root , array $args){
-        DB::beginTransaccion();
+        DB::beginTransaction();
         try {
             $deviceData = $args['deviceTokenRequest'];
             $userId = $deviceData['userId'];
@@ -20,10 +20,9 @@ class DeviceTokenMutations
             if($user->token){
                 $deviceToken = DeviceToken::updateOrCreate([
                     'user_id' => $user->id,
-                    'device_type'=>$deviceData['device_type'],
-                    'device_name'=>$deviceData['device_name'],
-                    'datetime_at' => Carbon::now(),
-                    'token' => $user->token
+                    'name_device'=>$deviceData['name_device'],
+                    'type_device'=>$deviceData['type_device'],
+                    'expo_token' => $user->token
                 ]);
             }else{
                 DB::rollBack();
