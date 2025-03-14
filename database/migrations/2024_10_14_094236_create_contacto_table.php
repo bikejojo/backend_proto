@@ -16,6 +16,8 @@ return new class extends Migration
             $table->text('sopport_number');
             $table->json('screens');
             $table->datetime('dateRegistered')->nullable();
+            $table->string('url_app_tecnico');
+            $table->string('url_app_cliente');
             $table->timestamps();
         });
     }

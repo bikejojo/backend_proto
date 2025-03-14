@@ -38,26 +38,21 @@ return new class extends Migration
 
             });
         }*/
-        /*public function up(): void
+        public function up(): void
         {
-            Schema::table('services', function (Blueprint $table) {
-                /*$table->datetime('createdDateTime')->nullable();
-                $table->datetime('updatedDateTime')->nullable();
-                $table->datetime('finishDateTime')->nullable();*/
-                /*$table->dropColumn('programDate');
-                $table->dropColumn('requestsDate');
-                $table->dropColumn('finishedDate');
+            Schema::table('settings', function (Blueprint $table) {
+                $table->string('url_app_tecnico');
+                $table->string('url_app_cliente');
             });
         }
 
         public function down(): void
         {
-            Schema::table('services', function (Blueprint $table) {
-              /*  $table->datetime('createdDateTime')->nullable();
-                $table->datetime('updatedDateTime')->nullable();
-                $table->datetime('finishDateTime')->nullable();*/
-            /*});
-        }*/
+            Schema::table('settings', function (Blueprint $table) {
+                $table->string('url_app_tecnico');
+                $table->string('url_app_cliente');
+            });
+        }
     /**
      * Reverse the migrations.
      */
