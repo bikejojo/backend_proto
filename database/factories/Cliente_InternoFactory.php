@@ -25,7 +25,8 @@ class Cliente_InternoFactory extends Factory
             'lastName' => $this->faker->lastName(),
             'email' => $this->faker->email(),
             'phoneNumber' => $this->faker->phoneNumber(),
-            'cityId' => 1,
+            'cityId' => 1 ,
+            'status' => 0 ,
             'userId' => User::factory(),
             'loginMethod'=> $this->faker->randomElement(['email', 'google', 'facebook']),
         ];

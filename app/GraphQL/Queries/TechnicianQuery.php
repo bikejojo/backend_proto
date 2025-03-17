@@ -49,7 +49,7 @@ class TechnicianQuery
             $latestSubscription = DB::table('technician_subcription as ts1')
                 ->select('ts1.technicianId', DB::raw('MAX(ts1."endDateSubcription") as last_end_date'))
                 ->groupBy('ts1.technicianId');
-
+            //dd($latestSubscription);
             $technician = Tecnico::join('users', 'technicians.userId', '=', 'users.id')
                 ->join('cities', 'technicians.cityId', '=', 'cities.id')
                 ->joinSub($latestSubscription, 'latest_sub', function ($join) {
@@ -80,7 +80,7 @@ class TechnicianQuery
                 )
                 ->orderBy('id_technician', 'ASC')
                 ->get();
-
+            //dd($technician);
             if ($technician->isEmpty()) {
                 return [
                     'message' => 'No existen técnicos',

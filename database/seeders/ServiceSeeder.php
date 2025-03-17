@@ -26,6 +26,11 @@ class ServiceSeeder extends Seeder
                 'requestsId' => $solicitud->id,
                 'titleService' => $solicitud->titleRequests,
                 'serviceDescription' => $solicitud->requestDescription,
+                'status' => 1 ,
+                'technicalId' => $solicitud->technicianId,
+                'clientId' => $solicitud->clientId,
+                'service_origin' => 1 ,
+                'updatedDateTime' => now()
             ]);
         }
     }

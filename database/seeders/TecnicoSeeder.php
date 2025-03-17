@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Agenda_Tecnico;
+use App\Models\Technician_subcripcion;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
@@ -17,7 +18,7 @@ class TecnicoSeeder extends Seeder
     public function run(): void
     {
         User::factory()
-            ->count(5)
+            ->count(8)
             ->create()
             ->each(function ($user) {
                 // Por cada usuario, crear varios clientes internos
@@ -30,7 +31,14 @@ class TecnicoSeeder extends Seeder
                         Agenda_Tecnico::create([
                                 'technicianId'=>$technician->id,
                                 'createDate'=>Carbon::now()
-                            ]);
+                        ]);
+                        Technician_subcripcion::create([
+                            'technicianId'=>$technician->id,
+                            'subcriptionsId'=>1,
+                            'starDateSubcription'=> now()->addMonth(),
+                            'endDateSubcription' => now()->addMonths(1),
+                            'status' => 1
+                        ]);
                     });
             });
     }

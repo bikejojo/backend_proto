@@ -3,16 +3,16 @@ extend type Query {
     requestClientAll(id:ID!):responseClientId @field (resolver: "RequestQuery@requestsClientId")
     getListStatusRequest(requestRequest:JSON):responseTechnicalId @field (resolver: "RequestQuery@listStatusPendingComplet")
     getAgendaRequest(parameterSearch:JSON):responseAgendaRequest @field(resolver: "RequestQuery@agenda_requests")
-    countRequest:responseCountReq @field(resolver: "RequestQuery@clientCont")
+    countRequest:responseCountReq @field(resolver: "RequestQuery@getRequestData")
 }
 
 type responseCountReq {
     message:String
+    requestAll:String
     conteo:countReq
 }
 
 type countReq {
-    requestAll:String
     requestPending:String
     requestAccept:String
     requestCancel:String

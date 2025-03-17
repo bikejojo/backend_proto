@@ -8,6 +8,7 @@ use App\Models\Pago;
 use App\Models\Promocion_suscripcion;
 use App\Models\Promocion;
 use App\Models\Technician_subcripcion;
+use App\Models\User;
 use Carbon\Carbon;
 use App\Services\StateCatalog;
 use App\Services\ValidationModels;
@@ -331,12 +332,17 @@ class SubcritionMutations
                 ->where('status', 1)
                 ->get();
 
+            $technicianIds = $expiredSuscriptions->pluck('technicianId');
             // Desactivar suscripciones directamente en una sola consulta
             Technician_subcripcion::whereIn('id', $expiredSuscriptions->pluck('id'))
                 ->update(['status' => 0]);
 
             // Desactivar técnicos directamente en una sola consulta
-            Tecnico::whereIn('id', $expiredSuscriptions->pluck('technicianId'))
+            Tecnico::whereIn('id', $technicianIds)
+                ->update(['status' => 0]);
+
+            $userId = Tecnico::whereIn('id',$technicianIds)->pluck('userId');
+            User::whereIn('id', $userId)
                 ->update(['status' => 0]);
 
             return [

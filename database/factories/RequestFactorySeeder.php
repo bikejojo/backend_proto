@@ -41,7 +41,7 @@ class RequestFactorySeeder
             'clientId' => $client->id,
             'technicianId' => $technician->id,
             'activityId' => $activity->id,
-            'stateId' =>  rand(1,3),
+            'stateId' =>  3,
             'status' => 1,  // Estado activo
             'registrationDateTime' => Carbon::create(2025, rand(2, 3), rand(1, 28), rand(0, 23), rand(0, 59), rand(0, 59))
         ]);

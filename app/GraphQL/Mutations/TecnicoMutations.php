@@ -308,6 +308,7 @@ class TecnicoMutations {
         // Borrar técnico
         $technician->status = 0;
         $technician->save();
+        $user=User::where('id',$technician->userId)->update(['status', 0 ]);
             return ['message' => 'Eliminacion exitosa del tecnico'];
     }
 

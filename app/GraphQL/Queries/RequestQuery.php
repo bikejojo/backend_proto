@@ -214,7 +214,7 @@ class RequestQuery
     public function getRequestData($root,array $args){
         try{
             $conten = [
-                'requestAll'     => Solicitud::count(),
+
                 'requestPending' => Solicitud::where('stateId',1)->count(),
                 'requestAccept'  => Solicitud::where('stateId',2)->count(),
                 'requestCancel'  => Solicitud::where('stateId',3)->count(),
@@ -222,6 +222,7 @@ class RequestQuery
 
             return [
                 'message' => 'conteo exitoso de las solicitudes',
+                'requestAll'     => Solicitud::count(),
                 'conteo' => $conten
             ];
 

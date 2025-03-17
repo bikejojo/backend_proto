@@ -146,14 +146,30 @@ class UserMutations{
             ];
         }
         // Error en la contraseña
-        $client = $user->clientsExterns()->first();
         if (!Hash::check($args['password'], $user->password)) {
             Log::warning('Intento de login fallido: Contraseña incorrecta.', ['ci' => $args['ci']]);
             return [
                 'message' => "Credenciales invalidas" ,
             ];
         }
+
+        if ( $user->status == 0 ){
+            return [
+                'message' => "Su cuenta no esta habilitada.",
+                'user' => null
+            ];
+        };
+
         $tecnico = $user->technicians()->first();
+        //status tecnico
+
+        if($tecnico->status == 0){
+            return [
+                'message' => "Su cuenta no esta habilitada.",
+                'user' => null
+            ];
+        }
+
         if($tecnico !== null ){
             $habilidades_tec = Tecnico_Habilidad::where('technicianId', $tecnico->id)
             ->get();
@@ -204,7 +220,6 @@ class UserMutations{
 
     public function loginClient($root, array $args)
     {
-        // Verificar si el CI se encuentra registrado
         $user = User::where('email', $args['email'])->first();
 
         if ($user == null) {
@@ -214,7 +229,6 @@ class UserMutations{
             ];
         }
 
-        // Verificar contraseña
         if (!Hash::check($args['password'], $user->password)) {
             return [
                 'message' => "Credenciales inválidas",
@@ -222,8 +236,22 @@ class UserMutations{
             ];
         }
 
+        if($user->status == 0){
+            return [
+                'message' => "Su cuenta esta inhabilitada.",
+                'user' => null
+            ];
+        }
         // Obtener cliente asociado
         $client = $user->clientsExterns()->first();
+
+        if($client->status == 0){
+            return [
+                'message' => "Su cuenta esta inhabilitada",
+                'user' => null
+            ];
+        }
+
         $client1 =Cliente_Interno::where('internal_clients.userId',$user->id)->first();
         $ciudad = Ciudad::find($client1->cityId);
         // Crear token con Sanctum
@@ -275,12 +303,10 @@ class UserMutations{
             ];
         }
 
-        // Crear token con Sanctum
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
         $user->save();
         $role=$user->roles->first();
-        // Retornar respuesta
         $permissions = $user->permissions->map(function ($permission) {
             return [
                 'id' => $permission->id,
