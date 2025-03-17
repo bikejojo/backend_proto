@@ -34,7 +34,7 @@ class UpdateExpiredRequests extends Command
         $comments = 'El sistema cancelo la solicitud por tiempo de espera.';
         $request = StatusAssigner::ENTITY_REQUEST;
         $cod=5;
-        $timeMinuts = now()->subMinutes(5);
+        $timeMinuts = now()->subMinutes(20);
 
         $solicitudes = Solicitud::where('stateId',StatusAssigner::PENDING)
                         ->where('status',StateCatalog::STATUS_ACTIVE)
