@@ -223,21 +223,9 @@ class UserMutations{
             ];
         }
 
-        if($user->status == 0){
-            return [
-                'message' => "Su cuenta esta inhabilitada.",
-                'user' => null
-            ];
-        }
+
         // Obtener cliente asociado
         $client = $user->clientsExterns()->first();
-
-        if($client->status == 0){
-            return [
-                'message' => "Su cuenta esta inhabilitada",
-                'user' => null
-            ];
-        }
 
         $client1 =Cliente_Interno::where('internal_clients.userId',$user->id)->first();
         $ciudad = Ciudad::find($client1->cityId);
