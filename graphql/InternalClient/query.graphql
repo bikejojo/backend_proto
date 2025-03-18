@@ -44,6 +44,7 @@ type contentByClient {
     reference_phone:String
     state:String
     date:String
+    observations:String
 }
 
 type response_cliente {

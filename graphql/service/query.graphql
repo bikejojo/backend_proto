@@ -68,6 +68,7 @@ type listRequest {
     titleRequests:String
     descripcionActivity:String
     visitDate:String
+    observations:String
     status:String
 }
 

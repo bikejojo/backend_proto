@@ -583,6 +583,8 @@ class ServiceQuery
         try {
             $clientId= $args['id_client'];
             $requestData = Solicitud::join('services', 'requests.id', '=', 'services.requestsId')
+                                //->join('state_reference','state_reference.requestId','=','requests.id')
+                                ->leftJoin('state_reference','state_reference.serviceId','=','services.id')
                                 ->join('activity_types','services.activityId','=','activity_types.id')
                                 ->join('technicians', 'requests.technicianId', '=', 'technicians.id')
                                 ->where('requests.clientId', $clientId)
@@ -599,12 +601,13 @@ class ServiceQuery
                                     'requests.titleRequests AS titleRequests',
                                     'services.updatedDateTime AS visitDate',
                                     'requests.stateId AS status',
-                                    'activity_types.description As descripcionActivity'
+                                    'activity_types.description As descripcionActivity',
+                                    'state_reference.observations As observations'
                                 )
                                 ->distinct()
                                 ->orderBy('services.updatedDateTime', 'ASC') // Ordenar de más cercano a más lejano
                                 ->get();
-
+            //dd($requestData);
 
             if($requestData->isEmpty()){
                 return [
@@ -621,6 +624,7 @@ class ServiceQuery
                     'photo' => $request['photo'],
                     'titleRequests' => $request['titleRequests'],
                     'descripcionActivity' => $request['descripcionActivity'],
+                    'observations' => $request['observations'],
                     'visitDate' => $request['visitDate'],
                     'status' => $request['status'],
                 ];

@@ -516,6 +516,8 @@ class ClientQuery{
 
             $request = Solicitud::where('requests.clientId',$id_client)
                                 ->leftJoin('technicians','requests.technicianId','=','technicians.id')
+                                ->leftJoin('state_reference','state_reference.requestId','=','requests.id')
+                                //->where('state_reference.stateId',2)
                                 ->select([
                                         'requests.id As id_requests',
                                         'requests.titleRequests',
@@ -523,6 +525,7 @@ class ClientQuery{
                                         'requests.serviceLocation',
                                         'requests.latitude',
                                         'requests.longitude',
+                                        'state_reference.observations',
                                         'technicians.photo',
                                         'requests.reference_phone',
                                         'requests.registrationDateTime',
@@ -547,6 +550,7 @@ class ClientQuery{
                     'reference_phone'=>$req->reference_phone,
                     'state'=>$req->state,
                     'date' => $req->registrationDateTime,
+                    'observations' => $req->observations,
                 ];
             });
 
