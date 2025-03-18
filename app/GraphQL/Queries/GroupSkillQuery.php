@@ -3,6 +3,7 @@
 namespace App\GraphQL\Queries;
 
 use App\Models\Group;
+use App\Models\Group_Subgroup;
 use App\Models\Skills_group;
 use App\Models\Habilidad;
 
@@ -48,5 +49,19 @@ class GroupSkillQuery
             'message' => 'Categorías obtenidas con éxito.',
             'category' => $result,
         ];
+    }
+
+    public function gropSubSkill ($root,array $args){
+        /*$group = Group::join('group_subgroups','group_subgroups.groupId','=','group.id')
+                        ->join('sub_groups','group_subgroups.subGroupId','=','sub_groups.id')
+                        ->join('sub_groups_skill','sub_groups.id','=','sub_groups_skill.subGroupId')
+                        ->join('skills','sub_groups_skill.skillId','=','skills.id');*/
+        $group = Group::select('group.name','group,id')
+                        ->get();
+        $groupIds = Group::pluck('id');
+        $subGroups = Group_Subgroup::whereIn('groupId', $groupIds)
+                    ->join('sub_groups','group_subgroups.subGroupId','=','sub_groups.id')
+                    ->select('id', 'name', 'description')
+                    ->get();
     }
 }
