@@ -153,22 +153,9 @@ class UserMutations{
             ];
         }
 
-        if ( $user->status == 0 ){
-            return [
-                'message' => "Su cuenta no esta habilitada.",
-                'user' => null
-            ];
-        };
 
         $tecnico = $user->technicians()->first();
         //status tecnico
-
-        if($tecnico->status == 0){
-            return [
-                'message' => "Su cuenta no esta habilitada.",
-                'user' => null
-            ];
-        }
 
         if($tecnico !== null ){
             $habilidades_tec = Tecnico_Habilidad::where('technicianId', $tecnico->id)
