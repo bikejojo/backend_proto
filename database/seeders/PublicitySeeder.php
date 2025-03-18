@@ -28,13 +28,13 @@ class PublicitySeeder extends Seeder
         // Insertar publicidades para cada categoría
         foreach ($categories as $category) {
             DB::table('publicity')->insert([
-                'descriptionPublicity' => 'Publicity for ' . $category->description,
+                'descriptionPublicity' => 'Publicidad de  ' . $category->description,
                 'logo' => 'logo_' . Str::random(6) . '.png',
-                'commercialName' => 'Commercial ' . $category->description,
-                'link' => 'https://example.com/' . Str::slug($category->description),
+                'commercialName' => 'Commercial de' . $category->description,
+                'link' => 'https://' . Str::slug($category->description) . '.com',
                 'createdDate' => Carbon::now(),
                 'startDate' => Carbon::now(),
-                'finishDate' => Carbon::now()->addMonths(rand(1, 6)),
+                'finishDate' => Carbon::now()->addMinute(),
                 'status' => 1,  // 1 activo, 0 dado de baja
                 'categoryId' => $category->id,  // Relación con la categoría
                 'created_at' => now(),

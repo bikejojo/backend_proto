@@ -31,7 +31,8 @@ class TecnicoFactory extends Factory
             'password' => Hash::make('123'), // Puedes usar bcrypt('password') si lo prefieres
             'average_rating' => 5, // Puntuación entre 0 y 5
             'userId' => User::factory(), // Relación con User
-            'status' => 1
+            'status' => 1,
+            'cityId' => 1
         ];
     }
 }
