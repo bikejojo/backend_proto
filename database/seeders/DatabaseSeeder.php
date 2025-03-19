@@ -47,9 +47,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call(GropSeeder::class);
         $this->call(SubGropSeeder::class);
+        $this->call(SkillSeeder::class);
         #habilidades para tecnicos
 
-        Habilidad::create(['name' => 'Plomeria','status'=>1,'icons'=>'account-wrench-outline']); //1
+       /* Habilidad::create(['name' => 'Plomeria','status'=>1,'icons'=>'account-wrench-outline']); //1
         Habilidad::create(['name' => 'Electricista','status'=>1,'icons'=>'fuse-alert']); //2
         Habilidad::create(['name' => 'Carpinteria','status'=>1,'icons'=>'hammer']); //3
         Habilidad::create(['name' => 'Pintor','status'=>1,'icons'=>'format-paint']); //4
@@ -76,7 +77,7 @@ class DatabaseSeeder extends Seeder
         Habilidad::create(['name' => 'bartender / barman','status'=>1 ,'icons'=>'glass-cocktail']); //25
         Habilidad::create(['name' => 'Vocalista','status'=>1 ,'icons'=>'microphone-message']); //26
         Habilidad::create(['name' => 'Operador de grua','status'=>1 ,'icons'=>'microphone-message']); //27
-        Habilidad::create(['name' => 'Zapatero / Reparador de calzado','status'=>1 ,'icons'=>'microphone-message']); //28
+        Habilidad::create(['name' => 'Zapatero / Reparador de calzado','status'=>1 ,'icons'=>'microphone-message']);// */
 
         /*Sub_group::create(['description' => 'Aires Acondicionados', 'createDate' => now()]);//1
         Sub_group::create(['description' => 'Calefonos', 'createDate' => now()]);//2

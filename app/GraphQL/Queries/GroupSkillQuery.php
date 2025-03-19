@@ -40,6 +40,7 @@ class GroupSkillQuery
                     return [
                         'id' => $skillGroup->skill->id ?? null,
                         'name' => $skillGroup->skill->name ?? null,
+                        'photo' => $skillGroup->skill->photo 
                     ];
                 })->filter(), // Elimina elementos nulos
             ];
