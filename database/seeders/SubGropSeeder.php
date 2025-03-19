@@ -44,13 +44,13 @@ class SubGropSeeder extends Seeder
                 Sub_group::create([
                     'description' => $subGroup['description'],
                     'createDate' => now(),
-                    'photo' => env('FULL_URL') . "/storage/{$imageDestinationPath}"
+                    'photo' => env('APP_URL') . "/storage/{$imageDestinationPath}"
                 ]);
             } else {
                 Sub_group::create([
                     'description' => $subGroup['description'],
                     'createDate' => now(),
-                    'photo' => env('FULL_URL') . "/storage/images/subgroup/default.png"
+                    'photo' => env('APP_URL') . "/storage/images/subgroup/default.png"
                 ]);
             }
         }
