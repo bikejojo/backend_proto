@@ -40,10 +40,13 @@ class DatabaseSeeder extends Seeder
         Ciudad::create(['name'=>'Oruro']);
         Ciudad::create(['name'=>'Potosi']);
 
-        Group::create(['name'=>'Hogar y Mantenimiento']);//1
+        /*Group::create(['name'=>'Hogar y Mantenimiento']);//1
         Group::create(['name'=>'Tecnologia']);//2
         Group::create(['name'=>'Automotriz']);//3
-        Group::create(['name'=>'Servicios Especializados']);//4
+        Group::create(['name'=>'Servicios Especializados']);//4*/
+
+        $this->call(GropSeeder::class);
+        $this->call(SubGropSeeder::class);
         #habilidades para tecnicos
 
         Habilidad::create(['name' => 'Plomeria','status'=>1,'icons'=>'account-wrench-outline']); //1
@@ -75,7 +78,7 @@ class DatabaseSeeder extends Seeder
         Habilidad::create(['name' => 'Operador de grua','status'=>1 ,'icons'=>'microphone-message']); //27
         Habilidad::create(['name' => 'Zapatero / Reparador de calzado','status'=>1 ,'icons'=>'microphone-message']); //28
 
-        Sub_group::create(['description' => 'Aires Acondicionados', 'createDate' => now()]);//1
+        /*Sub_group::create(['description' => 'Aires Acondicionados', 'createDate' => now()]);//1
         Sub_group::create(['description' => 'Calefonos', 'createDate' => now()]);//2
         Sub_group::create(['description' => 'Electricistas', 'createDate' => now()]);//3
         Sub_group::create(['description' => 'Plomero', 'createDate' => now()]);//4
@@ -94,7 +97,7 @@ class DatabaseSeeder extends Seeder
         Sub_group::create(['description' => 'Garzones', 'createDate' => now()]);//17
         Sub_group::create(['description' => 'Alquiler sillas, mesas, vajillas', 'createDate' => now()]);//18
         Sub_group::create(['description' => 'Barra de bebidas / Licorería', 'createDate' => now()]);//19
-        Sub_group::create(['description' => 'Grupo musical, mariachi, bandas', 'createDate' => now()]);//20
+        Sub_group::create(['description' => 'Grupo musical, mariachi, bandas', 'createDate' => now()]);//20*/
 
         #grupo de habilidades
         Skills_group::create(['groupId'=>1,'skillsId'=>2]);
