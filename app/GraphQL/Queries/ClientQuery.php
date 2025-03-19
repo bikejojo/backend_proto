@@ -512,12 +512,19 @@ class ClientQuery{
             $id_client = $args['id_client'];
             $stateId=$args['id_state'] ?? "";
 
-            //$countByState = Solicitud::where('requests.clientId', $id_client);
+            $latestStateSubquery = DB::table('state_reference as sr')
+                ->select('sr.requestId', DB::raw('MAX(sr."dateCreate") as latest_date'))
+                ->groupBy('sr.requestId');
 
             $request = Solicitud::where('requests.clientId',$id_client)
                                 ->leftJoin('technicians','requests.technicianId','=','technicians.id')
-                                ->leftJoin('state_reference','state_reference.requestId','=','requests.id')
-                                //->where('state_reference.stateId',2)
+                                ->leftJoinSub($latestStateSubquery, 'latest_state', function ($join) {
+                                    $join->on('requests.id', '=', 'latest_state.requestId');
+                                })
+                                ->leftJoin('state_reference', function ($join) {
+                                    $join->on('state_reference.requestId', '=', 'latest_state.requestId')
+                                        ->on('state_reference.dateCreate', '=', 'latest_state.latest_date');
+                                })
                                 ->select([
                                         'requests.id As id_requests',
                                         'requests.titleRequests',
@@ -532,7 +539,8 @@ class ClientQuery{
                                         DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) As full_name')
                                     ]);
             if (!empty($stateId)) {
-                $request->where('requests.stateId', $stateId);
+                $request->where('requests.stateId', $stateId)
+                        ->where('state_reference.stateId',$stateId);
             }
 
             $requests= $request->distinct()->get();

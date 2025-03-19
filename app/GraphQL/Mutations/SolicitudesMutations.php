@@ -179,7 +179,7 @@ class SolicitudesMutations
                 'updatedDateTime' => $visitDateTime,
                 'status' => StateCatalog::STATUS_ACTIVE
             ]);
-            $_comments = 'Se creo un nuevo servicio por la solicitud recien creada.';
+            $_comments = 'Se creo un nuevo servicio por la solicitud ID'. $service->requestsId;
             StatusAssigner::assignStatService($service,$this->now,StatusAssigner::ENTITY_SERVICE,$_comments,1);
             $service->save();
 
