@@ -465,7 +465,7 @@ class ServiceQuery
                         'lastName'     => $technician->lastName,
                         'phoneNumber'  => $technician->phoneNumber,
                         'photo'        => $technician->photo,
-                        'average_rating'   => $technician->average_rating,
+                        'avg_rating'   => $technician->average_rating,
                     'skill' => $technicianSkills->map(function ($skill) {
                         return [
                             'id_technician' => $skill->id_technician ?? null,

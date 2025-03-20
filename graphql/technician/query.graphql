@@ -95,7 +95,7 @@ type _technicians {
     lastName:String
     photo:String
     phoneNumber:String
-    average_rating:String
+    avg_rating:String
     skill:[skillss]
 }
 
