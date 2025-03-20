@@ -3,6 +3,4 @@ type deviceToken {
     expo_token:String
     type_device:String
     name_device:String
-    user_id:ID
-
 }

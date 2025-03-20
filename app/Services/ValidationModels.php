@@ -10,6 +10,7 @@ use App\Models\Publicidad;
 use App\Models\Solicitud;
 use App\Models\Servicio;
 use App\Models\Agenda_Tecnico;
+use App\Models\User;
 
 class ValidationModels{
     public static function validationAgenda($objeto){
@@ -95,5 +96,9 @@ class ValidationModels{
 
     public static function validation_clientInternal($objeto){
         return Cliente_Interno::find($objeto);
+    }
+
+    public static function validation_user($objeto){
+        return User::find($objeto);
     }
 }

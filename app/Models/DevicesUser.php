@@ -9,7 +9,7 @@ class DevicesUser extends Model
 {
     use HasFactory;
     protected $primaryKey = 'id';
-    protected $tables = 'user_device';
+    protected $tables = 'devices_users';
     protected $fillable = [
         'device_id',
         'users_id',
