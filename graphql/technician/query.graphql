@@ -78,19 +78,20 @@ type responseVerification{
 type responseListTechnician {
     message:String
     status:Int
-    technicianss:[_technicians]
+    technicians:[_technicians]
 }
 
 type skillss {
     id_technician:ID
     id_skillss:ID
     name:String
+    icons:String
     experience:String
 }
 
 type _technicians {
     technician:Technician
-    skillss:[skillss]
+    skills:[skillss]
 }
 
 type responsesTechnician {

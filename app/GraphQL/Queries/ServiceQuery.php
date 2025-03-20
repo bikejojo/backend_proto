@@ -450,6 +450,7 @@ class ServiceQuery
                         'technician_skills.technicianId as id_technician',
                         'technician_skills.experience',
                         'skills.name',
+                        'skills.icons',
                         'skills.id as id_skills'
                     )
                     ->get();
@@ -469,11 +470,12 @@ class ServiceQuery
                         'photo'        => $technician->photo,
                         'average_rating'   => $technician->average_rating
                     ],
-                    'skillss' => $technicianSkills->map(function ($skill) {
+                    'skills' => $technicianSkills->map(function ($skill) {
                         return [
                             'id_technician' => $skill->id_technician ?? null,
                             'id_skillss'    => $skill->id_skills ?? null,
                             'name'          => $skill->name ?? null,
+                            'icons'         => $skill->icons ?? null,
                             'experience'    => $skill->experience ?? null
                         ];
                     })->toArray()
@@ -483,13 +485,13 @@ class ServiceQuery
             return [
                 'message' => 'Listado de técnicos destacados.',
                 'status' => 1,
-                'technicianss' => $content
+                'technicians' => $content
             ];
         } catch (\Exception $e) {
             return [
                 'message' => 'Error en la consulta: ' . $e->getMessage(),
                 'status' => 3,
-                'technicianss' => []
+                'technicians' => []
             ];
         }
     }

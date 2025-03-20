@@ -30,32 +30,32 @@ class RequestFactorySeeder
         }
 
       // Crear solicitudes y registrar historial
-      foreach (range(1, $count) as $index) {
-        $client = $clients->random();
-        $technician = $technicians->random();
-        $activity = $activities->random();
-        $state = $states->random();
+        foreach (range(1, $count) as $index) {
+            $client = $clients->random();
+            $technician = $technicians->random();
+            $activity = $activities->random();
+            $state = $states->random();
 
-        // Crear la solicitud
-        $request = Solicitud::factory()->create([
-            'clientId' => $client->id,
-            'technicianId' => $technician->id,
-            'activityId' => $activity->id,
-            'stateId' =>  1,
-            'status' => 1,  // Estado activo
-            'registrationDateTime' => Carbon::now()->addMinutes(2)
-        ]);
+            // Crear la solicitud
+            $request = Solicitud::factory()->create([
+                'clientId' => $client->id,
+                'technicianId' => $technician->id,
+                'activityId' => $activity->id,
+                'stateId' =>  1,
+                'status' => 1,  // Estado activo
+                'registrationDateTime' => Carbon::now()->addMinutes(2)
+            ]);
 
-        // Crear el historial de la solicitud
-        Historial_Servicios::create([
-            'clientId' => $request->clientId,
-            'technicianId' => $request->technicianId,
-            'jobId' => $request->id,
-            'descriptionJob' => 1,  // 1 = solicitud creada
-            'stateId' => $request->stateId,
-            'outsetDate' => $request->registrationDateTime,
-            'description' => $request->requestDescription,
-        ]);
-    }
+            // Crear el historial de la solicitud
+            Historial_Servicios::create([
+                'clientId' => $request->clientId,
+                'technicianId' => $request->technicianId,
+                'jobId' => $request->id,
+                'descriptionJob' => 1,  // 1 = solicitud creada
+                'stateId' => $request->stateId,
+                'outsetDate' => $request->registrationDateTime,
+                'description' => $request->requestDescription,
+            ]);
+        }
     }
 }
