@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
+        Schema::create('devices', function (Blueprint $table) {
             $table->id();
-            $table->datetime('datetime')->nullable();
-            $table->text('description')->nullable();
-            $table->string('status');
-            $table->index('status'); // Consultas por estado de la notificación
-            $table->index('datetime'); // Consultas por fecha y hora
+            $table->string('expo_token');
+            $table->string('type_device');
+            $table->string('name_device');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notifications');
+        Schema::dropIfExists('device_token');
     }
 };

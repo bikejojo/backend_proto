@@ -12,18 +12,22 @@ class Notification extends Model
     protected $primaryKey = 'id';
     protected $table = 'notifications';
     protected $fillable = [
-        'datetime',
-        'description',
-        'status',
-
+        'title',
+        'body',
+        'data',
+        'type',
+        'datetime_send',
+        'status'
     ];
-    public function users()
-    {
-        return $this->hasMany(NotificationUser::class, 'notifications_id');
-    }
 
-    public function types()
+    protected $casts = [
+        'data' => 'array', // Decodifica automáticamente el JSON en un array
+        'datetime_send' => 'datetime'
+    ];
+
+
+    public function recipients()
     {
-        return $this->hasMany(TypeNotification::class, 'notifications_id');
+        return $this->hasMany(NotificationUser::class);
     }
 }

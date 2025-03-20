@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('device_token', function (Blueprint $table) {
+        Schema::create('user_device', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('expo_token');
-            $table->string('type_device');
-            $table->string('name_device');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('device_id');
+            $table->unsignedBigInteger('users_id');
+            $table->foreign('users_id')->references('id')->on('users');
+            $table->foreign('device_id')->references('id')->on('devices');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('device_token');
+        //
     }
 };

@@ -2,6 +2,29 @@ extend type Query {
     #geservicetGroupName:GroupSkill @all (model: "App\\Models\\Skills_group")
     getServiceCategory:responseGroups @field(resolver: "GroupSkillQuery@allGroupSkill")
     getServiceCategory_:responseGroup_ @field(resolver: "GroupSkillQuery@allGroupSkill_")
+    listGroupSubgroupSkil:listsCompletGroup @field (resolver: "GroupSkillQuery@gropSubSkill")
+}
+
+type listsCompletGroup {
+    message:String
+    responde:[grups]
+}
+
+type grups {
+    id:String
+    name:String
+    subGrups:[subGrups]
+}
+
+type subGrups {
+    id:String
+    description:String
+    skill:[skill_]
+}
+
+type skill_ {
+    id:String
+    name:String
 }
 
 type responseGroups{
@@ -20,4 +43,6 @@ type responseSkills {
     photo:String
     skill: [Skill]
 }
+
+
 #import GroupSkill.graphql

@@ -35,10 +35,21 @@ class User extends Authenticatable
         return $this->hasMany(Tecnico::class,'userId');
     }
 
-    public function deviceTokens()
+    public function devices()
     {
-        return $this->morphMany(DeviceToken::class, 'tokenable');
+        return $this->belongsToMany(Devices::class, 'user_device');
     }
+
+    public function notificationRecipients()
+    {
+        return $this->morphMany(NotificationUser::class, 'recipient');
+    }
+
+    public function notificationTokens()
+    {
+        return $this->morphMany(DeviceNotifications::class, 'tokenable');
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
