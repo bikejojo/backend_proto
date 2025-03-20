@@ -442,7 +442,7 @@ class ServiceQuery
             $technicianIds = $listTechnician->pluck('id')->toArray();
 
             // 🔹 Obtener habilidades de los técnicos si existen
-            $listSkill = collect(); // Inicia vacío
+            $listSkill = collect();
             if (!empty($technicianIds)) {
                 $listSkill = Tecnico_Habilidad::join('skills', 'skills.id', '=', 'technician_skills.skillId')
                     ->whereIn('technician_skills.technicianId', $technicianIds)
@@ -455,25 +455,20 @@ class ServiceQuery
                     )
                     ->get();
             }
-
             // 🔹 Formatear la salida según GraphQL
             $content = $listTechnician->map(function ($technician) use ($listSkill) {
-                // Filtrar las habilidades que pertenecen a este técnico
                 $technicianSkills = $listSkill->where('id_technician', $technician->id)->values();
-
                 return [
-                    'technician' => [
                         'id'           => $technician->id,
                         'firstName'    => $technician->firstName,
                         'lastName'     => $technician->lastName,
                         'phoneNumber'  => $technician->phoneNumber,
                         'photo'        => $technician->photo,
-                        'average_rating'   => $technician->average_rating
-                    ],
-                    'skills' => $technicianSkills->map(function ($skill) {
+                        'average_rating'   => $technician->average_rating,
+                    'skill' => $technicianSkills->map(function ($skill) {
                         return [
                             'id_technician' => $skill->id_technician ?? null,
-                            'id_skillss'    => $skill->id_skills ?? null,
+                            'id_skills'    => $skill->id_skills ?? null,
                             'name'          => $skill->name ?? null,
                             'icons'         => $skill->icons ?? null,
                             'experience'    => $skill->experience ?? null

@@ -83,15 +83,20 @@ type responseListTechnician {
 
 type skillss {
     id_technician:ID
-    id_skillss:ID
+    id_skills:ID
     name:String
     icons:String
     experience:String
 }
 
 type _technicians {
-    technician:Technician
-    skills:[skillss]
+    id:ID
+    firstName:String
+    lastName:String
+    photo:String
+    phoneNumber:String
+    average_rating:String
+    skill:[skillss]
 }
 
 type responsesTechnician {
