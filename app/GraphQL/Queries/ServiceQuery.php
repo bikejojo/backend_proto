@@ -436,6 +436,7 @@ class ServiceQuery
                 ->addSelect('technicians.*') // Asegura que se incluyan todos los campos del técnico
                 ->whereBetween('average_rating', [4.00, 5.00])
                 ->where('cityId', $cityId)
+                ->limit(5)
                 ->get();
 
             // 🔹 Obtener los IDs de técnicos para buscar sus habilidades
