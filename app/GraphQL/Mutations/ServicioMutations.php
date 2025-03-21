@@ -258,6 +258,7 @@ class ServicioMutations
             StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'El servicio fue acabo, para el cliente externo.',4);
             $service->save();
             $_service = Servicio::find($service->id);
+
             DB::commit();
             return [
                 'message' => 'Servicio terminado',
@@ -294,7 +295,8 @@ class ServicioMutations
             $service->updatedDateTime = Carbon::now();
             $service->save();
             // Actualizar el estado a completado
-            if($service->finishDateTime_client != null || $service->serviceDateTime_technician != null){
+            //dd(is_null($service->finishDateTime_client));
+            if($service->finishDateTime_client != null || $service->finishDateTime_technician != null){
                 StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,2);
                 $service->save();
             }
@@ -302,6 +304,11 @@ class ServicioMutations
             $history=Historial_Servicios::where('jobId',$service->id)->where('descriptionJob',2)->first();
             $history->finishDate=$service->finishDateTime_client;
             $history->save();
+            //dd(is_null($_service->finishDateTime_technician));
+            if(!is_null($_service->finishDateTime_technician)){
+                $_service->stateId = 5;
+                $_service->save();
+            }
             DB::commit();
 
             return [
@@ -342,6 +349,10 @@ class ServicioMutations
                 $service->save();
             }
             $_service = Servicio::find($service->id);
+            if(!is_null($_service->finishDateTime_client)){
+                $_service->stateId = 5;
+                $_service->save();
+            }
             DB::commit();
 
             return [
@@ -421,6 +432,39 @@ class ServicioMutations
             DB::rollback();
             return [
                 'message' => 'Surgio un error al momento de actualizar el servicio' . $e->getMessage()
+            ];
+        }
+    }
+    public function verificationsServicio($root , array $args){
+        try {
+            $serviceData = $args['requestService'];
+            $id_technician = $serviceData['id_technician'];
+
+            $technician = ValidationModels::validation_Technician($id_technician);
+
+            $services = Servicio::join('technicians', 'services.technicalId', '=', 'technicians.id')
+                ->join('internal_clients', 'services.clientId', '=', 'internal_clients.id')
+                ->where('services.technicalId', $technician->id)
+                ->whereNull('services.finishDateTime_client') // El cliente no ha llenado fecha/hora
+                ->where('services.stateId', '!=', 5)
+                ->select([
+                    'technicians.id as id_technician',
+                    DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS "fullName_technician"'),
+                    'technicians.photo as photo_technician',
+                    'internal_clients.id as id_client',
+                    DB::raw('CONCAT(COALESCE(internal_clients."firstName", \'\'), \' \', COALESCE(internal_clients."lastName", \'\')) AS "fullName_client"'),
+                    'internal_clients.photo as photo_client',
+                    'services.id as id_service',
+                    'services.titleService as title_service',
+                    'services.serviceDescription as description_service'
+                ])
+                ->get();
+
+            dd($services); // Para verificar que está funcionando
+
+        } catch(\Exception $e) {
+            return [
+                'message' => 'Surgieron las siguientes fallas: ' . $e->getMessage()
             ];
         }
     }

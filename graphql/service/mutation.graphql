@@ -7,6 +7,12 @@ extend type Mutation {
     completServiceTechnician(requestService:JSON):responseServiceClient @field(resolver: "ServicioMutations@finishServiceTechnician")
     deleteService(requestService:JSON!):responseServiceDelete @field(resolver: "ServicioMutations@delete")
     updateService(id_service:ID , requestService:JSON!):responseServiceDelete @field(resolver: "ServicioMutations@updateService")
+    verificationServices(requestService:JSON):verificationServ @field(resolver: "ServicioMutations@verificationsServicio")
+}
+
+type verificationServ {
+    message:String
+    status:Boolean
 }
 
 type responseService {
