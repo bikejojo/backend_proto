@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\NotificationUser;
-use App\Models\TypeNotification;
+use App\Models\NotificationsDevice;
 use Carbon\Carbon;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -11,13 +11,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
-use App\Helpers\ImageHelper;
-use App\Models\Type;
 
 class SendNotificationJob implements ShouldQueue
 {
@@ -46,37 +40,32 @@ class SendNotificationJob implements ShouldQueue
 
         try {
             Log::info('$this->userId: ' . $this->notification);
-            //dd($this->userId);
-            // Validar y procesar sender_userid
-            $senderId = is_array($this->data['sender_userid']) ? $this->data['sender_userid'][0] : $this->data['sender_userid'];
+
+            $senderId = is_array($this->data['sender_id'])
+                ? $this->data['sender_id'][0]
+                : $this->data['sender_id'];
 
             // Validar y procesar receiver_userid
-            $receiverIds = is_array($this->data['receiver_userid']) ? $this->data['receiver_userid'] : [$this->data['receiver_userid']];
+            $receiverIds = is_array($this->data['recipient_id']) ? $this->data['recipient_id'] : [$this->data['recipient_id']];
             // Guardar cada combinación de sender y receiver
 
             foreach ($receiverIds as $receiverId) {
                 NotificationUser::create([
                     'notifications_id' => $this->notification->id,
-                    'token_user' => $this->data['token_user'] ?? null,
-                    'type_device' => $this->data['type_device'] ?? null,
                     'datetime' => Carbon::now(),
-                    'receiver_userid' => $receiverId, // Guardar correctamente el receiver actual
-                    'sender_userid' => $senderId,    // Guardar correctamente el sender
-                    'sent_at' => Carbon::now(),
-                    'read_at' => null,
+                    'recipient_id' => $receiverId, // Guardar correctamente el receiver actual
+                    'sender_id' => $senderId,    // Guardar correctamente el sender
+                    'recipient_type' => $this->data->recipient_type,
+                    'is_read' => false,
                 ]);
 
-                TypeNotification::create([
-                    'notifications_id' => $this->notification->id,
-                    'type_id' => $this->data['type_id'],
-                    'title' => $this->data['title'],
-                    'description' => $this->data['description'],
-                    'data' => $this->data['data'],
-                    'read' => 0,
-                    'status' => "1",
-                    'read_at' => null,
-                    'date_time_at'=>Carbon::now(),
-                    'image' => $this->data['image_url']
+                NotificationsDevice::create([
+                    'device_id',
+                    'token',
+                    'is_active',
+                    'date',
+                    'tokenable_type',
+                    'tokenable_id',
                 ]);
             }
         } catch (\Exception $e) {

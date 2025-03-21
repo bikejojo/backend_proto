@@ -1,5 +1,6 @@
 extend type Mutation {
    registerDeviceToken(deviceTokenRequest:JSON):DeviceTokenResponse @field(resolver: "DeviceTokenMutations@register")
+   
 }
 
 type DeviceTokenResponse {

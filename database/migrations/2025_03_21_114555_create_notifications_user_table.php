@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('notification_id')->constrained('notifications');
             $table->morphs('recipient'); // Relación polimórfica (clientes/técnicos/admin)
-            
+            $table->unsignedBigInteger('sender_id');
             $table->boolean('is_read')->default(false);
             $table->timestamps();
         });

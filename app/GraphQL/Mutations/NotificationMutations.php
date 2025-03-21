@@ -7,15 +7,12 @@ use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ImageHelper;
 use Illuminate\Http\UploadedFile;
-use App\Models\NotificationUser;
 use App\Services\ValidationModels;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
-use function PHPUnit\Framework\isEmpty;
-use function PHPUnit\Framework\isNull;
 
 class NotificationMutations
 {
@@ -31,87 +28,37 @@ class NotificationMutations
     {
         DB::beginTransaction();
         try{
+            $input = $args['input'];
             $notifications = Notification::create([
-                'description' => $args['input']['description'],
-                'datetime' => now(),
-                'status' => 1
+                'title' => $input['title'],
+                'body' => $input['body'],
+                'data' => $input['data'] ?? null,
+                'type' => $input['type'],
+                'datetime_send' => $input['datetime_send'] ?? Carbon::now(),
+                'status' => $input['status'],
             ]);
-
-            $validators = ImageHelper::validateImageNotification($args);
-            if ($validators->fails()) {
+            if(!$notifications){
+                DB::rollBack();
                 return [
-                    'message' => 'Archivo de imagen inválido.',
-                    'upcomingmessage' => 'Registre su usuario'
+                    'message'=>'Error al crear la notificacion.' ,
+                    'success'=>false,
+                    'notification'=>null,
                 ];
             }
 
-            $imagePath = null;
-            if (isset($args['input']['image']) && $args['input']['image'] instanceof UploadedFile) {
-                ImageHelper::createNotifications($notifications->id); // Crear directorio si no existe
-                $manager = new ImageManager(new Driver());
-                $imagePath = ImageHelper::processImage( $args['input']['image'],
-                '/notifications/' . $notifications->id . "/image_notifications_{$this->now}.png",
-                $manager);
+            $dataJob = [
+                'sender_userid'   => $input['data']['sender_userid'] ?? null,
+                'receiver_userid' => $input['data']['receiver_userid'] ?? [],
+                'token_user'      => $input['data']['token_user'] ?? null,
+                'type_device'     => $input['data']['type_device'] ?? null,
+                'type_id'         => $input['data']['type_id'] ?? null,
+                'title'           => $input['title'],
+                'description'     => $input['body'],
+                'data'            => $input['data'],
+                'image_url'       => $input['image_url'] ?? null,
+            ];
 
-            }
-            //dd($args);
-
-            $imageUrl = env('APP_URL') . '/storage' . str_replace('public/', '', $imagePath);
-            //$invalidReceivers = [];
-            foreach ($args['input']['receiver_userid'] as $userIds) {
-                //dd(ValidationModels::validationTechnician($args['input']['sender_userid']));
-                $technicianValidation = ValidationModels::validation_Technician($args['input']['sender_userid']);
-                //dd($args['input']['receiver_userid']);
-                if(!$technicianValidation){
-                    DB::rollBack();
-                    return [
-                        'message' => 'Tecnico no existe.',
-                        'success' => false
-                    ];
-                }
-
-                $clientValidation = ValidationModels::validation_clientInternal($userIds);
-                //dd($clientValidation);
-                if(!$clientValidation){
-                    DB::rollBack();
-                    return [
-                        'message'=> 'Cliente no existe  '. $userIds,
-                        'success'=> false
-                    ];
-                    /*
-                    $invalidRceriver[] = $userIds;
-                    continue;
-                    */
-                }
-
-                $serializedData = [
-                    'token_user' => $args['input']['token_user'],
-                    'description' => $args['input']['description'],
-                    'type_device' => $args['input']['type_device'],
-                    'receiver_userid' =>$userIds,
-                    'sender_userid' => $args['input']['sender_userid'][0] ?? null,
-                    'type_id' => $args['input']['type_id'],
-                    'title' => $args['input']['title'],
-                    'data' => $args['input']['data'], // Datos adicionales como JSON
-                    'image_url' => $imageUrl // Ruta o URL de la imagen
-                ];
-
-
-                //dd($serializedData['receiver_userid']);
-                Log::info('Datos enviados al Job:', [
-                    'notification' => $notifications,
-                    'userId' => $userIds,
-                    'input' => $args['input'],
-                    'image_url' => $imageUrl
-                ]);
-
-
-                SendNotificationJob::dispatch($notifications, $userIds, $serializedData);
-            }
-            /*if(!empty($invalidRceriver)){
-                Log::warning('Algunos de receiver_userid:',['invalidos'=>$invalidRceriver]);
-            }*/
-            //dd($serializedData);
+            SendNotificationJob::dispatch($notifications,auth()->id,$dataJob);
             DB::commit();
             return [
                 'message' => 'Notificaciones enviadas exitosamente.',

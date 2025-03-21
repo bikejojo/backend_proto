@@ -3,18 +3,37 @@ extend type Mutation {
 }
 
 input sendNotificationInput {
-    description:String
-    type_device:String
-    token_user:String
-    receiver_userid:[ID]
-    sender_userid:[ID]
-    type_id:String
-    title:String
-    image: Upload
+    title: String
+    body:String
     data:JSON
+    type:notificationTypeEnum
+    datetime_send:DateTime
+    status:String
+}
+
+enum notificationTypeEnum {
+    request     #solicitud
+    service     #servicio
+    accept      #aceptado
+    reject      #rechazado
+    promotion   #promocion
+    publicity   #publicidad
+    message     #mensaje
 }
 
 type notificationsResponse {
     message:String
     success:Boolean
+    notification:Notification
 }
+
+type Notification {
+    id:ID
+    title:String
+    body:String
+    data:JSON
+    type:String
+    datetime_send: DateTime
+    status: String
+}
+

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('create_notifications_device', function (Blueprint $table) {
+        Schema::create('notifications_device', function (Blueprint $table) {
             $table->id();
             $table->morphs('tokenable'); // Relación polimórfica
             $table->string('device_id')->unique(); // ID del dispositivo

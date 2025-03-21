@@ -72,7 +72,8 @@ class SkillQuery
             if (!empty($searchParameter)) {
                 $query->where(function ($q) use ($searchParameter) {
                     $q->where('technicians.firstName', 'ILIKE', "%{$searchParameter}%")
-                    ->orWhere('technicians.lastName', 'ILIKE', "%{$searchParameter}%");
+                    ->orWhere('technicians.lastName', 'ILIKE', "%{$searchParameter}%")
+                    ->orWhere('skills.name','ILIKE',"{$searchParameter}%");
                 });
             }
 
