@@ -442,11 +442,12 @@ class ServicioMutations
 
             $technician = ValidationModels::validation_Technician($id_technician);
 
+            // Consulta correctamente filtrada:
             $services = Servicio::join('technicians', 'services.technicalId', '=', 'technicians.id')
                 ->join('internal_clients', 'services.clientId', '=', 'internal_clients.id')
                 ->where('services.technicalId', $technician->id)
-                ->whereNull('services.finishDateTime_client') // El cliente no ha llenado fecha/hora
-                ->where('services.stateId', '!=', 5)
+                ->where('services.stateId', 4)                  // solo estado = 4
+                ->whereNull('services.finishDateTime_client')   // fecha cliente vacía (null)
                 ->select([
                     'technicians.id as id_technician',
                     DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS "fullName_technician"'),
@@ -460,12 +461,19 @@ class ServicioMutations
                 ])
                 ->get();
 
-            dd($services); // Para verificar que está funcionando
+            // Aquí ya tienes los servicios filtrados correctamente.
+            return [
+                'message' => 'Servicios encontrados correctamente.',
+                'status' => true,
+                'services' => $services
+            ];
 
         } catch(\Exception $e) {
             return [
-                'message' => 'Surgieron las siguientes fallas: ' . $e->getMessage()
+                'message' => 'Surgieron las siguientes fallas: ' . $e->getMessage(),
+                'status' => false
             ];
         }
     }
+
 }

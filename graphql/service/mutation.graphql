@@ -13,6 +13,19 @@ extend type Mutation {
 type verificationServ {
     message:String
     status:Boolean
+    services:[serv_ces]
+}
+
+type serv_ces{
+    id_technician:String
+    fullName_technician:String
+    photo_technician:String
+    id_client:String
+    fullName_client:String
+    photo_client:String
+    id_service:String
+    title_service:String
+    description_service:String
 }
 
 type responseService {
