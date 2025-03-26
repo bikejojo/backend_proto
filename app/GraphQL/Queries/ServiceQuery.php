@@ -581,10 +581,15 @@ class ServiceQuery
         try {
             $clientId= $args['id_client'];
             $requestData = Solicitud::join('services', 'requests.id', '=', 'services.requestsId')
-                                //->join('state_reference','state_reference.requestId','=','requests.id')
-                                ->leftJoin('state_reference','state_reference.serviceId','=','services.id')
                                 ->join('activity_types','services.activityId','=','activity_types.id')
                                 ->join('technicians', 'requests.technicianId', '=', 'technicians.id')
+                                ->leftJoinSub(
+                                    DB::table('state_reference')
+                                        ->select('serviceId', DB::raw('MAX(id) as latest_state_id'))
+                                        ->groupBy('serviceId'),
+                                    'latest_state','services.id','=','latest_state.serviceId'
+                                )
+                                ->leftJoin('state_reference', 'state_reference.id', '=', 'latest_state.latest_state_id')
                                 ->where('requests.clientId', $clientId)
                                 //->where('requests.stateId', 2)
                                 ->whereBetween('services.updatedDateTime', [
