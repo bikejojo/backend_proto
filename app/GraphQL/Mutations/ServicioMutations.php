@@ -15,6 +15,8 @@ use App\Services\StateCatalog;
 use App\Services\StatusAssigner;
 use App\Services\ValidationModels;
 
+use function PHPUnit\Framework\isEmpty;
+
 class ServicioMutations
 {
     public static $entity_type = "service";
@@ -438,14 +440,14 @@ class ServicioMutations
     public function verificationsServicio($root , array $args){
         try {
             $serviceData = $args['requestService'];
-            $id_technician = $serviceData['id_technician'];
+            $id_client = $serviceData['id_client'];
 
-            $technician = ValidationModels::validation_Technician($id_technician);
+            $technician = ValidationModels::validation_clientInternal($id_client);
 
             // Consulta correctamente filtrada:
             $services = Servicio::join('technicians', 'services.technicalId', '=', 'technicians.id')
                 ->join('internal_clients', 'services.clientId', '=', 'internal_clients.id')
-                ->where('services.technicalId', $technician->id)
+                ->where('services.clientId', $technician->id)
                 ->where('services.stateId', 4)                  // solo estado = 4
                 ->whereNull('services.finishDateTime_client')   // fecha cliente vacía (null)
                 ->select([
@@ -460,8 +462,13 @@ class ServicioMutations
                     'services.serviceDescription as description_service'
                 ])
                 ->get();
-
+            if(is_null($services)){
+                return [
+                    'message' => 'No existe contenido',
+                    ];
+            }
             // Aquí ya tienes los servicios filtrados correctamente.
+            //dd($services);
             return [
                 'message' => 'Servicios encontrados correctamente.',
                 'status' => true,
