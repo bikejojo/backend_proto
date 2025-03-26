@@ -26,6 +26,7 @@ type serv_ces{
     id_service:String
     title_service:String
     description_service:String
+    activity_service:String
 }
 
 type responseService {
