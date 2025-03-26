@@ -591,7 +591,6 @@ class ServiceQuery
                                 )
                                 ->leftJoin('state_reference', 'state_reference.id', '=', 'latest_state.latest_state_id')
                                 ->where('requests.clientId', $clientId)
-                                //->where('requests.stateId', 2)
                                 ->whereBetween('services.updatedDateTime', [
                                     now(), // Un día antes
                                     now()->addDays(6) // // Un día después
@@ -603,7 +602,7 @@ class ServiceQuery
                                     DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name'),
                                     'requests.titleRequests AS titleRequests',
                                     'services.updatedDateTime AS visitDate',
-                                    'requests.stateId AS status',
+                                    'services.stateId AS status',
                                     'activity_types.description As descripcionActivity',
                                     'state_reference.observations As observations'
                                 )
