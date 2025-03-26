@@ -16,16 +16,17 @@ class NotificationsDevice extends Model
         'token',
         'is_active',
         'date',
-        'tokenable_type',
-        'tokenable_id',
+        //'tokenable_type',
+        //'tokenable_id',
     ];
 
     protected $casts = [
         'date' => 'datetime'
     ];
 
-    public function tokenable()
+    /*public function tokenable()
     {
         return $this->morphTo();
-    }
+    }*/
 }
+

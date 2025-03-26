@@ -376,7 +376,8 @@ class ServicioMutations
         $serviceId=$serviceData['id_service'];
         $service = Servicio::find($serviceId);
         if($service != null){
-            $service->status = StateCatalog::STATUS_LOW;
+            //$service->status = StateCatalog::STATUS_LOW;
+            $service->stateId = 3;
             $service->save();
             return[
                 'message' => 'El servicio se elimino.',
@@ -447,6 +448,7 @@ class ServicioMutations
             // Consulta correctamente filtrada:
             $services = Servicio::join('technicians', 'services.technicalId', '=', 'technicians.id')
                 ->join('internal_clients', 'services.clientId', '=', 'internal_clients.id')
+                ->join('activity_types','services.activityId','=','activity_types.id')
                 ->where('services.clientId', $technician->id)
                 ->where('services.stateId', 4)                  // solo estado = 4
                 ->whereNull('services.finishDateTime_client')   // fecha cliente vacía (null)
@@ -459,6 +461,7 @@ class ServicioMutations
                     'internal_clients.photo as photo_client',
                     'services.id as id_service',
                     'services.titleService as title_service',
+                    'activity_types.description As activity_service',
                     'services.serviceDescription as description_service'
                 ])
                 ->get();
@@ -469,8 +472,7 @@ class ServicioMutations
                     'status' => false,
                     ];
             }
-            // Aquí ya tienes los servicios filtrados correctamente.
-            //dd($services);
+
             return [
                 'message' => 'Servicios encontrados correctamente.',
                 'status' => true,
