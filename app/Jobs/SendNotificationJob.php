@@ -52,7 +52,6 @@ class SendNotificationJob implements ShouldQueue
             foreach ($receiverIds as $receiverId) {
                 NotificationUser::create([
                     'notifications_id' => $this->notification->id,
-                    'datetime' => Carbon::now(),
                     'recipient_id' => $receiverId, // Guardar correctamente el receiver actual
                     'sender_id' => $senderId,    // Guardar correctamente el sender
                     'recipient_type' => $this->data->recipient_type,

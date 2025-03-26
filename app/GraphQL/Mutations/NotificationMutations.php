@@ -47,15 +47,13 @@ class NotificationMutations
             }
 
             $dataJob = [
-                'sender_userid'   => $input['data']['sender_userid'] ?? null,
-                'receiver_userid' => $input['data']['receiver_userid'] ?? [],
-                'token_user'      => $input['data']['token_user'] ?? null,
+                'sender_id'   => $input['data']['sender_userid'] ?? null,
+                'receiver_id' => $input['data']['receiver_userid'] ?? [],
+                'expo_token'      => $input['data']['token_user'] ?? null,
                 'type_device'     => $input['data']['type_device'] ?? null,
-                'type_id'         => $input['data']['type_id'] ?? null,
                 'title'           => $input['title'],
                 'description'     => $input['body'],
                 'data'            => $input['data'],
-                'image_url'       => $input['image_url'] ?? null,
             ];
 
             SendNotificationJob::dispatch($notifications,auth()->id,$dataJob);
