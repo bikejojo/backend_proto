@@ -462,7 +462,7 @@ class ServicioMutations
                     'services.serviceDescription as description_service'
                 ])
                 ->get();
-            if(is_null($services)){
+            if($services->isEmpty()){
                 return [
                     'message' => 'No existe contenido',
                     ];
