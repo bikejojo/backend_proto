@@ -4,7 +4,7 @@ type Rating {
     id_service:ID @rename (attribute: "serviceId")
     id_client:ID @rename (attribute: "clientId")
     rating:String
-    comments:String @rename (attribute: "feedback")
+    comments:String
 
     technician:Technician @belongsTo
     service:Service @belongsTo

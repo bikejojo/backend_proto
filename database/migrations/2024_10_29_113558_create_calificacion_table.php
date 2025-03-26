@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('rating', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('rating');
-            $table->text('feedback');
+            $table->text('comments');
             $table->unsignedBigInteger('serviceId');
             $table->unsignedBigInteger('technicialId');
             $table->unsignedBigInteger('clientId');
