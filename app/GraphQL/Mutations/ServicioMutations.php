@@ -462,9 +462,11 @@ class ServicioMutations
                     'services.serviceDescription as description_service'
                 ])
                 ->get();
+
             if($services->isEmpty()){
                 return [
                     'message' => 'No existe contenido',
+                    'status' => false,
                     ];
             }
             // Aquí ya tienes los servicios filtrados correctamente.

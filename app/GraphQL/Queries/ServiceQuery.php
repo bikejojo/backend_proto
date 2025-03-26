@@ -586,7 +586,7 @@ class ServiceQuery
                                 ->join('activity_types','services.activityId','=','activity_types.id')
                                 ->join('technicians', 'requests.technicianId', '=', 'technicians.id')
                                 ->where('requests.clientId', $clientId)
-                                ->where('requests.stateId', 2)
+                                //->where('requests.stateId', 2)
                                 ->whereBetween('services.updatedDateTime', [
                                     now(), // Un día antes
                                     now()->addDays(6) // // Un día después
