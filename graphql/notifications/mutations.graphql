@@ -7,18 +7,18 @@ input sendNotificationInput {
     body:String
     data:JSON
     type:notificationTypeEnum
-    datetime_send:DateTime
+    datetime_send:String
     status:String
 }
 
 enum notificationTypeEnum {
-    request     #solicitud
-    service     #servicio
-    accept      #aceptado
-    reject      #rechazado
-    promotion   #promocion
-    publicity   #publicidad
-    message     #mensaje
+    solicitud       #solicitud
+    servicio        #servicio
+    aceptado        #aceptado
+    rechazado       #rechazado
+    promocion       #promocion
+    publicidad      #publicidad
+    mensaje         #mensaje
 }
 
 type notificationsResponse {

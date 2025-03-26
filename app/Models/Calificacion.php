@@ -17,7 +17,7 @@ class Calificacion extends Model
         'serviceId',
         'clientId',
         'rating',
-        'feedback',
+        'comments',
     ];
 
     public function technician(){

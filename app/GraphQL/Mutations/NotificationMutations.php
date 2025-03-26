@@ -33,7 +33,7 @@ class NotificationMutations
                 'title' => $input['title'],
                 'body' => $input['body'],
                 'data' => $input['data'] ?? null,
-                'type' => $input['type'],
+                'type' => (string) $input['type'],
                 'datetime_send' => $input['datetime_send'] ?? Carbon::now(),
                 'status' => $input['status'],
             ]);
@@ -47,16 +47,14 @@ class NotificationMutations
             }
 
             $dataJob = [
-                'sender_id'   => $input['data']['sender_userid'] ?? null,
-                'receiver_id' => $input['data']['receiver_userid'] ?? [],
-                'expo_token'      => $input['data']['token_user'] ?? null,
-                'type_device'     => $input['data']['type_device'] ?? null,
-                'title'           => $input['title'],
-                'description'     => $input['body'],
-                'data'            => $input['data'],
+                'sender_id'    => $input['sender_userid'] ?? null,
+                'recipient_id' => $input['recipient_userid'] ?? [],
+                'expo_token'   => $input['token_user'] ?? null,
+                'device'       => $input['device_id'] ?? null,
+
             ];
 
-            SendNotificationJob::dispatch($notifications,auth()->id,$dataJob);
+            SendNotificationJob::dispatch($notifications,auth()->id(),$dataJob);
             DB::commit();
             return [
                 'message' => 'Notificaciones enviadas exitosamente.',

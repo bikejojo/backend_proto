@@ -37,7 +37,7 @@ class RatingMutations{
             'serviceId' => $ratingData['id_service'],
             'clientId' => $ratingData['id_client'],
             'rating' => $ratingData['rating'],
-            'feedback' => $ratingData['comments']
+            'comments' => $ratingData['comments']
         ]);
 
         // Verificar si el técnico existe
