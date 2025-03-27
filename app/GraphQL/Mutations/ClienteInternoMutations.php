@@ -255,6 +255,27 @@ class ClienteInternoMutations{
         }
     }
 
+    public function updatePhoneClient($root,array $args){
+        DB::beginTransaction();
+        try{
+            $client_id = $args['id'];
+            $client = Cliente_Interno::find($client_id);
+            $client->phoneNumber = $args['phoneNumber'];
+            $client->save();
+            DB::commit();
+            return [
+                'message' => 'Actualzacion correcta del cliente.!',
+                'result' => 2
+            ];
+        } catch(\Exception $e) {
+            DB::rollBack();
+            return [
+                'message' => 'Surgio un problema en la consulta : ' . $e->getMessage(),
+                'result' => 3
+            ];
+        }
+    }
+
     // Procesamiento de imágenes
     private function processImage(UploadedFile $file, $path, $manager){
         $image = $manager->read($file->getRealPath());
@@ -287,4 +308,5 @@ class ClienteInternoMutations{
                 return 'Método desconocido';
         }
     }
+
 }

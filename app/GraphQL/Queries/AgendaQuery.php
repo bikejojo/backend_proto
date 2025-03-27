@@ -34,8 +34,8 @@ class AgendaQuery{
                 ->where('agendaTechnicalId', $agenda->id)
                 ->where('detail_technical_agenda.typeClient', self::servicioInternal) // Cliente interno
                 ->where('services.status',1)
-                ->where('services.stateId',1)
-                ->where('services.stateId',4)
+                //->where('services.stateId',1)
+                //->where('services.stateId',4)
                 ->orderBy('serviceDate','asc');
             if ($dateFilter) {
                 // $query = $this->dateHelper($dateFilter, $query, 'detail_technical_agenda.serviceDate');

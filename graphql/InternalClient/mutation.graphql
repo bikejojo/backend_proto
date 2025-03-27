@@ -4,6 +4,7 @@ extend type Mutation {
     deleteClient(id: ID! @whereKey): Response @field(resolver: "ClienteInternoMutations@delete")
     updatePhoto(id_client:ID, photo:Upload):ClientResponse @field(resolver: "ClienteInternoMutations@updatePhoto")
     resetPasswordClient(id_client:ID,new_password:String):responsePassClient @field(resolver: "ClienteInternoMutations@resetPasswordclientAtSupport")
+    updatePhoneClient(id:String,phoneNumber:String):responsePassClient @field(resolver: "ClienteInternoMutations@updatePhoneClient")
 }
 
 

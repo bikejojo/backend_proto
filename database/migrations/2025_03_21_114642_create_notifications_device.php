@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('notifications_device', function (Blueprint $table) {
             $table->id();
             //$table->morphs('tokenable'); // Relación polimórfica
-            $table->string('device_id')->unique(); // ID del dispositivo
-            $table->string('token')->unique();      // Expo Push Token
+            $table->string('device_id'); // ID del dispositivo
+            $table->string('token');      // Expo Push Token
             $table->boolean('is_active')->default(true);
             $table->timestamp('date')->nullable();
             $table->timestamps();

@@ -618,4 +618,28 @@ class ClientQuery{
             ];
         }
     }
+
+    public function verificationPhoneclient($root,array $args){
+        try {
+            $id_client=$args['id'];
+            $client = Cliente_Interno::find($id_client);
+
+            if(!$client->phoneNumber){
+                return [
+                    'message'=>'El cliente no cuenta con numero de telefono.',
+                    'status' => 2
+                ];
+            }
+            return [
+                'message'=>'El cliente cuenta con numero de telefono.',
+                'status' => 1
+            ];
+
+        } catch (\Exception $e ) {
+            return [
+                'message' => 'Surgio problemas en : ' . $e->getMessage(),
+                'status' => 3
+            ];
+        }
+    }
 }

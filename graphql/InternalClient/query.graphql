@@ -9,6 +9,12 @@ extend type Query {
     getListRequestByClient(id_client:String ,id_state:String):responseListByClient @field(resolver: "ClientQuery@listRequestByClient")
     getClientId(id:String):responseGetClient @field(resolver: "ClientQuery@dataClient")
     getContClient:respondeClient @field(resolver: "ClientQuery@clientCont")
+    verificationClientPhone(id:String):responsseClent @field(resolver: "ClientQuery@verificationPhoneclient")
+}
+
+type responsseClent {
+    message:String
+    status:Int
 }
 
 type respondeClient {
