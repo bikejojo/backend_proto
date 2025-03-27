@@ -299,7 +299,7 @@ class ServicioMutations
             // Actualizar el estado a completado
             //dd(is_null($service->finishDateTime_client));
             if($service->finishDateTime_client != null || $service->finishDateTime_technician != null){
-                StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,2);
+                StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,3);
                 $service->save();
             }
             $_service = Servicio::find($service->id);

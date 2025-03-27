@@ -9,6 +9,7 @@ type responseRate {
 }
 
 type ratingResponse {
+    message:String
     service:Service
     rating:Rating
     client:InternalClient

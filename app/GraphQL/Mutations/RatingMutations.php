@@ -13,89 +13,70 @@ class RatingMutations{
     public function rateService($root, array $args){
         try {
             $ratingData = $args['requestRating'];
-            $ratingsArray = is_array($ratingData[0] ?? null)
-                            ? $ratingData
-                            : [$ratingData];
 
+            $ratingsArray = is_array($ratingData[0] ?? null)
+                ? $ratingData
+                : [$ratingData];
+
+            $validRatings = [];  // los que se van a registrar
             $responses = [];
 
-            foreach ($ratingsArray as $ratingData) {
-
-                $serviceId = $ratingData['id_service'];
-                $technicianId = $ratingData['id_technician'];
-                $clientId = $ratingData['id_client'];
+            foreach ($ratingsArray as $i => $resp) {
+                $client = Cliente_Interno::find($resp['id_client']);
+                $technician = Tecnico::find($resp['id_technician']);
                 $service = Servicio::join('state_reference','services.id','=','state_reference.serviceId')
-                        ->where('state_reference.stateId',4)
-                        ->where('state_reference.type','service')
-                        ->where('descriptionState',StatusAssigner::SERVICE_COMPLETED_T)
-                        ->where('services.id', $serviceId)
+                        ->where('services.stateId',4)
+                        //->where('state_reference.type','service')
+                        //->where('descriptionState',StatusAssigner::SERVICE_COMPLETED_T)
+                        ->where('services.id', $resp['id_service'])
                         ->first();
-                if (!$service) {
-                    return [
-                        'message' => 'Servicio no encontrado.',
+                //dd($service);
+                $exists = Calificacion::where('serviceId', $resp['id_service'])
+                        ->where('technicialId', $resp['id_technician']) // asegúrate que este nombre esté bien
+                        ->where('clientId', $resp['id_client'])
+                        ->exists();
+                if ($exists) {
+                    $responses[] = [
+                        'service' => $service,
+                        'technician' => $technician,
+                        'client' => $client,
+                        //'rating' => $exists,
+                        'message' => 'Este servicio ya tiene una calificación.'
                     ];
                     continue;
                 }
 
-                // Verificar si el estado actual del servicio es "Terminado" (stateId = 5)
-                if (!$service->stateId || $service->stateId !== 4) {
-                    return [
-                        'message' => 'El servicio no está terminado.',
-                    ];
-                    continue;
-                }
+                // Agrega a la lista de calificaciones válidas
+                $validRatings[] = $resp;
+            }
 
-                // Crear la calificación
-                $rating = Calificacion::create([
-                    'technicialId' => $ratingData['id_technician'],
-                    'serviceId' => $ratingData['id_service'],
-                    'clientId' => $ratingData['id_client'],
-                    'rating' => $ratingData['rating'],
-                    'comments' => $ratingData['comments']
+            // Ahora procesamos las válidas
+            foreach ($validRatings as $rating) {
+                $calificacion = Calificacion::create([
+                    'serviceId' => $rating['id_service'],
+                    'technicialId' => $rating['id_technician'],
+                    'clientId' => $rating['id_client'],
+                    'rating' => $rating['rating'],
+                    'comments' => $rating['comments'],
                 ]);
 
-                // Verificar si el técnico existe
-                $technician = Tecnico::find($technicianId);
-                if (!$technician) {
-                    return [
-                        'message' => 'Técnico no encontrado.',
-                        'average_rating' => null,
-                        'ratings_count' => 0,
-                    ];
-                    continue;
-                }
-
-                $clients = Cliente_Interno::find($clientId);
-                // Calcular promedio de calificaciones del técnico
-                $ratingsCount = Calificacion::where('technicialId', $technician->id)->count();
-                $ratingsSum = Calificacion::where('technicialId', $technician->id)->sum('rating');
-
-                if (isset($newRating)) {
-                    $ratingsSum += $newRating; // Sumar la nueva calificación
-                    $ratingsCount += 1; // Incrementar el conteo de calificaciones
-                }
-                $averageRating = $ratingsCount > 0 ? $ratingsSum / $ratingsCount : 0;
-                $roundedRating = round($averageRating * 2) / 2;
-
-                $technician->average_rating = $roundedRating;
-                $technician->save();
-
                 $responses[] = [
-                    'service' => $service,
-                    'rating' => $rating,
-                    'client' => $clients,
                     'technician' => $technician,
+                    'client' => $client,
+                    'service' => $service,
+                    'rating' => $calificacion,
+                    'message' => 'Calificación registrada correctamente.'
                 ];
             }
 
             return [
-                'message' => 'Calificaciones procesadas correctamente.',
+                'message' => 'Proceso de calificaciones completado.',
                 'responses' => $responses
             ];
 
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             return [
-                'message' => 'Se presento las siguientes fallas: ' . $e->getMessage()
+                'message' => 'Error: ' . $e->getMessage()
             ];
         }
     }
