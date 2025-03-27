@@ -31,6 +31,7 @@ class SendNotificationJob implements ShouldQueue
     public function __construct($notification,$userId,$data)
     {
         $this->notification = $notification;
+        //dd($this->notification);
         $this->userId = $userId;
         $this->data = $data;
     }
@@ -38,10 +39,11 @@ class SendNotificationJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle()
     {
-
+        //dd($this->notification);
         try {
+
             Log::info('$this->userId: ' . $this->notification);
 
             $senderId = is_array($this->data['sender_id'])
@@ -58,21 +60,22 @@ class SendNotificationJob implements ShouldQueue
             foreach ($receiverIds as $receiverId) {
                 $receiverInfo = $this->findModelTypeById($receiverId);
                 NotificationUser::create([
-                    'notifications_id' => $this->notification['id'],
-                    'recipient_id' =>$receiverId, // Guardar correctamente el receiver actual
-                    'sender_id' => $senderId,    // Guardar correctamente el sender
+                    'notification_id' => $this->notification->id, // <--- corregido aquí
+                    'recipient_id' => $receiverId,
+                    'sender_id' => $senderId,
                     'recipient_type' => $receiverInfo['type'],
-                    'sender_type'=> $senderInfo['type'],
+                    'sender_type' => $senderInfo['type'],
                     'is_read' => false,
                 ]);
 
-                NotificationsDevice::create([
-                    'device_id'=> $this->data['device'],
-                    'token' => $this->data['expo_token'],
-                    'is_active' => false,
-                    'date'=> Carbon::now(),
-
-                ]);
+                if (!empty($this->data['device']) && !empty($this->data['expo_token'])) {
+                    NotificationsDevice::create([
+                        'device_id' => $this->data['device'],
+                        'token' => $this->data['expo_token'],
+                        'is_active' => false,
+                        'date' => Carbon::now(),
+                    ]);
+                }
             }
         } catch (\Exception $e) {
             // Registrar el error en los logs
@@ -80,22 +83,26 @@ class SendNotificationJob implements ShouldQueue
                 'notification_id' => $this->notification->id,
                 'user_id' => $this->userId,
             ]);
+            return [
+                'message'=>'Errores de notificaciones: ' . $e->getMessage(),
+            ];
         }
     }
 
     private function findModelTypeById($id){
-        $tecnico = Tecnico::find($id);
+        $tecnico = Tecnico::where('userId',$id)->first();
         if($tecnico) {
             return ['model' => $tecnico, 'type' => Tecnico::class];
         }
 
-        $cliente = Cliente_Interno::find($id);
+        $cliente = Cliente_Interno::where('userId',$id)->first();
         if($cliente){
             return ['model' => $cliente, 'type' => Cliente_Interno::class];
         }
 
+        return ['model' => $id , 'type' =>  User::class];
         // Si no es ni técnico ni cliente interno
-        return null;
+        //return null;
     }
 
 }
