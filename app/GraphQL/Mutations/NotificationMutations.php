@@ -21,7 +21,7 @@ class NotificationMutations
 
     public function __construct()
     {
-        $this->app= env('FULL_URL');
+        $this->app= env('APP_URL');
         $this->now = Carbon::now()->format('Ymd_His');
     }
     public function send($root, array $args)
