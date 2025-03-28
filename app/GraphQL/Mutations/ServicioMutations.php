@@ -473,13 +473,13 @@ class ServicioMutations
             if($services->isEmpty()){
                 return [
                     'message' => 'Existen comentario',
-                    'status' => true
+                    'status' => false
                 ];
             }
 
             return [
                 'message' => 'Servicios encontrados correctamente.',
-                'status' => false,
+                'status' => true,
                 'services' => $services
             ];
 
