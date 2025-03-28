@@ -3,12 +3,15 @@
 namespace Database\Seeders;
 
 use App\Models\Agenda_Tecnico;
+use App\Models\Devices;
+use App\Models\DevicesUser;
 use App\Models\Technician_subcripcion;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Tecnico;
 use Carbon\Carbon;
+use Nette\Utils\Random;
 
 class TecnicoSeeder extends Seeder
 {
@@ -18,7 +21,7 @@ class TecnicoSeeder extends Seeder
     public function run(): void
     {
         User::factory()
-            ->count(8)
+            ->count(5)
             ->create()
             ->each(function ($user) {
                 // Por cada usuario, crear varios clientes internos
@@ -38,6 +41,16 @@ class TecnicoSeeder extends Seeder
                             'starDateSubcription'=> now()->addMonth(),
                             'endDateSubcription' => now()->addMonths(1),
                             'status' => 1
+                        ]);
+                        $device = Devices::create([
+                            'expo_token' => 'xx345678xxxxxxxx09876' ,
+                            'type_device' => 'Android' ,
+                            'name_device' => 'Samsung mini s3'
+                        ]);
+
+                        DevicesUser::create([
+                            'device_id' => $device->id,
+                            'users_id'   => $technician->user->id
                         ]);
                     });
             });

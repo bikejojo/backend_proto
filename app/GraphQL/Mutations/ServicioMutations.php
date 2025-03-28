@@ -469,13 +469,13 @@ class ServicioMutations
             if($services->isEmpty()){
                 return [
                     'message' => 'No existe contenido',
-                    'status' => false,
+                    'status' => true,
                     ];
             }
 
             return [
                 'message' => 'Servicios encontrados correctamente.',
-                'status' => true,
+                'status' => false,
                 'services' => $services
             ];
 

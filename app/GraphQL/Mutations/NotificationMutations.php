@@ -7,7 +7,7 @@ use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\ImageHelper;
 use Illuminate\Http\UploadedFile;
-use App\Services\ValidationModels;
+use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
@@ -47,14 +47,15 @@ class NotificationMutations
             }
 
             $dataJob = [
-                'sender_id'    => $input['sender_userid'] ?? null,
-                'recipient_id' => $input['recipient_userid'] ?? [],
-                'expo_token'   => $input['token_user'] ?? null,
-                'device'       => $input['device_id'] ?? null,
+                'sender_id'    => $input['data']['sender_userid'] ?? null,
+                'recipient_id' => $input['data']['recipient_userid'] ?? [],
+                'expo_token'   => $input['data']['token_user'] ?? null,
+                'device'       => $input['data']['device_id'] ?? null,
 
             ];
-
-            SendNotificationJob::dispatch($notifications,auth()->id(),$dataJob);
+            //$id=auth()->id;
+            Log::info('[MUTATION] Despachando job para notificación ID: ' . $notifications->id);
+            SendNotificationJob::dispatch($notifications,$dataJob['sender_id'],$dataJob);
             DB::commit();
             return [
                 'message' => 'Notificaciones enviadas exitosamente.',
