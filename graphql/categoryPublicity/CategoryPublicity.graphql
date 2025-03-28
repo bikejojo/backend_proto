@@ -3,6 +3,7 @@ type CategoryPublicity {
     description:String @trim
     entity_type:String @trim
     code:String @trim
+    photo:String
 
     categories:[Publicity] @hasMany
 }
