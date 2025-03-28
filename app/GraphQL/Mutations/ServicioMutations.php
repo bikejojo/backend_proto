@@ -468,15 +468,15 @@ class ServicioMutations
 
             if($services->isEmpty()){
                 return [
-                    'message' => 'No existe contenido',
+                    'message' => 'No existe comentario',
                     'status' => true,
+                    'services' => $services
                     ];
             }
 
             return [
                 'message' => 'Servicios encontrados correctamente.',
-                'status' => false,
-                'services' => $services
+                'status' => false
             ];
 
         } catch(\Exception $e) {
