@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('internal_clients', function (Blueprint $table) {
             $table->id();
-            $table->string('firstName');  // Traducción de 'nombre'
-            $table->string('lastName');   // Traducción de 'apellido'
-            $table->string('email');
-            $table->string('phoneNumber');
+            $table->string('firstName')->nullable();  // Traducción de 'nombre'
+            $table->string('lastName')->nullable();   // Traducción de 'apellido'
+            $table->string('email')->nullable();
+            $table->string('phoneNumber')->nullable();
             $table->string('loginMethod')->nullable();  // Traducción de 'metodo_login'
             $table->string('photo')->nullable();
             $table->bigInteger('status')->nullable();

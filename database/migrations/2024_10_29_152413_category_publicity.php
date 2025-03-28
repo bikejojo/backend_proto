@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description');
             $table->text('entity_type')->nullable();
             $table->text('code')->nullable();
+            $table->string('photo')->nullable();
             $table->timestamps();
         });
     }
