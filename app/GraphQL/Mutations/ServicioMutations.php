@@ -449,9 +449,13 @@ class ServicioMutations
             $services = Servicio::join('technicians', 'services.technicalId', '=', 'technicians.id')
                 ->join('internal_clients', 'services.clientId', '=', 'internal_clients.id')
                 ->join('activity_types','services.activityId','=','activity_types.id')
+                ->leftJoin('rating', function($join) {
+                    $join->on('services.id', '=', 'rating.serviceId');
+                })
                 ->where('services.clientId', $technician->id)
                 ->where('services.stateId', 4)                  // solo estado = 4
                 ->whereNull('services.finishDateTime_client')   // fecha cliente vacía (null)
+                ->whereNull('rating.id')
                 ->select([
                     'technicians.id as id_technician',
                     DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS "fullName_technician"'),
@@ -465,18 +469,18 @@ class ServicioMutations
                     'services.serviceDescription as description_service'
                 ])
                 ->get();
-
+                //dd($services);
             if($services->isEmpty()){
                 return [
-                    'message' => 'No existe comentario',
-                    'status' => true,
-                    'services' => $services
-                    ];
+                    'message' => 'Existen comentario',
+                    'status' => true
+                ];
             }
 
             return [
                 'message' => 'Servicios encontrados correctamente.',
-                'status' => false
+                'status' => false,
+                'services' => $services
             ];
 
         } catch(\Exception $e) {
