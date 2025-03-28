@@ -15,7 +15,8 @@ class Categoria_Publicidad extends Model
     protected $fillable = [
         'description',
         'entity_type',
-        'code'
+        'code',
+        'photo'
     ];
 
     public function categories(){

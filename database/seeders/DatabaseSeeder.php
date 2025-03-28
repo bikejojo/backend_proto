@@ -40,11 +40,6 @@ class DatabaseSeeder extends Seeder
         Ciudad::create(['name'=>'Oruro']);
         Ciudad::create(['name'=>'Potosi']);
 
-        /*Group::create(['name'=>'Hogar y Mantenimiento']);//1
-        Group::create(['name'=>'Tecnologia']);//2
-        Group::create(['name'=>'Automotriz']);//3
-        Group::create(['name'=>'Servicios Especializados']);//4*/
-
         $this->call(GropSeeder::class);
         $this->call(SubGropSeeder::class);
         $this->call(SkillSeeder::class);
@@ -203,11 +198,12 @@ class DatabaseSeeder extends Seeder
         Tipo_Estado::create(['description'=>'Completado']);
         //Tipo_Estado::create(['description'=>'Anulado']);
 
-        Categoria_Publicidad::create(['description'=>'tecnologia','entity_type'=>'publicity','code'=>'PUB001']);
+        /*Categoria_Publicidad::create(['description'=>'tecnologia','entity_type'=>'publicity','code'=>'PUB001']);
         Categoria_Publicidad::create(['description'=>'servicios','entity_type'=>'publicity','code'=>'PUB002']);
         Categoria_Publicidad::create(['description'=>'productos','entity_type'=>'publicity','code'=>'PUB003']);
         Categoria_Publicidad::create(['description'=>'consultoria','entity_type'=>'publicity','code'=>'PUB004']);
-
+        */
+        $this->call(PublicidadCategSeeder::class);
         //suscripcion inicial
         Suscripcion::create(['name'=>'Suscripcion Free','description'=>'Duracion de 7 dias por Free','createDate'=>Carbon::now(),'duration'=> 7,'status'=>1,'durationDescription'=>'7 dias','price'=>0,'codeSubcription'=>'FREE']);
         Suscripcion::create(['name'=>'Suscripcion Basic','description'=>'Duracion de 14 dias por basico','createDate'=>Carbon::now(),'duration'=> 14,'status'=>1,'durationDescription'=>'14 dias','price'=>12.50,'codeSubcription'=>'BASIC']);

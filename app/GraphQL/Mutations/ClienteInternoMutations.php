@@ -25,7 +25,7 @@ class ClienteInternoMutations{
     protected $now;
 
     public function __construct() {
-        $this->app = env('FULL_URL');
+        $this->app = env('APP_URL');
         $this->now= Carbon::now()->format('Ymd_His');
     }
 

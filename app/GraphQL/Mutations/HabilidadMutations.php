@@ -17,7 +17,7 @@ class HabilidadMutations {
    protected $app;
    public function __construct()
    {
-        $this->app = env('FULL_URL');
+        $this->app = env('APP_URL');
    }
 
    public function create($root,array $args){

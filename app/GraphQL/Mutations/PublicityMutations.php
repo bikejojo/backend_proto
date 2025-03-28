@@ -21,7 +21,7 @@ final class PublicityMutations{
 
     public function __construct()
     {
-        $this->app = env('APP_URL').':'.env('SERVER_PORT');
+        $this->app = env('APP_URL');//.':'.env('SERVER_PORT');
     }
 
     public function create($root,array $args){
