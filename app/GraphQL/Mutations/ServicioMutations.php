@@ -378,6 +378,7 @@ class ServicioMutations
         if($service != null){
             //$service->status = StateCatalog::STATUS_LOW;
             $service->stateId = 3;
+            $service->status = 0 ;
             $service->save();
             return[
                 'message' => 'El servicio se elimino.',
