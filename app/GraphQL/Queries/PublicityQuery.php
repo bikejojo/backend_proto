@@ -117,9 +117,11 @@ final readonly class PublicityQuery
         $query = Publicidad::where('finishDate', '>=' ,$now);
         if (!is_null($id_category) && in_array($id_category, [1, 2,3,4])) {
             $query->where('categoryId', $id_category);
+
         }
         $publicity = $query->get();
-        if($publicity->isEmpty()){
+        //dd($publicity);
+       if($publicity->isEmpty()){
             return [
                 'message' => 'No existen servicios en esta actividad.'
             ];
