@@ -3,6 +3,7 @@ extend type Query {
     getServiceCategory:responseGroups @field(resolver: "GroupSkillQuery@allGroupSkill")
     getServiceCategory_:responseGroup_ @field(resolver: "GroupSkillQuery@allGroupSkill_")
     listGroupSubgroupSkil:listsCompletGroup @field (resolver: "GroupSkillQuery@gropSubSkill")
+    
 }
 
 type listsCompletGroup {

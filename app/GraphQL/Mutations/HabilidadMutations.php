@@ -6,6 +6,7 @@ use App\Models\Habilidad;
 use App\Models\Tecnico_Habilidad;
 use Illuminate\Support\Facades\DB;
 use App\helpers\ImageHelper;
+use App\Models\Skills_group;
 use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Http\UploadedFile;
@@ -21,25 +22,36 @@ class HabilidadMutations {
    }
 
    public function create($root,array $args){
+        $groupId=$args['groupId'];
         $validators = ImageHelper::validationImageSkill($args);
         if ($validators->fails()) {
             return [
                 'message' => 'Archivo de imagen inválido.'
             ];
         }
-        DB::beginTransaccion();
+        DB::beginTransaction();
         try {
-            $habilidad = Habilidad::create($args['name']);
+            $habilidad = Habilidad::create([
+                'name' => $args['name'],
+                'status' => 1
+            ]);
 
             $habilidadId = $habilidad->id;
             ImageHelper::createSkill($habilidadId);
             $manager = new ImageManager(new Driver);
             $_now = Carbon::now()->format('Ymd_His');
             if(isset($args['photo']) && $args['photo'] instanceof UploadedFile ){
-                $photoPath = ImageHelper::processImage($args['photo'],"/skill/{$habilidadId}/"."{$_now}.png",$manager);
+                $photoPath = ImageHelper::processImage($args['photo'],"/images/subgroup/{$habilidadId}/"."{$_now}.png",$manager);
                 $habilidad->photo = $this->app . 'storage' . str_replace('public/','',$photoPath);
+                $habilidad->save();
             }
             //return $habilidad;
+
+            Skills_group::create([
+                'groupId' => $groupId,
+                'skillsId' => $habilidad->id
+            ]);
+            DB::commit();
             return [
                 'message' => 'creacion de habilidad',
                 'skill' => $habilidad

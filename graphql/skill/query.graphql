@@ -6,6 +6,8 @@ extend type Query {
     filterSkillTechnician(requestSkillTechnician:JSON):responseTechnician_ @field (resolver: "SkillQuery@searchFilterSkillTechnician")
     listTechnicianBySkill(id_skills:ID):response_Tech @field (resolver: "SkillQuery@getListTechnicians")
     listFeaturedTechnicianBySkill(id_skills:ID):response_Tech @field (resolver: "SkillQuery@getFeaturedListTechnicians")
+    
+
     }
 
     type response_Tech {

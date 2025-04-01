@@ -87,7 +87,7 @@ class ImageHelper
     }
 
     public static function createSkill($objetoId){
-        Storage::makeDirectory('public/skill/'.$objetoId);
+        Storage::makeDirectory('public/images/subgroup/'.$objetoId);
     }
 
     public static function createSubgroup($objetoId){
@@ -95,7 +95,7 @@ class ImageHelper
     }
 
     public static function createGroup($objetoId){
-        Storage::makeDirectory('public/group/'.$objetoId);
+        Storage::makeDirectory('public/images/group/'.$objetoId);
     }
 
     public static function existSkill($objetoId){
@@ -115,7 +115,7 @@ class ImageHelper
     }
 
     public static function existGroup($objetoId){
-        $directoryPath ='public/group/' . $objetoId;
+        $directoryPath ='public/images/group/' . $objetoId;
         if(!Storage::exists($directoryPath)){
             Storage::makeDirectory($directoryPath);
             return "Directorio 'grupo' creado para el objeto: " . $objetoId;

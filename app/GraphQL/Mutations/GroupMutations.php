@@ -46,7 +46,7 @@ class GroupMutations
         $isPhotoGroup = (isset($args['photo']) && $args['photo'] instanceof UploadedFile);
         ImageHelper::existGroup($grupoId);
         if($isPhotoGroup){
-            $photoGroupPath=ImageHelper::processImage($args['photo'],"/group/{$grupoId}/"."{$now}.png",$manager);
+            $photoGroupPath=ImageHelper::processImage($args['photo'],"/images/group/{$grupoId}/"."{$now}.png",$manager);
             $grupo->photo = $this->app . '/storage' . str_replace('/public','',$photoGroupPath);
             $grupo->save();
         }
