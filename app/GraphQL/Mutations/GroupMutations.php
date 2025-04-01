@@ -58,7 +58,6 @@ class GroupMutations
     }
 
     public function update($root , array $args){
-        //dd($args['photo']);
         $groupId = $args['id_group'];
         $group = Group::find($groupId);
         $validators = ImageHelper::validationImageGroup($args);
@@ -75,9 +74,9 @@ class GroupMutations
 
         $manager = new ImageManager(new Driver());
         if($isPhotoGroup){
-            $groupPath = ImageHelper::processImage($args['photo'], "/group/{$groupId_}/"."{$now_}.png",$manager);
+            $groupPath = ImageHelper::processImage($args['photo'], "/images/group/{$groupId_}/"."{$now_}.png",$manager);
 
-            $group->photo = $this->app . "/storage" . str_replace('public/','', $groupPath);
+            $group->photo = $this->app . "/storage" . str_replace('/public','', $groupPath);
             $group->save();
         }
         return [

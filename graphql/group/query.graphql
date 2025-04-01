@@ -1,0 +1,8 @@
+extend type Query {
+    groupId(id:String):responseGroup @field(resolver: "GroupSkillQuery@getGroupId")
+}
+
+type responseGroup{
+    message:String
+    group:Group
+}

@@ -97,4 +97,13 @@ class GroupSkillQuery
             ];
         }
     }
+
+    public function getGroupId($root , array $args){
+        $groupId = $args['id'];
+        $group = Group::find($groupId);
+        return [
+            'message' => 'Grupo escogido devuelto.',
+            'group' => $group
+        ];
+    }
 }

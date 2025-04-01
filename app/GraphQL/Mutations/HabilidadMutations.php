@@ -45,7 +45,6 @@ class HabilidadMutations {
                 $habilidad->photo = $this->app . 'storage' . str_replace('public/','',$photoPath);
                 $habilidad->save();
             }
-            //return $habilidad;
 
             Skills_group::create([
                 'groupId' => $groupId,
