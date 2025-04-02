@@ -127,7 +127,7 @@ type Services_{
     finishDateTime_technician:String
     rating_id:String
     rating:String
-    feedback:String
+    comments:String
     activityId:String
 }
 

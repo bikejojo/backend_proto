@@ -309,7 +309,7 @@ class ServiceQuery
                 'services.clientId',
                 'rating.id AS rating_id',
                 'rating.rating',
-                'rating.feedback',
+                'rating.comments',
                 'services.activityId',
             );
             //->get();

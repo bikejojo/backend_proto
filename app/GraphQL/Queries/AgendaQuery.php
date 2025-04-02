@@ -37,9 +37,10 @@ class AgendaQuery{
                 //->where('services.stateId',1)
                 //->orWhere('services.stateId',4)
                 //->orWhere('services.stateId',5)
-                ->orderBy('serviceDate','asc');
+                ->orderBy('detail_technical_agenda.serviceDate','asc');
+
             if ($dateFilter) {
-                $query->whereDate('serviceDate',$dateFilter);
+                $query->whereDate('detail_technical_agenda.serviceDate',$dateFilter);
             }else{
                 return [
                     'message' => 'No se especifico una fecha valida.',

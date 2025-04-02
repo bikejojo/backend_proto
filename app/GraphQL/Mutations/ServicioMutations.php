@@ -373,19 +373,25 @@ class ServicioMutations
     }
 
     public function delete($root , array $args){
-        $serviceData = $args['requestService'];
-        $serviceId=$serviceData['id_service'];
-        $service = Servicio::find($serviceId);
-        if($service != null){
-            $request = Solicitud::where('id',$service->id);
-            $request->stateId = 3;
-            $request->save();
-            StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'Se cancelo el servicio y la solicitud',5);
-            $service->status = 0;
-            $service->save();
-            return[
-                'message' => 'El servicio se elimino.',
-                'service' => $service
+        try {
+            $serviceData = $args['requestService'];
+            $serviceId=$serviceData['id_service'];
+            $service = Servicio::find($serviceId);
+            if($service != null){
+                $request = Solicitud::where('id',$service->id)->first();
+                $request->stateId = 3;
+                $request->save();
+                StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'Se cancelo el servicio y la solicitud',5);
+                $service->status = 0;
+                $service->save();
+                return[
+                    'message' => 'El servicio se elimino.',
+                    'service' => $service
+                ];
+            }
+        } catch (\Exception $e) {
+            return [
+                'message' => 'surgio el problema' . $e->getMessage()
             ];
         }
     }
