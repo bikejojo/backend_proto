@@ -34,7 +34,7 @@ class SkillSeeder extends Seeder
             ['name' => 'Limpieza General', 'photo' => 'limpiezas.png', 'icons' => 'format-clear'],
             ['name' => 'Tecnico en telefonia movil', 'photo' => 'telefono.png', 'icons' => 'tablet-portrait-sharp'],
             ['name' => 'Veterinario(a)', 'photo' => 'veterinario.png', 'icons' => 'doctor'],
-            ['name' => 'Piscenero', 'photo' => 'PiscineroJardineria.png', 'icons' => 'water-ladder'],
+            ['name' => 'Piscinero', 'photo' => 'PiscineroJardineria.png', 'icons' => 'water-ladder'],
             ['name' => 'Limpieza general en vehiculo', 'photo' => 'lavaautos.png','icons' => 'spray-bottle'],
             ['name' => 'Mesero / Camarero / Mozo', 'photo' => 'Garzones.png', 'icons' => 'silverware-fork-knife'],
             ['name' => 'Organizador de eventos', 'photo' => 'CateringChurrasquero.png', 'icons' => 'party-popper'],

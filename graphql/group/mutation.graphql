@@ -1,6 +1,6 @@
 extend type Mutation {
     createGroup(requestGroup:JSON,photo:Upload):responseGroup @field(resolver: "GroupMutations@create")
-    updateGroup(id_group:ID,photo:Upload):responseGroup @field(resolver: "GroupMutations@update")
+    updateGroup(requestGroup:JSON,photo:Upload):responseGroup @field(resolver: "GroupMutations@update")
 }
 
 type responseGroup {

@@ -66,6 +66,7 @@ class GroupSkillQuery
                                 'skills.id As skill_id',
                                 'skills.name As skill_name',
                             )
+                            ->orderBy('group.id','asc')
                             ->get();
             $groupedData = $groups->groupBy('group_id')->map(function ($groupItems) {
                 return [
