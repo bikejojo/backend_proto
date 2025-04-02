@@ -34,12 +34,11 @@ class AgendaQuery{
                 ->where('agendaTechnicalId', $agenda->id)
                 ->where('detail_technical_agenda.typeClient', self::servicioInternal) // Cliente interno
                 ->where('services.status',1)
-                ->where('services.stateId',1)
-                ->orWhere('services.stateId',4)
-                ->orWhere('services.stateId',5)
+                //->where('services.stateId',1)
+                //->orWhere('services.stateId',4)
+                //->orWhere('services.stateId',5)
                 ->orderBy('serviceDate','asc');
             if ($dateFilter) {
-                // $query = $this->dateHelper($dateFilter, $query, 'detail_technical_agenda.serviceDate');
                 $query->whereDate('serviceDate',$dateFilter);
             }else{
                 return [
@@ -47,7 +46,6 @@ class AgendaQuery{
                     'agenda' => null
                 ];
             }
-            $query->orderBy('serviceDate','asc');
             $serviceDetails = $query->get();
             if ($serviceDetails->isEmpty()) {
                 return [
