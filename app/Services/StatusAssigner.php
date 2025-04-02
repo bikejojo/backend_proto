@@ -38,6 +38,7 @@ class StatusAssigner{
     const SERVICE_COMPLETED_CI = 'servicio completado cliente interno.';
     const SERVICE_COMPLETED_CE = 'servicio completado cliente externo.';
     const SERVICE_COMPLETED_T = 'servicio completado tecnico.';
+    const SERVICE_CANCEL = 'Servicio cancelado';
 
     // tipo de clientes
     const cliente_internal=1;
@@ -170,7 +171,7 @@ class StatusAssigner{
                     'requestId' => null,
                     'serviceId' => $objeto->id,
                     'clientId' => $objeto->clientId,
-                    'technicianId' => $objeto->technicianId,
+                    'technicianId' => $objeto->technicalId,
                     'stateId' => self::FINISH,
                     'type' => $type_reference,
                     'typeClient' => $objeto->typeClient,
@@ -186,11 +187,27 @@ class StatusAssigner{
                     'requestId' => null,
                     'serviceId' => $objeto->id,
                     'clientId' => $objeto->clientId,
-                    'technicianId' => $objeto->technicianId,
+                    'technicianId' => $objeto->technicalId,
                     'stateId' => self::FINISH,
                     'type' => $type_reference,
                     'typeClient' => $objeto->typeClient,
                     'descriptionState' => self::SERVICE_COMPLETED_CE,
+                    'observations' => $comments,
+                    'dateCreate' => $now
+                ]);
+                $objeto->stateId = $stateReference->stateId;
+                $objeto->save();
+            break;
+            case 5:
+                $stateReference = StateReference::create([
+                    'requestId' => $objeto->requestsId,
+                    'serviceId' => $objeto->id,
+                    'clientId' => $objeto->clientId,
+                    'technicianId' => $objeto->technicalId,
+                    'stateId' => self::REJECTED,
+                    'type' => $type_reference,
+                    'typeClient' => $objeto->typeClient,
+                    'descriptionState' => self::SERVICE_CANCEL,
                     'observations' => $comments,
                     'dateCreate' => $now
                 ]);

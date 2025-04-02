@@ -10,6 +10,7 @@ use App\Models\Agenda_Tecnico;
 use App\Models\Asociacion_Cliente_Tecnico;
 use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Historial_Servicios;
+use App\Models\Solicitud;
 use App\Models\Tecnico;
 use App\Services\StateCatalog;
 use App\Services\StatusAssigner;
@@ -376,9 +377,11 @@ class ServicioMutations
         $serviceId=$serviceData['id_service'];
         $service = Servicio::find($serviceId);
         if($service != null){
-            //$service->status = StateCatalog::STATUS_LOW;
-            $service->stateId = 3;
-            $service->status = 0 ;
+            $request = Solicitud::where('id',$service->id);
+            $request->stateId = 3;
+            $request->save();
+            StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'Se cancelo el servicio y la solicitud',5);
+            $service->status = 0;
             $service->save();
             return[
                 'message' => 'El servicio se elimino.',

@@ -140,7 +140,7 @@ class RequestQuery
             'technical' => Tecnico::find($technicianId),
         ];
     }
-
+ // agenda cliente aPP
     public function agenda_requests($root, $args){
     try {
             $now = Carbon::now()->format('Y-m-d');
