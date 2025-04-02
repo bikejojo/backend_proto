@@ -115,7 +115,7 @@ type historyServiceExternal {
     service:[Service_]
 }
 
-type Services_{
+type Services_ {
     service_id:String
     titleService:String
     serviceDescription:String

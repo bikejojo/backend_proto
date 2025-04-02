@@ -33,6 +33,7 @@ class HabilidadMutations {
         try {
             $habilidad = Habilidad::create([
                 'name' => $args['name'],
+                'icons' => 'hammer-wrench',
                 'status' => 1
             ]);
 

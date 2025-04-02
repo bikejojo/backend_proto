@@ -283,47 +283,52 @@ class ServiceQuery
     }
 
     public function technicianHistoryClientInternal($root, array $args){
-        $historyData = $args['requestService'];
-        $technicianId = $historyData['id_technician'];
-        $clientId = $historyData['id_client'];
-        $activityId = $historyData['id_activity'] ?? StateCatalog::CODE_ACT_ALL;
+        try {
+            $historyData = $args['requestService'];
+            $technicianId = $historyData['id_technician'];
+            $clientId = $historyData['id_client'];
+            $activityId = $historyData['id_activity'] ?? StateCatalog::CODE_ACT_ALL;
 
-        // Validar técnico y cliente
-        $technician = ValidationModels::validationTechnician($technicianId);
-        $cliente = ValidationModels::validationclientInternal($clientId);
+            // Validar técnico y cliente
+            $technician = ValidationModels::validationTechnician($technicianId);
+            $cliente = ValidationModels::validationclientInternal($clientId);
 
-        // Obtener servicios con calificación
-        $service_query = Servicio::leftJoin('rating', 'services.id', '=', 'rating.serviceId')
-            ->where('services.technicalId', $technician->id)
-            ->where('services.clientId', $cliente->id)
-            ->where('services.typeClient', self::client_internal)
-            ->select(
-                'services.id AS service_id',
-                'services.titleService',
-                'services.serviceDescription',
-                'services.serviceLocation',
-                'services.updatedDateTime',
-                'services.finishDateTime_client',
-                'services.finishDateTime_technician',
-                'services.technicalId',
-                'services.clientId',
-                'rating.id AS rating_id',
-                'rating.rating',
-                'rating.comments',
-                'services.activityId',
-            );
-            //->get();
+            // Obtener servicios con calificación
+            $service_query = Servicio::leftJoin('rating', 'services.id', '=', 'rating.serviceId')
+                ->where('services.technicalId', $technician->id)
+                ->where('services.clientId', $cliente->id)
+                ->where('services.typeClient', self::client_internal)
+                ->select(
+                    'services.id AS service_id',
+                    'services.titleService',
+                    'services.serviceDescription',
+                    'services.serviceLocation',
+                    'services.updatedDateTime',
+                    'services.finishDateTime_client',
+                    'services.finishDateTime_technician',
+                    'services.technicalId',
+                    'services.clientId',
+                    'rating.id AS rating_id',
+                    'rating.rating',
+                    'rating.comments',
+                    'services.activityId',
+                );
 
-        if($activityId != StateCatalog::CODE_ACT_ALL){
-            $serv_query = $service_query->where('activityId',$activityId);
-        }else{
-            $serv_query = $service_query;
+            if($activityId != StateCatalog::CODE_ACT_ALL){
+                $serv_query = $service_query->where('activityId',$activityId);
+            }else{
+                $serv_query = $service_query;
+            }
+                $service = $serv_query->get();
+            return [
+                'message' => 'Historial de servicios de un cliente',
+                'service' => $service
+            ];
+        } catch (\Exception $e) {
+            return [
+                'message' => 'Fallas en el servidor : ' . $e->getMessage()
+            ];
         }
-        $service = $serv_query->get();
-        return [
-            'message' => 'Historial de servicios de un cliente',
-            'service' => $service
-        ];
     }
 
 
