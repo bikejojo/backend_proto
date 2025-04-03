@@ -47,84 +47,77 @@ class StatusAssigner{
     public static function assignStateRequest($objeto, $now, $type_reference,$comments,$number ){
         switch ($number) {
             case 1:
-
-                $stateReference = StateReference::create([
-                    //'referenceId' => $objeto->id,
-                    'requestId' => $objeto->id,
-                    'serviceId' => null,
-                    'clientId' => $objeto->clientId,
-                    'technicianId' => $objeto->technicianId,
-                    'stateId' => self::PENDING,
-                    'type' => $type_reference,
-                    'typeClient' => self::cliente_internal,
-                    'descriptionState' => self::REQUEST_PENDING,
-                    'observations' => $comments,
-                    'dateCreate' => $now
-                ]);
+                $stateReference = new StateReference();
+                    $stateReference->requestId = $objeto->id;
+                    $stateReference->serviceId = null;
+                    $stateReference->clientId = $objeto->clientId;
+                    $stateReference->technicianId = $objeto->technicianId;
+                    $stateReference->stateId = self::PENDING;
+                    $stateReference->type = $type_reference;
+                    $stateReference->typeClient = self::cliente_internal;
+                    $stateReference->descriptionState = self::REQUEST_PENDING;
+                    $stateReference->observations = $comments;
+                    $stateReference->dateCreate = $now;
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
             case 2:
-                $stateReference = StateReference::create([
-                    'requestId' => $objeto->id,
-                    'serviceId' => null,
-                    'clientId' => $objeto->clientId,
-                    'technicianId' => $objeto->technicianId,
-                    'stateId' => self::REJECTED,
-                    'type' => $type_reference,
-                    'typeClient' => self::cliente_internal,
-                    'descriptionState' => self::REQUEST_REJECTED_T,
-                    'observations' => $comments,
-                    'dateCreate' => $now
-                ]);
+                $stateReference = new StateReference();
+                    $stateReference->requestId = $objeto->id;
+                    $stateReference->serviceId = null;
+                    $stateReference->clientId = $objeto->clientId;
+                    $stateReference->technicianId = $objeto->technicianId;
+                    $stateReference->stateId = self::REJECTED;
+                    $stateReference->type = $type_reference;
+                    $stateReference->typeClient = self::cliente_internal;
+                    $stateReference->descriptionState = self::REQUEST_REJECTED_T;
+                    $stateReference->observations = $comments;
+                    $stateReference->dateCreate = $now;
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
             case 3:
-                $stateReference = StateReference::create([
-                    'requestId' => $objeto->id,
-                    'serviceId' => null,
-                    'clientId' => $objeto->clientId,
-                    'technicianId' => $objeto->technicianId,
-                    'stateId' => self::REJECTED,
-                    'typeClient' => self::cliente_internal,
-                    'type' => $type_reference,
-                    'descriptionState' => self::REQUEST_REJECTED_C,
-                    'observations' => $comments,
-                    'dateCreate' => $now
-                ]);
+                $stateReference = new StateReference();
+                    $stateReference->requestId = $objeto->id;
+                    $stateReference->serviceId = null;
+                    $stateReference->clientId = $objeto->clientId;
+                    $stateReference->technicianId = $objeto->technicianId;
+                    $stateReference->stateId = self::REJECTED;
+                    $stateReference->type = $type_reference;
+                    $stateReference->typeClient = self::cliente_internal;
+                    $stateReference->descriptionState = self::REQUEST_REJECTED_C;
+                    $stateReference->observations = $comments;
+                    $stateReference->dateCreate = $now;
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
             case 4:
-                $stateReference = StateReference::create([
-                    'requestId' => $objeto->id,
-                    'serviceId' => null,
-                    'clientId' => $objeto->clientId,
-                    'technicianId' => $objeto->technicianId,
-                    'stateId' => self::ACCEPT,
-                    'type' => $type_reference,
-                    'typeClient' => self::cliente_internal,
-                    'descriptionState' => self::REQUEST_ACCEPTED_T,
-                    'observations' => $comments,
-                    'dateCreate' => $now
-                ]);
+                $stateReference = new StateReference();
+                    $stateReference->requestId = $objeto->id;
+                    $stateReference->serviceId = null;
+                    $stateReference->clientId = $objeto->clientId;
+                    $stateReference->technicianId = $objeto->technicianId;
+                    $stateReference->stateId = self::ACCEPT;
+                    $stateReference->type = $type_reference;
+                    $stateReference->typeClient = self::cliente_internal;
+                    $stateReference->descriptionState = self::REQUEST_ACCEPTED_T;
+                    $stateReference->observations = $comments;
+                    $stateReference->dateCreate = $now;
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
             case 5:
-                $stateReference = StateReference::create([
-                    'requestId' => $objeto->id,
-                    'serviceId' => null,
-                    'clientId' => $objeto->clientId,
-                    'technicianId' => null,
-                    'stateId' => self::REJECTED,
-                    'type' => $type_reference,
-                    'typeClient' => self::cliente_internal,
-                    'descriptionState' => self::REQUEST_REJECTED_SYSTEM,
-                    'observations' => $comments,
-                    'dateCreate' => $now
-                ]);
+                $stateReference = new StateReference();
+                    $stateReference->requestId = $objeto->id;
+                    $stateReference->serviceId = null;
+                    $stateReference->clientId = $objeto->clientId;
+                    $stateReference->technicianId = $objeto->technicianId;
+                    $stateReference->stateId = self::REJECTED;
+                    $stateReference->type = $type_reference;
+                    $stateReference->typeClient = self::cliente_internal;
+                    $stateReference->descriptionState = self::REQUEST_REJECTED_SYSTEM;
+                    $stateReference->observations = $comments;
+                    $stateReference->dateCreate = $now;
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->status = 0;
                 $objeto->save();
@@ -135,82 +128,66 @@ class StatusAssigner{
     public static function assignStatService($objeto, $now, $type_reference,$comments,$number ){
         switch ($number){
             case 1:
-                $stateReference = StateReference::create([
-                    'requestId' => null,
-                    'serviceId' => $objeto->id,
-                    'clientId' => $objeto->clientId,
-                    'technicianId' => $objeto->technicalId,
-                    'stateId' => self::PENDING,
-                    'typeClient' => $objeto->typeClient,
-                    'type' => $type_reference,
-                    'descriptionState' => self::SERVICE_PENDING,
-                    'observations' => $comments,
-                    'dateCreate' => $now
-                ]);
+                $stateReference = new StateReference();
+                    $stateReference->requestId = null;
+                    $stateReference->serviceId = $objeto->id;
+                    $stateReference->clientId = $objeto->clientId;
+                    $stateReference->technicianId = $objeto->technicalId;
+                    $stateReference->stateId = self::PENDING;
+                    $stateReference->type = $type_reference;
+                    $stateReference->typeClient = $objeto->typeClient;
+                    $stateReference->descriptionState = self::SERVICE_PENDING;
+                    $stateReference->observations = $comments;
+                    $stateReference->dateCreate = $now;
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
             case 2:
-                $stateReference = StateReference::create([
-                    'requestId' => null,
-                    'serviceId' => $objeto->id,
-                    'clientId' => $objeto->clientId,
-                    'technicianId' => $objeto->technicianId,
-                    'stateId' => self::FINISH,
-                    'type' => $type_reference,
-                    'typeClient' => $objeto->typeClient,
-                    'descriptionState' => self::SERVICE_COMPLETED_T,
-                    'observations' => $comments,
-                    'dateCreate' => $now
-                ]);
+                $stateReference = new StateReference();
+                    $stateReference->requestId = null;
+                    $stateReference->serviceId = $objeto->id;
+                    $stateReference->clientId = $objeto->clientId;
+                    $stateReference->technicianId = $objeto->technicalId;
+                    $stateReference->stateId = self::FINISH;
+                    $stateReference->type = $type_reference;
+                    $stateReference->typeClient = $objeto->typeClient;
+                    $stateReference->descriptionState = self::SERVICE_COMPLETED_T;
+                    $stateReference->observations = $comments;
+                    $stateReference->dateCreate = $now;
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
             case 3:
-                $stateReference = StateReference::create([
-                    'requestId' => null,
-                    'serviceId' => $objeto->id,
-                    'clientId' => $objeto->clientId,
-                    'technicianId' => $objeto->technicalId,
-                    'stateId' => self::FINISH,
-                    'type' => $type_reference,
-                    'typeClient' => $objeto->typeClient,
-                    'descriptionState' => self::SERVICE_COMPLETED_CI,
-                    'observations' => $comments,
-                    'dateCreate' => $now
-                ]);
+                $stateReference = new StateReference();
+                    $stateReference->requestId = null;
+                    $stateReference->serviceId = $objeto->id;
+                    $stateReference->clientId = $objeto->clientId;
+                    $stateReference->technicianId = $objeto->technicalId;
+                    $stateReference->stateId = self::FINISH;
+                    $stateReference->type = $type_reference;
+                    $stateReference->typeClient = $objeto->typeClient;
+                    $stateReference->descriptionState = self::SERVICE_COMPLETED_CI;
+                    $stateReference->observations = $comments;
+                    $stateReference->dateCreate = $now;
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
             case 4:
-                $stateReference = StateReference::create([
-                    'requestId' => null,
-                    'serviceId' => $objeto->id,
-                    'clientId' => $objeto->clientId,
-                    'technicianId' => $objeto->technicalId,
-                    'stateId' => self::FINISH,
-                    'type' => $type_reference,
-                    'typeClient' => $objeto->typeClient,
-                    'descriptionState' => self::SERVICE_COMPLETED_CE,
-                    'observations' => $comments,
-                    'dateCreate' => $now
-                ]);
+                $stateReference = new StateReference();
+                    $stateReference->requestId = null;
+                    $stateReference->serviceId = $objeto->id;
+                    $stateReference->clientId = $objeto->clientId;
+                    $stateReference->technicianId = $objeto->technicalId;
+                    $stateReference->stateId = self::FINISH;
+                    $stateReference->type = $type_reference;
+                    $stateReference->typeClient = $objeto->typeClient;
+                    $stateReference->descriptionState = self::SERVICE_COMPLETED_CE;
+                    $stateReference->observations = $comments;
+                    $stateReference->dateCreate = $now;
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
             case 5:
-                /*$stateReference = StateReference::create([
-                    'requestId' => $objeto->requestsId,
-                    'serviceId' => $objeto->id,
-                    'clientId' => $objeto->clientId,
-                    'technicianId' => $objeto->technicalId,
-                    'stateId' => self::REJECTED,
-                    'type' => $type_reference,
-                    'typeClient' => $objeto->typeClient,
-                    'descriptionState' => self::SERVICE_CANCEL,
-                    'observations' => $comments,
-                    'dateCreate' => $now
-                ]);*/
                 $stateReference = new StateReference();
                     $stateReference->requestId = $objeto->requestsId;
                     $stateReference->serviceId = $objeto->id;

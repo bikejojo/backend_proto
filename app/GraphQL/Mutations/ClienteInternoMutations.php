@@ -51,11 +51,7 @@ class ClienteInternoMutations{
         DB::beginTransaction();
         try{
         $email = strtolower(trim($clienteData['email']));
-        /*$user = User::create([
-            'email' => $email,
-            'password' => Hash::make($clienteData['password']),
-            'type_user' => StateCatalog::USER_CLIENT,
-        ]);*/
+
         $user = new User();
             $user->email = $email;
             $user->password = Hash::make($clienteData['password']);
@@ -69,17 +65,6 @@ class ClienteInternoMutations{
         $loginMethod=$clienteData['loginMethod'];
         $clienteData['loginMethod'] = $this->methodLogin($loginMethod);
         $clienteData['status'] = 1;
-
-        /*$cliente = Cliente_Interno::create([
-            'firstName' => $clienteData['firstName'],
-            'lastName' => $clienteData['lastName'],
-            'email' => $clienteData['email'],
-            'phoneNumber' => $clienteData['phoneNumber'],
-            'cityId'=>$clienteData['cityId'],
-            'loginMethod'=>$clienteData['loginMethod'],
-            'userId'=>$clienteData['userId'],
-            'status'=>$clienteData['status'],
-        ]);*/
 
         $cliente = new Cliente_Interno();
             $cliente->firstName = $clienteData['firstName'];

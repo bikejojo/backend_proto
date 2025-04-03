@@ -29,9 +29,8 @@ class GroupMutations
     public function create($root,array $args){
         $grupoData = $args['requestGroup'];
 
-        $grupo = Group::create([
-            'name' => $grupoData['name']
-        ]);
+        $grupo = new Group();
+            $grupo->name = $grupoData['name'];
 
         $grupoId = $grupo->id;
         $validators=ImageHelper::validationImageGroup($args);
@@ -85,7 +84,7 @@ class GroupMutations
                 $groupPath = ImageHelper::processImage($args['photo'], "/images/group/{$groupId_}/"."{$now_}.png",$manager);
                 $group->photo = $this->app . "/storage" . str_replace('/public','', $groupPath);
             }
-            
+
             $group->save();
             return [
                 'message' => 'Actualizacion correcta de grupo.!',
@@ -114,10 +113,11 @@ class GroupMutations
         }
         DB::beginTransaction();
         try{
-            $groupSkill = Skills_group::create([
-                'groupId'=>$grupo->id,
-                'skillsId'=> $skill->id
-            ]);
+
+            $groupSkill = new Skills_group();
+                $groupSkill->groupId = $grupo->id;
+                $groupSkill->skillsId = $skill->id;
+
             DB::commit();
             return [
                 'message' => 'Se creo con existo la union con la habilidad a la categoria.',

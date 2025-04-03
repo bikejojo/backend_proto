@@ -19,7 +19,7 @@ class DeviceTokenMutations
                 'name_device'=>$requestDevice['name_device'],
                 'expo_token'=>$requestDevice['expo_token'],
             ]);
-            //dd($device);
+            
             $userId = ValidationModels::validation_user($requestDevice['userId']);
             //dd($userId);
             if(!$userId){

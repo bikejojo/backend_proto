@@ -39,31 +39,25 @@ class ClienteExternoMutations{
 
             $externo = Cliente_Externo::where('phoneNumber',$phone)->where('fullName',$name_full)->first();
             if (!$externo) {
-                // Crear cliente externo
-                /*$externo = Cliente_Externo::create([
-                    'fullName' => $name_full,
-                    'phoneNumber' => $phone,
-                    'status' => StateCatalog::STATUS_ACTIVE
-                ]);*/
 
                 $externo = new Cliente_Externo();
-                $externo->fullName = $name_full;
-                $externo->phoneNumber = $phone;
-                $externo->status = StateCatalog::STATUS_ACTIVE;
+                    $externo->fullName = $name_full;
+                    $externo->phoneNumber = $phone;
+                    $externo->status = StateCatalog::STATUS_ACTIVE;
 
             }
 
-            // 4. Crear asociación con el técnico (nueva o si el nombre no coincide)
-            Asociacion_Cliente_Tecnico::create([
-                'full_name' => $name_full,
-                'phone_number' => $phone,
-                'updated_by_technician' => $tecnico->id,
-                'version' => 1,
-                'clientId' => $externo->id,
-                'technicalId' => $tecnico->id,
-                'dateTimeCreated' => Carbon::now(),
-                'status' => StateCatalog::STATUS_ACTIVE,
-            ]);
+
+
+            $asoc = new Asociacion_Cliente_Tecnico();
+                $asoc->full_name = $name_full;
+                $asoc->phone_number = $phone;
+                $asoc->updated_by_technician = $tecnico->id;
+                $asoc->version = 1;
+                $asoc->clientId = $externo->id;
+                $asoc->technicalId = $tecnico->id;
+                $asoc->dateTimeCreated = Carbon::now();
+                $asoc->status = StateCatalog::STATUS_ACTIVE;
 
             DB::commit();
             return [
@@ -107,17 +101,16 @@ class ClienteExternoMutations{
         try {
             // Si no existe la asociación, crearla
             if (!$asoc) {
-                $asoc = Asociacion_Cliente_Tecnico::create([
-                    'clientId' => $clienteId,
-                    'technicalId' => $tecnico->id,
-                    'full_name' => $full_name,
-                    'phone_number' => $phone,
-                    'version' => 1,
-                    'updated_by_technician' => $tecnico->id,
-                    'dateTimeCreated' => Carbon::now(),
-                    'status' => 1
-                ]);
 
+                $asoc = new Asociacion_Cliente_Tecnico();
+                    $asoc->clientId = $clienteId;
+                    $asoc->technicalId = $tecnico->id;
+                    $asoc->full_name = $full_name;
+                    $asoc->phone_number = $phone;
+                    $asoc->version = 1;
+                    $asoc->updated_by_technician = $tecnico->id;
+                    $asoc->dateTimeCreated = Carbon::now();
+                    $asoc->status = 1;
                 DB::commit();
                 return [
                     'message' => 'Cliente asociado correctamente.',

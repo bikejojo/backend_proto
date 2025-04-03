@@ -46,6 +46,7 @@ class TecnicoHabilidadMutations{
                 'experience' => $recHabilidad['experience'],
                 //'description' => $recHabilidad['description'],
             ]);
+
             $habilidades[] = $habilidadTecnico;
         }
 
