@@ -56,6 +56,7 @@ class ClienteInternoMutations{
             $user->email = $email;
             $user->password = Hash::make($clienteData['password']);
             $user->type_user = StateCatalog::USER_CLIENT;
+            $user->save();
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
         $user->save();
@@ -75,6 +76,7 @@ class ClienteInternoMutations{
             $cliente->loginMethod = $clienteData['loginMethod'];
             $cliente->userId = $clienteData['userId'];
             $cliente->status = $clienteData['status'];
+            $cliente->save();
         $clientId = $cliente->id;
         $value=$user->type_user;
 

@@ -38,6 +38,7 @@ class UserMutations{
             $user->email = $email;
             $user->password = Hash::make($userData['password']);
             $user->type_user = 3;
+            $user->save();
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
         $user->save();

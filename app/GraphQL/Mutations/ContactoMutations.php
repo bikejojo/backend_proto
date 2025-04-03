@@ -13,7 +13,7 @@ class ContactoMutations{
             $setting->sopport_number = '(+591) ' . $contactData['support_number'];
             $setting->screens = json_encode($contactData['screens']);
             $setting->dateRegistered = Carbon::now();
-
+            $setting->save();
         return [
             'message' => 'Registro de soporte exitoso!',
             'contact' => $setting

@@ -57,6 +57,7 @@ class TecnicoMutations {
                 $user->password = Hash::make($technicianData['password']);
                 $user->ci = $technicianData['ci'];
                 $user->type_user = 1;
+                $user->save();
             // Crear token de acceso y guardar el usuario
             $tokens = $user->createToken('authToken')->plainTextToken;
             $user->token = $tokens;
@@ -74,6 +75,7 @@ class TecnicoMutations {
                 $technician->cityId = $technicianData['cityId'];
                 $technician->status = 1;
                 $technician->average_rating = 5.00;
+                $technician->save();
 
             if (!$technician) {
                 return [
@@ -112,6 +114,7 @@ class TecnicoMutations {
             $agenda = new Agenda_Tecnico();
                 $agenda->technicianId = $technicianId;
                 $agenda->createDate = Carbon::now();
+                $agenda->save();
 
             if (!isset($agenda)) {
                 return [

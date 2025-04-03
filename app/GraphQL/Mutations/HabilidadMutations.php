@@ -36,6 +36,7 @@ class HabilidadMutations {
                 $habilidad->name = $args['name'];
                 $habilidad->icons = 'hammer-wrench';
                 $habilidad->status = 1;
+                $habilidad->save();
 
             $habilidadId = $habilidad->id;
             ImageHelper::createSkill($habilidadId);
@@ -52,7 +53,7 @@ class HabilidadMutations {
                 'skillsId' => $habilidad->id
             ]);
 
-            
+
             DB::commit();
             return [
                 'message' => 'creacion de habilidad',

@@ -90,6 +90,15 @@ class ValidationModels{
             return Servicio::find($objeto);
         }
     }
+    public static function validationServiceExternal($objeto){
+        if(!Servicio::where('id',$objeto)->where('typeClient',2)->first()){
+            return[
+                'message'=>'No existe el servicio.'
+            ];
+        }else{
+            return Servicio::find($objeto);
+        }
+    }
     public static function validation_Technician($objeto){
         return Tecnico::find($objeto);
     }

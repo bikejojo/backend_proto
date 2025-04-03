@@ -23,6 +23,7 @@ class StatusAssigner{
     const REJECTED = 3;
     const ACCEPT   = 2;
     const FINISH   = 4;
+    
     // Constantes para los estados de solicitud
     const REQUEST_PENDING = 'pendiente por aceptar.';
     const REQUEST_REJECTED_T = 'rechazado por tecnico.';
@@ -58,6 +59,7 @@ class StatusAssigner{
                     $stateReference->descriptionState = self::REQUEST_PENDING;
                     $stateReference->observations = $comments;
                     $stateReference->dateCreate = $now;
+                    $stateReference->save();
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
@@ -73,6 +75,7 @@ class StatusAssigner{
                     $stateReference->descriptionState = self::REQUEST_REJECTED_T;
                     $stateReference->observations = $comments;
                     $stateReference->dateCreate = $now;
+                    $stateReference->save();
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
@@ -88,6 +91,7 @@ class StatusAssigner{
                     $stateReference->descriptionState = self::REQUEST_REJECTED_C;
                     $stateReference->observations = $comments;
                     $stateReference->dateCreate = $now;
+                    $stateReference->save();
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
@@ -103,6 +107,7 @@ class StatusAssigner{
                     $stateReference->descriptionState = self::REQUEST_ACCEPTED_T;
                     $stateReference->observations = $comments;
                     $stateReference->dateCreate = $now;
+                    $stateReference->save();
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
@@ -118,6 +123,7 @@ class StatusAssigner{
                     $stateReference->descriptionState = self::REQUEST_REJECTED_SYSTEM;
                     $stateReference->observations = $comments;
                     $stateReference->dateCreate = $now;
+                    $stateReference->save();
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->status = 0;
                 $objeto->save();
@@ -139,6 +145,7 @@ class StatusAssigner{
                     $stateReference->descriptionState = self::SERVICE_PENDING;
                     $stateReference->observations = $comments;
                     $stateReference->dateCreate = $now;
+                    $stateReference->save();
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
@@ -154,6 +161,7 @@ class StatusAssigner{
                     $stateReference->descriptionState = self::SERVICE_COMPLETED_T;
                     $stateReference->observations = $comments;
                     $stateReference->dateCreate = $now;
+                    $stateReference->save();
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
@@ -169,6 +177,7 @@ class StatusAssigner{
                     $stateReference->descriptionState = self::SERVICE_COMPLETED_CI;
                     $stateReference->observations = $comments;
                     $stateReference->dateCreate = $now;
+                    $stateReference->save();
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
@@ -184,6 +193,7 @@ class StatusAssigner{
                     $stateReference->descriptionState = self::SERVICE_COMPLETED_CE;
                     $stateReference->observations = $comments;
                     $stateReference->dateCreate = $now;
+                    $stateReference->save();
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
@@ -199,6 +209,7 @@ class StatusAssigner{
                     $stateReference->descriptionState = self::SERVICE_CANCEL;
                     $stateReference->observations = $comments;
                     $stateReference->dateCreate = $now;
+                    $stateReference->save();
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;

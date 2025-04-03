@@ -27,8 +27,8 @@ class ClienteExternoMutations{
                 ->where('external_clients.phoneNumber',$phone)
                 ->where('associationTechnClient.technicalId',$tecnico->id)
                 ->where('associationTechnClient.status',StateCatalog::STATUS_ACTIVE)
-                ->first();
-
+                ->exists();
+            //dd($external);
             if($external){
                 DB::commit();
                 return [
@@ -38,13 +38,14 @@ class ClienteExternoMutations{
             }
 
             $externo = Cliente_Externo::where('phoneNumber',$phone)->where('fullName',$name_full)->first();
+            //dd($externo);
             if (!$externo) {
 
                 $externo = new Cliente_Externo();
                     $externo->fullName = $name_full;
                     $externo->phoneNumber = $phone;
                     $externo->status = StateCatalog::STATUS_ACTIVE;
-
+                    $externo->save();
             }
 
 
@@ -58,7 +59,7 @@ class ClienteExternoMutations{
                 $asoc->technicalId = $tecnico->id;
                 $asoc->dateTimeCreated = Carbon::now();
                 $asoc->status = StateCatalog::STATUS_ACTIVE;
-
+                $asoc->save();
             DB::commit();
             return [
                 'message' => 'Cliente registrado correctamente.',
@@ -111,6 +112,7 @@ class ClienteExternoMutations{
                     $asoc->updated_by_technician = $tecnico->id;
                     $asoc->dateTimeCreated = Carbon::now();
                     $asoc->status = 1;
+                    $asoc->save();
                 DB::commit();
                 return [
                     'message' => 'Cliente asociado correctamente.',

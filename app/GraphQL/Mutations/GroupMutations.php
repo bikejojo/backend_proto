@@ -31,6 +31,7 @@ class GroupMutations
 
         $grupo = new Group();
             $grupo->name = $grupoData['name'];
+            $grupo->save();
 
         $grupoId = $grupo->id;
         $validators=ImageHelper::validationImageGroup($args);
@@ -117,6 +118,7 @@ class GroupMutations
             $groupSkill = new Skills_group();
                 $groupSkill->groupId = $grupo->id;
                 $groupSkill->skillsId = $skill->id;
+                $groupSkill->save();
 
             DB::commit();
             return [

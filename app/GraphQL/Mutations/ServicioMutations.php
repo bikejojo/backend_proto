@@ -241,7 +241,7 @@ class ServicioMutations
         $serviceId = $serviceData['id_service'];
         $serviceDateTime = $serviceData['finishDateTime'];
 
-        $service = ValidationModels::validationService($serviceId);
+        $service = ValidationModels::validationServiceExternal($serviceId);
 
         DB::beginTransaction();
         try{
