@@ -16,11 +16,7 @@ class RolMutations
     }
 
     public function assignRol($root , array $args){
-        /*if(!auth::user()->can('assign-roles')){
-            return [
-                'message' => 'Este usuario no tiene permisos para asignar roles.'
-            ];
-        }*/
+
         $userId= User::findOrFail($args['userId']);
         $role = Role::where('name',$args['role'])->first();
         if(!$role){
@@ -103,7 +99,7 @@ class RolMutations
 
             // **Actualizar permisos dinámicamente**
             $user->syncPermissions($permissionsToAssign); // Quita permisos antiguos y asigna los nuevos
-            
+
             return [
                 'message' => 'Permisos actualizados correctamente.',
                 'status' => true,

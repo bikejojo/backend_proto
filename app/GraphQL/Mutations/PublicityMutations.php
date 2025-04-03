@@ -12,7 +12,6 @@ use Intervention\Image\Drivers\Gd\Driver;
 use App\Helpers\ImageHelper;
 use App\Services\StateCatalog;
 use App\Services\ValidationModels;
-use Illuminate\Support\Facades\Log;
 
 
 final class PublicityMutations{
@@ -35,7 +34,6 @@ final class PublicityMutations{
                     'message' => 'Archivo de imagen inválido.'
                 ];
             }
-            //log::info( $publicityDate['descriptionPublicity']);
             $publicity = Publicidad::create([
                 'descriptionPublicity' => $publicityDate['descriptionPublicity'],
                 'commercialName' =>       $publicityDate['commercialName'],

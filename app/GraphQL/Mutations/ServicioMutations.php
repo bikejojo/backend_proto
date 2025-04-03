@@ -337,9 +337,7 @@ class ServicioMutations
         $comments = $serviceData['comments'];
         $serviceDateTime = Carbon::parse($serviceData['finishDateTime_technician']);
         $service = ValidationModels::validationService($serviceId);
-
         $client = ValidationModels::validationclientInternal($clientId);
-
         $technician = ValidationModels::validationTechnician($technicianId);
 
         DB::beginTransaction();
@@ -347,7 +345,6 @@ class ServicioMutations
             $service->finishDateTime_technician = $serviceDateTime;
             $service->updatedDateTime = Carbon::now();
             $service->save();
-            // Actualizar el estado a completado
             if($service->finishDateTime_client != null || $service->finishDateTime_technician != null){
                 StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,2);
                 $service->save();
@@ -357,7 +354,6 @@ class ServicioMutations
                 $_service->stateId = 5;
                 $_service->save();
             }
-            //dd(1);
             if($_service->service_origin == 2){
                 $_service->stateId = 5;
                 $_service->save();

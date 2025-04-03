@@ -77,13 +77,11 @@ class HabilidadMutations {
     $now = Carbon::now()->format('Ymd_His');
     $isPhotoHabilidad = isset($args['photo']) && $args['photo'] instanceof UploadedFile;
     ImageHelper::existSkill($habilidadId);
-    //dd($isPhotoHabilidad);
     if($isPhotoHabilidad){
         $photoHabilidadPath = ImageHelper::processImage($args['photo'],"/skill/{$habilidadId}/"."{$now}.png",$manager);
         $habilidad->photo=$this->app . '/storage'. str_replace('/public','',$photoHabilidadPath);
     }
     $habilidad->save();
-    //return $habilidad;
     return [
         'message' => 'Actualizacion de habilidad',
         'skill' => $habilidad

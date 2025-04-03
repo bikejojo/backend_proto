@@ -2,7 +2,6 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Helpers\StatusHelper;
 use App\Models\Tecnico;
 use App\Models\Servicio;
 use App\Models\Calificacion;
@@ -26,11 +25,8 @@ class RatingMutations{
                 $technician = Tecnico::find($resp['id_technician']);
                 $service = Servicio::join('state_reference','services.id','=','state_reference.serviceId')
                         ->where('services.stateId',4)
-                        //->where('state_reference.type','service')
-                        //->where('descriptionState',StatusAssigner::SERVICE_COMPLETED_T)
                         ->where('services.id', $resp['id_service'])
                         ->first();
-                //dd($service);
                 $exists = Calificacion::where('serviceId', $resp['id_service'])
                         ->where('technicialId', $resp['id_technician']) // asegúrate que este nombre esté bien
                         ->where('clientId', $resp['id_client'])
@@ -40,7 +36,6 @@ class RatingMutations{
                         'service' => $service,
                         'technician' => $technician,
                         'client' => $client,
-                        //'rating' => $exists,
                         'message' => 'Este servicio ya tiene una calificación.'
                     ];
                     continue;

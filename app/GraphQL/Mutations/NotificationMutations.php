@@ -53,7 +53,6 @@ class NotificationMutations
                 'device'       => $input['data']['device_id'] ?? null,
 
             ];
-            //$id=auth()->id;
             Log::info('[MUTATION] Despachando job para notificación ID: ' . $notifications->id);
             SendNotificationJob::dispatch($notifications,$dataJob['sender_id'],$dataJob);
             DB::commit();

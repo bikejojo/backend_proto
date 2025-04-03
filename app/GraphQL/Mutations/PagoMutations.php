@@ -90,14 +90,7 @@ class PagoMutations
             ];
         }
         $technician=ValidationModels::validationTechnician($subscription->technicianId);
-        /*$technician=Tecnico::where('id',$subscription->technicianId)->first();
-        if(!$technician){
-            return [
-                'message' => 'No se encontró el tecnico.'
-            ];
-        }*/
 
-        // Validar el estado actual del pago
         if ($payment->status !== 0) { // Solo procesar si el estado es "Pendiente"
             return [
                 'message' => 'El pago ya ha sido procesado o está inactivo.'
