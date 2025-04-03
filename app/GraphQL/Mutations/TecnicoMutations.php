@@ -51,20 +51,24 @@ class TecnicoMutations {
         // Si pasa todas las validaciones, crear usuario y técnico
         try {
             $email = strtolower(trim($technicianData['email']));
-            $user = User::create([
+            /*$user = User::create([
                 'email' => $email,
                 'password' => Hash::make($technicianData['password']),
                 'ci' => $technicianData['ci'],
                 'type_user' => 1,
-            ]);
-
+            ]);*/
+            $user = new User();
+                $user->email = $email;
+                $user->password = Hash::make($technicianData['password']);
+                $user->ci = $technicianData['ci'];
+                $user->type_user = 1;
             // Crear token de acceso y guardar el usuario
             $tokens = $user->createToken('authToken')->plainTextToken;
             $user->token = $tokens;
             $user->save();
 
             // Crear técnico
-            $technician = Tecnico::create([
+            /*$technician = Tecnico::create([
                 'firstName' => $technicianData['firstName'],
                 'lastName' => $technicianData['lastName'],
                 'email' => $technicianData['email'],
@@ -74,7 +78,17 @@ class TecnicoMutations {
                 'cityId' => $technicianData['cityId'],
                 'status' => 1,
                 'average_rating'=>5.00
-            ]);
+            ]);*/
+            $technician = new Tecnico();
+                $technician->firstName = $technicianData['firstName'];
+                $technician->lastName = $technicianData['lastName'];
+                $technician->email = $technicianData['email'];
+                $technician->phoneNumber = $technicianData['phoneNumber'];
+                $technician->password = Hash::make($technicianData['password']);
+                $technician->userId = $user->id;
+                $technician->cityId = $technicianData['cityId'];
+                $technician->status = 1;
+                $technician->average_rating = 5.00;
 
             if (!$technician) {
                 return [
@@ -110,10 +124,13 @@ class TecnicoMutations {
             // Guardar las rutas de las imágenes en el registro del técnico
             $technician->save();
             // Crear la agenda para el técnico
-            $agenda = Agenda_Tecnico::create([
+            /*$agenda = Agenda_Tecnico::create([
                 'technicianId' => $technicianId,
                 'createDate' => Carbon::now()
-            ]);
+            ]);*/
+            $agenda = new Agenda_Tecnico();
+                $agenda->technicianId = $technicianId;
+                $agenda->createDate = Carbon::now();
 
             if (!isset($agenda)) {
                 return [

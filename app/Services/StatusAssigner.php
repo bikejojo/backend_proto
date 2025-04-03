@@ -199,7 +199,7 @@ class StatusAssigner{
                 $objeto->save();
             break;
             case 5:
-                $stateReference = StateReference::create([
+                /*$stateReference = StateReference::create([
                     'requestId' => $objeto->requestsId,
                     'serviceId' => $objeto->id,
                     'clientId' => $objeto->clientId,
@@ -210,7 +210,18 @@ class StatusAssigner{
                     'descriptionState' => self::SERVICE_CANCEL,
                     'observations' => $comments,
                     'dateCreate' => $now
-                ]);
+                ]);*/
+                $stateReference = new StateReference();
+                    $stateReference->requestId = $objeto->requestsId;
+                    $stateReference->serviceId = $objeto->id;
+                    $stateReference->clientId = $objeto->clientId;
+                    $stateReference->technicianId = $objeto->technicalId;
+                    $stateReference->stateId = self::REJECTED;
+                    $stateReference->type = $type_reference;
+                    $stateReference->typeClient = $objeto->typeClient;
+                    $stateReference->descriptionState = self::SERVICE_CANCEL;
+                    $stateReference->observations = $comments;
+                    $stateReference->dateCreate = $now;
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;

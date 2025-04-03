@@ -33,11 +33,15 @@ class UserMutations{
         if(User::where('email',$email)->exists()){
             return null;
         }
-        $user = User::create([
+        /*$user = User::create([
             'email' => $email,
             'password' => Hash::make($userData['password']),
             'type_user' => 3,
-        ]);
+        ]);*/
+        $user = new User();
+            $user->email = $email;
+            $user->password = Hash::make($userData['password']);
+            $user->type_user = 3;
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
         $user->save();

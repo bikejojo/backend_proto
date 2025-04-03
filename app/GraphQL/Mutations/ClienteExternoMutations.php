@@ -36,37 +36,21 @@ class ClienteExternoMutations{
                     'technical' => $tecnico
                 ];
             }
-            /*$cliente = Cliente_Externo::join('associationTechnClient', 'external_clients.id', '=', 'associationTechnClient.clientId')
-                ->where('associationTechnClient.full_name',$name_full)
-                ->where('associationTechnClient.phone_number',$phone)
-                ->where('associationTechnClient.technicalId', $tecnicoId)
-                ->where('associationTechnClient.status', StateCatalog::STATUS_LOW)
-                ->select('associationTechnClient.id','associationTechnClient.status','associationTechnClient.full_name','associationTechnClient.phone_number')
-                ->first();
-            if($cliente){
-                Asociacion_Cliente_Tecnico::where('id', $cliente->id)
-                    ->update([
-                        'status' => StateCatalog::STATUS_ACTIVE
-                    ]);
 
-                DB::commit();
-                return [
-                    'message' => 'Cliente reactivado exitosamente.',
-                    'customerExternal'=> [
-                        'full_name' => $cliente->full_name,
-                        'phone_number' => $cliente->phone_number
-                    ],
-                    'technical' => $tecnico
-                ];
-            }*/
             $externo = Cliente_Externo::where('phoneNumber',$phone)->where('fullName',$name_full)->first();
             if (!$externo) {
                 // Crear cliente externo
-                $externo = Cliente_Externo::create([
+                /*$externo = Cliente_Externo::create([
                     'fullName' => $name_full,
                     'phoneNumber' => $phone,
                     'status' => StateCatalog::STATUS_ACTIVE
-                ]);
+                ]);*/
+
+                $externo = new Cliente_Externo();
+                $externo->fullName = $name_full;
+                $externo->phoneNumber = $phone;
+                $externo->status = StateCatalog::STATUS_ACTIVE;
+
             }
 
             // 4. Crear asociación con el técnico (nueva o si el nombre no coincide)

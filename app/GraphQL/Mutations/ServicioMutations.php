@@ -379,9 +379,12 @@ class ServicioMutations
             $service = Servicio::find($serviceId);
             if($service != null){
                 $request = Solicitud::where('id',$service->id)->first();
-                $request->stateId = 3;
-                $request->save();
+                if($request){
+                    $request->stateId = 3;
+                    $request->save();
+                }
                 StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'Se cancelo el servicio y la solicitud',5);
+                $service->stateId = 3;
                 $service->status = 0;
                 $service->save();
                 return[
