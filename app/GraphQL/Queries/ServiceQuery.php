@@ -302,6 +302,7 @@ class ServiceQuery
                     'services.id AS service_id',
                     'services.titleService',
                     'services.serviceDescription',
+                    'services.service_origin',
                     'services.serviceLocation',
                     'services.updatedDateTime',
                     'services.finishDateTime_client',

@@ -123,6 +123,7 @@ type Services_ {
     technicalId:String
     clientId:String
     updatedDateTime:String
+    service_origin:String
     finishDateTime_client:String
     finishDateTime_technician:String
     rating_id:String
