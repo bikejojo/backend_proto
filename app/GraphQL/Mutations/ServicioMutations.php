@@ -312,6 +312,7 @@ class ServicioMutations
                 $_service->stateId = 5;
                 $_service->save();
             }
+
             DB::commit();
 
             return [
@@ -353,6 +354,11 @@ class ServicioMutations
             }
             $_service = Servicio::find($service->id);
             if(!is_null($_service->finishDateTime_client)){
+                $_service->stateId = 5;
+                $_service->save();
+            }
+            //dd(1);
+            if($_service->service_origin == 2){
                 $_service->stateId = 5;
                 $_service->save();
             }
