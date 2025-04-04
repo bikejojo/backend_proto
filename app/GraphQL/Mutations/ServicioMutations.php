@@ -346,7 +346,7 @@ class ServicioMutations
             $service->updatedDateTime = Carbon::now();
             $service->save();
             if($service->finishDateTime_client != null || $service->finishDateTime_technician != null){
-                StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,2);
+                StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,6);
                 $service->save();
             }
             $_service = Servicio::find($service->id);
@@ -468,7 +468,7 @@ class ServicioMutations
                     $join->on('services.id', '=', 'rating.serviceId');
                 })
                 ->where('services.clientId', $technician->id)
-                ->where('services.stateId', 4)                  // solo estado = 4
+                ->where('services.stateId', 5)                  // solo estado = 5
                 ->whereNull('services.finishDateTime_client')   // fecha cliente vacía (null)
                 ->whereNull('rating.id')
                 ->select([

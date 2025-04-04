@@ -23,7 +23,8 @@ class StatusAssigner{
     const REJECTED = 3;
     const ACCEPT   = 2;
     const FINISH   = 4;
-    
+    const COMPLT   = 5;
+
     // Constantes para los estados de solicitud
     const REQUEST_PENDING = 'pendiente por aceptar.';
     const REQUEST_REJECTED_T = 'rechazado por tecnico.';
@@ -128,6 +129,7 @@ class StatusAssigner{
                 $objeto->status = 0;
                 $objeto->save();
             break;
+
         }
     }
 
@@ -207,6 +209,22 @@ class StatusAssigner{
                     $stateReference->type = $type_reference;
                     $stateReference->typeClient = $objeto->typeClient;
                     $stateReference->descriptionState = self::SERVICE_CANCEL;
+                    $stateReference->observations = $comments;
+                    $stateReference->dateCreate = $now;
+                    $stateReference->save();
+                $objeto->stateId = $stateReference->stateId;
+                $objeto->save();
+            break;
+            case 6:
+                $stateReference = new StateReference();
+                    $stateReference->requestId = $objeto->requestsId;
+                    $stateReference->serviceId = $objeto->id;
+                    $stateReference->clientId = $objeto->clientId;
+                    $stateReference->technicianId = $objeto->technicalId;
+                    $stateReference->stateId = self::COMPLT;
+                    $stateReference->type = $type_reference;
+                    $stateReference->typeClient = $objeto->typeClient;
+                    $stateReference->descriptionState = self::SERVICE_COMPLETED_T;
                     $stateReference->observations = $comments;
                     $stateReference->dateCreate = $now;
                     $stateReference->save();
