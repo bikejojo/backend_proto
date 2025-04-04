@@ -332,7 +332,7 @@ class ServicioMutations
         $serviceId = $serviceData['id_service'];
         $clientId = $serviceData['id_client'];
         $technicianId = $serviceData['id_tecnico'];
-        $comments = $serviceData['comments'];
+        $comments = $serviceData['comments'] ?? '1';
         $serviceDateTime = Carbon::parse($serviceData['finishDateTime_technician']);
         $service = ValidationModels::validationService($serviceId);
         $client = ValidationModels::validationclientInternal($clientId);
