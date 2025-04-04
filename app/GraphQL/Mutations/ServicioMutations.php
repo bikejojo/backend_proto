@@ -240,9 +240,7 @@ class ServicioMutations
         $serviceData = $args['requestService'];
         $serviceId = $serviceData['id_service'];
         $serviceDateTime = $serviceData['finishDateTime'];
-
         $service = ValidationModels::validationServiceExternal($serviceId);
-
         DB::beginTransaction();
         try{
             $client = DB::table('associationTechnClient')
@@ -258,7 +256,7 @@ class ServicioMutations
             $technician = Tecnico::find($service->technicalId);
             $service->finishDateTime_technician = $serviceDateTime;
             $service->save();
-            StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'El servicio fue acabo, para el cliente externo.',4);
+            StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'El servicio fue acabo, para el cliente externo.',6);
             $service->save();
             $_service = Servicio::find($service->id);
 
@@ -346,7 +344,7 @@ class ServicioMutations
             $service->updatedDateTime = Carbon::now();
             $service->save();
             if($service->finishDateTime_client != null || $service->finishDateTime_technician != null){
-                StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,6);
+                StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,2);
                 $service->save();
             }
             $_service = Servicio::find($service->id);
