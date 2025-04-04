@@ -295,8 +295,7 @@ class ServicioMutations
             $service->finishDateTime_client = $serviceDateTime;
             $service->updatedDateTime = Carbon::now();
             $service->save();
-            // Actualizar el estado a completado
-            //dd(is_null($service->finishDateTime_client));
+
             if($service->finishDateTime_client != null || $service->finishDateTime_technician != null){
                 StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,3);
                 $service->save();
@@ -337,25 +336,30 @@ class ServicioMutations
         $service = ValidationModels::validationService($serviceId);
         $client = ValidationModels::validationclientInternal($clientId);
         $technician = ValidationModels::validationTechnician($technicianId);
+        $detailTech = Detalle_Agenda_Tecnico::where('serviceId',$service->id)->first();
 
         DB::beginTransaction();
         try {
+
+            $detailTech->serviceDate = Carbon::now();
             $service->finishDateTime_technician = $serviceDateTime;
             $service->updatedDateTime = Carbon::now();
             $service->save();
-            if($service->finishDateTime_client != null || $service->finishDateTime_technician != null){
+            if( !$service->finishDateTime_client || !$service->finishDateTime_technician ){
                 StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,2);
                 $service->save();
             }
             $_service = Servicio::find($service->id);
-            if(!is_null($_service->finishDateTime_client)){
+
+            /*if(!is_null($_service->finishDateTime_client)){
                 $_service->stateId = 5;
                 $_service->save();
-            }
-            if($_service->service_origin == 2){
+            }*/
+
+            /*if($_service->service_origin == 2){
                 $_service->stateId = 5;
                 $_service->save();
-            }
+            }*/
             DB::commit();
 
             return [
@@ -466,7 +470,7 @@ class ServicioMutations
                     $join->on('services.id', '=', 'rating.serviceId');
                 })
                 ->where('services.clientId', $technician->id)
-                ->where('services.stateId', 5)                  // solo estado = 5
+                ->where('services.stateId', 4)                  // solo estado = 5
                 ->whereNull('services.finishDateTime_client')   // fecha cliente vacía (null)
                 ->whereNull('rating.id')
                 ->select([

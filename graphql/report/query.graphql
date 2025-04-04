@@ -1,0 +1,19 @@
+extend type Query {
+    reportSuscription(Input:requestReportSuscription):responseReportSuscription @field(resolver: "ReportQuery@reportSuscription")
+}
+
+type requestReportSuscription {
+    startDate:String
+    endDate:String
+    type:String
+    status:String
+}
+
+type responseReportSuscription {
+    message:String
+    content:[reportSub]
+}
+
+type reportSub {
+    fullName:String
+}

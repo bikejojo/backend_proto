@@ -153,7 +153,7 @@ class StatusAssigner{
             break;
             case 2:
                 $stateReference = new StateReference();
-                    $stateReference->requestId = null;
+                    $stateReference->requestId = $objeto->requestsId ?? null;
                     $stateReference->serviceId = $objeto->id;
                     $stateReference->clientId = $objeto->clientId;
                     $stateReference->technicianId = $objeto->technicalId;
@@ -169,7 +169,7 @@ class StatusAssigner{
             break;
             case 3:
                 $stateReference = new StateReference();
-                    $stateReference->requestId = null;
+                    $stateReference->requestId = $objeto->requestsId;
                     $stateReference->serviceId = $objeto->id;
                     $stateReference->clientId = $objeto->clientId;
                     $stateReference->technicianId = $objeto->technicalId;
@@ -216,8 +216,12 @@ class StatusAssigner{
                 $objeto->save();
             break;
             case 6:
+                $servicioExistente = Servicio::find($objeto->id);
+                    if (!$servicioExistente) {
+                        throw new \Exception("El servicio con ID {$objeto->id} no existe.");
+                    }
                 $stateReference = new StateReference();
-                    $stateReference->requestId = $objeto->requestsId;
+                    $stateReference->requestId = $objeto->requestsId ?? null;
                     $stateReference->serviceId = $objeto->id;
                     $stateReference->clientId = $objeto->clientId;
                     $stateReference->technicianId = $objeto->technicalId;
