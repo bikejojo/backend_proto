@@ -75,7 +75,7 @@ class ServicioMutations
                     'message' => 'Este horario ya está ocupado en la agenda de cliente Externo, elige uno con más de 10 minutos de diferencia.'
                 ];
             }
-            $service = Servicio::create([
+            /*$service = Servicio::create([
                 'technicalId' => $serviceData['id_technician'],
                 'clientId' => $serviceData['id_client'],
                 'activityId' => $serviceData['id_activity'],
@@ -89,7 +89,22 @@ class ServicioMutations
                 'createdDateTime' => $this->now,
                 'updatedDateTime' => $serviceData['updatedDateTime'],
                 'status' => StateCatalog::STATUS_ACTIVE
-            ]);
+            ]);*/
+            $service = new Servicio();
+                $service->technicalId = $serviceData['id_technician'];
+                $service->clientId = $serviceData['id_client'];
+                $service->activityId = $serviceData['id_activity'];
+                $service->typeClient = self::clientInternal;
+                $service->service_origin = 2;
+                $service->titleService = trim($serviceData['titleService']);
+                $service->serviceDescription = trim($serviceData['serviceDescription']);
+                $service->latitude = isset($serviceData['latitude']) ? $serviceData['latitude'] : null;
+                $service->longitude = isset($serviceData['longitude']) ? $serviceData['longitude'] : null;
+                $service->serviceLocation = isset($serviceData['serviceLocation']) ? $serviceData['serviceLocation'] : null;
+                $service->createdDateTime = $this->now;
+                $service->updatedDateTime = $serviceData['updatedDateTime'];
+                $service->status = StateCatalog::STATUS_ACTIVE;
+                $service->save();
             //dd($service);
             StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'El servicio fue creado por el tecnico para cliente interno.',1);
             $_service = Servicio::find($service->id);
@@ -103,7 +118,7 @@ class ServicioMutations
             }
 
             $agendaId = $agenda->id;
-            $detailAgenda = Detalle_Agenda_Tecnico::create([
+            /*$detailAgenda = Detalle_Agenda_Tecnico::create([
                 'agendaTechnicalId' => $agendaId,
                 'clientId' => $serviceData['id_client'],
                 'service_origin'=>2,
@@ -111,7 +126,16 @@ class ServicioMutations
                 'typeClient' => self::clientInternal,
                 'serviceDate' => $_service->updatedDateTime,
                 'createDate' => Carbon::now()
-            ]);
+            ]);*/
+            $detailAgenda = new Detalle_Agenda_Tecnico();
+                $detailAgenda->agendaTechnicalId = $agendaId;
+                $detailAgenda->clientId = $serviceData['id_client'];
+                $detailAgenda->service_origin = 2;
+                $detailAgenda->serviceId = $_service->id;
+                $detailAgenda->typeClient = self::clientInternal;
+                $detailAgenda->serviceDate = $_service->updatedDateTime;
+                $detailAgenda->createDate = Carbon::now();
+                $detailAgenda->save();
             DB::commit();
             return[
                 'message' => 'Servicio creado para cliente interno',
@@ -184,7 +208,7 @@ class ServicioMutations
                 ];
             }
 
-            $service = Servicio::create([
+            /*$service = Servicio::create([
                 'technicalId' => $serviceData['id_technician'],
                 'clientId' => $serviceData['id_client'],
                 'activityId' => $serviceData['id_activity'],
@@ -198,7 +222,23 @@ class ServicioMutations
                 'createdDateTime' => $now,
                 'updatedDateTime' => $serviceData['updatedDateTime'],
                 'status' => StateCatalog::STATUS_ACTIVE
-            ]);
+            ]);*/
+            $service = new Servicio();
+                $service->technicalId = $serviceData['id_technician'];
+                $service->clientId = $serviceData['id_client'];
+                $service->activityId = $serviceData['id_activity'];
+                $service->typeClient = self::clientExternal;
+                $service->service_origin = 2;
+                $service->titleService = trim($serviceData['titleService']);
+                $service->serviceDescription = trim($serviceData['serviceDescription']);
+                $service->latitude = $serviceData['latitude'] ?? null;
+                $service->longitude = $serviceData['longitude'] ?? null;
+                $service->serviceLocation = $serviceData['serviceLocation'] ?? null;
+                $service->createdDateTime = $now;
+                $service->updatedDateTime = $serviceData['updatedDateTime'];
+                $service->status = StateCatalog::STATUS_ACTIVE;
+                $service->save();
+
             StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'El servicio fue creado por el tecnico para cliente externo.',1);
             $service->save();
             $_service = Servicio::find($service->id);
@@ -212,15 +252,16 @@ class ServicioMutations
             }
 
             $agendaId = $agenda->id;
-            $detailAgenda = Detalle_Agenda_Tecnico::create([
-                'agendaTechnicalId' => $agendaId,
-                'clientId' => $serviceData['id_client'],
-                'serviceId' => $_service->id,
-                'typeClient' => self::clientExternal,
-                'service_origin' => 2,
-                'serviceDate' => $_service->updatedDateTime,
-                'createDate' => Carbon::now()
-            ]);
+
+            $detailAgenda = new Detalle_Agenda_Tecnico();
+                $detailAgenda->agendaTechnicalId = $agendaId;
+                $detailAgenda->clientId = $serviceData['id_client'];
+                $detailAgenda->serviceId = $_service->id;
+                $detailAgenda->typeClient = self::clientExternal;
+                $detailAgenda->service_origin = 2;
+                $detailAgenda->serviceDate = $_service->updatedDateTime;
+                $detailAgenda->createDate = Carbon::now();
+                $detailAgenda->save();
 
             DB::commit();
             return[
