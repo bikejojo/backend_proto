@@ -178,11 +178,12 @@ class RequestQuery
      */
     private function getSolicitudesPorEstado($clientId,  $dateParameter)
     {
-        $query = Solicitud::join('technicians', 'requests.technicianId', '=', 'technicians.id')
+        $query = Solicitud::join('services','requests.id','=','services.requestsId')
+            ->join('technicians', 'requests.technicianId', '=', 'technicians.id')
             ->join('state_types', 'requests.stateId', '=', 'state_types.id')
             ->join('activity_types', 'requests.activityId', '=', 'activity_types.id')
             ->where('requests.clientId', $clientId)
-            ->whereDate('requests.registrationDateTime', $dateParameter)
+            ->whereDate('services.updatedDateTime', $dateParameter)
             ->select(
                 'requests.id As id_requests',
                 'activity_types.description AS name_activity',
@@ -191,7 +192,7 @@ class RequestQuery
                 DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name'),
                 'technicians.phoneNumber AS phoneNumber',
                 'state_types.id AS stateAgenda',
-                'requests.registrationDateTime As datetime'
+                'services.updatedDateTime As datetime'
             );
         return $query->distinct()->get()->map(function ($solict) {
             return [
