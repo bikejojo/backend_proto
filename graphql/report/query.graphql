@@ -2,7 +2,7 @@ extend type Query {
     reportSuscription(Input:requestReportSuscription):responseReportSuscription @field(resolver: "ReportQuery@reportSuscription")
 }
 
-type requestReportSuscription {
+input requestReportSuscription {
     startDate:String
     endDate:String
     type:String
