@@ -149,9 +149,6 @@ class RequestQuery
             $clientId = $parameter['id_client'];
             $dateParameter = $parameter['visitDate'] ?? $now;
 
-            //dd(!Solicitud::join('services','requests.id','=','services.requestsId')->where('requests.clientId', $clientId)->whereDate('services.updatedDateTime',$dateParameter)->exists());
-
-            // Obtiene solicitudes por estado
             $requests = $this->getSolicitudesPorEstado($clientId,  $dateParameter);
             //dd($requests);
             if ($requests->isEmpty()) {
@@ -196,7 +193,6 @@ class RequestQuery
                 'state_types.id AS stateAgenda',
                 'requests.registrationDateTime As datetime'
             );
-            //dd($query->get());
         return $query->distinct()->get()->map(function ($solict) {
             return [
                 'id_requests'=>$solict->id_requests,
@@ -207,7 +203,7 @@ class RequestQuery
                 'phoneNumber' => $solict->phoneNumber,
                 'stateAgenda' => $solict->stateAgenda,
                 'datetime'=>$solict->datetime,
-            ]; //
+            ];
         });
     }
 

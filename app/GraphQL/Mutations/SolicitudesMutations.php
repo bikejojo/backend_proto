@@ -45,31 +45,32 @@ class SolicitudesMutations
             $client = ValidationModels::validationclientInternal($clientId);
             DB::beginTransaction();
             try{
-                $request = Solicitud::create([
-                    'clientId' => $client->id,
-                    'technicianId' => $technician->id,
-                    'titleRequests'=> $requestData['titleRequests'],
-                    'requestDescription'=>$requestData['requestDescription'],
-                    'latitude'=>$requestData['latitude'],
-                    'longitude'=>$requestData['longitude'],
-                    'serviceLocation'=>$requestData['serviceLocation'],
-                    'reference_phone'=>$requestData['reference_phone'],
-                    'status'=>StateCatalog::STATUS_ACTIVE,
-                    'activityId' => $requestData['id_activity']
-                ]);
+                $request = new Solicitud();
+                    $request->clientId = $client->id;
+                    $request->technicianId = $technician->id;
+                    $request->titleRequests = $requestData['titleRequests'];
+                    $request->requestDescription = $requestData['requestDescription'];
+                    $request->latitude = $requestData['latitude'];
+                    $request->longitude = $requestData['longitude'];
+                    $request->serviceLocation = $requestData['serviceLocation'];
+                    $request->reference_phone = $requestData['reference_phone'];
+                    $request->status = StateCatalog::STATUS_ACTIVE;
+                    $request->activityId = $requestData['id_activity'];
+                    $request->save();
+
                 StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El cliente creo una solicitud nueva.',1);
                 $request->registrationDateTime = $this->now;
                 $request->save();
 
-                $historial = Historial_Servicios::create([
-                    'clientId' => $client->id,
-                    'technicianId' => $technician->id,
-                    'jobId'=>$request->id,
-                    'descriptionJob'=>1, // request
-                    'stateId'=> $request->stateId,
-                    'outsetDate'=>$request->registrationDateTime,
-                    'description'=>$request->requestDescription
-                ]);
+                $historial = new Historial_Servicios();
+                    $historial->clientId = $client->id;
+                    $historial->technicianId = $technician->id;
+                    $historial->jobId = $request->id;
+                    $historial->descriptionJob = 1; // request
+                    $historial->stateId = $request->stateId;
+                    $historial->outsetDate = $request->registrationDateTime;
+                    $historial->description = $request->requestDescription;
+                    $historial->save();
 
                 $request = Solicitud::find($request->id);
                 DB::commit();
@@ -163,57 +164,60 @@ class SolicitudesMutations
             $_request = Solicitud::find($request->id);
             $agenda = ValidationModels::validationAgenda($tecnico->id);
             $now= Carbon::now();
-            $service = Servicio::create([
-                'requestsId' => $request->id,
-                'technicalId' => $tecnico->id,
-                'clientId' => $cliente->id,
-                'activityId' => $request->activityId,
-                'typeClient' => ServicioMutations::clientInternal,
-                'service_origin'=> 1,
-                'titleService' => $request->titleRequests,
-                'serviceDescription' => $request->requestDescription,
-                'serviceLocation' => $request->serviceLocation,
-                'latitude' => $request->latitude,
-                'longitude' => $request->longitude,
-                'createdDateTime' => $now,
-                'updatedDateTime' => $visitDateTime,
-                'status' => StateCatalog::STATUS_ACTIVE
-            ]);
+
+            $service = new Servicio();
+                $service->requestsId =  $request->id;
+                $service->technicalId = $tecnico->id;
+                $service->clientId = $cliente->id;
+                $service->activityId = $request->activityId;
+                $service->typeClient = ServicioMutations::clientInternal;
+                $service->service_origin = 1;  // cliente interno
+                $service->titleService = $request->titleRequests;
+                $service->serviceDescription = $request->requestDescription;
+                $service->serviceLocation = $request->serviceLocation;
+                $service->latitude = $request->latitude;
+                $service->longitude = $request->longitude;
+                $service->createdDateTime = $now;
+                $service->updatedDateTime = $visitDateTime;
+                $service->status = StateCatalog::STATUS_ACTIVE;
+                $service->save();
+
             $_comments = 'Se creo un nuevo servicio por la solicitud ID'. $service->requestsId;
             StatusAssigner::assignStatService($service,$this->now,StatusAssigner::ENTITY_SERVICE,$_comments,1);
             $service->save();
 
             $serviceId = $service->id;
             $agendaId = $agenda->id;
-            $detail = Detalle_Agenda_Tecnico::create([
-                'agendaTechnicalId' => $agendaId,
-                'clientId' => $cliente->id,
-                'serviceId' => $serviceId,
-                'typeClient' => $service->typeClient,
-                'service_origin' => 1,
-                'serviceDate' => $service->updatedDateTime,
-                'createDate' => Carbon::now()
-            ]);
 
-            $list= Lists_Internal_Client::create([
-                'technicianId'=> $tecnico->id,
-                'clientId'=> $cliente->id,
-                'typeClient'=> ServicioMutations::clientInternal,
-                'requestsId'=> $_request->id,
-            ]);
+            $detail = new Detalle_Agenda_Tecnico();
+                $detail->agendaTechnicalId = $agendaId;
+                $detail->clientId = $cliente->id;
+                $detail->serviceId = $serviceId;
+                $detail->typeClient = $service->typeClient;
+                $detail->service_origin = 1;
+                $detail->serviceDate = $service->updatedDateTime;
+                $detail->createDate = Carbon::now();
+                $detail->save();
+
+            $list = new Lists_Internal_Client();
+                $list->technicianId = $tecnico->id;
+                $list->clientId = $cliente->id;
+                $list->typeClient = ServicioMutations::clientInternal;
+                $list->requestsId = $_request->id;
+                $list->save();
 
             $history=Historial_Servicios::where('jobId',$request->id)->where('descriptionJob',1)->first();
             $history->finishDate=$service->createdDateTime;
             $history->save();
 
-            $historial=Historial_Servicios::create([
-                'clientId' => $cliente->id,
-                'technicianId' => $tecnico->id,
-                'jobId'=>$service->id,
-                'descriptionJob'=>2, //service
-                'outsetDate'=>$service->createdDateTime,
-                'description'=>'El tecnico ha confirmado la solicitud'
-            ]);
+            $historial = new Historial_Servicios();
+                $historial->clientId = $cliente->id;
+                $historial->technicianId = $tecnico->id;
+                $historial->jobId = $service->id;
+                $historial->descriptionJob = 2; // service
+                $historial->outsetDate = $service->createdDateTime;
+                $historial->description = 'El tecnico ha confirmado la solicitud';
+                $historial->save();
 
             DB::commit();
             return[

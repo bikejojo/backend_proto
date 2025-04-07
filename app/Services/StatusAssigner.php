@@ -24,6 +24,7 @@ class StatusAssigner{
     const ACCEPT   = 2;
     const FINISH   = 4;
     const COMPLT   = 5;
+    const ANULAD   = 6;
 
     // Constantes para los estados de solicitud
     const REQUEST_PENDING = 'pendiente por aceptar.';
@@ -205,7 +206,7 @@ class StatusAssigner{
                     $stateReference->serviceId = $objeto->id;
                     $stateReference->clientId = $objeto->clientId;
                     $stateReference->technicianId = $objeto->technicalId;
-                    $stateReference->stateId = self::REJECTED;
+                    $stateReference->stateId = self::ANULAD;
                     $stateReference->type = $type_reference;
                     $stateReference->typeClient = $objeto->typeClient;
                     $stateReference->descriptionState = self::SERVICE_CANCEL;

@@ -11,8 +11,21 @@ class ReportQuery{
     public function reportSuscription($root,array $args){
         $startDate = $args['input']['startDate'] ?? null;
         $finishDate = $args['input']['finishDate'] ?? null;
-        $type = $args['input']['type'] ?? 'FREE';
-        $satus = $args['input']['status'] ?? 1;
+        $type = $args['input']['type'] ?? null;
+        $satus = $args['input']['status'] ?? null;
     }
 
+    public function reportTechnician($root,array $args){
+        $startDate = $args['input']['startDate'] ?? null;
+        $finishDate = $args['input']['finishDate'] ?? null;
+        $type = $args['input']['type'] ?? null;
+        $satus = $args['input']['status'] ?? null;
+    }
+
+    public function reportClient($root,array $args){
+        $startDate = $args['input']['startDate'] ?? null;
+        $finishDate = $args['input']['finishDate'] ?? null;
+        $type = $args['input']['type'] ?? null;
+        $satus = $args['input']['status'] ?? null;
+    }
 }
