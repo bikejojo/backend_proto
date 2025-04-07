@@ -423,7 +423,7 @@ class ServicioMutations
             $serviceId=$serviceData['id_service'];
             $service = Servicio::find($serviceId);
             if($service != null){
-                $request = Solicitud::where('id',$service->id)->first();
+                $request = Solicitud::where('id',$service->requestsId)->first();
                 if($request){
                     $request->stateId = 6;
                     $request->save();
