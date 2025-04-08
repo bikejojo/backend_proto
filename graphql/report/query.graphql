@@ -6,14 +6,29 @@ input requestReportSuscription {
     startDate:String
     endDate:String
     type:String
-    status:String
+    status:Boolean
 }
 
 type responseReportSuscription {
     message:String
     content:[reportSub]
+    technicianData:[reportTech]
 }
 
 type reportSub {
-    fullName:String
+    name_subs:String
+    state_sub:String
+    count_sub:String
+}
+
+type reportTech {
+    name_sub:String
+    type_report:[report]
+}
+
+type report {
+    fullName_technician:String
+    state_TechSub:String
+    startSub:String
+    endSub:String
 }

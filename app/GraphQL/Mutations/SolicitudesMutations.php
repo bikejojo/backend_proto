@@ -39,6 +39,7 @@ class SolicitudesMutations
                     ];
                 }
             }
+
             $technicianId=$requestData['id_technician'];
             $clientId =$requestData['id_client'];
             $technician = ValidationModels::validationTechnician($technicianId);
@@ -56,7 +57,7 @@ class SolicitudesMutations
                     $request->reference_phone = $requestData['reference_phone'];
                     $request->status = StateCatalog::STATUS_ACTIVE;
                     $request->activityId = $requestData['id_activity'];
-                    $request->save();
+                $request->save();
 
                 StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El cliente creo una solicitud nueva.',1);
                 $request->registrationDateTime = $this->now;

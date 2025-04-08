@@ -543,7 +543,7 @@ class ClientQuery{
             if (!empty($stateId)) {
                 //dd($stateId);
                 $request->where('requests.stateId', $stateId)
-                        ->orWhere('state_reference.stateId',$stateId);
+                        ->where('state_reference.stateId',$stateId);
             }
 
             $requests= $request->distinct()->get();
