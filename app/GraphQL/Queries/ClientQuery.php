@@ -536,9 +536,12 @@ class ClientQuery{
                                         'technicians.photo',
                                         'requests.reference_phone',
                                         'requests.registrationDateTime',
+                                        'requests.stateId As state',
                                         DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) As full_name')
                                     ]);
+
             if (!empty($stateId)) {
+                //dd($stateId);
                 $request->where('requests.stateId', $stateId)
                         ->orWhere('state_reference.stateId',$stateId);
             }
