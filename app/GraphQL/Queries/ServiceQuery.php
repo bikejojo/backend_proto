@@ -664,7 +664,8 @@ class ServiceQuery
                     'services.longitude As longitude',
                     'services.latitude As latitude',
                     'services.serviceLocation As serviceLocation',
-                    'activity_types.description As descripcionActivity'
+                    'activity_types.description As descripcionActivity',
+                    'services.stateId as state'
                 )
             ->first();
 
@@ -688,6 +689,7 @@ class ServiceQuery
                 'latitude'=>$service->latitude,
                 'serviceLocation'=>$service->serviceLocation,
                 'descripcionActivity' => $service->descripcionActivity,
+                'state_service' =>$service->state
             ];
 
             return [

@@ -46,6 +46,7 @@ type conService {
     longitude:String
     serviceLocation:String
     descripcionActivity:String
+    state_service:String
 }
 
 type conTechnician {
