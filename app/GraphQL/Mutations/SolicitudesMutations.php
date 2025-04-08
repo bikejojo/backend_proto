@@ -110,24 +110,42 @@ class SolicitudesMutations
     }
 
     public function cancelRequestClient($root,array $args){
-        // tipo 2
-        $requestId = $args['id'];
-        $comments = 'La solicitud fue cancelada por el cliente.';
-        $request = ValidationModels::validationRequest($requestId);
-        ###################################3
-        $clientId = $request->clientId;
-        $tecnicoId=$request->technicianId;
-        $cliente = Cliente_Interno::find($clientId);
-        $tecnico = Tecnico::find($tecnicoId);
-        StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,$comments,3);
-        $_request = Solicitud::find($request->id);
-        $request->save();
-        return[
-            'message'=>'Solicitud rechazada por el cliente',
-            'requests'=>$_request,
-            'client' => $cliente,
-            'technician' => $tecnico
-        ];
+
+        try{
+            $requestServ = $args['requestService'];
+            $serviceId = $requestServ['servicesId'];
+            $clientId = $requestServ['clientId'];
+            $cliente = Cliente_Interno::find($clientId);
+            $service = Servicio::where('services.id',$serviceId)
+                                ->where('services.clientId',$cliente->id)
+                                ->first();
+            $technician = Tecnico::find($service->technicalId);
+            if($service){
+                StatusAssigner::assignStatService($service,$this->now,"services","Anulado por el cliente",7);
+                $service->stateId = 6;
+                $service->save();
+
+            }else{
+                DB::rollBack();
+                return [
+                    'message' => 'Surgio un problema al buscar la id de servicio.'
+                ];
+            }
+
+            DB::commit();
+            return [
+                'message'=>'Servicio Anulado completado',
+                'client' => $cliente,
+                'technician' => $technician,
+                'service' => $service
+            ];
+
+        } catch(\Exception $e){
+            DB::rollBack();
+            return [
+                'message' => 'Surgio un problema podidiov' . $e->getMessage()
+            ];
+        }
     }
 
     public function acceptRequest($root,array $args){

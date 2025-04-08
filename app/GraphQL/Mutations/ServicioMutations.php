@@ -208,21 +208,6 @@ class ServicioMutations
                 ];
             }
 
-            /*$service = Servicio::create([
-                'technicalId' => $serviceData['id_technician'],
-                'clientId' => $serviceData['id_client'],
-                'activityId' => $serviceData['id_activity'],
-                'typeClient' => self::clientExternal,
-                'service_origin'=>2,
-                'titleService' => trim($serviceData['titleService']),
-                'serviceDescription' => trim($serviceData['serviceDescription']),
-                'latitude' => isset($serviceData['latitude']) ? $serviceData['latitude'] : null,
-                'longitude' => isset($serviceData['longitude']) ? $serviceData['longitude'] : null ,
-                'serviceLocation' => isset($serviceData['serviceLocation']) ? $serviceData['serviceLocation'] : null,
-                'createdDateTime' => $now,
-                'updatedDateTime' => $serviceData['updatedDateTime'],
-                'status' => StateCatalog::STATUS_ACTIVE
-            ]);*/
             $service = new Servicio();
                 $service->technicalId = $serviceData['id_technician'];
                 $service->clientId = $serviceData['id_client'];

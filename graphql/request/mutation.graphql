@@ -2,12 +2,12 @@ extend type Mutation {
   registerRequest(requestRequest:JSON):requestResponse @field(resolver: "SolicitudesMutations@createRequestClient")
   acceptRequestTechnician(requestRequest:JSON):requestResponseService @field(resolver: "SolicitudesMutations@acceptRequest")
   cancelRequestTechnician(id:ID,comments:String):requestResponse @field(resolver: "SolicitudesMutations@cancelRequestTechnician")
-  cancelRequestClient(id:ID,comments:String):requestResponse @field(resolver: "SolicitudesMutations@cancelRequestClient")
+  cancelRequestClient(requestService:JSON):requestResponse @field(resolver: "SolicitudesMutations@cancelRequestClient")
 }
 
 type requestResponse {
     message:String!
-    requests:Request
+    service:Service
     client:InternalClient
     technician:Technician
 

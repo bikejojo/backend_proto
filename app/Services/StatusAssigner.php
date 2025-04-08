@@ -236,6 +236,22 @@ class StatusAssigner{
                 $objeto->stateId = $stateReference->stateId;
                 $objeto->save();
             break;
+            case 7:
+                $stateReference = new StateReference();
+                    $stateReference->requestId = $objeto->requestsId;
+                    $stateReference->serviceId = $objeto->id;
+                    $stateReference->clientId = $objeto->clientId;
+                    $stateReference->technicianId = $objeto->technicalId;
+                    $stateReference->stateId = self::ANULAD;
+                    $stateReference->type = $type_reference;
+                    $stateReference->typeClient = $objeto->typeClient;
+                    $stateReference->descriptionState = self::SERVICE_CANCEL;
+                    $stateReference->observations = $comments;
+                    $stateReference->dateCreate = $now;
+                    $stateReference->save();
+                $objeto->stateId = $stateReference->stateId;
+                $objeto->save();
+            break;
         }
     }
     public static function allowState($entity_type){
