@@ -34,6 +34,7 @@ class AgendaQuery{
                 ->where('agendaTechnicalId', $agenda->id)
                 ->where('detail_technical_agenda.typeClient', self::servicioInternal) // Cliente interno
                 ->where('services.status',1)
+                ->orWhere('services.status',0)
                 //->where('services.stateId',1)
                 //->orWhere('services.stateId',4)
                 //->orWhere('services.stateId',5)
