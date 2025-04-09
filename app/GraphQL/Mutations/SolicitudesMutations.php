@@ -119,14 +119,17 @@ class SolicitudesMutations
             $clientId = $requestServ['clientId'];
             $cliente = Cliente_Interno::find($clientId);
             $service = Servicio::where('services.id',$serviceId)
-                                ->where('services.clientId',$cliente->id)
-                                ->first();
+                        ->where('services.clientId',$cliente->id)
+                        ->first();
             $technician = Tecnico::find($service->technicalId);
             if($service){
                 StatusAssigner::assignStatService($service,$this->now,"services","Anulado por el cliente",7);
                 $service->stateId = 6;
                 $service->save();
-
+                $request = new Solicitud();
+                    $request->stateId = 6;
+                    $request->save();
+                    StatusAssigner::assignStateRequest($service,$this->now,"services","Anulado por el cliente",3);
             }else{
                 DB::rollBack();
                 return [

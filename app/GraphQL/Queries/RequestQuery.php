@@ -15,7 +15,7 @@ use function PHPUnit\Framework\isEmpty;
 
 class RequestQuery
 {
-    public static  $entity_type = 'request';
+    public static $entity_type = 'request';
     public static $stateRequestAccept = 2;
     public static $stateRequestCancel = 3;
     public static $stateRequestPeding = 1;
@@ -98,8 +98,8 @@ class RequestQuery
         // Consulta principal
         $query = Solicitud::where('requests.technicianId', $technicianId)
             ->join('internal_clients', 'requests.clientId', '=', 'internal_clients.id')
-            ->join('users', 'internal_clients.userId', '=', 'users.id')
-            ->join('state_types', 'requests.stateId', '=', 'state_types.id')
+            //->join('users', 'internal_clients.userId', '=', 'users.id')
+            //->join('state_types', 'requests.stateId', '=', 'state_types.id')
             ->select(
                 'requests.*',
                 'internal_clients.firstName',
@@ -110,6 +110,7 @@ class RequestQuery
 
         if (in_array($statusId, $stateId)) {
             $query->where('requests.stateId', $statusId);
+            
         }
 
         if ($orderFilter) {
@@ -122,7 +123,7 @@ class RequestQuery
 
         // Obtén los resultados de la consulta
         $requests = $query->get();
-
+        //dd($requests);
         // Mapea los resultados para cumplir con el esquema _requesttechnician
         $_request = $requests->map(function ($request) {
             return [
@@ -180,9 +181,9 @@ class RequestQuery
     {
         $query = Solicitud::join('services','requests.id','=','services.requestsId')
             ->join('technicians', 'requests.technicianId', '=', 'technicians.id')
-            ->join('state_types', 'requests.stateId', '=', 'state_types.id')
-            ->join('activity_types', 'requests.activityId', '=', 'activity_types.id')
-            ->where('requests.clientId', $clientId)
+            ->join('state_types', 'requests.stateId', '=', 'state_types.id' )
+            ->join('activity_types', 'requests.activityId', '=', 'activity_types.id' )
+            ->where('requests.clientId', $clientId )
             ->whereDate('services.updatedDateTime', $dateParameter)
             ->select(
                 'requests.id As id_requests',
