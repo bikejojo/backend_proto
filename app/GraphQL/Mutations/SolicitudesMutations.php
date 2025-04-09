@@ -55,12 +55,13 @@ class SolicitudesMutations
                     $request->longitude = $requestData['longitude'];
                     $request->serviceLocation = $requestData['serviceLocation'];
                     $request->reference_phone = $requestData['reference_phone'];
+                    $request->registrationDateTime = $this->now;
                     $request->status = StateCatalog::STATUS_ACTIVE;
                     $request->activityId = $requestData['id_activity'];
                 $request->save();
 
                 StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El cliente creo una solicitud nueva.',1);
-                $request->registrationDateTime = $this->now;
+                //$request->registrationDateTime = $this->now;
                 $request->save();
 
                 $historial = new Historial_Servicios();

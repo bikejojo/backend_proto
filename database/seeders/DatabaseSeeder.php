@@ -97,6 +97,7 @@ class DatabaseSeeder extends Seeder
 
         #grupo de habilidades
         Skills_group::create(['groupId'=>1,'skillsId'=>2]);
+        Skills_group::create(['groupId'=>1,'skillsId'=>3]);
         Skills_group::create(['groupId'=>1,'skillsId'=>1]);
         Skills_group::create(['groupId'=>1,'skillsId'=>6]);
         Skills_group::create(['groupId'=>1,'skillsId'=>7]);
@@ -107,6 +108,7 @@ class DatabaseSeeder extends Seeder
         Skills_group::create(['groupId'=>1,'skillsId'=>13]);
         Skills_group::create(['groupId'=>1,'skillsId'=>17]);
         Skills_group::create(['groupId'=>1,'skillsId'=>9]);
+        Skills_group::create(['groupId'=>1,'skillsId'=>4]);
 
         Skills_group::create(['groupId'=>2,'skillsId'=>14]);
         Skills_group::create(['groupId'=>2,'skillsId'=>15]);
@@ -125,6 +127,7 @@ class DatabaseSeeder extends Seeder
         Skills_group::create(['groupId'=>4,'skillsId'=>24]);
         Skills_group::create(['groupId'=>4,'skillsId'=>25]);
         Skills_group::create(['groupId'=>4,'skillsId'=>26]);
+        Skills_group::create(['groupId'=>4,'skillsId'=>28]);
 
         #grupo y subgrupo
         Group_Subgroup::create(['groupId'=>1,'subGroupId'=>1,'createDate'=>now()]);

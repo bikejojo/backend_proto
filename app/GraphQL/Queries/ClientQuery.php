@@ -513,6 +513,7 @@ class ClientQuery{
             $stateId=$args['id_state'] ?? "";
 
             $latestStateSubquery = DB::table('state_reference as sr')
+                ->where('sr.clientId',$id_client)
                 ->select('sr.requestId', DB::raw('MAX(sr."dateCreate") as latest_date'))
                 ->groupBy('sr.requestId');
 
