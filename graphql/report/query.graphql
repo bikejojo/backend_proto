@@ -6,6 +6,7 @@ input requestReportSuscription {
     startDate:String
     endDate:String
     type:String
+    state:String
     status:Boolean
 }
 

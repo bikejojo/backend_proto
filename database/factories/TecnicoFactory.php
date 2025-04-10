@@ -29,7 +29,7 @@ class TecnicoFactory extends Factory
             'email' => $this->faker->unique()->safeEmail,
             'phoneNumber' => $this->faker->phoneNumber,
             'password' => Hash::make('123'), // Puedes usar bcrypt('password') si lo prefieres
-            'average_rating' => 5, // Puntuación entre 0 y 5
+            'average_rating' => rand(1.00 , 5.00), // Puntuación entre 0 y 5
             'userId' => User::factory(), // Relación con User
             'status' => 1,
             'cityId' => 1

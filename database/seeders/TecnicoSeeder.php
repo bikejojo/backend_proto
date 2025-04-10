@@ -21,7 +21,7 @@ class TecnicoSeeder extends Seeder
     public function run(): void
     {
         User::factory()
-            ->count(5)
+            ->count(105)
             ->create()
             ->each(function ($user) {
                 // Por cada usuario, crear varios clientes internos
@@ -37,9 +37,9 @@ class TecnicoSeeder extends Seeder
                         ]);
                         Technician_subcripcion::create([
                             'technicianId'=>$technician->id,
-                            'subcriptionsId'=>1,
+                            'subcriptionsId'=>rand(1,4),
                             'starDateSubcription'=> now()->addMonth(),
-                            'endDateSubcription' => now()->addMonths(1),
+                            'endDateSubcription' => now()->addDays(7),
                             'status' => 1
                         ]);
                         $device = Devices::create([
