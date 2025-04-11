@@ -1,5 +1,26 @@
 extend type Query {
     reportSuscription(Input:requestReportSuscription):responseReportSuscription @field(resolver: "ReportQuery@reportSuscription")
+    reportTechnician(Input:RequestReportTechnicians):responseReportTech @field(resolver: "ReportQuery@reportTechnician")
+}
+
+input RequestReportTechnicians{
+    skills:String
+    cities:String
+    rates:String
+    status:String
+}
+
+type responseReportTech {
+    message:String
+    techniciansData:[reportTechs]
+}
+
+type reportTechs{
+    name_technician:String
+    name_city:String
+    name_skills:String
+    rates:String
+    status:String
 }
 
 input requestReportSuscription {

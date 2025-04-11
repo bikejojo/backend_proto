@@ -7,6 +7,7 @@ use App\Models\Calificacion;
 use App\Models\Suscripcion;
 use Illuminate\Support\Facades\DB;
 use App\Models\Technician_subcripcion;
+use App\Models\Tecnico_Habilidad;
 
 class ReportQuery{
     public function reportSuscription($root, array $args) {
@@ -15,7 +16,7 @@ class ReportQuery{
         $startDate = $input['startDate'] ?? null;
         $finishDate = $input['endDate'] ?? null;
         $type = $input['type'] ?? null;
-        $state = $input['state'] ?? null;
+        $state = $input['state'] ?? null ;
         $status = $input['status'] ?? false;
 
         // Consulta base
@@ -32,7 +33,8 @@ class ReportQuery{
             $query->where('technician_subcription.subcriptionsId', $type);
         }
 
-        if ($state) {
+        if (!is_null($state)) {
+            //dd(1);
             $query->where('technician_subcription.status', $state);
         }
 
@@ -58,8 +60,7 @@ class ReportQuery{
                 })->toArray()
             ];
         }
-
-        // Si no es summary, devolvemos detalle
+        // Si no es s ummary, devolvemos detalle
         $content = $query->select(
                         'subcriptions.name AS name_sub',
                         DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS "fullName_technician"'),
@@ -91,10 +92,65 @@ class ReportQuery{
 
 
     public function reportTechnician($root,array $args){
-        $startDate = $args['input']['startDate'] ?? null;
-        $finishDate = $args['input']['finishDate'] ?? null;
-        $type = $args['input']['type'] ?? null;
-        $satus = $args['input']['status'] ?? null;
+        $input = $args['Input'];
+        //dd($input);
+        $skills = $input['skills'] ?? null;
+        $cities = $input['cities'] ?? null;
+        $rates = $input['rates'] ?? null;
+        $status = $input['status'] ?? null;
+        //dd($skills,$cities,$rates,$status);
+        $query = Tecnico_Habilidad::leftjoin('technicians','technician_skills.technicianId','=','technicians.id')
+                                    ->leftjoin('skills','technician_skills.skillId','=','skills.id')
+                                    ->leftjoin('cities','technicians.cityId','=','cities.id');
+        if($skills){
+            $query->where('technician_skills.skillId',$skills);
+        }
+
+        if($cities){
+            $query->where('technicians.cityId',$cities);
+        }
+
+        if($status){
+            $query->where('technicians.status',$status);
+        }
+
+        if($rates){
+            switch ($rates){
+                case 1:
+                    $query->where('technicians.rate','>',1.00);
+                break;
+                case 2:
+                    $query->where('technicians.rate','>',4.00);
+                break;
+                case 3:
+                    $query->where('technicians.rate','<',3.00);
+                break;
+                case 4:
+                    $query->where('technicians.rate','<',1.00);
+                break;
+            }
+        }
+
+        $content = $query->select(
+            DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS "name_technician"'),
+            'technicians.average_rating AS rates',
+            'technicians.status AS status',
+            'cities.name AS name_city',
+            'skills.name AS name_skill',
+        )->get();
+        //dd($content);
+        return [
+            'message' => 'Resulta de reporte True',
+            'techniciansData' => $content->map(function ($item) {
+                return [
+                    'name_technician' => $item->name_technician,
+                    'rates' => $item->rates,
+                    'status' => $item->status,
+                    'name_city' => $item->name_city,
+                    'name_skills' => $item->name_skill,
+                ];
+            })->toArray()
+        ];
     }
 
     public function reportClient($root,array $args){

@@ -87,7 +87,7 @@ class StatusAssigner{
                     $stateReference->serviceId = null;
                     $stateReference->clientId = $objeto->clientId;
                     $stateReference->technicianId = $objeto->technicianId;
-                    $stateReference->stateId = self::REJECTED;
+                    $stateReference->stateId = self::ANULAD;
                     $stateReference->type = $type_reference;
                     $stateReference->typeClient = self::cliente_internal;
                     $stateReference->descriptionState = self::REQUEST_REJECTED_C;
@@ -257,7 +257,7 @@ class StatusAssigner{
     public static function allowState($entity_type){
         try{
             $requestStates = ['Pendiente', 'Rechazado', 'Aceptado'];
-            $serviceStates = ['Pendiente', 'Terminado'];
+            $serviceStates = ['Pendiente', 'Terminado','Completado','Anulado'];
 
             if ($entity_type === 'request') {
                 return Tipo_Estado::whereIn('description', $requestStates)
