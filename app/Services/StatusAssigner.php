@@ -130,7 +130,23 @@ class StatusAssigner{
                 $objeto->status = 0;
                 $objeto->save();
             break;
-
+            case 5:
+                $stateReference = new StateReference();
+                    $stateReference->requestId = $objeto->id;
+                    $stateReference->serviceId = null;
+                    $stateReference->clientId = $objeto->clientId;
+                    $stateReference->technicianId = $objeto->technicianId;
+                    $stateReference->stateId = self::COMPLT;
+                    $stateReference->type = $type_reference;
+                    $stateReference->typeClient = self::cliente_internal;
+                    $stateReference->descriptionState = self::SERVICE_COMPLETED_CI;
+                    $stateReference->observations = $comments;
+                    $stateReference->dateCreate = $now;
+                    $stateReference->save();
+                $objeto->stateId = $stateReference->stateId;
+                $objeto->status = 1;
+                $objeto->save();
+            break;
         }
     }
 

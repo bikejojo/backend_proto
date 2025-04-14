@@ -20,7 +20,9 @@ class AgendaQuery{
     public function listAgendaInternalClient($root, array $args) {
         $agendaData = $args['requestAgenda'];
         $technicianId = $agendaData['technicianId'];
-        $dateFilter = $agendaData['entryDate'];// ?? StatusHelper::ORDER_NAME_RECENT;
+        $dateFilters = $agendaData['entryDate'];// ?? StatusHelper::ORDER_NAME_RECENT;
+        $dateFilter = Carbon::parse($dateFilters)->toDateString();;
+        //dd($dateFilter);
         $tecnico = ValidationModels::validationTechnician($technicianId);
 
         $agenda = Agenda_Tecnico::where('technicianId', $tecnico->id)->first();
@@ -34,14 +36,14 @@ class AgendaQuery{
                 ->where('agendaTechnicalId', $agenda->id)
                 ->where('detail_technical_agenda.typeClient', self::servicioInternal) // Cliente interno
                 ->where('services.status',1)
-                ->orWhere('services.status',0)
+                //->orWhere('services.status',0)
                 //->where('services.stateId',1)
                 //->orWhere('services.stateId',4)
                 //->orWhere('services.stateId',5)
                 ->orderBy('detail_technical_agenda.serviceDate','asc');
-
+                //dd($query->get());
             if ($dateFilter) {
-                $query->whereDate('detail_technical_agenda.serviceDate',$dateFilter);
+                $query->where(DB::raw('DATE(detail_technical_agenda."serviceDate")'), '=', $dateFilter);
             }else{
                 return [
                     'message' => 'No se especifico una fecha valida.',

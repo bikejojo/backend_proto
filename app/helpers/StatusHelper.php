@@ -10,9 +10,10 @@ use Illuminate\Support\Facades\Validator;
 class StatusHelper{
     //
     const STATE_PENDING = 1;
-    const STATE_CANCEL = 2;
-    const STATE_ACCEPT = 3;
-
+    const STATE_CANCEL = 3;
+    const STATE_ACCEPT = 2;
+    const STATE_ANULL = 6;
+    const STATE_COMPLT = 5;
     //ordenes
     const ORDER_BY_RECENT = 4;
     const ORDER_BY_OLD = 5;
