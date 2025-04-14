@@ -51,7 +51,6 @@ class ClientQuery{
             ];
         }
 
-
         // Retornar los resultados encontrados
         return [
             'message' => 'Resultados encontrados',
@@ -157,7 +156,6 @@ class ClientQuery{
         ->where('associationTechnClient.technicalId', $technicalId)
         ->select(
             'associationTechnClient.full_name as fullName',
-            //DB::raw('DATE(services."updatedDateTime") as date'), // Extraer solo la fecha
             DB::raw('COUNT(services."id") as servicecount'), // Contar servicios por cliente y día
             DB::raw("'Cliente Externo' as clienttype")
         )
@@ -166,7 +164,7 @@ class ClientQuery{
         ->groupBy('associationTechnClient.full_name')
         ->orderBy('servicecount', 'desc') // Ordenar por fecha
         ->get();
-            //dd($servicesExt);
+
             $result = $servicesExt->map(function ($service) {
                 return [
                     'fullName' => $service->fullName,
@@ -201,8 +199,6 @@ class ClientQuery{
             ->groupBy(DB::raw('CONCAT(COALESCE(internal_clients."firstName", \'\'), \' \', COALESCE(internal_clients."lastName", \'\'))')) // Agrupar solo por cliente
             ->orderBy(DB::raw('COUNT(services."clientId")'), 'desc') // Ordenar por cantidad de servicios
             ->get();
-            //dd($servicesInt);
-            //dd($servicesInt->toSql(), $servicesInt->getBindings());
 
             $result = $servicesInt->map(function ($service) {
                 return [
@@ -294,7 +290,6 @@ class ClientQuery{
         $filteredExternalClients =  Asociacion_Cliente_Tecnico::where('technicalId', $technicialId)
                 ->where('status', 1);
         $clienteExternoCount = $filteredExternalClients->count();
-        //dd($clienteExternoCount);
         $clienteInternoCount = $detailAgenda->where('typeClient', 1)
         ->unique('clientId')
         ->count();
@@ -344,7 +339,6 @@ class ClientQuery{
         $history = $historial->map(function ($record) {
             // Determinar si es una solicitud o un servicio
             $type = $record->descriptionJob == 1 ? 'Solicitud' : 'Servicio';
-
             // Obtener detalle de la solicitud o servicio
             $detail = null;
             if ($type === 'Solicitud') {

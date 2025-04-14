@@ -587,35 +587,34 @@ class ServiceQuery
         try {
             $clientId= $args['id_client'];
             $requestData = Solicitud::join('services', 'requests.id', '=', 'services.requestsId')
-                                ->join('activity_types','services.activityId','=','activity_types.id')
-                                ->join('technicians', 'requests.technicianId', '=', 'technicians.id')
-                                ->leftJoinSub(
-                                    DB::table('state_reference')
-                                        ->select('serviceId', DB::raw('MAX(id) as latest_state_id'))
-                                        ->groupBy('serviceId'),
-                                    'latest_state','services.id','=','latest_state.serviceId'
-                                )
-                                ->leftJoin('state_reference', 'state_reference.id', '=', 'latest_state.latest_state_id')
-                                ->where('requests.clientId', $clientId)
-                                ->whereBetween('services.updatedDateTime', [
-                                    now(), // Un día antes
-                                    now()->addDays(6) // // Un día después
-                                ])
-                                ->select(
-                                    'requests.id AS id_requests',
-                                    'services.id AS id_services',
-                                    'technicians.photo',
-                                    DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name'),
-                                    'requests.titleRequests AS titleRequests',
-                                    'services.updatedDateTime AS visitDate',
-                                    'services.stateId AS status',
-                                    'activity_types.description As descripcionActivity',
-                                    'state_reference.observations As observations'
-                                )
-                                ->distinct()
-                                ->orderBy('services.updatedDateTime', 'ASC') // Ordenar de más cercano a más lejano
-                                ->get();
-            //dd($requestData);
+                            ->join('activity_types','services.activityId','=','activity_types.id')
+                            ->join('technicians', 'requests.technicianId', '=', 'technicians.id')
+                            ->leftJoinSub(
+                                DB::table('state_reference')
+                                    ->select('serviceId', DB::raw('MAX(id) as latest_state_id'))
+                                    ->groupBy('serviceId'),
+                                'latest_state','services.id','=','latest_state.serviceId'
+                            )
+                            ->leftJoin('state_reference', 'state_reference.id', '=', 'latest_state.latest_state_id')
+                            ->where('requests.clientId', $clientId)
+                            ->whereBetween('services.updatedDateTime', [
+                                now(), // Un día antes
+                                now()->addDays(6) // // Un día después
+                            ])
+                            ->select(
+                                'requests.id AS id_requests',
+                                'services.id AS id_services',
+                                'technicians.photo',
+                                DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS full_name'),
+                                'requests.titleRequests AS titleRequests',
+                                'services.updatedDateTime AS visitDate',
+                                'services.stateId AS status',
+                                'activity_types.description As descripcionActivity',
+                                'state_reference.observations As observations'
+                            )
+                            ->distinct()
+                            ->orderBy('services.updatedDateTime', 'ASC') // Ordenar de más cercano a más lejano
+                            ->get();
 
             if($requestData->isEmpty()){
                 return [
@@ -713,6 +712,7 @@ class ServiceQuery
                 'servicePending' => Servicio::where('stateId',1)->count(),
                 'serviceFinish' => Servicio::where('stateId',4)->count(),
                 'serviceComplt' => Servicio::where('stateId',5)->count(),
+                //'serviceAnull' => Servicio::where('stateId',6)->count(),
             ];
             $contentActivity = [
                 'serviceMant' => Servicio::where('activityId',1)->count(),

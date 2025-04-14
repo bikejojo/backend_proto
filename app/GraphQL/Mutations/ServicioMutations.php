@@ -75,21 +75,7 @@ class ServicioMutations
                     'message' => 'Este horario ya está ocupado en la agenda de cliente Externo, elige uno con más de 10 minutos de diferencia.'
                 ];
             }
-            /*$service = Servicio::create([
-                'technicalId' => $serviceData['id_technician'],
-                'clientId' => $serviceData['id_client'],
-                'activityId' => $serviceData['id_activity'],
-                'typeClient' => self::clientInternal,
-                'service_origin' => 2,
-                'titleService' => trim($serviceData['titleService']),
-                'serviceDescription' => trim($serviceData['serviceDescription']),
-                'latitude' => isset($serviceData['latitude']) ? $serviceData['latitude'] : null,
-                'longitude' => isset($serviceData['longitude']) ? $serviceData['longitude'] : null ,
-                'serviceLocation' => isset($serviceData['serviceLocation']) ? $serviceData['serviceLocation'] : null,
-                'createdDateTime' => $this->now,
-                'updatedDateTime' => $serviceData['updatedDateTime'],
-                'status' => StateCatalog::STATUS_ACTIVE
-            ]);*/
+
             $service = new Servicio();
                 $service->technicalId = $serviceData['id_technician'];
                 $service->clientId = $serviceData['id_client'];
@@ -104,7 +90,7 @@ class ServicioMutations
                 $service->createdDateTime = $this->now;
                 $service->updatedDateTime = $serviceData['updatedDateTime'];
                 $service->status = StateCatalog::STATUS_ACTIVE;
-                $service->save();
+            $service->save();
             //dd($service);
             StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'El servicio fue creado por el tecnico para cliente interno.',1);
             $_service = Servicio::find($service->id);
@@ -222,7 +208,7 @@ class ServicioMutations
                 $service->createdDateTime = $now;
                 $service->updatedDateTime = $serviceData['updatedDateTime'];
                 $service->status = StateCatalog::STATUS_ACTIVE;
-                $service->save();
+            $service->save();
 
             StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'El servicio fue creado por el tecnico para cliente externo.',1);
             $service->save();
@@ -323,7 +309,7 @@ class ServicioMutations
             $service->save();
 
             if($service->finishDateTime_client != null || $service->finishDateTime_technician != null){
-                StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,3);
+                StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,6);
                 $service->save();
             }
             $_service = Servicio::find($service->id);
@@ -372,7 +358,7 @@ class ServicioMutations
             $service->updatedDateTime = Carbon::now();
             $service->save();
             if( !$service->finishDateTime_client || !$service->finishDateTime_technician ){
-                StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,2);
+                StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,6);
                 $service->save();
             }
             $_service = Servicio::find($service->id);
@@ -496,7 +482,7 @@ class ServicioMutations
                     $join->on('services.id', '=', 'rating.serviceId');
                 })
                 ->where('services.clientId', $technician->id)
-                ->where('services.stateId', 4)                  // solo estado = 5
+                ->where('services.stateId', 5)                  // solo estado = 5
                 ->whereNull('services.finishDateTime_client')   // fecha cliente vacía (null)
                 ->whereNull('rating.id')
                 ->select([

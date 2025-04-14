@@ -121,7 +121,7 @@ class DatabaseSeeder extends Seeder
 
         Skills_group::create(['groupId'=>4,'skillsId'=>19]);
         Skills_group::create(['groupId'=>4,'skillsId'=>10]);
-        Skills_group::create(['groupId'=>4,'skillsId'=>9]);
+        //Skills_group::create(['groupId'=>4,'skillsId'=>9]);
         Skills_group::create(['groupId'=>4,'skillsId'=>22]);
         Skills_group::create(['groupId'=>4,'skillsId'=>23]);
         Skills_group::create(['groupId'=>4,'skillsId'=>24]);
