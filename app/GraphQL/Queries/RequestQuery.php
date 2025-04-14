@@ -235,7 +235,11 @@ class RequestQuery
                     $query->whereDate(DB::raw('CASE
                         WHEN r."stateId" IN (2, 6) THEN s."updatedDateTime"
                         ELSE r."registrationDateTime"
-                    END'), $dateParameter);
+                    END'), $dateParameter)
+                    ->orderBy(DB::raw('CASE
+                        WHEN r."stateId" IN (2, 6) THEN s."updatedDateTime"
+                        ELSE r."registrationDateTime"
+                    END'), 'ASC');
                 })
                 //->whereDate('relevant_date', $dateParameter)
                 ->where('r.clientId', $clientId);

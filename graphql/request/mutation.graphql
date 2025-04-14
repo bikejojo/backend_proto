@@ -7,7 +7,7 @@ extend type Mutation {
 
 type requestResponse {
     message:String!
-    requests:Request
+    service:Service
     client:InternalClient
     technician:Technician
 
