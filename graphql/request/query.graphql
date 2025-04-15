@@ -16,6 +16,8 @@ type countReq {
     requestPending:String
     requestAccept:String
     requestCancel:String
+    requestComple:String
+    requestAnulad:String
 }
 
 type responseAgendaRequest{

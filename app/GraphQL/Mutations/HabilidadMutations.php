@@ -44,7 +44,7 @@ class HabilidadMutations {
             $_now = Carbon::now()->format('Ymd_His');
             if(isset($args['photo']) && $args['photo'] instanceof UploadedFile ){
                 $photoPath = ImageHelper::processImage($args['photo'],"/images/subgroup/{$habilidadId}/"."{$_now}.png",$manager);
-                $habilidad->photo = $this->app . 'storage' . str_replace('public/','',$photoPath);
+                $habilidad->photo = $this->app . '/storage' . str_replace('public/','',$photoPath);
                 $habilidad->save();
             }
 

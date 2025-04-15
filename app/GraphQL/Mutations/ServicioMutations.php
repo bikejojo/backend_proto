@@ -405,6 +405,7 @@ class ServicioMutations
                 }
                 StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'Se cancelo el servicio y la solicitud',5);
                 $service->stateId = 6;
+                //$service->updatedDateTime = Carbon::now();
                 $service->status = 1;
                 $service->save();
                 return[
