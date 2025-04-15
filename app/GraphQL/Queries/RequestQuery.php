@@ -180,56 +180,32 @@ class RequestQuery
     private function getSolicitudesPorEstado($clientId,  $dateParameter)
     {
 
-        $query = DB::table('requests as r')
+        $query = DB::table('services as s')
                     ->select(
-                        'r.id as request_id',
-                        'r.stateId as request_state',
-                        'r.registrationDateTime as datetime_requests',
-                        'r.titleRequests as request_title',
                         's.id as service_id',
                         's.titleService as service_title',
-                        's.requestsId as service_request_id',
+                        's.serviceDescription as service_description',
                         's.stateId as service_state',
-                        's.updatedDateTime as datetime_services',
+                        's.updatedDateTime as relevant_date',
                         DB::raw('CONCAT(COALESCE(t."firstName", \'\'), \' \', COALESCE(t."lastName", \'\')) AS full_name'),
                         't.phoneNumber AS phoneNumber',
                         'at.description AS name_activity',
-                        DB::raw('CASE
-                            WHEN r."stateId" IN (2, 6) THEN s."updatedDateTime"
-                            ELSE r."registrationDateTime"
-                        END as relevant_date')
                     )
-                    ->leftJoin('services as s', 's.requestsId', '=', 'r.id')
-                    ->join('technicians as t', function($join) {
-                        $join->on('s.technicalId', '=', 't.id')
-                            ->orOn('r.technicianId', '=', 't.id');
-                    })
-                    ->join('activity_types as at', function($join) {
-                        $join->on('s.activityId', '=', 'at.id')
-                            ->orOn('r.activityId','=','at.id');
-                    })
-                    ->where('r.clientId', $clientId)
-                    ->where(function ($q) {
-                        $q->whereDate('r.registrationDateTime', '2025-04-11')
-                        ->orWhereDate('s.updatedDateTime', '2025-04-11');
-                    })
-                    ->orderBy('relevant_date', 'asc');
-        //->get();
-        //dd($query);
+                    ->join('technicians as t', 's.technicalId', '=', 't.id')
+                    ->join('activity_types as at', 's.activityId', '=', 'at.id')
+                    ->where('s.clientId', $clientId)
+                    ->whereDate('s.updatedDateTime', $dateParameter)
+                    ->orderBy('s.updatedDateTime', 'asc');
+
         return $query->distinct()->get()->map(function ($solict){
             return [
                 'full_name'=>$solict->full_name,
                 'phoneNumber'=>$solict->phoneNumber,
-                'activity_name'=>$solict->name_activity,
-                'title_request'=>$solict->request_title,
-                'id_requests'=>$solict->request_id,
-                'state_requests'=>$solict->request_state,
-                'datetime_request'=>$solict->datetime_requests,
                 'id_services'=>$solict->service_id,
-                'title_services'=>$solict->service_title,
-                'id_services_requests'=>$solict->service_request_id,
+                'title'=>$solict->service_title,
+                'description'=>$solict->service_description,
+                'activity_name'=>$solict->name_activity,
                 'state_services'=>$solict->service_state,
-                'datetime_services'=>$solict->datetime_services,
                 'datetime'=>$solict->relevant_date,
             ];
         });

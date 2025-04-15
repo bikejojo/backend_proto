@@ -349,7 +349,7 @@ class ServicioMutations
         $client = ValidationModels::validationclientInternal($clientId);
         $technician = ValidationModels::validationTechnician($technicianId);
         $detailTech = Detalle_Agenda_Tecnico::where('serviceId',$service->id)->first();
-
+        //dd($detailTech);
         DB::beginTransaction();
         try {
             $request = Solicitud::where('id',$service->requestsId)->first();

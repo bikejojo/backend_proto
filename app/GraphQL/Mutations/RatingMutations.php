@@ -25,11 +25,11 @@ class RatingMutations{
             $responses = [];
             DB::beginTransaction();
             foreach ($ratingsArray as $rating) {
-                //dd($rating['id_service']);
                 $client = Cliente_Interno::find($rating['id_client']);
                 $technician = Tecnico::find($rating['id_technician']);
+
                 $service = Servicio::join('state_reference', 'services.id', '=', 'state_reference.serviceId')
-                    ->where('services.stateId', 4)
+                    ->where('services.stateId', 5)
                     ->where('services.id', $rating['id_service'])
                     ->select(
                         'services.id',
@@ -39,18 +39,50 @@ class RatingMutations{
                     ->first();
                 //dd($service);
                 if (Calificacion::where('serviceId', $rating['id_service'])->where('technicialId', $rating['id_technician'])->where('clientId', $rating['id_client'])->exists()) {
+                   $existingRating = Calificacion::where('serviceId', $rating['id_service'])
+                    ->where('technicialId', $rating['id_technician'])
+                    ->where('clientId', $rating['id_client'])
+                    ->first();
+
+                    $service = Servicio::find($rating['id_service']);
+
                     $responses[] = [
                         'message' => 'Este servicio ya tiene una calificación.',
                         'service' => $service,
-                        'rating' => Calificacion::where('serviceId', $rating['id_service'])->where('technicialId', $rating['id_technician'])->where('clientId', $rating['id_client'])->first(),
+                        'rating' => $existingRating,
                         'client' => $client
                     ];
+
                     continue;
                 }
 
-                $service->stateId = 5;
+                $service->stateId = 4;
                 $service->finishDateTime_client = now();
                 $service->save();
+
+                //dd($ratingsSum);
+                // Agregar la calificación virtual de 5 si aún no tiene reales
+                $ratingsSum = 0;
+                $ratingsCount = 0;
+                if (!Calificacion::where('technicialId', $technician->id)->exists()) {
+                   // sumando la nueva calificación
+                    $ratingsSum = $rating['rating'] + $technician->average_rating;
+                    $ratingsCount = 2;
+                    $average = $ratingsSum / $ratingsCount;
+                    $rounded = round($average * 4) / 4;
+                    $technician->average_rating = number_format($rounded, 2);
+                    $technician->save();
+                }else{
+                    $ratingsSum = $rating['rating'] + $technician->average_rating;
+                    $ratingsCount = 2;
+                    $average = $ratingsSum / $ratingsCount;
+                    $rounded = round($average * 4) / 4;
+                    $technician->average_rating = number_format($rounded, 2);
+                    $technician->save();
+                }
+
+                // Calcular nuevo promedio
+
 
                 $calificacion = Calificacion::create([
                     'serviceId' => $rating['id_service'],
@@ -66,6 +98,7 @@ class RatingMutations{
                     'client' => $client,
                     'service' => $service
                 ];
+
             }
             DB::commit();
             return [
