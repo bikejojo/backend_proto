@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Servicio;
 use App\Models\Calificacion;
 use App\Models\Cliente_Interno;
+use App\Models\Solicitud;
 use App\Services\StatusAssigner;
 use Carbon\Carbon;
 
@@ -59,7 +60,9 @@ class RatingMutations{
                 $service->stateId = 4;
                 $service->finishDateTime_client = now();
                 $service->save();
-
+                $request= Solicitud::where('id',$service->requestsId)->first();
+                $request->stateId = 4;
+                $request->save();
                 //dd($ratingsSum);
                 // Agregar la calificación virtual de 5 si aún no tiene reales
                 $ratingsSum = 0;
