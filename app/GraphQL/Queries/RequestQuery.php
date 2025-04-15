@@ -185,12 +185,13 @@ class RequestQuery
                         's.id as service_id',
                         's.titleService as service_title',
                         's.serviceDescription as service_description',
-                        's.stateId as service_state',
+                        'r.stateId as service_state',
                         's.updatedDateTime as relevant_date',
                         DB::raw('CONCAT(COALESCE(t."firstName", \'\'), \' \', COALESCE(t."lastName", \'\')) AS full_name'),
                         't.phoneNumber AS phoneNumber',
                         'at.description AS name_activity',
                     )
+                    ->join('requests as r', 's.requestsId', '=', 'r.id')
                     ->join('technicians as t', 's.technicalId', '=', 't.id')
                     ->join('activity_types as at', 's.activityId', '=', 'at.id')
                     ->where('s.clientId', $clientId)
