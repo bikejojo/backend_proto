@@ -589,13 +589,6 @@ class ServiceQuery
             $requestData = Solicitud::join('services', 'requests.id', '=', 'services.requestsId')
                             ->join('activity_types','services.activityId','=','activity_types.id')
                             ->join('technicians', 'requests.technicianId', '=', 'technicians.id')
-                            ->leftJoinSub(
-                                DB::table('state_reference')
-                                    ->select('serviceId', DB::raw('MAX(id) as latest_state_id'))
-                                    ->groupBy('serviceId'),
-                                'latest_state','services.id','=','latest_state.serviceId'
-                            )
-                            ->leftJoin('state_reference', 'state_reference.id', '=', 'latest_state.latest_state_id')
                             ->where('requests.clientId', $clientId)
                             ->whereBetween('services.updatedDateTime', [
                                 now(), // Un día antes
@@ -610,12 +603,11 @@ class ServiceQuery
                                 'services.updatedDateTime AS visitDate',
                                 'services.stateId AS status',
                                 'activity_types.description As descripcionActivity',
-                                'state_reference.observations As observations'
                             )
                             ->distinct()
                             ->orderBy('services.updatedDateTime', 'ASC') // Ordenar de más cercano a más lejano
                             ->get();
-
+            //dd($reque);
             if($requestData->isEmpty()){
                 return [
                     'message' =>'No existen solicitudes hoy.',
@@ -631,7 +623,7 @@ class ServiceQuery
                     'photo' => $request['photo'],
                     'titleRequests' => $request['titleRequests'],
                     'descripcionActivity' => $request['descripcionActivity'],
-                    'observations' => $request['observations'],
+                    //'observations' => $request['observations'],
                     'visitDate' => $request['visitDate'],
                     'status' => $request['status'],
                 ];

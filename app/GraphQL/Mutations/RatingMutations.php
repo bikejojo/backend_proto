@@ -64,22 +64,12 @@ class RatingMutations{
                 // Agregar la calificación virtual de 5 si aún no tiene reales
                 $ratingsSum = 0;
                 $ratingsCount = 0;
-                if (!Calificacion::where('technicialId', $technician->id)->exists()) {
-                   // sumando la nueva calificación
                     $ratingsSum = $rating['rating'] + $technician->average_rating;
                     $ratingsCount = 2;
                     $average = $ratingsSum / $ratingsCount;
                     $rounded = round($average * 4) / 4;
                     $technician->average_rating = number_format($rounded, 2);
                     $technician->save();
-                }else{
-                    $ratingsSum = $rating['rating'] + $technician->average_rating;
-                    $ratingsCount = 2;
-                    $average = $ratingsSum / $ratingsCount;
-                    $rounded = round($average * 4) / 4;
-                    $technician->average_rating = number_format($rounded, 2);
-                    $technician->save();
-                }
 
                 // Calcular nuevo promedio
 
