@@ -194,6 +194,7 @@ class RequestQuery
                     ->join('technicians as t', 's.technicalId', '=', 't.id')
                     ->join('activity_types as at', 's.activityId', '=', 'at.id')
                     ->where('s.clientId', $clientId)
+                    ->where('s.typeClient',1) // cliente internos
                     ->whereDate('s.updatedDateTime', $dateParameter)
                     ->orderBy('s.updatedDateTime', 'asc');
 
