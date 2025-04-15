@@ -185,7 +185,7 @@ class RequestQuery
                         'r.id as request_id',
                         'r.stateId as request_state',
                         'r.registrationDateTime as datetime_requests',
-                        'r.titleRequest as request_title',
+                        'r.titleRequests as request_title',
                         's.id as service_id',
                         's.titleService as service_title',
                         's.requestsId as service_request_id',
@@ -224,12 +224,12 @@ class RequestQuery
                 'title_request'=>$solict->request_title,
                 'id_requests'=>$solict->request_id,
                 'state_requests'=>$solict->request_state,
-                'datetime_request'=>$solict->stateAgenda_request,
+                'datetime_request'=>$solict->datetime_requests,
                 'id_services'=>$solict->service_id,
                 'title_services'=>$solict->service_title,
                 'id_services_requests'=>$solict->service_request_id,
                 'state_services'=>$solict->service_state,
-                'datetime_services'=>$solict->stateAgenda_service,
+                'datetime_services'=>$solict->datetime_services,
                 'datetime'=>$solict->relevant_date,
             ];
         });

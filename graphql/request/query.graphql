@@ -25,13 +25,18 @@ type responseAgendaRequest{
 }
 
 type requestagenda {
-    id_requests:String
-    activity_name:String
-    title:String
-    description:String
     full_name:String
     phoneNumber:String
-    stateAgenda:String
+    activity_name:String
+    title_request:String
+    id_requests:String
+    state_requests:String
+    datetime_request:String
+    id_services:String
+    title_services:String
+    id_services_requests:String
+    state_services:String
+    datetime_services:String
     datetime:String
 }
 
