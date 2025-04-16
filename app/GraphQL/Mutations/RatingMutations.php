@@ -56,10 +56,22 @@ class RatingMutations{
                         'services.requestsId'
                     )
                     ->first();
+                if(!$service){
+                    DB::rollBack();
+                    return [
+                        'message' => 'Error: No se encontró la solicitud asociada al servicio.'
+                    ];
+                }
                 $service->stateId = 4;
                 $service->finishDateTime_client = now();
                 $service->save();
                 $request= Solicitud::where('id',$service->requestsId )->first();
+                if(!$request){
+                    DB::rollBack();
+                    return [
+                        'message' => 'Error: No se encontró la solicitud asociada al servicio.'
+                    ];
+                }
                 $request->stateId = 4;
                 $request->save();
 
