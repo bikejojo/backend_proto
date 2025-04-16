@@ -10,6 +10,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Tecnico;
+use App\Models\Tecnico_Habilidad;
 use Carbon\Carbon;
 use Nette\Utils\Random;
 
@@ -21,7 +22,7 @@ class TecnicoSeeder extends Seeder
     public function run(): void
     {
         User::factory()
-            ->count(105)
+            ->count(10)
             ->create()
             ->each(function ($user) {
                 // Por cada usuario, crear varios clientes internos
@@ -34,6 +35,11 @@ class TecnicoSeeder extends Seeder
                         Agenda_Tecnico::create([
                                 'technicianId'=>$technician->id,
                                 'createDate'=>Carbon::now()
+                        ]);
+                        Tecnico_Habilidad::create([
+                            'experience' => rand(1,4).'año',
+                            'technicianId'=>$technician->id,
+                            'skillId'=>rand(1,20)
                         ]);
                         Technician_subcripcion::create([
                             'technicianId'=>$technician->id,

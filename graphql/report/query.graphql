@@ -1,12 +1,32 @@
 extend type Query {
     reportSuscription(Input:requestReportSuscription):responseReportSuscription @field(resolver: "ReportQuery@reportSuscription")
     reportTechnician(Input:RequestReportTechnicians):responseReportTech @field(resolver: "ReportQuery@reportTechnician")
+    reportClient(Input:requestReportClient):responseReportClient @field(resolver: "ReportQuery@reportClient")
+}
+
+input requestReportClient {
+    cities:String
+    activity:String
+    status:Boolean
+}
+
+type responseReportClient {
+    message:String
+    content:[reportClient]
+}
+
+type reportClient {
+    id_client:string
+    full_name:String
+    name_city:String
+    countService:String
+    status:String
 }
 
 input RequestReportTechnicians{
     skills:String
     cities:String
-    rates:String
+    rates:Int
     status:String
 }
 
@@ -16,6 +36,7 @@ type responseReportTech {
 }
 
 type reportTechs{
+    id:String
     name_technician:String
     name_city:String
     name_skills:String

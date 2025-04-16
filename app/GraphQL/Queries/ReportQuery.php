@@ -99,9 +99,10 @@ class ReportQuery{
         $rates = $input['rates'] ?? null;
         $status = $input['status'] ?? null;
         //dd($skills,$cities,$rates,$status);
-        $query = Tecnico_Habilidad::leftjoin('technicians','technician_skills.technicianId','=','technicians.id')
+        $query = Tecnico_Habilidad::leftjoin('technicians','technicians.id','=','technician_skills.technicianId')
                                     ->leftjoin('skills','technician_skills.skillId','=','skills.id')
-                                    ->leftjoin('cities','technicians.cityId','=','cities.id');
+                                    ->leftjoin('cities','technicians.cityId','=','cities.id')
+                                    ->distinct();
         if($skills){
             $query->where('technician_skills.skillId',$skills);
         }
@@ -117,32 +118,40 @@ class ReportQuery{
         if($rates){
             switch ($rates){
                 case 1:
-                    $query->where('technicians.rate','>',1.00);
+                    $query->where('technicians.average_rating','>',1.00);
                 break;
                 case 2:
-                    $query->where('technicians.rate','>',4.00);
+                    $query->where('technicians.average_rating','>',4.00);
                 break;
                 case 3:
-                    $query->where('technicians.rate','<',3.00);
+                    $query->where('technicians.average_rating','<',3.00);
                 break;
                 case 4:
-                    $query->where('technicians.rate','<',1.00);
+                    $query->where('technicians.average_rating','<',1.00);
                 break;
             }
         }
 
         $content = $query->select(
+            'technicians.id As id',
             DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) AS "name_technician"'),
             'technicians.average_rating AS rates',
             'technicians.status AS status',
             'cities.name AS name_city',
-            'skills.name AS name_skill',
+            DB::raw('(
+                SELECT STRING_AGG(skills.name, \', \')
+                FROM technician_skills
+                JOIN skills ON technician_skills."skillId" = skills.id
+                WHERE technician_skills."technicianId" = technicians.id
+            ) AS name_skill'),
+            DB::raw('(SELECT COUNT(*) FROM requests WHERE requests."technicianId" = technicians.id) As count_requests'),
         )->get();
         //dd($content);
         return [
-            'message' => 'Resulta de reporte True',
+            'message' => 'Resulta de reporte True Technician',
             'techniciansData' => $content->map(function ($item) {
                 return [
+                    'id' => $item->id,
                     'name_technician' => $item->name_technician,
                     'rates' => $item->rates,
                     'status' => $item->status,
@@ -154,9 +163,11 @@ class ReportQuery{
     }
 
     public function reportClient($root,array $args){
-        $startDate = $args['input']['startDate'] ?? null;
-        $finishDate = $args['input']['finishDate'] ?? null;
-        $type = $args['input']['type'] ?? null;
-        $satus = $args['input']['status'] ?? null;
+        $input = $args['Input'];
+
+        $cities = $input['cities'] ?? null;
+        $status = $input['status'] ?? null;
+        $activity = $input['activity'] ?? null;
+        
     }
 }

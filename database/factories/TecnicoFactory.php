@@ -32,7 +32,7 @@ class TecnicoFactory extends Factory
             'average_rating' => rand(1.00 , 5.00), // Puntuación entre 0 y 5
             'userId' => User::factory(), // Relación con User
             'status' => 1,
-            'cityId' => 1
+            'cityId' => rand(1,10)
         ];
     }
 }
