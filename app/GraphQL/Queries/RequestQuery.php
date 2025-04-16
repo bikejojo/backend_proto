@@ -110,7 +110,6 @@ class RequestQuery
 
         if (in_array($statusId, $stateId)) {
             $query->where('requests.stateId', $statusId);
-
         }
 
         if ($orderFilter) {

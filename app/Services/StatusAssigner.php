@@ -272,7 +272,7 @@ class StatusAssigner{
     }
     public static function allowState($entity_type){
         try{
-            $requestStates = ['Pendiente', 'Rechazado', 'Aceptado'];
+            $requestStates = ['Pendiente', 'Rechazado', 'Aceptado','Completado','Anulado','Terminado'];
             $serviceStates = ['Pendiente', 'Terminado','Completado','Anulado'];
 
             if ($entity_type === 'request') {
