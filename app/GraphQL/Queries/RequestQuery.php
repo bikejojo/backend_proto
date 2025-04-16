@@ -150,7 +150,7 @@ class RequestQuery
             $clientId = $parameter['id_client'];
             $dateParameter = $parameter['visitDate'] ?? $now;
 
-            $requests = $this->getSolicitudesPorEstado($clientId,  $dateParameter);
+            $requests = $this->getServiceByState($clientId,  $dateParameter);
             //dd($requests);
             if ($requests->isEmpty()) {
                 return [
@@ -177,7 +177,7 @@ class RequestQuery
     /**
      * Obtiene las solicitudes en base al estado proporcionado.
      */
-    private function getSolicitudesPorEstado($clientId,  $dateParameter)
+    private function getServiceByState($clientId,  $dateParameter)
     {
 
         $query = DB::table('services as s')

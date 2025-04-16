@@ -353,7 +353,7 @@ class ServicioMutations
         DB::beginTransaction();
         try {
             $request = Solicitud::where('id',$service->requestsId)->first();
-                StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El servicio fue terminado por el tecnico.',5);
+                StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El servicio fue terminado por el tecnico.',6);
                 $request->stateId = 5;
                 $request->save();
             $detailTech->serviceDate = Carbon::now();

@@ -130,7 +130,7 @@ class StatusAssigner{
                 $objeto->status = 0;
                 $objeto->save();
             break;
-            case 5:
+            case 6:
                 $stateReference = new StateReference();
                     $stateReference->requestId = $objeto->id;
                     $stateReference->serviceId = null;
