@@ -704,7 +704,7 @@ class ServiceQuery
                 'servicePending' => Servicio::where('stateId',1)->count(),
                 'serviceFinish' => Servicio::where('stateId',4)->count(),
                 'serviceComplt' => Servicio::where('stateId',5)->count(),
-                //'serviceAnull' => Servicio::where('stateId',6)->count(),
+                'serviceAnull' => Servicio::where('stateId',6)->count(),
             ];
             $contentActivity = [
                 'serviceMant' => Servicio::where('activityId',1)->count(),
