@@ -1,6 +1,16 @@
 extend type Query {
-    getNotificationsTechnician(Input:requestNotification):response @field(resolver: "TypeNotificationQuery@getNotificationsTech" )
-    getNotificationsClient(requestNotification:JSON):response @field(resolver: "TypeNotificationQuery@getNotificationsClient" )
+    getNotificationsTechnician(Input:requestNotification):responseNotificationTech @field(resolver: "NotificationsQuery@getNotificationsTech" )
+    getNotificationsClient(Input:requestNotificationClient):responseNotificationClient @field(resolver: "NotificationsQuery@getNotificationsClient" )
+}
+
+input requestNotificationClient {
+    userClient:String
+}
+
+type responseNotificationClient {
+    message:String
+    client:InternalClient
+    notification:[getnotify]
 }
 
 input requestNotification {
@@ -14,11 +24,11 @@ type responseNotificationTech {
 }
 
 type getnotify {
+    actions_key:String
     sent_at:String
     title:String
     description:String
     data:String
-    code_notifications:String
     full_name:String
     phoneNumber:String
 }
