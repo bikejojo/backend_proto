@@ -1,12 +1,12 @@
 extend type Mutation {
    registerDeviceToken(deviceTokenRequest:JSON):DeviceTokenResponse @field(resolver: "DeviceTokenMutations@register")
-   
+
 }
 
 type DeviceTokenResponse {
     message:String
     token:String
-    success:String
+    success:Int
 }
 
 #import deviceToken.graphql
