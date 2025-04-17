@@ -12,21 +12,19 @@ class NotificationsDevice extends Model
     protected $primaryKey = 'id';
     protected $table = 'notifications_device';
     protected $fillable = [
+        'user_id',
         'device_id',
-        'token',
+        'expo_token',
         'is_active',
-        'date',
-        //'tokenable_type',
-        //'tokenable_id',
     ];
 
     protected $casts = [
-        'date' => 'datetime'
+        'is_active' => 'boolean',
     ];
 
-    /*public function tokenable()
+    public function user()
     {
-        return $this->morphTo();
-    }*/
+        return $this->belongsTo(User::class);
+    }
 }
 

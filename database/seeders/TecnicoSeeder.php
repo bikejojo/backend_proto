@@ -22,7 +22,7 @@ class TecnicoSeeder extends Seeder
     public function run(): void
     {
         User::factory()
-            ->count(10)
+            ->count(3)
             ->create()
             ->each(function ($user) {
                 // Por cada usuario, crear varios clientes internos

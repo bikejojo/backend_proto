@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('notifications_device', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // ID del usuario
-            $table->string('device_id'); // ID del dispositivo
+            $table->foreignId('device_id')->constrained('devices'); // ID del dispositivo
             $table->string('expo_token');      // Expo Push Token
             $table->boolean('is_active')->default(true);
-            $table->timestamp('dateCreate')->nullable();
+            //$table->timestamp('dateCreate')->nullable();
             $table->index('user_id');
             $table->unique('expo_token'); // muy recomendable
             $table->index('is_active');

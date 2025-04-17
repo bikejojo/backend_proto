@@ -13,19 +13,12 @@ class NotificationUser extends Model
     protected $table = 'notifications_user';
     protected $fillable = [
         'notification_id',
-        'recipient_id',
-        'recipient_type',
-        'sender_id',
-        'sender_type',
-        'is_read',
+        'user_id',
+        'type_users',
+        'expo_response',
+        //'is_read',
     ];
-    public function notification()
-    {
-        return $this->belongsTo(Notification::class, 'notification_id');
-    }
-
-    public function recipient()
-    {
-        return $this->morphTo();
-    }
+    /*protected $casts = [
+        'is_read' => 'boolean',
+    ];*/
 }

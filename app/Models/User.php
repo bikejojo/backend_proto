@@ -37,17 +37,13 @@ class User extends Authenticatable
 
     public function devices()
     {
-        return $this->belongsToMany(Devices::class, 'user_device');
+        return $this->hasMany(NotificationsDevice::class, 'user_id');
     }
+
 
     public function notificationRecipients()
     {
         return $this->morphMany(NotificationUser::class, 'recipient');
-    }
-
-    public function notificationTokens()
-    {
-        return $this->morphMany(DeviceNotifications::class, 'tokenable');
     }
 
     /**

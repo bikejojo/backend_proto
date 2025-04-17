@@ -32,8 +32,8 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             #'ci' => $this->faker->unique()->numerify('########'), tecnico usa ci para su registro y cliente no
             #'ci' => $this->faker->unique()->numerify(''), // Cliente Internos usar
-            'type_user' => 1, //codigos paara tecnico 1 y cliente interno 2
-            'ci' => 12345
+            'type_user' => 2, //codigos paara tecnico 1 y cliente interno 2
+            'ci' => ''
         ];
     }
 
