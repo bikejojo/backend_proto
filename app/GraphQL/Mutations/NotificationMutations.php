@@ -4,15 +4,14 @@ namespace App\GraphQL\Mutations;
 
 use App\Jobs\SendNotificationJob;
 use App\Models\Notification;
+use App\Models\NotificationsDevice;
+use App\Models\NotificationUser;
+use App\Models\DevicesUser;
+use App\Models\Devices;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use App\Helpers\ImageHelper;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
-
+use App\Services\DiccionaryNotifications;
 
 class NotificationMutations
 {
@@ -26,35 +25,70 @@ class NotificationMutations
     }
     public function send($root, array $args)
     {
+        $input = $args['Input'];
+        $actionKey = $input['action_key'];
+        $config = DiccionaryNotifications::getByKey($actionKey);
+
+        if(!$config){
+            return [
+                'message' => 'No se encontró la configuración para la acción especificada.',
+                'success' => false
+            ];
+        }
+        $senderDevice = Devices::where('expo_token', $input['senderDevice'])->first();
+        $senderUser = DevicesUser::where('device_id', $senderDevice->id)->first();
+
+        if(!$senderUser || !$senderDevice){
+            return [
+                'message' => 'No se encontró el dispositivo o el usuario para el dispositivo especificado.',
+                'success' => false
+            ];
+        }
+
+        $userIdSender = $senderUser->users_id;
+
+        $userType = User::where('id',$userIdSender)->first();
+        $userTypeSender = $userType->type_user;
+        //dd($userTypeSender);
+        if(!$userIdSender){
+            return [
+                'message' => 'No se encontró el usuario para el dispositivo especificado.',
+                'success' => false
+            ];
+        }
+
         DB::beginTransaction();
         try{
-            $input = $args['input'];
-            $notifications = Notification::create([
-                'title' => $input['title'],
-                'body' => $input['body'],
-                'data' => $input['data'] ?? null,
-                'type' => (string) $input['type'],
-                'datetime_send' => $input['datetime_send'] ?? Carbon::now(),
-                'status' => $input['status'],
-            ]);
-            if(!$notifications){
-                DB::rollBack();
-                return [
-                    'message'=>'Error al crear la notificacion.' ,
-                    'success'=>false,
-                    'notification'=>null,
-                ];
+
+            $notification = new Notification();
+                $notification->action_key = $config['action_key'] ??  $actionKey;
+                $notification->title = $config['title'];
+                $notification->body = $config['body'] ?? $input['body'];
+                $notification->data = $input['data'] ?? null;
+                $notification->type = $config['type'] ?? 'message';
+                $notification->send_at = now();
+                $notification->status = $config['status'] ?? $input['status'];
+                $notification->sender_id = $userIdSender;
+                $notification->type_users = $userTypeSender;
+            $notification->save();
+            foreach ($input['receivers'] as $receiversIds ){
+                $receiver = User::find($receiversIds);
+                //dd($receiver);
+                if(!$receiver) continue;
+
+                $receiversUser = $receiver->id;
+                $receiversType = $receiver->type_user;
+
+                $notificationsUsers = new NotificationUser();
+                    $notificationsUsers->notification_id = $notification->id;
+                    $notificationsUsers->user_id = $receiversUser;
+                    $notificationsUsers->type_users = $receiversType;
+                    $notificationsUsers->expo_response = $senderDevice->expo_token;
+                $notificationsUsers->save();
             }
 
-            $dataJob = [
-                'sender_id'    => $input['data']['sender_userid'] ?? null,
-                'recipient_id' => $input['data']['recipient_userid'] ?? [],
-                'expo_token'   => $input['data']['token_user'] ?? null,
-                'device'       => $input['data']['device_id'] ?? null,
+            SendNotificationJob::dispatch($notification->id);
 
-            ];
-            Log::info('[MUTATION] Despachando job para notificación ID: ' . $notifications->id);
-            SendNotificationJob::dispatch($notifications,$dataJob['sender_id'],$dataJob);
             DB::commit();
             return [
                 'message' => 'Notificaciones enviadas exitosamente.',

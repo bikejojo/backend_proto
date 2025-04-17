@@ -19,14 +19,14 @@ class DiccionaryNotifications
         return [
 
             'request_sent' => [
-                'title' => 'Solicitud enviada',
-                'body' => 'Solicitud enviada al tecnico.',
+                'title' => 'Su solicitud fue enviada',
+                'body' => 'La solicitud fue enviada al tecnico.',
                 'type' => 'solicitud',
                 'type_users' => ['1','2'],
             ],
             'request_accepted' => [
                 'title' => 'Solicitud aceptada por el tecnico.',
-                'body' => 'Se acepto la solicitud del cliente.',
+                'body' => 'Su solicitud esta agendada.',
                 'type' => 'solicitud',
                 'type_users' => ['1','2'],
             ],
@@ -44,10 +44,10 @@ class DiccionaryNotifications
         return
         [
             'services_anull_client' => [
-            'title' => 'Servicio anulado por el cliente.',
-            'body' => 'El cliente ha anulado el servicio.',
-            'type' => 'servicio',
-            'type_users' => ['1','2'],
+                'title' => 'Servicio anulado por el cliente.',
+                'body' => 'El cliente ha anulado el servicio.',
+                'type' => 'servicio',
+                'type_users' => ['1','2'],
             ],
 
             'services_anull_tech' => [
@@ -58,15 +58,15 @@ class DiccionaryNotifications
             ],
 
             'services_finish_tech' => [
-                'title' => 'Servicio finalizado por el tecnico.',
-                'body' => 'El tecnico ha finalizado el servicio.',
+                'title' => 'El servicio a sido finalizado por el tecnico.',
+                'body' => 'El tecnico dio como finalizado el servicio.',
                 'type' => 'servicio',
                 'type_users' => ['1','2'],
             ],
 
             'services_finish_client' => [
-                'title' => 'Servicio finalizado por el cliente.',
-                'body' => 'El cliente ha finalizado el servicio.',
+                'title' => 'El servicio ha sido finalizado por el cliente.',
+                'body' => 'El cliente dio como finalizado el servicio.',
                 'type' => 'servicio',
                 'type_users' => ['1','2'],
             ],
@@ -87,7 +87,7 @@ class DiccionaryNotifications
                 'type' => 'suscripcion',
                 'type_users' => ['1'],
             ],
-            'termine_suscription' => [
+            'terminate_suscription' => [
                 'title' => 'Suscripcion terminada.',
                 'body' => 'La suscripcion ha terminado.',
                 'type' => 'suscripcion',

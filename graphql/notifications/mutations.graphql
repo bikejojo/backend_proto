@@ -1,14 +1,16 @@
 extend type Mutation {
-    sendNotifications( input:sendNotificationInput ): notificationsResponse @field(resolver: "NotificationMutations@send")
+    sendNotifications( Input:sendNotificationInput ): notificationsResponse @field(resolver: "NotificationMutations@send")
 }
 
 input sendNotificationInput {
-    title: String
-    body:String
     data:JSON
+    action_key:String
     type:notificationTypeEnum
-    datetime_send:String
-    status:String
+    senderDevice:String
+    send_at:String
+    status:statusEnum
+    sender_token:String
+    receivers:[String]
 }
 
 enum notificationTypeEnum {
@@ -19,6 +21,13 @@ enum notificationTypeEnum {
     promocion       #promocion
     publicidad      #publicidad
     mensaje         #mensaje
+}
+
+enum statusEnum {
+    enviada
+    pendiente
+    fallida
+    cancelada
 }
 
 type notificationsResponse {
