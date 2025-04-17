@@ -48,7 +48,7 @@ class DeviceTokenMutations
                         'success' => 2
                     ];
                 }
-                
+
                 DB::commit();
                 return [
                     'message'=>'Registro exitoso del equipo en el servidor.',
@@ -60,11 +60,11 @@ class DeviceTokenMutations
                 $deviceExists->expo_token = $requestDevice['expo_token'];
                 $deviceExists->save();
                 $userId = ValidationModels::validation_user($requestDevice['userId']);
+                //dd($userId);
                 if($userId){
-                    $deviceUser = DevicesUser::updateOrCreate([
-                        'device_id'=>$deviceExists->id,
-                        'users_id'=> $userId->first()->id,
-                    ]);
+                    $deviceUser = DevicesUser::where('device_id',$deviceExists->id)->first();
+                        $deviceUser->users_id = $userId->id;
+                        $deviceUser->save();
 
                     if(!$deviceUser){
                         DB::rollBack();
@@ -75,7 +75,7 @@ class DeviceTokenMutations
                     }
                     DB::commit();
                     return [
-                        'message'=>'Registro exitoso del equipo en el servidor.',
+                        'message'=>'Actualizacion exitoso del equipo en el servidor.',
                         'token'=> $deviceExists->expo_token,
                         'success'=>1,
                     ];
