@@ -21,19 +21,19 @@ class DiccionaryNotifications
             'request_sent' => [
                 'title' => 'Su solicitud fue enviada',
                 'body' => 'La solicitud fue enviada al tecnico.',
-                'type' => 'solicitud',
+                'type' => 'solicitud enviada',
                 'type_users' => ['1','2'],
             ],
             'request_accepted' => [
                 'title' => 'Solicitud aceptada por el tecnico.',
                 'body' => 'Su solicitud esta agendada.',
-                'type' => 'solicitud',
+                'type' => 'solicitud Aceptada',
                 'type_users' => ['1','2'],
             ],
             'request_rejected' => [
                 'title' => 'Solicitud rechazada por el tecnico.',
                 'body' => 'Se rechazo la solicitud del cliente.',
-                'type' => 'solicitud',
+                'type' => 'solicitud Rechaza',
                 'type_users' => ['1','2'],
             ],
 

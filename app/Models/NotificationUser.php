@@ -16,6 +16,7 @@ class NotificationUser extends Model
         'user_id',
         'type_users',
         'expo_response',
+        'created_at',
         //'is_read',
     ];
     /*protected $casts = [

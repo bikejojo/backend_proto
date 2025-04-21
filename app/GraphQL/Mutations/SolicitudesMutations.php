@@ -11,6 +11,7 @@ use App\Models\Tecnico;
 use App\Models\Lists_Internal_Client;
 use App\Services\StateCatalog;
 use App\Services\StatusAssigner;
+use App\Events\SolicitudCreada;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -64,6 +65,8 @@ class SolicitudesMutations
                 //$request->registrationDateTime = $this->now;
                 $request->save();
 
+                event(new SolicitudCreada($request));
+
                 $historial = new Historial_Servicios();
                     $historial->clientId = $client->id;
                     $historial->technicianId = $technician->id;
@@ -72,7 +75,7 @@ class SolicitudesMutations
                     $historial->stateId = $request->stateId;
                     $historial->outsetDate = $request->registrationDateTime;
                     $historial->description = $request->requestDescription;
-                    $historial->save();
+                $historial->save();
 
                 $request = Solicitud::find($request->id);
                 DB::commit();
