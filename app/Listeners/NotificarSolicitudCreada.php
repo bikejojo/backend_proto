@@ -64,10 +64,18 @@ class NotificarSolicitudCreada
             $notification->status = 1;
             $notification->sender_id = $user->id;
             $notification->save();
+        $userRecept = Tecnico::find($solicitud->technicianId);
+        $userReceive = User::where('id',$userRecept->userId)->first();
+
+        $device = DevicesUser::where('users_id',$userRecept->userId)->first();
+        $deviceUser = Devices::where('id',$device->device_id)->first();
+
         $notificationsUsers = new NotificationUser();
-            $notificationsUsers;
-            $notificationsUsers;
-            $notificationsUsers;
-            $notificationsUsers;
+            $notificationsUsers->created_at = $this->now;
+            $notificationsUsers->expo_response = $deviceUser->expo_token;
+            $notificationsUsers->user_id = $userReceive->id;
+            $notificationsUsers->type_users = $userReceive->type_user;
+            $notificationsUsers->notification_id = $notification->id;
+        $notificationsUsers->save();
     }
 }
