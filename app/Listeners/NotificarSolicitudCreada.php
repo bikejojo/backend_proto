@@ -30,7 +30,7 @@ class NotificarSolicitudCreada
     public function __construct()
     {
         //
-        $this->now = Carbon::now()->format('Ymd_His');
+        $this->now = Carbon::now();
     }
 
     /**
@@ -54,9 +54,9 @@ class NotificarSolicitudCreada
             'estado del servicio' => $config['type'],
             'id' => $solicitud->id,
         ];
-
+        //dd($data);
         $notification = new Notification();
-        //dd($user);
+        //dd($notification);
             $notification->action_key = $actionKey;
             $notification->title = $config['title'];
             $notification->body = $config['body'];
@@ -66,19 +66,19 @@ class NotificarSolicitudCreada
             $notification->send_at = Carbon::now();
             $notification->status ='enviada';
             $notification->sender_id = $user->id;
-            $notification->save();
+        $notification->save();
         $userRecept = Tecnico::find($solicitud->technicianId);
         $userReceive = User::where('id',$userRecept->userId)->first();
 
         $device = DevicesUser::where('users_id',$userRecept->userId)->first();
         $deviceUser = Devices::where('id',$device->device_id)->first();
 
-        $notificationsDevice = new NotificationsDevice();
+        /*$notificationsDevice = new NotificationsDevice();
             $notificationsDevice->user_id = $userReceive->id;
             $notificationsDevice->device_id = $deviceUser->id;
             $notificationsDevice->expo_token = $deviceUser->expo_token;
             $notificationsDevice->is_active = true;
-        $notificationsDevice->save();
+        $notificationsDevice->save();*/
 
         $notificationsUsers = new NotificationUser();
             $notificationsUsers->created_at = Carbon::now();

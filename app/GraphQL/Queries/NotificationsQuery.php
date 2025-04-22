@@ -103,7 +103,7 @@ class NotificationsQuery
                     'status' => '2'
                 ];
             }
-            dd($user);
+            //d($user);
             $notifications = Notification::where('type_users', '2')
                 ->where('sender_id', $user->id)
                 ->orderBy('send_at', 'desc')
