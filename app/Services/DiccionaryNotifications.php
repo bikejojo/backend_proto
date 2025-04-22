@@ -106,6 +106,25 @@ class DiccionaryNotifications
         ];
     }
 
+    public static function getUser(){
+        return [
+            'technician_password' => [
+                'title' => 'Cambio de contraseña.',
+                'body' => 'Su contraseña ha sido cambiada.',
+                'type' => 'usuario',
+                'type_users' => ['1'],
+            ],
+
+            'reset_subcription_tech'=>[
+                'title' => 'Renovacion de suscripcion.',
+                'body' => 'Su suscripcion ha sido renovada.',
+                'type' => 'usuario',
+                'type_users' => ['1'],
+            ],
+            
+        ];
+    }
+
 
     public static function getByKey(string $key)
     {
@@ -114,6 +133,7 @@ class DiccionaryNotifications
         $service = self::getService();
         $suscription = self::getSuscription();
         $qualification = self::getQualification();
+        $user = self::getUser();
 
         if (array_key_exists($key, $notifications)) {
             return $notifications[$key];

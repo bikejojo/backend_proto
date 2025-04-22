@@ -7,12 +7,14 @@ use App\Models\Agenda_Tecnico;
 use App\Models\Tecnico;
 use App\Models\Tecnico_Habilidad;
 use App\Models\User;
+use App\Events\PasswordChanged;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Helpers\ImageHelper;
+use Illuminate\Support\Facades\Password;
 
 class TecnicoMutations {
     protected $app;
@@ -288,6 +290,10 @@ class TecnicoMutations {
             $user->password=Hash::make($new_password);
             $user->save();
             DB::commit();
+
+            //event de resetPassword
+            event(new PasswordChanged($user));
+
             return [
                 'message' => 'Contraseña restablecida para el tecnico.',
                 'result' => true
