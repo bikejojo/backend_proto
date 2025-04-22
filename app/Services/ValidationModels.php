@@ -35,6 +35,7 @@ class ValidationModels{
     }
 
     public static function validationclientInternal($objeto){
+        //dd(Cliente_Interno::where('id',$objeto)->first());
         if(!Cliente_Interno::find($objeto)){
             return[
                 'message' => 'No existe Cliente Interno.'

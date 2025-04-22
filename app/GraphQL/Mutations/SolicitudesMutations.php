@@ -2,6 +2,8 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Events\SolicitudAceptada;
+use App\Events\SolicitudCancelada;
 use App\Models\Cliente_Interno;
 use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Historial_Servicios;
@@ -45,6 +47,7 @@ class SolicitudesMutations
             $clientId =$requestData['id_client'];
             $technician = ValidationModels::validationTechnician($technicianId);
             $client = ValidationModels::validationclientInternal($clientId);
+            //dd($client);
             DB::beginTransaction();
             try{
                 $request = new Solicitud();
@@ -64,7 +67,7 @@ class SolicitudesMutations
                 StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El cliente creo una solicitud nueva.',1);
                 //$request->registrationDateTime = $this->now;
                 $request->save();
-
+                //dd($request);
                 event(new SolicitudCreada($request));
 
                 $historial = new Historial_Servicios();
@@ -106,6 +109,8 @@ class SolicitudesMutations
         StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,$comments,2);
         $_request = Solicitud::find($request->id);
         $request->save();
+        //dd($request);
+        event(new SolicitudCancelada($request));
         return[
             'message'=>'Solicitud rechazada por el tecnico',
             'requests'=>$_request,
@@ -212,6 +217,7 @@ class SolicitudesMutations
             StatusAssigner::assignStatService($service,$this->now,StatusAssigner::ENTITY_SERVICE,$_comments,1);
             $service->save();
 
+            event(new SolicitudAceptada($service));
             $serviceId = $service->id;
             $agendaId = $agenda->id;
 

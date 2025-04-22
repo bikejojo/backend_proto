@@ -121,7 +121,7 @@ class DiccionaryNotifications
                 'type' => 'usuario',
                 'type_users' => ['1'],
             ],
-            
+
         ];
     }
 
@@ -145,6 +145,8 @@ class DiccionaryNotifications
             return $suscription[$key];
         } elseif (array_key_exists($key, $qualification)) {
             return $qualification[$key];
+        } elseif (array_key_exists($key, $user)) {
+            return $user[$key];
         }
 
         return null;

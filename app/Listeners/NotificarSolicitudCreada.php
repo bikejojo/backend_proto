@@ -46,8 +46,8 @@ class NotificarSolicitudCreada
         $userClient = Cliente_Interno::where('id',$solicitud->clientId)->first();
         $user = User::where('id',$userClient->userId)->first();
         $data = [
-            'full_name' => Tecnico::where('id',$solicitud->technicianId)->select(DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) As full_name'))->first(),
-            'rate' => Tecnico::where('id',$solicitud->technicianId)->select('average_rating')->first(),
+            'full_name' => Tecnico::where('id',$solicitud->technicianId)->select(DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\') ) AS full_name '))->first(),
+            'rate' => Tecnico::where('id',$solicitud->technicianId)->select('average_rating As rate')->first(),
             'actividad' => $solicitud->activityId ,
             'ubicacion' => 'lat:' . $solicitud->latitude . ' ' . 'lng:' . $solicitud->longitude,
             'referencia ubicacion' => $solicitud->serviceLocation,
@@ -64,7 +64,7 @@ class NotificarSolicitudCreada
             $notification->type = 'solicitud';
             $notification->type_users = $user->type_user;
             $notification->send_at = Carbon::now();
-            $notification->status ='enviada';
+            $notification->status = 2;
             $notification->sender_id = $user->id;
         $notification->save();
         $userRecept = Tecnico::find($solicitud->technicianId);
@@ -73,16 +73,9 @@ class NotificarSolicitudCreada
         $device = DevicesUser::where('users_id',$userRecept->userId)->first();
         $deviceUser = Devices::where('id',$device->device_id)->first();
 
-        /*$notificationsDevice = new NotificationsDevice();
-            $notificationsDevice->user_id = $userReceive->id;
-            $notificationsDevice->device_id = $deviceUser->id;
-            $notificationsDevice->expo_token = $deviceUser->expo_token;
-            $notificationsDevice->is_active = true;
-        $notificationsDevice->save();*/
-
         $notificationsUsers = new NotificationUser();
             $notificationsUsers->created_at = Carbon::now();
-            $notificationsUsers->expo_response = $deviceUser->expo_token;
+            $notificationsUsers->expo_response = null ;
             $notificationsUsers->user_id = $userReceive->id;
             $notificationsUsers->type_users = $userReceive->type_user;
             $notificationsUsers->notification_id = $notification->id;
