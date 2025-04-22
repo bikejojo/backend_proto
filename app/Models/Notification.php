@@ -16,6 +16,7 @@ class Notification extends Model
         'body',
         'data',
         'type',
+        'type_users',
         'send_at',
         'status',
         'sender_id',
