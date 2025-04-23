@@ -29,7 +29,7 @@ class NotificarSolicitudCreada
 
     public function __construct()
     {
-        //
+        Carbon::setLocale('es');
         $this->now = Carbon::now();
     }
 

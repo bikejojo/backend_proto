@@ -26,6 +26,7 @@ class NotificarSolicitudCancelada
 
     public function __construct()
     {
+        Carbon::setLocale('es');
         $this->now = Carbon::now();
     }
 
@@ -46,14 +47,21 @@ class NotificarSolicitudCancelada
         $userSend = User::where('id',$userTechnician->userId)->first(); //usuario quien manda
         $data = [
             'full_name' => $userTechnician->firstName . ' ' . $userTechnician->lastName,
+            'photo'=>$userTechnician->photo,
+            'phonoNumber'=>$userTechnician->phoneNumber,
             'rate' => $userTechnician->average_rating,
+            /**------------------------------------ */
+            'title'=>$solicitud->titleRequests,
+            'serviceDescription'=>$solicitud->requestDescription,
+            'visitDate'=>$solicitud->registationDateTime,
             'actividad' => $solicitud->activityId,
-            'ubicacion' => 'lat:' . $solicitud->latitude . ' ' . 'lng:' . $solicitud->longitude,
+            'latitude'=> $solicitud->latitude,
+            'longitude'=> $solicitud->longitude,
             'referencia ubicacion' => $solicitud->serviceLocation,
-            'estado del servicio' => $config['type'],
+            'estado del servicio' => 4,
+            'tipo notificacion' => 1,
             'id' => $solicitud->id,
         ];
-
         $notification = new Notification();
             $notification->action_key = $actionKey;
             $notification->title = $config['title'];
@@ -64,6 +72,7 @@ class NotificarSolicitudCancelada
             $notification->send_at = Carbon::now();
             $notification->status = 4;
             $notification->sender_id = $userSend->id;
+
         $notification->save();
 
         $notificationUser = new NotificationUser();
