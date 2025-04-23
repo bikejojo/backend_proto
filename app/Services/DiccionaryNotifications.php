@@ -21,19 +21,22 @@ class DiccionaryNotifications
             'request_sent' => [
                 'title' => 'Su solicitud fue enviada',
                 'body' => 'La solicitud fue enviada al tecnico.',
-                'type' => 'solicitud enviada',
+                'type' => 1,
+                'status' => 2,
                 'type_users' => ['1','2'],
             ],
             'request_accepted' => [
-                'title' => 'Solicitud aceptada por el tecnico.',
-                'body' => 'Su solicitud esta agendada.',
-                'type' => 'solicitud Aceptada',
+                'title' => 'Su solicitud fue aceptada por el tecnico.',
+                'body' => 'Su solicitud esta agendada para el dia : ',
+                'type' => 2, //esto pasa a hacer 2 y no 1
+                'status' => 3,
                 'type_users' => ['1','2'],
             ],
             'request_rejected' => [
                 'title' => 'Solicitud rechazada por el tecnico.',
-                'body' => 'Se rechazo la solicitud del cliente.',
-                'type' => 'solicitud Rechaza',
+                'body' => 'Se rechazo la solicitud para el dia: ',
+                'type' => 1,
+                'status' => 4,
                 'type_users' => ['1','2'],
             ],
 
@@ -44,30 +47,34 @@ class DiccionaryNotifications
         return
         [
             'services_anull_client' => [
-                'title' => 'Servicio anulado por el cliente.',
-                'body' => 'El cliente ha anulado el servicio.',
-                'type' => 'servicio',
+                'title' => 'El servicio  fue anulado por el cliente.',
+                'body' => 'El cliente ha anulado el servicio el dia: ',
+                'type' => 2,
+                'status' => 5,
                 'type_users' => ['1','2'],
             ],
 
             'services_anull_tech' => [
                 'title' => 'Servicio anulado por el tecnico.',
-                'body' => 'El tecnico ha anulado el servicio.',
-                'type' => 'servicio',
+                'body' => 'El tecnico ha anulado el servicio el dia: ',
+                'type' => 2,
+                'status' => 5,
                 'type_users' => ['1','2'],
             ],
 
             'services_finish_tech' => [
                 'title' => 'El servicio a sido finalizado por el tecnico.',
                 'body' => 'El tecnico dio como finalizado el servicio.',
-                'type' => 'servicio',
+                'type' => 2,
+                'status' => 7,
                 'type_users' => ['1','2'],
             ],
 
             'services_finish_client' => [
                 'title' => 'El servicio ha sido finalizado por el cliente.',
-                'body' => 'El cliente dio como finalizado el servicio.',
-                'type' => 'servicio',
+                'body' => 'El cliente dio como completado al servicio.',
+                'type' => 2,
+                'status' => 6,
                 'type_users' => ['1','2'],
             ],
         ];
@@ -100,7 +107,8 @@ class DiccionaryNotifications
             'qualification_done' => [
                 'title' => 'Calificacion realizada.',
                 'body' => 'El cliente ha calificado el servicio.',
-                'type' => 'servicio',
+                'type' => 2,
+                'status' => 6,
                 'type_users' => ['1','2'],
             ],
         ];
