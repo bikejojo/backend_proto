@@ -61,7 +61,7 @@ class NotificarSolicitudCreada
             $notification->title = $config['title'];
             $notification->body = $config['body'];
             $notification->data = json_encode($data);
-            $notification->type = 'solicitud';
+            $notification->type = 1;
             $notification->type_users = $user->type_user;
             $notification->send_at = Carbon::now();
             $notification->status = 2;

@@ -45,8 +45,8 @@ class NotificarSolicitudCancelada
         $userTechnician = Tecnico::where('id', $solicitud->technicianId)->first(); //quien manda
         $userSend = User::where('id',$userTechnician->userId)->first(); //usuario quien manda
         $data = [
-            'full_name' => Tecnico::where('id', $solicitud->technicianId)->select(DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\') ) AS full_name '))->first(),
-            'rate' => Tecnico::where('id', $solicitud->technicianId)->select('average_rating As rate')->first(),
+            'full_name' => $userTechnician->firstName . ' ' . $userTechnician->lastName,
+            'rate' => $userTechnician->average_rating,
             'actividad' => $solicitud->activityId,
             'ubicacion' => 'lat:' . $solicitud->latitude . ' ' . 'lng:' . $solicitud->longitude,
             'referencia ubicacion' => $solicitud->serviceLocation,
@@ -59,7 +59,7 @@ class NotificarSolicitudCancelada
             $notification->title = $config['title'];
             $notification->body = $config['body'];
             $notification->data = json_encode($data);
-            $notification->type = $config['type'];
+            $notification->type = 1;
             $notification->type_users = $userSend->type_user;
             $notification->send_at = Carbon::now();
             $notification->status = 4;
