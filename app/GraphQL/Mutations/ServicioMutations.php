@@ -2,6 +2,9 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Events\ServicioAnulado;
+use App\Events\ServicioCompletado;
+use App\Events\ServicioTerminado;
 use App\Models\Servicio;
 use App\Models\Cliente_Externo;
 use Carbon\Carbon;
@@ -309,7 +312,7 @@ class ServicioMutations
             $service->save();
 
             if($service->finishDateTime_client != null || $service->finishDateTime_technician != null){
-                StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,6);
+                StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,7);
                 $service->save();
             }
             $_service = Servicio::find($service->id);
@@ -366,7 +369,7 @@ class ServicioMutations
                 $service->save();
             }
             $_service = Servicio::find($service->id);
-
+            event(new ServicioCompletado($service));
             /*if(!is_null($_service->finishDateTime_client)){
                 $_service->stateId = 5;
                 $_service->save();
@@ -405,6 +408,7 @@ class ServicioMutations
                 }
                 StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'Se cancelo el servicio y la solicitud',5);
                 $service->stateId = 6;
+                event(new ServicioAnulado($service,'services_anull_tech'));
                 //$service->updatedDateTime = Carbon::now();
                 $service->status = 1;
                 $service->save();

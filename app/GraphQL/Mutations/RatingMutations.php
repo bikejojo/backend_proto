@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Events\ServicioCompletado;
 use App\Models\Tecnico;
 use Illuminate\Support\Facades\DB;
 use App\Models\Servicio;
@@ -65,6 +66,7 @@ class RatingMutations{
                 $service->stateId = 4;
                 $service->finishDateTime_client = now();
                 $service->save();
+                event(new ServicioCompletado($service));
                 $request= Solicitud::where('id',$service->requestsId )->first();
                 if(!$request){
                     DB::rollBack();
