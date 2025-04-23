@@ -49,6 +49,7 @@ class SendNotificationJob implements ShouldQueue
             }
 
             $user  = $notification->recipients()->where('user_id',$this->receptorId)->first();
+            //dd($user);
             if(!$user){
                 Log::warning("[JOB] Usuario {$this->receptorId} no encontrado para la notificación {$this->notificationId}.");
                 return [
@@ -66,8 +67,10 @@ class SendNotificationJob implements ShouldQueue
                 'data' => json_decode($notification->data, true),
             ]);
 
+            //dd($response->json());
+
             NotificationUser::where('notification_id', $notification->id)
-            ->where('user_id', $this->userId)
+            ->where('user_id', $user->id)
             ->update([
                 'expo_response' => json_encode($response->json()),
             ]);
