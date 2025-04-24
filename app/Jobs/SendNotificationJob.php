@@ -67,7 +67,7 @@ class SendNotificationJob implements ShouldQueue
                 'data' => json_decode($notification->data, true),
             ]);
 
-            //dd($response->json());
+            //dd($response);
 
             NotificationUser::where('notification_id', $notification->id)
             ->where('user_id', $user->id)

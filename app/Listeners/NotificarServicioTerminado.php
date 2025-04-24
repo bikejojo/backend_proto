@@ -6,6 +6,7 @@ use App\Services\DiccionaryNotifications;
 use App\Events\ServicioTerminado;
 use App\Jobs\SendNotificationJob;
 use App\Models\NotificationUser;
+use App\Jobs\QualificationTech;
 use App\Models\Cliente_Interno;
 use App\Models\Servicio;
 use App\Models\Tecnico;
@@ -66,5 +67,6 @@ class NotificarServicioTerminado
         $notificationsUser->save();
 
         SendNotificationJob::dispatch($notification->id, $userReceive->id);
+        QualificationTech::dispatch($notification->id,$userReceive->id,$actionKey);
     }
 }

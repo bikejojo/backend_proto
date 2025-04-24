@@ -28,3 +28,7 @@ Artisan::command('subscriptions:disable-expired',function(){
 Artisan::command('request:Expired',function(){
     $this->call(\App\Console\Commands\UpdateExpiredRequests::class);
 });
+
+Artisan::command('app:record-appointments',function(){
+    $this->call(\App\Console\Commands\RecordAppointments::class);
+});

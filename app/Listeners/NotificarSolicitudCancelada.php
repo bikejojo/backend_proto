@@ -62,10 +62,12 @@ class NotificarSolicitudCancelada
             'tipo notificacion' => 1,
             'id' => $solicitud->id,
         ];
+        $fecha = Carbon::parse($solicitud->registrationDateTime);
+        $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');
         $notification = new Notification();
             $notification->action_key = $actionKey;
             $notification->title = $config['title'];
-            $notification->body = $config['body'];
+            $notification->body = str_replace('{fecha}', $completo, $config['body']);;
             $notification->data = json_encode($data);
             $notification->type = 1;
             $notification->type_users = $userSend->type_user;

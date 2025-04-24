@@ -19,22 +19,22 @@ class DiccionaryNotifications
         return [
 
             'request_sent' => [
-                'title' => 'Su solicitud fue enviada',
-                'body' => 'La solicitud fue enviada al tecnico.',
+                'title' => '¡Tu solicitud fue enviada!',
+                'body' => 'Hemos enviado tu solicitud al técnico. Te avisaremos cuando la acepte.',
                 'type' => 1,
                 'status' => 2,
                 'type_users' => ['1','2'],
             ],
             'request_accepted' => [
-                'title' => 'Su solicitud fue aceptada por el tecnico.',
-                'body' => 'Su solicitud esta agendada para el dia : ',
+                'title' => '¡Solicitud aceptada! ✅',
+                'body' => 'El técnico ha aceptado tu solicitud. Está programada para el día: ',
                 'type' => 2, //esto pasa a hacer 2 y no 1
                 'status' => 3,
                 'type_users' => ['1','2'],
             ],
             'request_rejected' => [
-                'title' => 'Solicitud rechazada por el tecnico.',
-                'body' => 'Se rechazo la solicitud para el dia: ',
+                'title' => 'Solicitud rechazada ❌',
+                'body' => 'Tu solicitud fue rechazada del día programado {fecha}. Puedes volver a intentarlo. ',
                 'type' => 1,
                 'status' => 4,
                 'type_users' => ['1','2'],
@@ -47,34 +47,34 @@ class DiccionaryNotifications
         return
         [
             'services_anull_client' => [
-                'title' => 'El servicio  fue anulado por el cliente.',
-                'body' => 'El cliente ha anulado el servicio el dia: ',
+                'title' => 'Servicio  anulado ❌',
+                'body' => 'El cliente ha anulado el servicio programado para el día: ',
                 'type' => 2,
                 'status' => 5,
                 'type_users' => ['1','2'],
             ],
 
             'services_anull_tech' => [
-                'title' => 'Servicio anulado por el tecnico.',
-                'body' => 'El tecnico ha anulado el servicio el dia: ',
+                'title' => 'Servicio anulado ❌',
+                'body' => 'El tecnico ha anulado el servicio programado para el día: ',
                 'type' => 2,
                 'status' => 5,
                 'type_users' => ['1','2'],
             ],
 
             'services_finish_tech' => [
-                'title' => 'El servicio a sido finalizado por el tecnico.',
-                'body' => 'El tecnico dio como finalizado el servicio.',
+                'title' => 'Servicio terminado 🔧',
+                'body' => 'El técnico ',
                 'type' => 2,
-                'status' => 7,
+                'status' => 6,
                 'type_users' => ['1','2'],
             ],
 
             'services_finish_client' => [
-                'title' => 'El servicio ha sido finalizado por el cliente.',
-                'body' => 'El cliente dio como completado al servicio.',
+                'title' => 'Servicio completado 🔧',
+                'body' => '¡El cliente marcado el servicio como finalizado!',
                 'type' => 2,
-                'status' => 6,
+                'status' => 7,
                 'type_users' => ['1','2'],
             ],
         ];
@@ -105,11 +105,15 @@ class DiccionaryNotifications
     public static function getQualification(){
         return[
             'qualification_done' => [
-                'title' => 'Calificacion realizada.',
-                'body' => 'El cliente ha calificado el servicio.',
+                'title' => 'Calificacion realizada!! ✅.',
+                'body' => 'El cliente califico el servicio!!.',
                 'type' => 2,
                 'status' => 6,
                 'type_users' => ['1','2'],
+            ],
+            'qualification_c' => [
+                'title' => '¿Qué te pareció el servicio?' ,
+                'body' => '¡Califícanos! ⭐️' ,
             ],
         ];
     }
@@ -133,6 +137,23 @@ class DiccionaryNotifications
         ];
     }
 
+    public static function getRecordAgenda(){
+        return [
+            'record_client'=>[
+                'title'=>'¡Recordatorio de servicio! ⏰',
+                'body'=>'Recuerda que pronto recibirás la visita del técnico.',
+                'type'=>6,
+                'type_users'=>'[1,2]',
+            ],
+
+            'record_technician'=>[
+                'title'=>'¡Recordatorio de servicio! 📅',
+                'body'=>'Tienes una cita próxima. ¡Prepárate para asistir!',
+                'type'=>6,
+                'type_users'=>'[1,2]',
+            ],
+        ];
+    }
 
     public static function getByKey(string $key)
     {
