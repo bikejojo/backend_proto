@@ -95,8 +95,8 @@ class DiccionaryNotifications
                 'type_users' => ['1'],
             ],
             'terminate_suscription' => [
-                'title' => 'Suscripcion terminada.',
-                'body' => 'La suscripcion ha terminado.',
+                'title' => '🔒 Tu cuenta está por expirar',
+                'body' => 'Tu suscripción vence el {fecha}. ¡Aún estás a tiempo de renovarla!',
                 'type' => 'suscripcion',
                 'type_users' => ['1'],
             ],
