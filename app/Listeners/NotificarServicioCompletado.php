@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Services\DiccionaryNotifications;
 use App\Events\ServicioCompletado;
+use App\Jobs\QualificationTech;
 use App\Jobs\SendNotificationJob;
 use App\Models\NotificationUser;
 use App\Models\Cliente_Interno;
@@ -33,9 +34,9 @@ class NotificarServicioCompletado
     public function handle(ServicioCompletado $event): void
     {
         $service = $event->service;
-        $actionKey = 'services_finish_client';
+        $actionKey = 'services_finish_tech';
         $config = DiccionaryNotifications::getByKey($actionKey);
-        $userTech = Tecnico::where('id', $service->technicianId)->first(); //quien manda
+        $userTech = Tecnico::where('id', $service->technicalId)->first(); //quien manda
         $userSend = User::where('id', $userTech->userId)->first(); //usuario quien manda
         $userClie = Cliente_Interno::where('id', $service->clientId)->first(); //quien recibe
         $userReceive = User::where('id', $userClie->userId)->first(); //usuario quien recibe
@@ -68,5 +69,6 @@ class NotificarServicioCompletado
         $notificationsUser->save();
 
         SendNotificationJob::dispatch($notification->id, $userReceive->id);
+        QualificationTech::dispatch($notification->id,$userReceive->id);
     }
 }

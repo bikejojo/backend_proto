@@ -33,16 +33,19 @@ class NotificarServicioAnulado
     /**
      * Handle the event.
      */
-    public function handle(ServicioAnulado $event,$key): void
+    public function handle(ServicioAnulado $event)
     {
-        if($key === 'services_anull_client'){
+        //dd($event);
+        if($event->key === 'services_anull_client'){
 
             $service = $event->service;
+            //dd($service);
             $actionsKey = 'services_anull_client';
             $config = DiccionaryNotifications::getByKey($actionsKey);
             $userClie = Cliente_Interno::where('id', $service->clientId)->first(); //quien manda
-            $userSend = User::where('id', $userClie->userId)->first(); //usuario quien manda
-            $userTech = Tecnico::where('id', $service->technicianId)->first(); //quien recibe
+            $userSend = User::where('id', $userClie->userId)->first(); //usuario quien mand
+            $userTech = Tecnico::where('id', $service->technicalId)->first(); //quien recibe
+
             $userReceive = User::where('id', $userTech->userId)->first(); //usuario quien recibe
             $data = [
                 'typeNotification' => $config['type'],
@@ -75,7 +78,7 @@ class NotificarServicioAnulado
             $service = $event->service;
             $actionsKey = 'services_anull_tech';
             $config = DiccionaryNotifications::getByKey($actionsKey);
-            $userTech = Tecnico::where('id', $service->technicianId)->first();//usuario quien manda
+            $userTech = Tecnico::where('id', $service->technicalId)->first();//usuario quien manda
             $userSend = User::where('id', $userTech->userId)->first();//quien manda
 
             $userClie = Cliente_Interno::where('id', $service->clientId)->first();//quien recibe

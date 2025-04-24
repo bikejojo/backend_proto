@@ -16,7 +16,7 @@ class ServicioAnulado
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $service;
-    protected $key;
+    public $key;
     /**
      * Create a new event instance.
      */
@@ -24,6 +24,7 @@ class ServicioAnulado
     {
         $this->service = $service;
         $this->key = $key;
+        //dd($key);
     }
 
     /**

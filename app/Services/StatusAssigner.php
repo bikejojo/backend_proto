@@ -83,8 +83,8 @@ class StatusAssigner{
             break;
             case 3:
                 $stateReference = new StateReference();
-                    $stateReference->requestId = $objeto->id;
-                    $stateReference->serviceId = null;
+                    $stateReference->requestId = $objeto->requestsId;
+                    $stateReference->serviceId = $objeto->id;
                     $stateReference->clientId = $objeto->clientId;
                     $stateReference->technicianId = $objeto->technicianId;
                     $stateReference->stateId = self::ANULAD;
@@ -253,6 +253,7 @@ class StatusAssigner{
                 $objeto->save();
             break;
             case 7:
+                //dd($objeto);
                 $stateReference = new StateReference();
                     $stateReference->requestId = $objeto->requestsId;
                     $stateReference->serviceId = $objeto->id;

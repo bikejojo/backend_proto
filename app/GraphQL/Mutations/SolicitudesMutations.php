@@ -129,14 +129,16 @@ class SolicitudesMutations
             $cliente = Cliente_Interno::find($clientId);
             $service = Servicio::where('services.id',$serviceId)
                         ->where('services.clientId',$cliente->id)
+                        ->where('services.typeClient',1)
                         ->first();
+            //dd($service);
             $technician = Tecnico::find($service->technicalId);
             if($service){
                 StatusAssigner::assignStatService($service,$this->now,"services","Anulado por el cliente",7);
-                $service->stateId = 6;
-                $service->save();
-                event(new ServicioAnulado($service,'services_anull_client'));
+                    $service->stateId = 6;
+                    $service->save();
                 $request = Solicitud::find($service->requestsId);
+                //dd($request);
                     $request->stateId = 6;
                     $request->save();
                     StatusAssigner::assignStateRequest($service,$this->now,"services","Anulado por el cliente",3);
@@ -146,7 +148,7 @@ class SolicitudesMutations
                     'message' => 'Surgio un problema al buscar la id de servicio.'
                 ];
             }
-
+            event(new ServicioAnulado($service,'services_anull_client'));
             DB::commit();
             return [
                 'message'=>'Servicio Anulado completado',
