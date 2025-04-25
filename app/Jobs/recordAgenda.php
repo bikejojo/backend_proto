@@ -48,7 +48,7 @@ class recordAgenda implements ShouldQueue
                 'title' => $this->config['title'],
                 'body' => $this->config['body'],
             ]);
-            
+
         } catch (\Exception $e) {
             // Manejo de excepciones
             Log::error('Error en el trabajo recordAgenda: ' . $e->getMessage());

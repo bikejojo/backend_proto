@@ -141,14 +141,14 @@ class DiccionaryNotifications
         return [
             'record_client'=>[
                 'title'=>'¡Recordatorio de servicio! ⏰',
-                'body'=>'Recuerda que pronto recibirás la visita del técnico.',
+                'body'=>'Recuerda que pronto recibirás la visita del técnico.Para el : {fecha}',
                 'type'=>6,
                 'type_users'=>'[1,2]',
             ],
 
             'record_technician'=>[
                 'title'=>'¡Recordatorio de servicio! 📅',
-                'body'=>'Tienes una cita próxima. ¡Prepárate para asistir!',
+                'body'=>'Tienes una cita programada el : {fecha}. ¡Prepárate para asistir!',
                 'type'=>6,
                 'type_users'=>'[1,2]',
             ],
@@ -163,6 +163,7 @@ class DiccionaryNotifications
         $suscription = self::getSuscription();
         $qualification = self::getQualification();
         $user = self::getUser();
+        $record = self::getRecordAgenda();
 
         if (array_key_exists($key, $notifications)) {
             return $notifications[$key];
@@ -176,6 +177,8 @@ class DiccionaryNotifications
             return $qualification[$key];
         } elseif (array_key_exists($key, $user)) {
             return $user[$key];
+        } elseif (array_key_exists($key,$record)) {
+            return $record[$key];
         }
 
         return null;
