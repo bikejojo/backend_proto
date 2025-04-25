@@ -2,29 +2,28 @@
 
 namespace App\Jobs;
 
-
 use Illuminate\Support\Facades\Http;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-
-class SubcriptionRecord implements ShouldQueue
+class RenovationSuscription implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new job instance.
      */
-    protected $body;
-    protected $title;
-    protected $device;
-    public function __construct($device, $title, $body)
-    {
-        $this->body = $body;
-        $this->title = $title;
-        $this->device = $device;
-    }
 
+    protected $device;
+    protected $title;
+    protected $body;
+    public function __construct($device , $notification)
+    {
+        $this->device = $device;
+        $this->body = $notification->body;
+        $this->title = $notification->title;
+
+    }
 
     /**
      * Execute the job.

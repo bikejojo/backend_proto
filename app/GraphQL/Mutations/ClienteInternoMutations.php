@@ -2,21 +2,21 @@
 
 namespace App\GraphQL\Mutations;
 
-
+use Carbon\Carbon;
 use App\Models\User;
-use App\Models\Cliente_Interno;
+use App\Models\Ciudad;
+use App\Helpers\ImageHelper;
 use App\Services\StateCatalog;
+use App\Events\PasswordChanged;
+use App\Models\Cliente_Interno;
+use Illuminate\Http\UploadedFile;
+use App\Services\ValidationModels;
+use Illuminate\Support\Facades\DB;
+use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
-use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
-use App\Helpers\ImageHelper;
-use App\Models\Ciudad;
-use App\Services\ValidationModels;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class ClienteInternoMutations{
@@ -240,6 +240,9 @@ class ClienteInternoMutations{
             $user=User::where('id',$client->userId)->first();
             $user->password = Hash::make($new_password);
             $user->save();
+
+            event(new PasswordChanged($user));
+
             DB::commit();
             return [
                 'message' => 'Contraseña restablecida para el cliente interno.',

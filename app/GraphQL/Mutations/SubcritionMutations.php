@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Events\SuscriptionChange;
 use App\Models\Tecnico;
 use App\Models\Suscripcion;
 use App\Models\Pago;
@@ -308,6 +309,7 @@ class SubcritionMutations
                     ->where('technician_subcription.id',$newSubscription->id)
                     ->select('subcriptions.name','subcriptions.description','subcriptions.codeSubcription','technician_subcription.starDateSubcription','technician_subcription.endDateSubcription')
                     ->first();
+                event(new SuscriptionChange($technician));
                 DB::commit();
                 return [
                     'message' => 'El registro de suscripción fue exitoso.',

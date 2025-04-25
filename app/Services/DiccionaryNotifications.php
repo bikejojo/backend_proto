@@ -89,8 +89,8 @@ class DiccionaryNotifications
                 'type_users' => ['1'],
             ],
             'renovation_suscription' => [
-                'title' => 'Suscripcion renovada.',
-                'body' => 'El tecnico ha renovado la suscripcion.',
+                'title' => '¡Renovación confirmada!',
+                'body' => 'Soporte ha actualizado su suscripción para continuar prestando servicios.',
                 'type' => 'suscripcion',
                 'type_users' => ['1'],
             ],
@@ -121,8 +121,8 @@ class DiccionaryNotifications
     public static function getUser(){
         return [
             'technician_password' => [
-                'title' => 'Cambio de contraseña.',
-                'body' => 'Su contraseña ha sido cambiada.',
+                'title' => '¡Cambio exitoso de contraseña! 🔑',
+                'body' => 'Tu contraseña se actualizó correctamente.',
                 'type' => 'usuario',
                 'type_users' => ['1'],
             ],

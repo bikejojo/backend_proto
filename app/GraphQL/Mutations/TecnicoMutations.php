@@ -285,7 +285,6 @@ class TecnicoMutations {
             $id_technician=$args['id_technician'];
             $new_password = $args['new_password'];
             $technician = Tecnico::where('id',$id_technician)->first();
-            //dd($technician);
             $user=User::where('id',$technician->userId)->first();
             $user->password=Hash::make($new_password);
             $user->save();
@@ -298,6 +297,7 @@ class TecnicoMutations {
                 'message' => 'Contraseña restablecida para el tecnico.',
                 'result' => true
             ];
+            
         } catch(\Exception $e){
             DB::rollback();
             return [

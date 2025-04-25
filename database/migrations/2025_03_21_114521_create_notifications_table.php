@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('title');
             $table->text('body');
             $table->json('data')->nullable();
-            $table->enum('type', [1 , 2 , 3 , 4 , 5]);
-            //['solicitud', 'servicio' , 'promocion', 'publicidad' , 'suscripcion']);
+            $table->enum('type', [1 , 2 , 3 , 4 , 5 , 6 ]);
+            //['solicitud', 'servicio' , 'promocion', 'publicidad' , 'suscripcion' , 'password' ]);
             $table->timestamp('send_at')->nullable();
             $table->enum('status', [ 1 , 2 , 3 , 4 , 5 , 6 , 7 ])->default(1);
             //['pendiente', 'enviada', 'aceptado', 'cancelada' , 'anulado','completado','terminado'])->default('pendiente');
