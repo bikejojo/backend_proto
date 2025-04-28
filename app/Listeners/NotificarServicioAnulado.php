@@ -50,6 +50,7 @@ class NotificarServicioAnulado
             $data = [
                 'typeNotification' => $config['type'],
                 'id_service' => $service->id,
+                'type_notification' => $config['type'],
             ];
             $fecha = Carbon::parse($service->updatedDateTime);
             $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');
@@ -86,6 +87,7 @@ class NotificarServicioAnulado
             $data = [
                 'typeNotification' => $config['type'],
                 'id_service' => $service->id,
+                'type_notification' => $config['type'],
             ];
             $fecha = Carbon::parse($service->updatedDateTime);
             $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');

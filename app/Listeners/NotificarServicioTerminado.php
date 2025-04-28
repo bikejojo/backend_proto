@@ -48,6 +48,7 @@ class NotificarServicioTerminado
         $data = [
             'typeNotification' => $config['type'],
             'id_service' => $service->id,
+            'type_notification' => $config['type'],
         ];
 
         $notification = new Notification();

@@ -46,6 +46,8 @@ class NotificarSolicitudCancelada
         $userTechnician = Tecnico::where('id', $solicitud->technicianId)->first(); //quien manda
         $userSend = User::where('id',$userTechnician->userId)->first(); //usuario quien manda
         $data = [
+            'typeNotification' => $config['type'],
+            /**---------------------------------- */
             'full_name' => $userTechnician->firstName . ' ' . $userTechnician->lastName,
             'photo'=>$userTechnician->photo,
             'phonoNumber'=>$userTechnician->phoneNumber,

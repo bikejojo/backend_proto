@@ -55,42 +55,50 @@ class RecordAppointments extends Command
 
                 $config['body'] = str_replace('{fecha}' , $fecha ,$config['body']);
                 // Validar si este cliente ya tiene recordatorio enviado
-                $existingNotificationUserClient = NotificationUser::where('user_id', $client->id)
-                    ->where('is_service_2hr', true)
-                    ->where('is_service_1hr', false)
+                $existingNotificationUserClient = NotificationUser::join('notifications', 'notifications.id', '=', 'notification_users.notification_id')
+                    ->where('notifications.type',7)
+                    ->where('notifications.status',2)
+                    ->where('notification_users.user_id', $client->id)
+                    ->where('notification_users.is_service_2hr', true)
+                    ->where('notification_users.is_service_1hr', false)
                 ->count();
                 if($existingNotificationUserClient < 1){
 
                     $controlNotification = new Notification();
-                    $controlNotification->action_key = 'record_appointments';
-                    $controlNotification->title = 'record_appointments';
-                    $controlNotification->body = 'Se enviaron recordatorios de citas';
-                    $controlNotification->data = [
-                        'minMinutesThirteen' => $minMinutesThirteen,
-                        'addMinutesThirteen' => $addMinutesThirteen,
-                    ];
+                        $controlNotification->action_key = 'record_appointments';
+                        $controlNotification->title = 'record_appointments';
+                        $controlNotification->body = 'Se enviaron recordatorios de citas';
+                        $controlNotification->data = [
+                            'minMinutesThirteen' => $minMinutesThirteen,
+                            'addMinutesThirteen' => $addMinutesThirteen,
+                        ];
+                        $controlNotification->type = 7;
+                        $controlNotification->status = 2;
                     $controlNotification->save();
 
                     $notificationClient = new Notification();
-                    $notificationClient->action_key = 'record_client';
-                    $notificationClient->type_users = $client->type_user;
-                    $notificationClient->data = [
-                        'id_service' => $services->id,
-                        'id_client' => $client->id,
-                    ];
-                    $notificationClient->title = $config['title'];
-                    $notificationClient->body = $config['body'];
-                    $notificationClient->send_at = now();
-                    $notificationClient->sender_id = $client->id;
+                            $notificationClient->action_key = 'record_client';
+                            $notificationClient->type_users = $client->type_user;
+                            $notificationClient->data = [
+                                'id_service' => $services->id,
+                                'id_client' => $client->id,
+                                'type_notification' => $config['type'],
+                            ];
+                            $notificationClient->type = 7;
+                            $notificationClient->status = 2;
+                            $notificationClient->title = $config['title'];
+                            $notificationClient->body = $config['body'];
+                            $notificationClient->send_at = now();
+                            $notificationClient->sender_id = $client->id;
                     $notificationClient->save();
 
                     $notificationUserClient = new NotificationUser();
-                    $notificationUserClient->notification_id = $notificationClient->id;
-                    $notificationUserClient->user_id = $client->id;
-                    $notificationUserClient->type_users = $client->type_user;
-                    $notificationUserClient->is_service_2hr = true;
-                    $notificationUserClient->is_service_1hr = false;
-                    $notificationUserClient->created_at = now();
+                        $notificationUserClient->notification_id = $notificationClient->id;
+                        $notificationUserClient->user_id = $client->id;
+                        $notificationUserClient->type_users = $client->type_user;
+                        $notificationUserClient->is_service_2hr = true;
+                        $notificationUserClient->is_service_1hr = false;
+                        $notificationUserClient->created_at = now();
                     $notificationUserClient->save();
 
                     recordAgenda::dispatch($services , $client , $config);
@@ -111,35 +119,40 @@ class RecordAppointments extends Command
                 if($existingNotificationUserTech < 1 ){
 
                     $controlNotification = new Notification();
-                    $controlNotification->action_key = 'record_appointments';
-                    $controlNotification->title = 'record_appointments';
-                    $controlNotification->body = 'Se enviaron recordatorios de citas';
-                    $controlNotification->data = [
-                        'minMinutesThirteen' => $minMinutesThirteen,
-                        'addMinutesThirteen' => $addMinutesThirteen,
-                    ];
+                        $controlNotification->action_key = 'record_appointments';
+                        $controlNotification->title = 'record_appointments';
+                        $controlNotification->body = 'Se enviaron recordatorios de citas';
+                        $controlNotification->data = [
+                            'minMinutesThirteen' => $minMinutesThirteen,
+                            'addMinutesThirteen' => $addMinutesThirteen,
+                        ];
+                        $controlNotification->type = 7;
+                        $controlNotification->status = 2;
                     $controlNotification->save();
 
                     $notificationTech = new Notification();
-                    $notificationTech->action_key = 'record_technician';
-                    $notificationTech->data = [
-                        'id_service' => $services->id ,
-                        'id_technician' => $technicians->id,
-                    ];
-                    $notificationTech->type_users = $technicians->type_user;
-                    $notificationTech->title = $config['title'];
-                    $notificationTech->body = $config['body'];
-                    $notificationTech->send_at = now();
-                    $notificationTech->sender_id = $technicians->id;
+                        $notificationTech->action_key = 'record_technician';
+                        $notificationTech->type = 7;
+                        $notificationTech->status = 2;
+                        $notificationTech->data = [
+                            'id_service' => $services->id ,
+                            'id_technician' => $technicians->id,
+                            'type_notification' => $config['type'],
+                        ];
+                        $notificationTech->type_users = $technicians->type_user;
+                        $notificationTech->title = $config['title'];
+                        $notificationTech->body = $config['body'];
+                        $notificationTech->send_at = now();
+                        $notificationTech->sender_id = $technicians->id;
                     $notificationTech->save();
 
                     $notificationUserTech = new NotificationUser();
-                    $notificationUserTech->notification_id = $notificationTech->id;
-                    $notificationUserTech->user_id = $technicians->id;
-                    $notificationUserTech->type_users = $technicians->type_user;
-                    $notificationUserTech->is_service_2hr = true;
-                    $notificationUserTech->is_service_1hr = false;
-                    $notificationUserTech->created_at = now();
+                        $notificationUserTech->notification_id = $notificationTech->id;
+                        $notificationUserTech->user_id = $technicians->id;
+                        $notificationUserTech->type_users = $technicians->type_user;
+                        $notificationUserTech->is_service_2hr = true;
+                        $notificationUserTech->is_service_1hr = false;
+                        $notificationUserTech->created_at = now();
                     $notificationUserTech->save();
 
                     recordAgenda::dispatch($services , $technicians , $config);
@@ -148,6 +161,6 @@ class RecordAppointments extends Command
             }
         }
         $this->info('Se enviaron los recordatorios correspondientes.');
-        Log::info('✅ Se ejecutó el recordatorio de citas 2hr.');
+        Log::info('Se ejecutó el recordatorio de citas 2hr. ✅ ');
     }
 }

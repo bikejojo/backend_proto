@@ -18,6 +18,7 @@ class SubcriptionRecord implements ShouldQueue
     protected $body;
     protected $title;
     protected $device;
+    
     public function __construct($device, $title, $body)
     {
         $this->body = $body;

@@ -46,6 +46,8 @@ class NotificarSolicitudCreada
         $userClient = Cliente_Interno::where('id',$solicitud->clientId)->first();
         $user = User::where('id',$userClient->userId)->first();
         $data = [
+            'typeNotification' => $config['type'],
+            /**------------------------------------------- */
             'full_name' => Tecnico::where('id',$solicitud->technicianId)->select(DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\') ) AS full_name '))->first(),
             'rate' => Tecnico::where('id',$solicitud->technicianId)->select('average_rating As rate')->first(),
             'actividad' => $solicitud->activityId ,

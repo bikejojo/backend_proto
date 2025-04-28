@@ -37,6 +37,10 @@ class NotificationsPasswordChange
             $notification->action_key = 'technician_password';
             $notification->title = $config['title'];
             $notification->body = $config['body'];
+            $notification->data = [
+                'typeNotification' => $config['type'],
+                'id_technician' => $user->id,
+            ];
             $notification->type = 6;
             $notification->status = 2;
             $notification->type_users = $user->type_user;

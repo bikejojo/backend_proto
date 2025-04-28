@@ -44,6 +44,10 @@ class NotificarSuscriptionChange
             $notification->action_key = 'renovation_suscription';
             $notification->title = $config['title'];
             $notification->body = $config['body'];
+            $notification->data = [
+                'typeNotification' => $config['type'],
+                'id_technician' => $technician->id,
+            ];
             $notification->type = 5;
             $notification->status = 2;
             $notification->type_users = $user->type_user;

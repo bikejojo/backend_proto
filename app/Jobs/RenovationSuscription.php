@@ -17,12 +17,14 @@ class RenovationSuscription implements ShouldQueue
     protected $device;
     protected $title;
     protected $body;
+    protected $notification;
+    
     public function __construct($device , $notification)
     {
         $this->device = $device;
         $this->body = $notification->body;
         $this->title = $notification->title;
-
+        $this->notification = $notification;
     }
 
     /**
@@ -34,6 +36,7 @@ class RenovationSuscription implements ShouldQueue
             'to' => $this->device->expo_token,
             'title' => $this->title,
             'body' => $this->body,
+            'data' => json_decode($this->notification->data, true),
         ]);
     }
 }

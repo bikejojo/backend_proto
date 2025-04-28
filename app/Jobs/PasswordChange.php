@@ -33,6 +33,7 @@ class PasswordChange implements ShouldQueue
             'to' => $this->devices->expo_token,
             'title' => $this->notifications->title,
             'body' => $this->notifications->body,
+            'data' => json_decode($this->notifications->data, true),
         ]);
     }
 }

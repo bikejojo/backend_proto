@@ -55,6 +55,7 @@ class NotificarServicioCompletado
         $data = [
             'typeNotification' => $config['type'],
             'id_service' => $service->id,
+            'type_notification' => $config['type'],
         ];
         $fecha = Carbon::parse($service->finishDateTime_technician);
         $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');
@@ -69,7 +70,7 @@ class NotificarServicioCompletado
             $notification->type = 2;
             $notification->type_users = $userSend->type_user;
             $notification->send_at = Carbon::now();
-            $notification->status = 5;
+            $notification->status = 6;
             $notification->sender_id = $userSend->id;
         $notification->save();
 
