@@ -17,7 +17,9 @@ class NotificationUser extends Model
         'type_users',
         'expo_response',
         'created_at',
-        //'is_read',
+        'is_service_2hr',
+        'is_service_1hr',
+        'is_record_subcription',
     ];
     /*protected $casts = [
         'is_read' => 'boolean',

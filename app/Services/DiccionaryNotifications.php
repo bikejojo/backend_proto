@@ -90,7 +90,7 @@ class DiccionaryNotifications
             ],
             'renovation_suscription' => [
                 'title' => '¡Renovación confirmada!',
-                'body' => 'Soporte ha actualizado su suscripción para continuar prestando servicios.',
+                'body' => '¡Hola {nombre}! Tu suscripción ha sido renovada. ¡Gracias por seguir con nosotros! 🎉',
                 'type' => 'suscripcion',
                 'type_users' => ['1'],
             ],

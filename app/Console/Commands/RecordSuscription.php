@@ -33,7 +33,7 @@ class RecordSuscription extends Command
     public function handle()
     {
         Carbon::setLocale('es');
-        $addHours = now()->addMinutes(1441);
+        $addHours = now()->addMinutes(1446);
         $mensHours = now()->addMinutes(1436);
         $suscription = Technician_subcripcion::where('status',1)
                                             ->whereBetween('endDateSubcription',[$mensHours,$addHours])->get();

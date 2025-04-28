@@ -15,9 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('type_users')->nullable();
             $table->string('expo_response')->nullable();
-            //$table->boolean('is_read')->default(false);
             $table->unsignedBigInteger('notification_id')->nullable(); // ID de la notificación
             $table->unsignedBigInteger('user_id')->nullable(); // ID del usuario a quien se envio
+            $table->boolean('is_service_2hr')->default(false);
+            $table->boolean('is_service_1hr')->default(false);
+            $table->boolean('is_record_subcription')->default(false);
             $table->foreign('notification_id')->references('id')->on('notifications')->onDelete('cascade'); // ID de la notificación
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade'); // ID del usuario a quien se envio
             $table->index('user_id');

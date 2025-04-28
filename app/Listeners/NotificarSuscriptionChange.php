@@ -9,6 +9,7 @@ use App\Models\Notification;
 use App\Models\NotificationUser;
 use App\Events\SuscriptionChange;
 use App\Jobs\RenovationSuscription;
+use App\Models\Tecnico;
 use App\Services\DiccionaryNotifications;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -31,6 +32,9 @@ class NotificarSuscriptionChange
         $technician = $event->technician;
         $config = DiccionaryNotifications::getByKey('renovation_suscription');
         $user = User::where('id', $technician->userId)->first();
+
+        $fullName = $technician->firstName . ' ' . $technician->lastName;
+        $config['body'] = str_replace('{nombre}', $fullName, $config['body']);
 
         $userDevice = DevicesUser::where('users_id',$user->id)->first();
         //dd($userDevice);

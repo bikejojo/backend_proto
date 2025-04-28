@@ -2,16 +2,18 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\recordAgenda;
 use Carbon\Carbon;
-use App\Models\Servicio;
-use App\Models\Tecnico;
-use App\Jobs\SendNotificationJob;
-use App\Models\Cliente_Interno;
 use App\Models\User;
+use App\Models\Tecnico;
+use App\Models\Servicio;
+use App\Jobs\recordAgenda;
+use App\Models\Notification;
+use App\Models\Cliente_Interno;
+use Illuminate\Console\Command;
+use App\Models\NotificationUser;
 use Illuminate\Support\Facades\Log;
 use App\Services\DiccionaryNotifications;
-use Illuminate\Console\Command;
+
 
 class RecordAppointments extends Command
 {
@@ -27,13 +29,14 @@ class RecordAppointments extends Command
      */
     public function handle()
     {
+        Carbon::setLocale('es');
         $now = Carbon::now();
-        $minMinutesThirteen = now()->addMinutes(118);
-        $addMinutesThirteen = now()->addMinutes(122);
+        $minMinutesThirteen = now()->addMinutes(110);
+        $addMinutesThirteen = now()->addMinutes(129);
         $service = Servicio::where('stateId',1)
                             ->whereBetween('updatedDateTime',[$minMinutesThirteen , $addMinutesThirteen])
                             ->get();
-
+        //dd($service);
         if($service->isEmpty()){
             $this->info('No hay servicios para enviar recordatorio');
             return;
@@ -46,18 +49,102 @@ class RecordAppointments extends Command
             $technicians = User::where('id',$technician->userId)->first();
 
             $fecha = Carbon::parse($services->updatedDateTime)->translatedFormat('d \d\e F \a \l\a\s H:i');
-           
+
             if($client){
                 $config = DiccionaryNotifications::getByKey('record_client');
+
                 $config['body'] = str_replace('{fecha}' , $fecha ,$config['body']);
-                recordAgenda::dispatch($services , $client , $config);
-                $this->info("Recordatorio enviado a {$clients->firstName}");
+                // Validar si este cliente ya tiene recordatorio enviado
+                $existingNotificationUserClient = NotificationUser::where('user_id', $client->id)
+                    ->where('is_service_2hr', true)
+                    ->where('is_service_1hr', false)
+                ->count();
+                if($existingNotificationUserClient < 1){
+
+                    $controlNotification = new Notification();
+                    $controlNotification->action_key = 'record_appointments';
+                    $controlNotification->title = 'record_appointments';
+                    $controlNotification->body = 'Se enviaron recordatorios de citas';
+                    $controlNotification->data = [
+                        'minMinutesThirteen' => $minMinutesThirteen,
+                        'addMinutesThirteen' => $addMinutesThirteen,
+                    ];
+                    $controlNotification->save();
+
+                    $notificationClient = new Notification();
+                    $notificationClient->action_key = 'record_client';
+                    $notificationClient->type_users = $client->type_user;
+                    $notificationClient->data = [
+                        'id_service' => $services->id,
+                        'id_client' => $client->id,
+                    ];
+                    $notificationClient->title = $config['title'];
+                    $notificationClient->body = $config['body'];
+                    $notificationClient->send_at = now();
+                    $notificationClient->sender_id = $client->id;
+                    $notificationClient->save();
+
+                    $notificationUserClient = new NotificationUser();
+                    $notificationUserClient->notification_id = $notificationClient->id;
+                    $notificationUserClient->user_id = $client->id;
+                    $notificationUserClient->type_users = $client->type_user;
+                    $notificationUserClient->is_service_2hr = true;
+                    $notificationUserClient->is_service_1hr = false;
+                    $notificationUserClient->created_at = now();
+                    $notificationUserClient->save();
+
+                    recordAgenda::dispatch($services , $client , $config);
+                    $this->info("Recordatorio enviado a {$clients->firstName}");
+
+                }
             }
             if($technicians){
                 $config = DiccionaryNotifications::getByKey('record_technician');
                 $config['body'] = str_replace('{fecha}' , $fecha ,$config['body']);
-                recordAgenda::dispatch($services , $technicians , $config);
-                $this->info("Recordatorio enviado a {$technician->firstName}");
+
+                $existingNotificationUserTech = NotificationUser::where('user_id', $technicians->id)
+                    ->where('is_service_2hr', true)
+                    ->where('is_service_1hr', false)
+                ->count();
+                // NUEVA instancia de Notification en cada iteración
+
+                if($existingNotificationUserTech < 1 ){
+
+                    $controlNotification = new Notification();
+                    $controlNotification->action_key = 'record_appointments';
+                    $controlNotification->title = 'record_appointments';
+                    $controlNotification->body = 'Se enviaron recordatorios de citas';
+                    $controlNotification->data = [
+                        'minMinutesThirteen' => $minMinutesThirteen,
+                        'addMinutesThirteen' => $addMinutesThirteen,
+                    ];
+                    $controlNotification->save();
+
+                    $notificationTech = new Notification();
+                    $notificationTech->action_key = 'record_technician';
+                    $notificationTech->data = [
+                        'id_service' => $services->id ,
+                        'id_technician' => $technicians->id,
+                    ];
+                    $notificationTech->type_users = $technicians->type_user;
+                    $notificationTech->title = $config['title'];
+                    $notificationTech->body = $config['body'];
+                    $notificationTech->send_at = now();
+                    $notificationTech->sender_id = $technicians->id;
+                    $notificationTech->save();
+
+                    $notificationUserTech = new NotificationUser();
+                    $notificationUserTech->notification_id = $notificationTech->id;
+                    $notificationUserTech->user_id = $technicians->id;
+                    $notificationUserTech->type_users = $technicians->type_user;
+                    $notificationUserTech->is_service_2hr = true;
+                    $notificationUserTech->is_service_1hr = false;
+                    $notificationUserTech->created_at = now();
+                    $notificationUserTech->save();
+
+                    recordAgenda::dispatch($services , $technicians , $config);
+                    $this->info("Recordatorio enviado a {$technicians->firstName}");
+                }
             }
         }
         $this->info('Se enviaron los recordatorios correspondientes.');
