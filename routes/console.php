@@ -41,9 +41,9 @@ Artisan::command('app:record-suscription',function(){
     $this->call(\App\Console\Commands\RecordSuscription::class);
 });
 
-//Schedule::command('app:record-appointments')->everyMinute() // Ejecutar cada 1 minuto
-  //                                              ->withoutOverlapping();
+Schedule::command('app:record-appointments')->everyMinute() // Ejecutar cada 1 minuto
+                                            ->withoutOverlapping();
 //Schedule::command('app:record-appointments1hr')->everyMinute() // Ejecutar cada 1 minuto
-//                                                ->withoutOverlapping();
-Schedule::command('app:record-suscription')->everyMinute() // Ejecutar cada 1 minuto
-                                                ->withoutOverlapping();
+  //                                              ->withoutOverlapping();
+//Schedule::command('app:record-suscription')->everyMinute() // Ejecutar cada 1 minuto
+  //                                              ->withoutOverlapping();

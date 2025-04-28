@@ -17,11 +17,11 @@ return new class extends Migration
             $table->string('title');
             $table->text('body');
             $table->json('data')->nullable();
-            $table->enum('type', [1 , 2 , 3 , 4 , 5 , 6 ]);
-            //['solicitud', 'servicio' , 'promocion', 'publicidad' , 'suscripcion' , 'password' ]);
+            $table->enum('type', [1 , 2 , 3 , 4 , 5 , 6 , 7]);
+            //['solicitud', 'servicio' , 'promocion', 'publicidad' , 'suscripcion' , 'password' , 'recordatorio']);
+            $table->enum('status', [ 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8])->default(1);
+            //['pendiente', 'enviada', 'aceptado', 'cancelada' , 'anulado','completado','terminado','cancelado por sistema'])->default('pendiente');
             $table->timestamp('send_at')->nullable();
-            $table->enum('status', [ 1 , 2 , 3 , 4 , 5 , 6 , 7 ])->default(1);
-            //['pendiente', 'enviada', 'aceptado', 'cancelada' , 'anulado','completado','terminado'])->default('pendiente');
             $table->string('type_users')->nullable();
             $table->foreignId('sender_id')->nullable()->constrained('users')->onDelete('cascade'); // ID del usuario que envía la notificación en otras palabras quien genero
             $table->index('sender_id');

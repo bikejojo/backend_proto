@@ -39,6 +39,13 @@ class DiccionaryNotifications
                 'status' => 4,
                 'type_users' => ['1','2'],
             ],
+            'request_rejected_system' => [
+                'title' => 'Solicitud expirada 🕒',
+                'body' => 'Tu solicitud programada para el dia {fecha} ha expirado por falta de actividad. ¡No te preocupes! Puedes solicitar de nuevo. 🚀',
+                'type' => 1,
+                'status' => 8,
+                'type_users' => ['1','2'],
+            ],
 
         ];
     }
