@@ -57,12 +57,12 @@ class RolMutations
             }
 
             $userId = $args['permiseRequest']['userId'];
-            //dd($userId);
+
             $permissions = $args['permiseRequest']['permissions']; // Lista de permisos a asignar
-            //dd($permissions);
+
             // Buscar usuario con roles y permisos
             $user = User::with('roles.permissions')->find($userId);
-            //dd($user);
+
             if (!$user) {
                 return [
                     'message' => 'Usuario no encontrado.',
@@ -89,7 +89,7 @@ class RolMutations
             $permissionsToAssign = array_filter($validPermissions, function ($perm) use ($rolePermissions) {
                 return $rolePermissions->contains($perm);
             });
-            //dd($permissionsToAssign);
+       
             if (empty($permissionsToAssign)) {
                 return [
                     'message' => 'No tienes roles que permitan asignar estos permisos.',

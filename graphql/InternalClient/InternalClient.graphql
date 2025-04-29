@@ -6,6 +6,7 @@ type InternalClient @model(class: "App\\Models\\Cliente_Interno"){
   phoneNumber: String
   loginMethod: String
   photo: String
+  status: String
   userId:ID!
   cityId:ID!
 

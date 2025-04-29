@@ -28,7 +28,7 @@ class ClienteExternoMutations{
                 ->where('associationTechnClient.technicalId',$tecnico->id)
                 ->where('associationTechnClient.status',StateCatalog::STATUS_ACTIVE)
                 ->exists();
-            //dd($external);
+
             if($external){
                 DB::commit();
                 return [
@@ -38,7 +38,7 @@ class ClienteExternoMutations{
             }
 
             $externo = Cliente_Externo::where('phoneNumber',$phone)->where('fullName',$name_full)->first();
-            //dd($externo);
+        
             if (!$externo) {
 
                 $externo = new Cliente_Externo();

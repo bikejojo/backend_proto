@@ -29,7 +29,19 @@ type clientConte {
 }
 type responseGetClient {
     message:String
-    client_int:InternalClient
+    client_int:Internal_client
+}
+
+type Internal_client {
+    id: ID
+    firstName: String
+    lastName: String
+    email: String
+    phoneNumber: String
+    loginMethod: String
+    photo: String
+    status: String
+    nameClient: String
 }
 
 type responseListByClient {

@@ -18,7 +18,7 @@ class RatingMutations{
     public function rateService($root, array $args){
         try {
             $ratingData = $args['requestRating'];
-            //dd($ratingData);
+
             $ratingsArray = is_array($ratingData[0] ?? null)
                 ? $ratingData
                 : [$ratingData];
@@ -34,7 +34,7 @@ class RatingMutations{
                     ->where('technicialId', $rating['id_technician'])
                     ->where('clientId', $rating['id_client'])
                     ->first();
-                    //dd($existingRating);
+           
                     $service_= Servicio::find($rating['id_service']);
 
                     $responses[] = [

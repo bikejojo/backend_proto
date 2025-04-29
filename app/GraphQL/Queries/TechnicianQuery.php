@@ -20,7 +20,7 @@ class TechnicianQuery
             DB::beginTransaction();
             $id_ciudad = $args['id_city'];
             $verfication = Tecnico::where('cityId',$id_ciudad)->get();
-            //dd($verfication);
+
             if(!$verfication->isEmpty()){
                 return[
                     'message' =>'Existen tecnicos en la ciudad',
@@ -49,7 +49,7 @@ class TechnicianQuery
             $latestSubscription = DB::table('technician_subcription as ts1')
                 ->select('ts1.technicianId', DB::raw('MAX(ts1."endDateSubcription") as last_end_date'))
                 ->groupBy('ts1.technicianId');
-            //dd($latestSubscription);
+        
             $technician = Tecnico::join('users', 'technicians.userId', '=', 'users.id')
                 ->join('cities', 'technicians.cityId', '=', 'cities.id')
                 ->joinSub($latestSubscription, 'latest_sub', function ($join) {

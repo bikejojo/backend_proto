@@ -69,6 +69,14 @@ class DiccionaryNotifications
                 'type_users' => ['1','2'],
             ],
 
+            'serv_anull_client' => [
+                'title' => 'Servicio anulado 💡',
+                'body' => 'Tu servicio fue cancelada exitosamente. ¡Te esperamos cuando necesites agendar otro servicio!',
+                'type' => 2,
+                'status' => 5,
+                'type_users' => ['1','2'],
+            ],
+
             'services_finish_tech' => [
                 'title' => 'Servicio terminado 🔧',
                 'body' => 'El técnico ',

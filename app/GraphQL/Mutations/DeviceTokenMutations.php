@@ -53,7 +53,7 @@ class DeviceTokenMutations
                 $deviceExists->expo_token = $requestDevice['expo_token'];
                 $deviceExists->save();
                 $userId = ValidationModels::validation_user($requestDevice['userId']);
-                //dd($userId);
+               
                 if($userId){
                     $deviceUser = DevicesUser::where('device_id',$deviceExists->id)->first();
                         $deviceUser->users_id = $userId->id;

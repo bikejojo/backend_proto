@@ -94,7 +94,7 @@ class ServicioMutations
                 $service->updatedDateTime = $serviceData['updatedDateTime'];
                 $service->status = StateCatalog::STATUS_ACTIVE;
             $service->save();
-            //dd($service);
+
             StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'El servicio fue creado por el tecnico para cliente interno.',1);
             $_service = Servicio::find($service->id);
             $_service->save();
@@ -319,7 +319,7 @@ class ServicioMutations
             $history=Historial_Servicios::where('jobId',$service->id)->where('descriptionJob',2)->first();
             $history->finishDate=$service->finishDateTime_client;
             $history->save();
-            //dd(is_null($_service->finishDateTime_technician));
+
             if(!is_null($_service->finishDateTime_technician)){
                 $_service->stateId = 5;
                 $_service->save();
@@ -409,6 +409,7 @@ class ServicioMutations
                 StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'Se cancelo el servicio y la solicitud',5);
                 $service->stateId = 6;
                 event(new ServicioAnulado($service,'services_anull_tech'));
+                //event(new ServicioAnulado($service,'serv_anull_client'));
                 //$service->updatedDateTime = Carbon::now();
                 $service->status = 1;
                 $service->save();

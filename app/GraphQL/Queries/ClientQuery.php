@@ -145,7 +145,7 @@ class ClientQuery{
         $startDate = $clientData['startDate'];
         $finishDate_ = Carbon::createFromFormat('Y-m-d', $clientData['finishDate'])->addDay()->format('Y-m-d');
         $finishDate = $clientData['finishDate'];
-        //dd($startDate);
+
         $technicalId = $clientData['technicianId'];
         $servicesExt = DB::table('services')
         ->where('services.typeClient', ServicioMutations::clientExternal)
@@ -182,7 +182,7 @@ class ClientQuery{
         $startDate = $clientData['startDate'];
         $finishDate_ = Carbon::createFromFormat('Y-m-d', $clientData['finishDate'])->addDay()->format('Y-m-d');
         $finishDate = $clientData['finishDate'];
-        //dd($startDate);
+
         $technicalId = $clientData['technicianId'];
 
         $servicesInt = DB::table('services')
@@ -210,75 +210,6 @@ class ClientQuery{
             return $result->toArray();
     }
 
-    /*public function quantifyclient_interno($root, array $args) {
-        $clientData = $args['requestClient'];
-        $startDate = $clientData['startDate'];
-        $finishDate_ = Carbon::createFromFormat('Y-m-d', $clientData['finishDate'])->addDay()->format('Y-m-d');
-        $finishDate = $clientData['finishDate'];
-        //dd($startDate);
-        $technicalId = $clientData['technicianId'];
-        $servicesExt = DB::table('services')
-            ->where('services.typeClient', ServicioMutations::clientExternal)
-            ->where('associationTechnClient.status',1)
-            ->where('services.status', 1)
-            ->where('services.technicalId', $technicalId)
-            ->whereBetween(DB::raw('DATE(services."updatedDateTime")'), [$startDate, $finishDate_])
-            ->where('associationTechnClient.technicalId', $technicalId)
-            ->select(
-                'associationTechnClient.full_name as fullName',
-                //DB::raw('DATE(services."updatedDateTime") as date'), // Extraer solo la fecha
-                DB::raw('COUNT(services."id") as servicecount'), // Contar servicios por cliente y día
-                DB::raw("'Cliente Externo' as clienttype")
-            )
-            // Filtro solo por fechas
-            ->leftJoin('associationTechnClient', 'services.clientId', '=', 'associationTechnClient.clientId')
-            ->groupBy('associationTechnClient.full_name')
-            ->orderBy('servicecount', 'desc') // Ordenar por fecha
-            ->get();
-            //dd($servicesExt);
-        //dd($servicesExt->toSql(), $servicesExt->getBindings());
-
-        $servicesInt = DB::table('services')
-            ->where('services.status', 1) // Filtrar solo servicios activos
-            ->where('typeClient', ServicioMutations::clientInternal) // Filtrar por tipo de cliente interno
-            ->where('technicalId', $technicalId) // Filtrar por técnico específico
-            ->leftJoin('internal_clients', 'services.clientId', '=', 'internal_clients.id') // Unión con clientes internos
-            ->select(
-                DB::raw('CONCAT(COALESCE(internal_clients."firstName", \'\'), \' \', COALESCE(internal_clients."lastName", \'\')) as "fullName"'), // Nombre completo
-                DB::raw('COUNT(services."clientId") as servicecount'), // Contar servicios por cliente
-                DB::raw("'Cliente Interno' as clienttype") // Tipo de cliente
-            )
-            ->whereBetween(DB::raw('DATE(services."updatedDateTime")'), [$startDate, $finishDate_]) // Filtrar por rango de fechas
-            ->groupBy(DB::raw('CONCAT(COALESCE(internal_clients."firstName", \'\'), \' \', COALESCE(internal_clients."lastName", \'\'))')) // Agrupar solo por cliente
-            ->orderBy(DB::raw('COUNT(services."clientId")'), 'desc') // Ordenar por cantidad de servicios
-            ->get();
-            //dd($servicesInt);
-            //dd($servicesInt->toSql(), $servicesInt->getBindings());
-
-            Log::info('Respuesta final: ', [
-                'servicesExternal' => $servicesExt,
-                'servicesInternal' => $servicesInt,
-            ]);
-            return [
-                'servicesExternal' => $servicesExt->map(function ($service) {
-                    return [
-                        'fullName' => $service->fullName,
-                        //'date' => $service->date,
-                        'servicecount' => $service->servicecount,
-                        'clienttype' => $service->clienttype,
-                    ];
-                })->toArray(),
-                'servicesInternal' => $servicesInt->map(function ($service) {
-                    return [
-                        'fullName' => $service->fullName ?? 'Sin nombre', // Usa "fullname" en minúsculas, como aparece en el dd.
-                        //'date' => $service->date,
-                        'servicecount' => $service->servicecount,
-                        'clienttype' => $service->clienttype,
-                    ];
-                })->toArray(),
-            ];
-    }*/
-
 
     public function quantityClient($root, array $args){
         $technicialId = $args['id_technician']['id'];
@@ -293,7 +224,7 @@ class ClientQuery{
         $clienteInternoCount = $detailAgenda->where('typeClient', 1)
         ->unique('clientId')
         ->count();
-        //dd($clienteInternoCount);
+
         $clientSum = $clienteExternoCount + $clienteInternoCount;
 
         return [
@@ -394,7 +325,7 @@ class ClientQuery{
                 'state_types.description AS state_name',
                 DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) As full_name'))
             ->get();
-            //dd($request);
+
             $content = $request->map(function ($response) {
                 return [
                     'id_request' => $response->id_request,
@@ -426,6 +357,7 @@ class ClientQuery{
                     ,'internal_clients.*',
                     'cities.name as name_city'
                     )
+            ->orderBy('internal_clients.id','ASC')
             ->get();
 
             $content = $client->map(function($clients){
@@ -578,15 +510,19 @@ class ClientQuery{
     public function dataClient($root,array $args){
         try{
             $clientId = $args['id'];
-            $clientData = Cliente_Interno::where('id',$clientId)
+            $clientData = Cliente_Interno::join('cities','internal_clients.cityId' ,'=','cities.id')
+                        ->where('internal_clients.id',$clientId)
                         ->select(
                             'internal_clients.id',
                             'internal_clients.firstName',
                             'internal_clients.lastName',
                             'internal_clients.phoneNumber',
-                            'internal_clients.email'
+                            'internal_clients.email' ,
+                            'internal_clients.status' ,
+                            'cities.name as nameClient'
                         )
                         ->first();
+
             return [
                 'message' => 'Envio de datos exitoso',
                 'client_int' => $clientData
@@ -605,7 +541,7 @@ class ClientQuery{
                 'clientActive' => Cliente_Interno::where('status',1)->count(),
                 'clientLow' => Cliente_Interno::where('status',0)->count(),
             ];
-            //dd($content);
+
             return [
                 'message' => 'conteo exitoso!',
                 'cont' => $content

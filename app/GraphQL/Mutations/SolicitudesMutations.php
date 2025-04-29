@@ -68,7 +68,7 @@ class SolicitudesMutations
                 StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El cliente creo una solicitud nueva.',1);
                 //$request->registrationDateTime = $this->now;
                 $request->save();
-                //dd($request);
+
                 event(new SolicitudCreada($request));
 
                 $historial = new Historial_Servicios();
@@ -110,7 +110,7 @@ class SolicitudesMutations
         StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,$comments,2);
         $_request = Solicitud::find($request->id);
         $request->save();
-        //dd($request);
+
         event(new SolicitudCancelada($request));
         return[
             'message'=>'Solicitud rechazada por el tecnico',
@@ -131,14 +131,14 @@ class SolicitudesMutations
                         ->where('services.clientId',$cliente->id)
                         ->where('services.typeClient',1)
                         ->first();
-            //dd($service);
+
             $technician = Tecnico::find($service->technicalId);
             if($service){
                 StatusAssigner::assignStatService($service,$this->now,"services","Anulado por el cliente",7);
                     $service->stateId = 6;
                     $service->save();
                 $request = Solicitud::find($service->requestsId);
-                //dd($request);
+
                     $request->stateId = 6;
                     $request->save();
                     StatusAssigner::assignStateRequest($service,$this->now,"services","Anulado por el cliente",3);
@@ -149,6 +149,7 @@ class SolicitudesMutations
                 ];
             }
             event(new ServicioAnulado($service,'services_anull_client'));
+            event(new ServicioAnulado($service,'serv_anull_client'));
             DB::commit();
             return [
                 'message'=>'Servicio Anulado completado',

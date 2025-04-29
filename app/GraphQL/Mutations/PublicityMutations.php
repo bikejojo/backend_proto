@@ -10,6 +10,8 @@ use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
 use App\Helpers\ImageHelper;
+use App\Models\Cliente_Interno;
+use App\Models\Tecnico;
 use App\Services\StateCatalog;
 use App\Services\ValidationModels;
 
@@ -152,7 +154,22 @@ final class PublicityMutations{
         ];
     }
 
+    public function publicitySendAll(){
+        $clientsIds = self::clientsId();
+        $techIds = self::technsIds();
+        event();
+        event();
+    }
+
     private function createDirectories($publicityId){
         Storage::makeDirectory('public/publicidad/' . $publicityId . '/logo');
+    }
+
+    private function clientsId(){
+        return Cliente_Interno::get();
+    }
+
+    private function technsIds(){
+        return Tecnico::get();
     }
 }

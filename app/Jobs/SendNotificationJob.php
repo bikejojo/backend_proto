@@ -37,7 +37,7 @@ class SendNotificationJob implements ShouldQueue
      */
     public function handle()
     {
-        //dd($this->notification);
+        
         try {
             $notification = Notification::find($this->notificationId);
             if(!$notification){
@@ -67,7 +67,6 @@ class SendNotificationJob implements ShouldQueue
                 'data' => json_decode($notification->data, true),
             ]);
 
-            //dd($response);
 
             NotificationUser::where('notification_id', $notification->id)
             ->where('user_id', $user->id)

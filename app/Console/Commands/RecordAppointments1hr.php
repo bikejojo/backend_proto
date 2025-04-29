@@ -36,7 +36,7 @@ class RecordAppointments1hr extends Command
         $service = Servicio::where('stateId',1)
                             ->whereBetween('updatedDateTime',[$minMinutesThirteen , $addMinutesThirteen])
                             ->get();
-        //dd($service);
+
         if($service->isEmpty()){
             $this->info('No hay servicios para enviar recordatorio');
             return;
@@ -55,15 +55,15 @@ class RecordAppointments1hr extends Command
                 $existsNotification = Notification::where('data->id_service',$services->id)
                                                     ->where('data->id_client',$client->id)
                                                     ->first();
-                                                    //dd($existsNotification);
+                                                  
                 $exitsNotification2hrs = NotificationUser::where('notification_id',$existsNotification->id)
                                                         ->where('is_service_2hr',true)
                                                         ->where('is_service_1hr',false)
                                                         ->exists();
-                //dd($exitsNotification2hrs);
+
                 if($exitsNotification2hrs){
                     $notification = NotificationUser::where('notification_id',$existsNotification->id)->first();
-                    //dd($notification);
+
                     $notification->is_service_1hr = true;
                     $notification->save();
 

@@ -36,7 +36,7 @@ class RecordAppointments extends Command
         $service = Servicio::where('stateId',1)
                             ->whereBetween('updatedDateTime',[$minMinutesThirteen , $addMinutesThirteen])
                             ->get();
-        //dd($service);
+        
         if($service->isEmpty()){
             $this->info('No hay servicios para enviar recordatorio');
             return;

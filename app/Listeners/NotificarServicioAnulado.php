@@ -35,11 +35,9 @@ class NotificarServicioAnulado
      */
     public function handle(ServicioAnulado $event)
     {
-        //dd($event);
         if($event->key === 'services_anull_client'){
 
             $service = $event->service;
-            //dd($service);
             $actionsKey = 'services_anull_client';
             $config = DiccionaryNotifications::getByKey($actionsKey);
             $userClie = Cliente_Interno::where('id', $service->clientId)->first(); //quien manda
@@ -54,7 +52,6 @@ class NotificarServicioAnulado
             ];
             $fecha = Carbon::parse($service->updatedDateTime);
             $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');
-            //dd($completo);
             $notification = new Notification();
                 $notification->action_key = $actionsKey;
                 $notification->title = $config['title'];
@@ -75,6 +72,40 @@ class NotificarServicioAnulado
                 $notificationUser->created_at = Carbon::now();
             $notificationUser->save();
 
+        }elseif ( $event->key === 'serv_anull_client') {
+            $service = $event->service;
+            $actionsKey = 'serv_anull_client';
+            $config = DiccionaryNotifications::getByKey($actionsKey);
+            $userClie = Cliente_Interno::where('id', $service->clientId)->first(); //quien manda
+            $userSend = User::where('id', $userClie->userId)->first(); //usuario quien mand
+            $userTech = Cliente_Interno::where('id', $service->clientId)->first(); //quien recibe
+            $userReceive = User::where('id', $userTech->userId)->first(); //usuario quien recibe
+            $data = [
+                'typeNotification' => $config['type'],
+                'id_service' => $service->id,
+                'type_notification' => $config['type'],
+            ];
+            $fecha = Carbon::parse($service->updatedDateTime);
+            $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');
+            $notification = new Notification();
+                $notification->action_key = $actionsKey;
+                $notification->title = $config['title'];
+                $notification->body = $config['body'];
+                $notification->data = json_encode($data);
+                $notification->type = 2;
+                $notification->type_users = $userSend->type_user;
+                $notification->send_at = Carbon::now();
+                $notification->status = 5;
+                $notification->sender_id = $userSend->id;
+            $notification->save();
+
+            $notificationUser = new NotificationUser();
+                $notificationUser->notification_id = $notification->id;
+                $notificationUser->user_id = $userReceive->id;
+                $notificationUser->type_users = $userReceive->type_user;
+                $notificationUser->expo_response = null ;
+                $notificationUser->created_at = Carbon::now();
+            $notificationUser->save();
         }else{
             $service = $event->service;
             $actionsKey = 'services_anull_tech';
@@ -91,7 +122,6 @@ class NotificarServicioAnulado
             ];
             $fecha = Carbon::parse($service->updatedDateTime);
             $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');
-            //dd($completo);
             $notification = new Notification();
                 $notification->action_key = $actionsKey;
                 $notification->title = $config['title'];

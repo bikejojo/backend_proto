@@ -37,7 +37,7 @@ class RecordSuscription extends Command
         $mensHours = now()->addMinutes(1436);
         $suscription = Technician_subcripcion::where('status',1)
                                             ->whereBetween('endDateSubcription',[$mensHours,$addHours])->get();
-        //dd($suscription);
+      
         //$suscription = Technician_subcripcion::whereTime('endDateSubcription',$addHours)->get();
         $config = DiccionaryNotifications::getByKey('terminate_suscription');
 
