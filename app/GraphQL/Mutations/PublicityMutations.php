@@ -14,7 +14,7 @@ use App\Models\Cliente_Interno;
 use App\Models\Tecnico;
 use App\Services\StateCatalog;
 use App\Services\ValidationModels;
-
+use Illuminate\Support\Facades\Log;
 
 final class PublicityMutations{
 
@@ -155,10 +155,24 @@ final class PublicityMutations{
     }
 
     public function publicitySendAll(){
-        $clientsIds = self::clientsId();
-        $techIds = self::technsIds();
-        event();
-        event();
+        try {
+            $clientsIds = self::clientsId();
+            $techIds = self::technsIds();
+            event();
+            event();
+
+            Log::info('[LOG] Envio exitoso!');
+            return [
+                'message' => 'Envio exitoso de las notificaciones.',
+                'state' => true
+            ];
+        } catch(\Exception $e) {
+            Log::warning('[LOG] Se presentaron las siguientes fallas: ' . $e->getMessage());
+            return [
+                'message' => 'Se presento las siguientes fallas:' . $e->getMessage() ,
+                'state' => false
+            ];
+        }
     }
 
     private function createDirectories($publicityId){
