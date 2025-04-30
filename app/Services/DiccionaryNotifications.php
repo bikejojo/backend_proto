@@ -34,7 +34,7 @@ class DiccionaryNotifications
             ],
             'request_rejected' => [
                 'title' => 'Solicitud rechazada ❌',
-                'body' => 'Tu solicitud fue rechazada del día programado {fecha}. Puedes volver a intentarlo. ',
+                'body' => 'Tu solicitud fue rechazada. Puedes volver a intentarlo. ',
                 'type' => 1,
                 'status' => 4,
                 'type_users' => ['1','2'],
@@ -170,6 +170,18 @@ class DiccionaryNotifications
         ];
     }
 
+    public static function getPublicity(){
+        return [
+            'send_publicity'=>[
+                'title'=> '¡Publicidad exclusivas para técnicos! 🎯',
+                'body'=>'',
+                'type'=>4,
+                'status'=> 2,
+                'type_users'=>'[1]',
+            ],
+        ];
+    }
+
     public static function getByKey(string $key)
     {
         $notifications = self::get();
@@ -179,6 +191,7 @@ class DiccionaryNotifications
         $qualification = self::getQualification();
         $user = self::getUser();
         $record = self::getRecordAgenda();
+        $publicity = self::getPublicity();
 
         if (array_key_exists($key, $notifications)) {
             return $notifications[$key];
@@ -194,6 +207,8 @@ class DiccionaryNotifications
             return $user[$key];
         } elseif (array_key_exists($key,$record)) {
             return $record[$key];
+        } elseif (array_key_exists($key,$publicity)) {
+            return $publicity[$key];
         }
 
         return null;

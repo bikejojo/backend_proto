@@ -2,21 +2,21 @@
 
 namespace App\Providers;
 
-
-use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use App\Events\SolicitudCreada;
-use App\Events\SolicitudCancelada;
-use App\Events\SolicitudAceptada;
 use App\Events\ServicioAnulado;
-use App\Events\ServicioCompletado;
+use App\Events\PublicidadEnvio;
+use App\Events\SolicitudCreada;
 use App\Events\ServicioTerminado;
-
-use App\Listeners\NotificarSolicitudCreada;
-use App\Listeners\NotificarSolicitudCancelada;
-use App\Listeners\NotificarSolicitudAceptada;
+use App\Events\SolicitudAceptada;
+use App\Events\SolicitudCancelada;
+use App\Events\ServicioCompletado;
 use App\Listeners\NotificarServicioAnulado;
-use App\Listeners\NotificarServicioCompletado;
+use App\Listeners\NotificarPublicidadEnvio;
+use App\Listeners\NotificarSolicitudCreada;
 use App\Listeners\NotificarServicioTerminado;
+use App\Listeners\NotificarSolicitudAceptada;
+use App\Listeners\NotificarSolicitudCancelada;
+use App\Listeners\NotificarServicioCompletado;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 
 class EventServiceProvider extends ServiceProvider
@@ -60,6 +60,10 @@ class EventServiceProvider extends ServiceProvider
 
         ServicioTerminado::class => [
             NotificarServicioTerminado::class,
+        ],
+
+        PublicidadEnvio::class => [
+            NotificarPublicidadEnvio::class,
         ],
     ];
 }

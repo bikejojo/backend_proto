@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Mutations;
 
+use App\Events\PublicidadEnvio;
 use App\Models\Publicidad;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -12,6 +13,7 @@ use Intervention\Image\Drivers\Gd\Driver;
 use App\Helpers\ImageHelper;
 use App\Models\Cliente_Interno;
 use App\Models\Tecnico;
+use App\Models\User;
 use App\Services\StateCatalog;
 use App\Services\ValidationModels;
 use Illuminate\Support\Facades\Log;
@@ -22,7 +24,8 @@ final class PublicityMutations{
 
     public function __construct()
     {
-        $this->app = env('APP_URL');//.':'.env('SERVER_PORT');
+       $this->app = config('app.url');
+        //env('APP_URL');//.':'.env('SERVER_PORT');
     }
 
     public function create($root,array $args){
@@ -36,7 +39,7 @@ final class PublicityMutations{
                     'message' => 'Archivo de imagen inválido.'
                 ];
             }
-            $publicity = Publicidad::create([
+            /*$publicity = Publicidad::create([
                 'descriptionPublicity' => $publicityDate['descriptionPublicity'],
                 'commercialName' =>       $publicityDate['commercialName'],
                 'link'=>                  $publicityDate['link'],
@@ -45,7 +48,17 @@ final class PublicityMutations{
                 'finishDate' =>           $publicityDate['finishDate'],
                 'categoryId' =>           $publicityDate['id_category'],
                 'status'=>                StateCatalog::STATUS_PUBLICITY_ACTIVE
-            ]);
+            ]);*/
+            $publicity = new Publicidad();
+                $publicity->descriptionPublicity = $publicityDate['descriptionPublicity'];
+                $publicity->commercialName       = $publicityDate['commercialName'];
+                $publicity->link                 = $publicityDate['link'];
+                $publicity->createdDate          = Carbon::now();
+                $publicity->startDate            = $publicityDate['startDate'];
+                $publicity->finishDate           = $publicityDate['finishDate'];
+                $publicity->categoryId           = $publicityDate['id_category'];
+                $publicity->status               = StateCatalog::STATUS_PUBLICITY_ACTIVE;
+            $publicity->save();
             //dd($publicity);
             $publicityId = $publicity->id;
 
@@ -54,6 +67,7 @@ final class PublicityMutations{
             ImageHelper::createDirectorie($publicityComplete,$value);
             $now = Carbon::now()->copy()->format('Ymd_His');
             $manager = new ImageManager(new Driver());
+            //Log::info("URL del contenido" . $this->app);
             if (isset($args['logo']) && $args['logo'] instanceof UploadedFile) {
                 $frontIdPath = ImageHelper::processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/". "{$now}.png", $manager);
                 $publicity->logo =$this->app . '/storage' . str_replace('public/', '', $frontIdPath);
@@ -154,13 +168,18 @@ final class PublicityMutations{
         ];
     }
 
-    public function publicitySendAll(){
+    public function publicitySendAll($root, array $args){
         try {
-            $clientsIds = self::clientsId();
+            // ----------------------------------------------------------
+            $publicityId = $args['id_p'];
+            $publicity = Publicidad::where( 'id',$publicityId )->first();
+            // ----------------------------------------------------------
+            $adminId = $args['id_a'];
+            $admin = User::where('id',$adminId)->where('type_user',3)->first();
+            // ----------------------------------------------------------
+            //$clientsIds = self::clientsId();
             $techIds = self::technsIds();
-            event();
-            event();
-
+            event(new PublicidadEnvio( $publicity, $techIds, $admin ));
             Log::info('[LOG] Envio exitoso!');
             return [
                 'message' => 'Envio exitoso de las notificaciones.',
@@ -180,10 +199,16 @@ final class PublicityMutations{
     }
 
     private function clientsId(){
-        return Cliente_Interno::get();
+        //return Cliente_Interno::get();
+        $clients = Cliente_interno::pluck('userId');
+        $userClients = User::whereIn('id',$clients)->get();
+        return $userClients;
     }
 
     private function technsIds(){
-        return Tecnico::get();
+        //return Tecnico::get();
+        $technicians = Tecnico::pluck('userId');
+        $userTechnicias = User::whereIn('id',$technicians)->get();
+        return $userTechnicias;
     }
 }

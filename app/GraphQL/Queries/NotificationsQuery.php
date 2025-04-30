@@ -2,6 +2,7 @@
 
 namespace App\GraphQL\Queries;
 
+use App\Models\Cliente_Interno;
 use App\Models\Notification;
 use App\Models\NotificationUser;
 use App\Models\NotificationsDevice;
@@ -28,19 +29,37 @@ class NotificationsQuery
                 ];
             }
 
-            $notification = Notification::select('title','body','data')
-                            ->where('sender_id',$user->id);
-            $notificacionMandaste = $notification->get();
+            $notificacionMandaste = Notification::select('title', 'body', 'data')
+                                ->where('sender_id', $user->id)
+                                ->get()
+                                ->map(function ($item) {
+                                    return (object)[
+                                        'title' => $item->title,
+                                        'body' => $item->body,
+                                        'data' => $item->data,
+                                        'type' => 1
+                                    ];
+                                });
 
-            $notificationUser = NotificationUser::join('notifications','notifications_user.notification_id','=','notifications.id')
-                                ->where('notifications_user.user_id',$user->id)
-                                ->select('notifications.title','notifications.body','notifications.data');
-            $notificationRecibidad = $notificationUser->get();
+            $notificationRecibidad = NotificationUser::join('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
+                                    ->where('notifications_user.user_id', $user->id)
+                                    ->select('notifications.title', 'notifications.body', 'notifications.data')
+                                    ->get()
+                                    ->map(function ($item) {
+                                        return (object)[
+                                            'title' => $item->title,
+                                            'body' => $item->body,
+                                            'data' => $item->data,
+                                            'type' => 2
+                                        ];
+                                    });
+            //7dd($notificationRecibidad);
+            $allNotifications = $notificationRecibidad->merge($notificacionMandaste)->values();
 
             return [
                 'message' => 'Notificaciones para el usuario: ' . $technician->firstName .' '. $technician->lastName,
-                'notificationSend' => $notificacionMandaste,
-                'notificationGet' => $notificationRecibidad,
+                'notifications' => $allNotifications,
+                'status' => '1'
             ];
 
         } catch (\Exception $e){
@@ -55,25 +74,48 @@ class NotificationsQuery
         try {
             $input = $args['Input'];
             $userId = $input['userClient'];
+            $client=Cliente_Interno::where('id',$userId)->first();
+            $user = User::find($client->userId);
 
-            $user = ValidationModels::validation_user($userId);
             if(!$user){
                 return [
                     'message'=>'No se encontró el usuario para el dispositivo especificado.',
                     'status' => '2'
                 ];
             }
-            //d($user);
-            $notifications = Notification::where('type_users', '2')
-                ->where('sender_id', $user->id)
-                ->orderBy('send_at', 'desc')
-                ->get();
-            //dd($notifications);
-            $notificationsUser = NotificationUser::where('user_id ', $user->id)
-                ->where('type_users', '2')
-                ->orderBy('created_at', 'desc')
-                ->get();
-            //dd($notificationsUser);
+
+            $notificacionMandaste = Notification::select('title', 'body', 'data')
+                                ->where('sender_id', $user->id)
+                                ->get()
+                                ->map(function ($item) {
+                                    return (object)[
+                                        'title' => $item->title,
+                                        'body' => $item->body,
+                                        'data' => $item->data,
+                                        'type' => 1
+                                    ];
+                                });
+
+            $notificationRecibidad = NotificationUser::join('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
+                                    ->where('notifications_user.user_id', $user->id)
+                                    ->select('notifications.title', 'notifications.body', 'notifications.data')
+                                    ->get()
+                                    ->map(function ($item) {
+                                        return (object)[
+                                            'title' => $item->title,
+                                            'body' => $item->body,
+                                            'data' => $item->data,
+                                            'type' => 2
+                                        ];
+                                    });
+            //7dd($notificationRecibidad);
+            $allNotifications = $notificationRecibidad->merge($notificacionMandaste)->values();
+
+            return [
+                'message' => 'Notificaciones para el usuario: ' . $client->firstName .' '. $client->lastName,
+                'notification' => $allNotifications,
+                'status' => '1'
+            ];
 
         } catch (\Exception $e){
             return [
@@ -81,5 +123,6 @@ class NotificationsQuery
                 'status' => '3'
             ];
         }
+
     }
 }

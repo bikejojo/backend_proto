@@ -19,19 +19,14 @@ input requestNotification {
 
 type responseNotificationTech {
     message:String
-    notificationSend:[getnotify]
-    notificationGet:[getsnotify]
+    status:String
+    notifications:[getnotify]
 }
 
 type getnotify {
     title:String
     body:String
     data:JSON
-}
-
-type getsnotify {
-    title:String
-    body:String
-    data:JSON
+    type: String
 }
 

@@ -45,6 +45,7 @@ class NotificarSolicitudCancelada
         $userReceive = User::where('id', $userClient->userId)->first(); //usuario quien recibe
         $userTechnician = Tecnico::where('id', $solicitud->technicianId)->first(); //quien manda
         $userSend = User::where('id',$userTechnician->userId)->first(); //usuario quien manda
+
         $data = [
             'typeNotification' => $config['type'],
             /**---------------------------------- */
@@ -69,7 +70,7 @@ class NotificarSolicitudCancelada
         $notification = new Notification();
             $notification->action_key = $actionKey;
             $notification->title = $config['title'];
-            $notification->body = str_replace('{fecha}', $completo, $config['body']);;
+            $notification->body = $config['body'];//str_replace('{fecha}', $completo, $config['body']);;
             $notification->data = json_encode($data);
             $notification->type = 1;
             $notification->type_users = $userSend->type_user;
