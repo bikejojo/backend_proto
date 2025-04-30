@@ -19,26 +19,19 @@ input requestNotification {
 
 type responseNotificationTech {
     message:String
-    technician:Technician
-    notification:[getnotify]
-    notifications:[getsnotify]
+    notificationSend:[getnotify]
+    notificationGet:[getsnotify]
 }
 
 type getnotify {
-    actions_key:String
-    sent_at:String
     title:String
-    description:String
+    body:String
     data:JSON
 }
 
 type getsnotify {
-    expo_response:String
-    created_at:String
-    notification_id:String
-    actions_key:String
-    sender_id:String
     title:String
+    body:String
     data:JSON
 }
 
