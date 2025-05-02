@@ -55,7 +55,9 @@ class RatingMutations{
                         'services.titleService',
                         'services.serviceDescription',
                         'services.stateId',
-                        'services.requestsId'
+                        'services.requestsId',
+                        'services.finishDateTime_technician',
+                        'services.updatedDateTime',
                     )
                     ->first();
                 if(!$service){
