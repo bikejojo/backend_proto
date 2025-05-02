@@ -60,6 +60,7 @@ class RatingMutations{
                     ->first();
                 if(!$service){
                     DB::rollBack();
+                    Log::info('Surgio un problema con servicio');
                     return [
                         'message' => 'Error: No se encontró la solicitud asociada al servicio.'
                     ];
@@ -71,6 +72,7 @@ class RatingMutations{
                 $request= Solicitud::where('id',$service->requestsId )->first();
                 if(!$request){
                     DB::rollBack();
+                    Log::info('Surgio un problema con solicitud');
                     return [
                         'message' => 'Error: No se encontró la solicitud asociada al servicio.'
                     ];
