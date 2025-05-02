@@ -85,30 +85,48 @@ class NotificationsQuery
             }
 
             $notificacionMandaste = Notification::select('title', 'body', 'data')
-                                ->where('sender_id', $user->id)
-                                ->get()
-                                ->map(function ($item) {
-                                    return (object)[
-                                        'title' => $item->title,
-                                        'body' => $item->body,
-                                        'data' => $item->data,
-                                        'type' => 1
-                                    ];
-                                });
+                        ->where('sender_id', $user->id)
+                        ->get()
+                        ->map(function ($item) {
+                            $data = is_string($item->data) ? json_decode($item->data, true) : $item->data;
 
+                            return (object)[
+                                'title' => $item->title,
+                                'body'  => $item->body,
+                                'data'  => [
+                                    'typeNotification'      => $data['typeNotification'] ?? null,
+                                    'full_name'             => $data['full_name'] ?? null,
+                                    'rate'                  => $data['rate'] ?? null,
+                                    'actividad'             => $data['actividad'] ?? null,
+                                    'ubicacion'             => $data['ubicacion'] ?? null,
+                                    'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,
+                                    'estado_del_servicio'   => $data['estado del servicio'] ?? null,
+                                ],
+                                'type' => 1
+                            ];
+                        });
             $notificationRecibidad = NotificationUser::join('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
-                                    ->where('notifications_user.user_id', $user->id)
-                                    ->select('notifications.title', 'notifications.body', 'notifications.data')
-                                    ->get()
-                                    ->map(function ($item) {
-                                        return (object)[
-                                            'title' => $item->title,
-                                            'body' => $item->body,
-                                            'data' => $item->data,
-                                            'type' => 2
-                                        ];
-                                    });
-            //7dd($notificationRecibidad);
+                            ->where('notifications_user.user_id', $user->id)
+                            ->select('notifications.title', 'notifications.body', 'notifications.data')
+                            ->get()
+                            ->map(function ($item) {
+                                $data = is_string($item->data) ? json_decode($item->data, true) : $item->data;
+
+                                return (object)[
+                                    'title' => $item->title,
+                                    'body'  => $item->body,
+                                    'data'  => [
+                                        'typeNotification'      => $data['typeNotification'] ?? null,
+                                        'full_name'             => $data['full_name'] ?? null,
+                                        'rate'                  => $data['rate'] ?? null,
+                                        'actividad'             => $data['actividad'] ?? null,
+                                        'ubicacion'             => $data['ubicacion'] ?? null,
+                                        'referencia_ubicacion'  => $data['referencia ubicacion'] ?? null,
+                                        'estado_del_servicio'   => $data['estado del servicio'] ?? null,
+                                    ],
+                                    'type' => 2
+                                ];
+                            });
             $allNotifications = $notificationRecibidad->merge($notificacionMandaste)->values();
 
             return [
