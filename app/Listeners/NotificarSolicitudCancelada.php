@@ -2,15 +2,16 @@
 
 namespace App\Listeners;
 
-use App\Events\SolicitudCancelada;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Tecnico;
+use App\Models\Notification;
+use App\Models\Tipo_Actividad;
+use App\Models\Cliente_Interno;
+use App\Models\NotificationUser;
 use App\Jobs\SendNotificationJob;
 use Illuminate\Support\Facades\DB;
-use App\Models\Cliente_Interno;
-use App\Models\Tecnico;
-use App\Models\User;
-use App\Models\Notification;
-use App\Models\NotificationUser;
+use App\Events\SolicitudCancelada;
 use App\Services\DiccionaryNotifications;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -45,7 +46,7 @@ class NotificarSolicitudCancelada
         $userReceive = User::where('id', $userClient->userId)->first(); //usuario quien recibe
         $userTechnician = Tecnico::where('id', $solicitud->technicianId)->first(); //quien manda
         $userSend = User::where('id',$userTechnician->userId)->first(); //usuario quien manda
-
+        $nameActividad = Tipo_Actividad::where('id',$solicitud->activityId)->value('description');
         $data = [
             'typeNotification' => $config['type'],
             /**---------------------------------- */
@@ -59,7 +60,7 @@ class NotificarSolicitudCancelada
             'title'=>$solicitud->titleRequests,
             'serviceDescription'=>$solicitud->requestDescription,
             'visitDate'=>$solicitud->registationDateTime,
-            'actividad' => $solicitud->activityId,
+            'actividad' => $nameActividad,
             'latitude'=> $solicitud->latitude,
             'longitude'=> $solicitud->longitude,
             'referencia ubicacion' => $solicitud->serviceLocation,

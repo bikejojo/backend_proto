@@ -2,17 +2,19 @@
 
 namespace App\Listeners;
 
-use App\Events\SolicitudCreada;
-use App\Jobs\SendNotificationJob;
-use App\Models\Cliente_Interno;
+
+use App\Models\User;
+use App\Models\Tecnico;
 use App\Models\Notification;
+use App\Models\Tipo_Actividad;
+use App\Events\SolicitudCreada;
+use App\Models\Cliente_Interno;
 use App\Models\NotificationUser;
+use App\Jobs\SendNotificationJob;
 use App\Models\NotificationsDevice;
 use App\Models\DevicesUser;
 use App\Models\Devices;
 use Illuminate\Support\Facades\DB;
-use App\Models\Tecnico;
-use App\Models\User;
 
 use App\Services\DiccionaryNotifications;
 use Carbon\Carbon;
@@ -46,6 +48,7 @@ class NotificarSolicitudCreada
         $userClient = Cliente_Interno::where('id',$solicitud->clientId)->first();
         $userTech = Tecnico::where('id',$solicitud->technicianId)->first();
         $user = User::where('id',$userClient->userId)->first();
+        $nameActividad = Tipo_Actividad::where('id',$solicitud->activityId)->value('description');
         $data = [
             'typeNotification' => $config['type'],
             /**------------------------------------------- */

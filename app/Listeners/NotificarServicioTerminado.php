@@ -8,6 +8,7 @@ use App\Jobs\SendNotificationJob;
 use App\Models\NotificationUser;
 use App\Jobs\QualificationTech;
 use App\Models\Cliente_Interno;
+use App\Models\Tipo_Actividad;
 use App\Models\Servicio;
 use App\Models\Tecnico;
 use App\Models\User;
@@ -41,7 +42,7 @@ class NotificarServicioTerminado
         $userSend = User::where('id', $userClient->userId)->first(); //usuario quien manda
         $userTech = Tecnico::where('id', $service->technicianId)->first(); //quien recibe
         $userReceive = User::where('id', $userTech->userId)->first(); //usuario quien recibe
-
+        $nameActividad = Tipo_Actividad::where('id',$service->activityId)->value('description');
         $fecha = Carbon::parse($service->updatedDateTime);
         $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');
 
@@ -51,10 +52,10 @@ class NotificarServicioTerminado
             'type_notification' => $config['type'],
             'full_name' => $userTech->firstName . ' ' . $userTech->lastName,
             'photo' => $userTech->photo,
-            'rate' => $userTech->rate,
+            'rate' => $userTech->average_rating,
             'id_technician' => $userTech['id'],
                 'id_client' => $userClient['id'],
-            'actividad' => $service->activityId,
+            'actividad' => $nameActividad,
             'ubicacion' => 'lat: ' . $service->latitude . ' ' . 'lng: ' . $service->longitude,
             'referencia_ubicacion' => $service->serviceLocation,
             'estado_del_servicio' => $service->stateId,

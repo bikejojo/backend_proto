@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\SolicitudAceptada;
 use App\Jobs\SendNotificationJob;
 use App\Models\Cliente_Interno;
+use App\Models\Tipo_Actividad;
 use App\Models\Notification;
 use App\Models\NotificationUser;
 use App\Models\Tecnico;
@@ -39,7 +40,7 @@ class NotificarSolicitudAceptada
         $config = DiccionaryNotifications::getByKey($actionKey);
         $userTech = Tecnico::where('id', $service->technicalId)->first(); //quien manda
         $userSend = User::where('id', $userTech->userId)->first(); //usuario quien manda
-
+        $nameActividad = Tipo_Actividad::where('id',$service->activityId)->value('description');
         $userClie = Cliente_Interno::where('id', $service->clientId)->first(); //quien recibe
         $userReceive = User::where('id', $userClie->userId)->first(); //usuario quien recibe
 
@@ -49,10 +50,10 @@ class NotificarSolicitudAceptada
             'type_notification' => $config['type'],
             'full_name' => $userTech->firstName . ' ' . $userTech->lastName,
             'photo' => $userTech->photo,
-            'rate' => $userTech->rate,
+            'rate' => $userTech->average_rating,
             'id_technician' => $userTech['id'],
             'id_client' => $userClie['id'],
-            'actividad' => $service->activityId,
+            'actividad' => $nameActividad,
             'ubicacion' => 'lat: ' . $service->latitude . ' ' . 'lng: ' . $service->longitude,
             'referencia_ubicacion' => $service->serviceLocation,
             'estado_del_servicio' => $service->stateId,

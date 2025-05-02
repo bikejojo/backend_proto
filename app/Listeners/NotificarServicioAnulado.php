@@ -13,6 +13,7 @@ use App\Models\Tecnico;
 use App\Models\User;
 use Carbon\Carbon;
 use App\Models\Notification;
+use App\Models\Tipo_Actividad;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -87,6 +88,7 @@ class NotificarServicioAnulado
             $userSend = User::where('id', $userClie->userId)->first(); //usuario quien mand
             $userTech = Cliente_Interno::where('id', $service->clientId)->first(); //quien recibe
             $userReceive = User::where('id', $userTech->userId)->first(); //usuario quien recibe
+            $nameActividad = Tipo_Actividad::where('id',$service->activityId)->value('description');
             $data = [
                 'typeNotification' => $config['type'],
                 'id_service' => $service->id,
@@ -95,7 +97,7 @@ class NotificarServicioAnulado
                 'rate' => $userTech->rate,
                 'id_technician' => $userTech['id'],
                 'id_client' => $userClie['id'],
-                'actividad' => $service->activityId,
+                'actividad' => $nameActividad,
                 'ubicacion' => 'lat: ' . $service->latitude . ' ' . 'lng: ' . $service->longitude,
                 'referencia_ubicacion' => $service->serviceLocation,
                 'estado_del_servicio' => $service->stateId,

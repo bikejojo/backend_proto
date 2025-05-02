@@ -33,11 +33,24 @@ class NotificationsQuery
                                 ->where('sender_id', $user->id)
                                 ->get()
                                 ->map(function ($item) {
+                                    $data = is_string($item->data) ? json_decode($item->data, true) : $item->data;
                                     return (object)[
                                         'id' => $item->id,
                                         'title' => $item->title,
                                         'body' => $item->body,
-                                        'data' => $item->data,
+                                        'data'  => [
+                                            'typeNotification'      => $data['typeNotification'] ?? null,
+                                            'full_name'             => is_array($data['full_name'] ?? null) ? $data['full_name']['full_name'] ?? null : $data['full_name'] ?? null,
+                                            'rate'                  => is_array($data['rate'] ?? null) ? $data['rate']['rate'] ?? null : $data['rate'] ?? null,
+                                            'actividad'             => $data['actividad'] ?? null,
+                                            'ubicacion'             => $data['ubicacion'] ?? null,
+                                            'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,
+                                            'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
+                                            'id_client'             => $data['id_client'] ?? null,
+                                            'id_technician'         => $data['id_technician'] ?? null,
+                                            'id_service'            => $data['id_service'] ?? null,
+                                            'id_request'            => $data['id_service'] ?? null,
+                                        ],
                                         'type' => 1
                                     ];
                                 });
@@ -47,11 +60,22 @@ class NotificationsQuery
                                     ->select('notifications.id','notifications.title', 'notifications.body', 'notifications.data')
                                     ->get()
                                     ->map(function ($item) {
+                                        $data = is_string($item->data) ? json_decode($item->data, true) : $item->data;
                                         return (object)[
                                             'id' => $item->id,
                                             'title' => $item->title,
                                             'body' => $item->body,
-                                            'data' => $item->data,
+                                            'data'  => [
+                                                'typeNotification'      => $data['typeNotification'] ?? null,
+                                                'full_name'             => is_array($data['full_name'] ?? null) ? $data['full_name']['full_name'] ?? null : $data['full_name'] ?? null,
+                                                'rate'                  => is_array($data['rate'] ?? null) ? $data['rate']['rate'] ?? null : $data['rate'] ?? null,
+                                                'actividad'             => $data['actividad'] ?? null,
+                                                'ubicacion'             => $data['ubicacion'] ?? null,
+                                                'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,
+                                                'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
+                                                'id_client'             => $data['id_client'] ?? null,
+                                                'id_technician'         => $data['id_technician'] ?? null
+                                            ],
                                             'type' => 2
                                         ];
                                     });
