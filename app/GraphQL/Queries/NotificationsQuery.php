@@ -29,11 +29,12 @@ class NotificationsQuery
                 ];
             }
 
-            $notificacionMandaste = Notification::select('title', 'body', 'data')
+            $notificacionMandaste = Notification::select('id','title', 'body', 'data')
                                 ->where('sender_id', $user->id)
                                 ->get()
                                 ->map(function ($item) {
                                     return (object)[
+                                        'id' => $item->id,
                                         'title' => $item->title,
                                         'body' => $item->body,
                                         'data' => $item->data,
@@ -43,10 +44,11 @@ class NotificationsQuery
 
             $notificationRecibidad = NotificationUser::join('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
                                     ->where('notifications_user.user_id', $user->id)
-                                    ->select('notifications.title', 'notifications.body', 'notifications.data')
+                                    ->select('notifications.id','notifications.title', 'notifications.body', 'notifications.data')
                                     ->get()
                                     ->map(function ($item) {
                                         return (object)[
+                                            'id' => $item->id,
                                             'title' => $item->title,
                                             'body' => $item->body,
                                             'data' => $item->data,
