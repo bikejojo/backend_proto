@@ -96,7 +96,7 @@ class NotificationsQuery
                                 'data'  => [
                                     'typeNotification'      => $data['typeNotification'] ?? null,
                                     'full_name'             => is_array($data['full_name'] ?? null) ? $data['full_name']['full_name'] ?? null : $data['full_name'] ?? null,
-                                    'rate'                  => $data['rate'] ?? null,
+                                    'rate'                  => is_array($data['rate'] ?? null) ? $data['rate']['rate'] ?? null : $data['rate'] ?? null,
                                     'actividad'             => $data['actividad'] ?? null,
                                     'ubicacion'             => $data['ubicacion'] ?? null,
                                     'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,
@@ -118,7 +118,7 @@ class NotificationsQuery
                                     'data'  => [
                                         'typeNotification'      => $data['typeNotification'] ?? null,
                                         'full_name'             => $data['full_name'] ?? null,
-                                        'rate'                  => $data['rate'] ?? null,
+                                        'rate'                  => is_array($data['rate'] ?? null) ? $data['rate']['rate'] ?? null : $data['rate'] ?? null,
                                         'actividad'             => $data['actividad'] ?? null,
                                         'ubicacion'             => $data['ubicacion'] ?? null,
                                         'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,

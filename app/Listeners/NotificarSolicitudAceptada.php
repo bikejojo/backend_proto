@@ -47,6 +47,14 @@ class NotificarSolicitudAceptada
             'typeNotification' => $config['type'],
             'id_service' => $service->id,
             'type_notification' => $config['type'],
+            'full_name' => $userTech->firstName . ' ' . $userTech->lastName,
+            'photo' => $userTech->photo,
+            'rate' => $userTech->rate,
+            'actividad' => $service->activityId,
+            'ubicacion' => 'lat: ' . $service->latitude . ' ' . 'lng: ' . $service->longitude,
+            'referencia_ubicacion' => $service->serviceLocation,
+            'estado_del_servicio' => $service->stateId,
+            'id_request' => $service->requestsId
         ];
         $fecha = Carbon::parse($service->updatedDateTime);
         $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');
@@ -55,14 +63,16 @@ class NotificarSolicitudAceptada
             $notification->action_key = $actionKey;
             $notification->title = $config['title'];
             $notification->body = $config['body'] . $completo;
-            $notification->data = json_encode($data);
+            $notification->data = $data;
             $notification->type = 1;
             $notification->type_users = $userSend->type_user;
             $notification->send_at = Carbon::now();
             $notification->status = 3;
             $notification->sender_id = $userSend->id;
         $notification->save();
-
+        $data['id'] = $notification->id;
+        $notification->data = $data;
+        $notification->save();
         $notificationUser = new NotificationUser();
             $notificationUser->notification_id = $notification->id;
             $notificationUser->user_id = $userReceive->id;

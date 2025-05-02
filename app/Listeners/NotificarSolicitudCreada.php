@@ -44,12 +44,14 @@ class NotificarSolicitudCreada
         $actionKey = 'request_sent';
         $config = DiccionaryNotifications::getByKey($actionKey);
         $userClient = Cliente_Interno::where('id',$solicitud->clientId)->first();
+        $userTech = Tecnico::where('id',$solicitud->technicianId)->first();
         $user = User::where('id',$userClient->userId)->first();
         $data = [
             'typeNotification' => $config['type'],
             /**------------------------------------------- */
             'full_name' => Tecnico::where('id',$solicitud->technicianId)->select(DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\') ) AS full_name '))->first(),
-            'rate' => Tecnico::where('id',$solicitud->technicianId)->select('average_rating As rate')->first(),
+            'rate' => $userTech->average_rating,
+            'photo'=> $userTech->photo,
             'actividad' => $solicitud->activityId ,
             'ubicacion' => 'lat:' . $solicitud->latitude . ' ' . 'lng:' . $solicitud->longitude,
             'referencia ubicacion' => $solicitud->serviceLocation,
@@ -62,12 +64,15 @@ class NotificarSolicitudCreada
             $notification->action_key = $actionKey;
             $notification->title = $config['title'];
             $notification->body = $config['body'];
-            $notification->data = json_encode($data);
+            $notification->data = $data;
             $notification->type = 1;
             $notification->type_users = $user->type_user;
             $notification->send_at = Carbon::now();
             $notification->status = 2;
             $notification->sender_id = $user->id;
+        $notification->save();
+        $data['id'] = $notification->id;
+        $notification->data = $data;
         $notification->save();
         $userRecept = Tecnico::find($solicitud->technicianId);
         $userReceive = User::where('id',$userRecept->userId)->first();
