@@ -44,10 +44,20 @@ class NotificarPublicidadEnvio
         $config = DiccionaryNotifications::getByKey($actionKey);
 
         foreach ( $techIds as $techId ) {
-            $user = User::where('id',$techId->userId)->first();
+            //$user = User::where('id',$techId->userId)->first();
+            //dd($user);
             //---------------------------------------------------------------
-            $deviceUser = DevicesUser::where('users_id',$user->id)->first();
+            $deviceUser = DevicesUser::where('users_id',$techId->id)->first();
+            if (!$deviceUser) {
+                Log::warning("[LOG] El técnico ID {$techId->id} no tiene dispositivo registrado.");
+                continue; // Evita el error y pasa al siguiente técnico
+            }
+            //---------------------------------------------------------------
             $device = Devices::where('id',$deviceUser->device_id)->first();
+            if (!$device) {
+                Log::warning("[LOG] No se encontró el dispositivo con ID {$deviceUser->device_id}.");
+                continue; // También valida esto si es posible que esté roto el vínculo
+            }
             //---------------------------------------------------------------
             $notification = new Notification();
                 $notification->action_key =  $actionKey;
@@ -67,8 +77,8 @@ class NotificarPublicidadEnvio
 
             $notificationUser = new NotificationUser();
                 $notificationUser->notification_id = $notification->id;
-                $notificationUser->user_id = $user->id;
-                $notificationUser->type_users = $user->type_user;
+                $notificationUser->user_id = $techId->id;
+                $notificationUser->type_users = $techId->type_user;
                 $notificationUser->created_at = Carbon::now();
                 $notificationUser->is_service_2hr = false;
                 $notificationUser->is_service_1hr = false;
@@ -77,6 +87,7 @@ class NotificarPublicidadEnvio
             Log::info("[LOG] Ningun error en el envio de publicidad.");
             //---------------------------------------------------------------
             PublicidadEnvioTech::dispatch($notification,$notificationUser,$device);
+
         }
     }
 }

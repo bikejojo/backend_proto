@@ -173,9 +173,11 @@ final class PublicityMutations{
             // ----------------------------------------------------------
             $publicityId = $args['id_p'];
             $publicity = Publicidad::where( 'id',$publicityId )->first();
+
             // ----------------------------------------------------------
             $adminId = $args['id_a'];
             $admin = User::where('id',$adminId)->where('type_user',3)->first();
+           
             // ----------------------------------------------------------
             //$clientsIds = self::clientsId();
             $techIds = self::technsIds();
