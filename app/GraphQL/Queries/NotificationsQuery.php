@@ -95,17 +95,17 @@ class NotificationsQuery
                                 'body'  => $item->body,
                                 'data'  => [
                                     'typeNotification'      => $data['typeNotification'] ?? null,
-                                    'full_name'             => $data['full_name'] ?? null,
+                                    'full_name'             => is_array($data['full_name'] ?? null) ? $data['full_name']['full_name'] ?? null : $data['full_name'] ?? null,
                                     'rate'                  => $data['rate'] ?? null,
                                     'actividad'             => $data['actividad'] ?? null,
                                     'ubicacion'             => $data['ubicacion'] ?? null,
                                     'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,
-                                    'estado_del_servicio'   => $data['estado del servicio'] ?? null,
+                                    'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
                                 ],
                                 'type' => 1
                             ];
                         });
-            $notificationRecibidad = NotificationUser::join('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
+            $notificationRecibidad = NotificationUser::leftJoin('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
                             ->where('notifications_user.user_id', $user->id)
                             ->select('notifications.title', 'notifications.body', 'notifications.data')
                             ->get()
@@ -121,8 +121,8 @@ class NotificationsQuery
                                         'rate'                  => $data['rate'] ?? null,
                                         'actividad'             => $data['actividad'] ?? null,
                                         'ubicacion'             => $data['ubicacion'] ?? null,
-                                        'referencia_ubicacion'  => $data['referencia ubicacion'] ?? null,
-                                        'estado_del_servicio'   => $data['estado del servicio'] ?? null,
+                                        'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,
+                                        'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
                                     ],
                                     'type' => 2
                                 ];
