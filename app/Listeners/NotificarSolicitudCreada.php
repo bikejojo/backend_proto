@@ -52,6 +52,8 @@ class NotificarSolicitudCreada
             'full_name' => Tecnico::where('id',$solicitud->technicianId)->select(DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\') ) AS full_name '))->first(),
             'rate' => $userTech->average_rating,
             'photo'=> $userTech->photo,
+            'id_technician' => $userTech['id'],
+                'id_client' => $userClient['id'],
             'actividad' => $solicitud->activityId ,
             'ubicacion' => 'lat:' . $solicitud->latitude . ' ' . 'lng:' . $solicitud->longitude,
             'referencia ubicacion' => $solicitud->serviceLocation,

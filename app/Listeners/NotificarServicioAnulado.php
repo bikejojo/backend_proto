@@ -93,6 +93,8 @@ class NotificarServicioAnulado
                 'type_notification' => $config['type'],
                 'full_name' => $userTech->firstName . ' ' . $userTech->lastName,
                 'rate' => $userTech->rate,
+                'id_technician' => $userTech['id'],
+                'id_client' => $userClie['id'],
                 'actividad' => $service->activityId,
                 'ubicacion' => 'lat: ' . $service->latitude . ' ' . 'lng: ' . $service->longitude,
                 'referencia_ubicacion' => $service->serviceLocation,
@@ -133,6 +135,8 @@ class NotificarServicioAnulado
                 'typeNotification' => $config['type'],
                 'id_service' => $service->id,
                 'type_notification' => $config['type'],
+                'id_technician' => $userTech['id'],
+                'id_client' => $userClie['id'],
                 'full_name' => $userTech->firstName . ' ' . $userTech->lastName,
                 'photo' => $userTech->photo,
                 'rate' => $userTech->rate,
@@ -140,7 +144,8 @@ class NotificarServicioAnulado
                 'ubicacion' => 'lat: ' . $service->latitude . ' ' . 'lng: ' . $service->longitude,
                 'referencia_ubicacion' => $service->serviceLocation,
                 'estado_del_servicio' => $service->stateId,
-                'id_request' => $service->requestsId
+                'id_request' => $service->requestsId,
+
             ];
             $fecha = Carbon::parse($service->updatedDateTime);
             $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');

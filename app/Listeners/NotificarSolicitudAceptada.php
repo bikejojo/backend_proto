@@ -50,6 +50,8 @@ class NotificarSolicitudAceptada
             'full_name' => $userTech->firstName . ' ' . $userTech->lastName,
             'photo' => $userTech->photo,
             'rate' => $userTech->rate,
+            'id_technician' => $userTech['id'],
+            'id_client' => $userClie['id'],
             'actividad' => $service->activityId,
             'ubicacion' => 'lat: ' . $service->latitude . ' ' . 'lng: ' . $service->longitude,
             'referencia_ubicacion' => $service->serviceLocation,

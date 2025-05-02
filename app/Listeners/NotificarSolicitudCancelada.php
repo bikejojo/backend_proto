@@ -54,6 +54,8 @@ class NotificarSolicitudCancelada
             'phonoNumber'=>$userTechnician->phoneNumber,
             'rate' => $userTechnician->average_rating,
             /**------------------------------------ */
+            'id_technician' => $userTechnician['id'],
+                'id_client' => $userClient['id'],
             'title'=>$solicitud->titleRequests,
             'serviceDescription'=>$solicitud->requestDescription,
             'visitDate'=>$solicitud->registationDateTime,
