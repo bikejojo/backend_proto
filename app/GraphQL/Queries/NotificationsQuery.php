@@ -84,13 +84,13 @@ class NotificationsQuery
                 ];
             }
 
-            $notificacionMandaste = Notification::select('title', 'body', 'data')
+            $notificacionMandaste = Notification::select('id','title', 'body', 'data')
                         ->where('sender_id', $user->id)
                         ->get()
                         ->map(function ($item) {
                             $data = is_string($item->data) ? json_decode($item->data, true) : $item->data;
-
                             return (object)[
+                                'id' => $item->id,
                                 'title' => $item->title,
                                 'body'  => $item->body,
                                 'data'  => [
@@ -101,18 +101,21 @@ class NotificationsQuery
                                     'ubicacion'             => $data['ubicacion'] ?? null,
                                     'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,
                                     'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
+                                    'id_client'             => $data['id_client'] ?? null,
+                                    'id_technician'         => $data['id_technician'] ?? null
                                 ],
                                 'type' => 1
                             ];
                         });
             $notificationRecibidad = NotificationUser::leftJoin('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
                             ->where('notifications_user.user_id', $user->id)
-                            ->select('notifications.title', 'notifications.body', 'notifications.data')
+                            ->select('notifications.id','notifications.title', 'notifications.body', 'notifications.data')
                             ->get()
                             ->map(function ($item) {
                                 $data = is_string($item->data) ? json_decode($item->data, true) : $item->data;
 
                                 return (object)[
+                                    'id' => $item->id,
                                     'title' => $item->title,
                                     'body'  => $item->body,
                                     'data'  => [
@@ -123,6 +126,8 @@ class NotificationsQuery
                                         'ubicacion'             => $data['ubicacion'] ?? null,
                                         'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,
                                         'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
+                                        'id_client'             => is_array($data['id_client'] ?? null) ? $data['id_client']['id_client'] ?? null : $data['id_client'] ?? null,
+                                        'id_technician'         => $data['id_technician'] ?? null
                                     ],
                                     'type' => 2
                                 ];

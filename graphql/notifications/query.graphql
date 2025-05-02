@@ -24,6 +24,7 @@ type responseNotificationTech {
 }
 
 type getnotify {
+    id:String
     title:String
     body:String
     data:JSON
