@@ -11,6 +11,7 @@ use App\Models\Cliente_Interno;
 use App\Models\Solicitud;
 use App\Services\StatusAssigner;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class RatingMutations{
     public static $entity_type = "service";
@@ -34,7 +35,7 @@ class RatingMutations{
                     ->where('technicialId', $rating['id_technician'])
                     ->where('clientId', $rating['id_client'])
                     ->first();
-           
+
                     $service_= Servicio::find($rating['id_service']);
 
                     $responses[] = [
@@ -110,6 +111,7 @@ class RatingMutations{
             ];
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::info('Surgio un problema al momento de calificar'. $e->getMessage());
             return [
                 'message' => 'Error: ' . $e->getMessage()
             ];
