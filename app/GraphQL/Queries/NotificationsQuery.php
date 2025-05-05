@@ -139,7 +139,6 @@ class NotificationsQuery
                             ->get()
                             ->map(function ($item) {
                                 $data = is_string($item->data) ? json_decode($item->data, true) : $item->data;
-
                                 return (object)[
                                     'id' => $item->id,
                                     'title' => $item->title,

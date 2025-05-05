@@ -44,15 +44,15 @@ class NotificarServicioAnulado
             $userClie = Cliente_Interno::where('id', $service->clientId)->first(); //quien manda
             $userSend = User::where('id', $userClie->userId)->first(); //usuario quien mand
             $userTech = Tecnico::where('id', $service->technicalId)->first(); //quien recibe
-
+            $nameActividad = Tipo_Actividad::where('id',$service->activityId)->value('description');
             $userReceive = User::where('id', $userTech->userId)->first(); //usuario quien recibe
             $data = [
                 'typeNotification' => $config['type'],
                 'id_service' => $service->id,
                 'type_notification' => $config['type'],
                 'full_name' => $userTech->firstName . ' ' . $userTech->lastName,
-                'rate' => $userTech->rate,
-                'actividad' => $service->activityId,
+                'rate' => $userTech->average_rating,
+                'actividad' => $nameActividad,
                 'ubicacion' => 'lat: ' . $service->latitude . ' ' . 'lng: ' . $service->longitude,
                 'referencia_ubicacion' => $service->serviceLocation,
                 'estado_del_servicio' => $service->stateId,
@@ -94,7 +94,7 @@ class NotificarServicioAnulado
                 'id_service' => $service->id,
                 'type_notification' => $config['type'],
                 'full_name' => $userTech->firstName . ' ' . $userTech->lastName,
-                'rate' => $userTech->rate,
+                'rate' => $userTech->average_rating,
                 'id_technician' => $userTech['id'],
                 'id_client' => $userClie['id'],
                 'actividad' => $nameActividad,
@@ -130,7 +130,7 @@ class NotificarServicioAnulado
             $config = DiccionaryNotifications::getByKey($actionsKey);
             $userTech = Tecnico::where('id', $service->technicalId)->first();//usuario quien manda
             $userSend = User::where('id', $userTech->userId)->first();//quien manda
-
+            $nameActividad = Tipo_Actividad::where('id',$service->activityId)->value('description');
             $userClie = Cliente_Interno::where('id', $service->clientId)->first();//quien recibe
             $userReceive = User::where('id', $userClie->userId)->first(); //usuario quien recibe
             $data = [
@@ -141,8 +141,8 @@ class NotificarServicioAnulado
                 'id_client' => $userClie['id'],
                 'full_name' => $userTech->firstName . ' ' . $userTech->lastName,
                 'photo' => $userTech->photo,
-                'rate' => $userTech->rate,
-                'actividad' => $service->activityId,
+                'rate' => $userTech->average_rating,
+                'actividad' => $nameActividad,
                 'ubicacion' => 'lat: ' . $service->latitude . ' ' . 'lng: ' . $service->longitude,
                 'referencia_ubicacion' => $service->serviceLocation,
                 'estado_del_servicio' => $service->stateId,

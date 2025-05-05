@@ -101,6 +101,7 @@ class SolicitudesMutations
         // tipo 3
         $requestId = $args['id'];
         $request = Solicitud::find($requestId);
+        //dd($request);
         $comments = 'Se cancelo la solicitud por el tecnico.';
         ###################################3
         $clientId = $request->clientId;

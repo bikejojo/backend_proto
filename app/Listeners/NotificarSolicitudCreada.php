@@ -52,15 +52,15 @@ class NotificarSolicitudCreada
         $data = [
             'typeNotification' => $config['type'],
             /**------------------------------------------- */
-            'full_name' => Tecnico::where('id',$solicitud->technicianId)->select(DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\') ) AS full_name '))->first(),
+            'full_name' => $userTech->firstName . ' '. $userTech->lastName ,//Tecnico::where('id',$solicitud->technicianId)->select(DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\') ) AS full_name '))->first(),
             'rate' => $userTech->average_rating,
             'photo'=> $userTech->photo,
             'id_technician' => $userTech['id'],
-                'id_client' => $userClient['id'],
-            'actividad' => $solicitud->activityId ,
+            'id_client' => $userClient['id'],
+            'actividad' => $nameActividad ,
             'ubicacion' => 'lat:' . $solicitud->latitude . ' ' . 'lng:' . $solicitud->longitude,
-            'referencia ubicacion' => $solicitud->serviceLocation,
-            'estado del servicio' => $config['type'],
+            'referencia_ubicacion' => $solicitud->serviceLocation,
+            'estado_del_servicio' => $config['type'],
             'id' => $solicitud->id,
         ];
         //dd($data);

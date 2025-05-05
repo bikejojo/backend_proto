@@ -59,13 +59,12 @@ class NotificarSolicitudCancelada
                 'id_client' => $userClient['id'],
             'title'=>$solicitud->titleRequests,
             'serviceDescription'=>$solicitud->requestDescription,
-            'visitDate'=>$solicitud->registationDateTime,
+            'visitDate'=>$solicitud->registrationDateTime,
             'actividad' => $nameActividad,
-            'latitude'=> $solicitud->latitude,
-            'longitude'=> $solicitud->longitude,
-            'referencia ubicacion' => $solicitud->serviceLocation,
-            'estado del servicio' => 4,
-            'tipo notificacion' => 1,
+            'ubicacion'=> 'lat: '.$solicitud->latitude . ' ' . 'lon: ' . $solicitud->longitude,
+            'referencia_ubicacion' => $solicitud->serviceLocation,
+            'estado_del_servicio' => 4,
+            'tipo_notificacion' => 1,
             'id' => $solicitud->id,
         ];
         $fecha = Carbon::parse($solicitud->registrationDateTime);
