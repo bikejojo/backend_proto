@@ -17,7 +17,7 @@ class Promocion extends Model
         'discount_value',
         'createDate',
         'finishDate',
-        'duration',
+        'durationPromotion',
         'status',
     ];
 }

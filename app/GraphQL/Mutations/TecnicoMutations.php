@@ -162,7 +162,7 @@ class TecnicoMutations {
         }
 
         $user = User::find($technician->userId);
-
+        $this->nowBack=$this->nowBack->format('Ymd_His');
         DB::beginTransaction();
         try {
             // Actualizar datos del usuario
@@ -250,11 +250,13 @@ class TecnicoMutations {
         $user = User::find($userId);
         $manager = new ImageManager(new Driver());
         $isPhotoUploaded = isset($args['photo']) && $args['photo'] instanceof UploadedFile;
+        //dd($this->app);
         if ($isPhotoUploaded) {
             // Eliminar foto anterior
             ImageHelper::deleteDirectoryProfile($technicialId);
             $this->nowProfile=$this->nowProfile->format('Ymd_His');
             $photoCardPath = ImageHelper::processImage($args['photo'], "/{$technicialId}/profile/"."{$this->nowProfile}.png", $manager);
+
             $technicial->photo =$this->app.'/storage' . str_replace('public/', '', $photoCardPath);
         }
         $technicial->save();
@@ -297,7 +299,7 @@ class TecnicoMutations {
                 'message' => 'Contraseña restablecida para el tecnico.',
                 'result' => true
             ];
-            
+
         } catch(\Exception $e){
             DB::rollback();
             return [

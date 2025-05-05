@@ -199,7 +199,7 @@ class ClienteInternoMutations{
                         $path = str_replace($this->app . '/storage/', '', $client->photo);
                         Storage::delete('public/' . $path);
                     }
-
+                    
                     $photoPath = $this->processImage($args['photo'], "/client_{$client->id}/photo/{$this->now}.png", $manager);
                     $client->photo = $this->app . '/storage' . str_replace('public/', '', $photoPath);
                 } elseif (is_null($args['photo'])) {

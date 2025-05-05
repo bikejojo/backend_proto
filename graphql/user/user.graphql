@@ -13,7 +13,7 @@ type User {
     updated_at: DateTime!
     ci:String @trim
     type_user:Int @trim
-    token: String!
+    token: String
     #code:String
     clientsExterns:[InternalClient!]! @hasMany
     technicians:[Technician!]! @hasMany

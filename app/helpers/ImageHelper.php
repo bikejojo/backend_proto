@@ -152,6 +152,7 @@ class ImageHelper
     }
 
     public static function deleteDirectoryIdCard($objetoId){
+        
         Storage::deleteDirectory('public/' . $objetoId . '/id_card');
     }
 

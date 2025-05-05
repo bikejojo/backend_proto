@@ -65,7 +65,7 @@ class NotificarSolicitudCancelada
             'referencia_ubicacion' => $solicitud->serviceLocation,
             'estado_del_servicio' => 4,
             'tipo_notificacion' => 1,
-            'id' => $solicitud->id,
+            'id_request' => $solicitud->id,
         ];
         $fecha = Carbon::parse($solicitud->registrationDateTime);
         $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');

@@ -7,6 +7,6 @@ type Promotion @model(class: "App\\Models\\Promocion"){
     discount_value:String @trim
     createDate:String
     finishDate:String
-    duration:String
+    durationPromotion:String
     status:String
 }

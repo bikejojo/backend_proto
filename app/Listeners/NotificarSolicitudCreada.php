@@ -61,7 +61,7 @@ class NotificarSolicitudCreada
             'ubicacion' => 'lat:' . $solicitud->latitude . ' ' . 'lng:' . $solicitud->longitude,
             'referencia_ubicacion' => $solicitud->serviceLocation,
             'estado_del_servicio' => $config['type'],
-            'id' => $solicitud->id,
+            'id_request' => $solicitud->id,
         ];
         //dd($data);
         $notification = new Notification();

@@ -31,25 +31,28 @@ class NotificationsQuery
 
             $notificacionMandaste = Notification::select('id','title', 'body', 'data')
                                 ->where('sender_id', $user->id)
+                                ->orderBy('id','ASC')
                                 ->get()
                                 ->map(function ($item) {
-                                    $data = is_string($item->data) ? json_decode($item->data, true) : $item->data;
-                                    return (object)[
+                                    $data = $item->data;
+
+                                    return [
                                         'id' => $item->id,
                                         'title' => $item->title,
                                         'body' => $item->body,
                                         'data'  => [
                                             'typeNotification'      => $data['typeNotification'] ?? null,
-                                            'full_name'             => is_array($data['full_name'] ?? null) ? $data['full_name']['full_name'] ?? null : $data['full_name'] ?? null,
-                                            'rate'                  => is_array($data['rate'] ?? null) ? $data['rate']['rate'] ?? null : $data['rate'] ?? null,
+                                            'full_name_tech'             => $data['full_name_tech'] ?? null ,
+                                            'photo_tech'                 => $data['photo_tech'] ?? null,
+                                            'rate_tech'                  => $data['rate_tech'] ?? null ,
                                             'actividad'             => $data['actividad'] ?? null,
                                             'ubicacion'             => $data['ubicacion'] ?? null,
                                             'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,
                                             'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
                                             'id_client'             => $data['id_client'] ?? null,
                                             'id_technician'         => $data['id_technician'] ?? null,
-                                            'id_service'            => $data['id_service'] ?? null,
-                                            'id_request'            => $data['id_service'] ?? null,
+                                            'id_service'            => $data['id_service'] === null ? 'No existe' : $data['id_service'],
+                                                'id_request'            => $data['id_request'] === null ? 'No existe' : $data['id_request'],
                                         ],
                                         'type' => 1
                                     ];
@@ -58,23 +61,28 @@ class NotificationsQuery
             $notificationRecibidad = NotificationUser::join('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
                                     ->where('notifications_user.user_id', $user->id)
                                     ->select('notifications.id','notifications.title', 'notifications.body', 'notifications.data')
+                                    ->orderBy('notifications.id','ASC')
                                     ->get()
                                     ->map(function ($item) {
-                                        $data = is_string($item->data) ? json_decode($item->data, true) : $item->data;
-                                        return (object)[
+                                        $data = json_decode($item->data, true);
+                                        //dd($data);
+                                        return [
                                             'id' => $item->id,
                                             'title' => $item->title,
                                             'body' => $item->body,
                                             'data'  => [
                                                 'typeNotification'      => $data['typeNotification'] ?? null,
-                                                'full_name'             => is_array($data['full_name'] ?? null) ? $data['full_name']['full_name'] ?? null : $data['full_name'] ?? null,
-                                                'rate'                  => is_array($data['rate'] ?? null) ? $data['rate']['rate'] ?? null : $data['rate'] ?? null,
+                                                'full_name'             => $data['full_name'] ?? null,
+                                                'photo'                 => $data['photo'] ?? null,
+                                                'rate'                  => $data['rate'] ?? null,
                                                 'actividad'             => $data['actividad'] ?? null,
                                                 'ubicacion'             => $data['ubicacion'] ?? null,
                                                 'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,
                                                 'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
                                                 'id_client'             => $data['id_client'] ?? null,
-                                                'id_technician'         => $data['id_technician'] ?? null
+                                                'id_technician'         => $data['id_technician'] ?? null,
+                                                'id_service'            => $data['id_service'] === null ? 'No existe' : $data['id_service'],
+                                                'id_request'            => $data['id_request'] === null ? 'No existe' : $data['id_request'],
                                             ],
                                             'type' => 2
                                         ];
@@ -115,20 +123,23 @@ class NotificationsQuery
                         ->get()
                         ->map(function ($item) {
                             $data = is_string($item->data) ? json_decode($item->data, true) : $item->data;
-                            return (object)[
+                            return [
                                 'id' => $item->id,
                                 'title' => $item->title,
                                 'body'  => $item->body,
                                 'data'  => [
                                     'typeNotification'      => $data['typeNotification'] ?? null,
                                     'full_name'             => is_array($data['full_name'] ?? null) ? $data['full_name']['full_name'] ?? null : $data['full_name'] ?? null,
+                                    'photo'                 => $data['photo'] ?? null,
                                     'rate'                  => is_array($data['rate'] ?? null) ? $data['rate']['rate'] ?? null : $data['rate'] ?? null,
                                     'actividad'             => $data['actividad'] ?? null,
                                     'ubicacion'             => $data['ubicacion'] ?? null,
                                     'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,
                                     'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
                                     'id_client'             => $data['id_client'] ?? null,
-                                    'id_technician'         => $data['id_technician'] ?? null
+                                    'id_technician'         => $data['id_technician'] ?? null,
+                                    'id_service'            => $data['id_service'] === null ? 'No existe' : $data['id_service'],
+                                    'id_request'            => $data['id_request'] === null ? 'No existe' : $data['id_request'],
                                 ],
                                 'type' => 1
                             ];
@@ -139,20 +150,23 @@ class NotificationsQuery
                             ->get()
                             ->map(function ($item) {
                                 $data = is_string($item->data) ? json_decode($item->data, true) : $item->data;
-                                return (object)[
+                                return [
                                     'id' => $item->id,
                                     'title' => $item->title,
                                     'body'  => $item->body,
                                     'data'  => [
                                         'typeNotification'      => $data['typeNotification'] ?? null,
                                         'full_name'             => $data['full_name'] ?? null,
+                                        'photo'                 => $data['photo'] ?? null,
                                         'rate'                  => is_array($data['rate'] ?? null) ? $data['rate']['rate'] ?? null : $data['rate'] ?? null,
                                         'actividad'             => $data['actividad'] ?? null,
                                         'ubicacion'             => $data['ubicacion'] ?? null,
                                         'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,
                                         'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
                                         'id_client'             => is_array($data['id_client'] ?? null) ? $data['id_client']['id_client'] ?? null : $data['id_client'] ?? null,
-                                        'id_technician'         => $data['id_technician'] ?? null
+                                        'id_technician'         => $data['id_technician'] ?? null,
+                                        'id_service'            => $data['id_service'] === null ? 'No existe' : $data['id_service'],
+                                        'id_request'            => $data['id_request'] === null ? 'No existe' : $data['id_request'],
                                     ],
                                     'type' => 2
                                 ];
