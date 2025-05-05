@@ -23,7 +23,7 @@ class TecnicoMutations {
     protected $nowProfile;
 
     public function __construct() {
-        $this->app= env('APP_URL');
+        $this->app= config('app.url');;
         $this->nowFront= Carbon::now()->format('Ymd_His');
         $this->nowBack=Carbon::now()->addMinute(1);
         $this->nowProfile=Carbon::now()->addMinutes(2);
@@ -250,7 +250,6 @@ class TecnicoMutations {
         $user = User::find($userId);
         $manager = new ImageManager(new Driver());
         $isPhotoUploaded = isset($args['photo']) && $args['photo'] instanceof UploadedFile;
-        //dd($this->app);
         if ($isPhotoUploaded) {
             // Eliminar foto anterior
             ImageHelper::deleteDirectoryProfile($technicialId);

@@ -20,7 +20,7 @@ class NotificationMutations
 
     public function __construct()
     {
-        $this->app= env('APP_URL');
+        $this->app= config('app.url');;
         $this->now = Carbon::now()->format('Ymd_His');
     }
     public function send($root, array $args)

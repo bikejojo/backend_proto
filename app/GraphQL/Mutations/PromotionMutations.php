@@ -12,7 +12,7 @@ class PromotionMutations
         $promotionData = $args['requestPromotion'];
         DB::beginTransaction();
         try{
-            $promotion = Promocion::create([
+           /* $promotion = Promocion::create([
                 'codePromotion' =>$promotionData['codePromotion'],
                 'namePromotion' =>$promotionData['namePromotion'],
                 'description'   =>$promotionData['description'],
@@ -20,25 +20,36 @@ class PromotionMutations
                 'discount_value'=>$promotionData['discount_value'],
                 'createDate'    =>$promotionData['createDate'],
                 'finishDate'    =>$promotionData['finishDate'],
-            ]);
+            ]);*/
+            $promotion = new Promocion();
+                $promotion->codePromotion = $promotionData['codePromotion'];
+                $promotion->namePromotion = $promotionData['namePromotion'];
+                $promotion->description = $promotionData['description'];
+                $promotion->type = $promotionData['type'];
+                $promotion->discount_value = $promotionData['discount_value'];
+                $promotion->createDate = $promotionData['createDate'];
+                $promotion->finishDate = $promotionData['finishDate'];
+            $promotion->save();
 
             // Calcular la duración en días y asegurarse de que sea un entero
             $promotion->status=1;
             $startDate = Carbon::parse($promotionData['createDate']);
             $endDate = Carbon::parse($promotionData['finishDate']);
-            $promotion->duration = round($startDate->diffInDays($endDate));
+            $promotion->durationPromotion = round($startDate->diffInDays($endDate));
             $promotion->save();
 
         DB::commit();
             return[
                 'message'=>'creacion de promocion exitosa',
+                'success'=>true,
                 'promotion'=>$promotion
             ];
         }catch (\Exception $e){
             DB::rollback();
             return[
-                'message'=>'El error es: '. $e->getMessage()
-                ];
+                'message'=> 'El error es: '. $e->getMessage(),
+                'success'=> false
+            ];
         }
     }
 

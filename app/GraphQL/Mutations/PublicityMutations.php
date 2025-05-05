@@ -67,7 +67,6 @@ final class PublicityMutations{
             ImageHelper::createDirectorie($publicityComplete,$value);
             $now = Carbon::now()->copy()->format('Ymd_His');
             $manager = new ImageManager(new Driver());
-            //Log::info("URL del contenido" . $this->app);
             if (isset($args['logo']) && $args['logo'] instanceof UploadedFile) {
                 $frontIdPath = ImageHelper::processImage($args['logo'], "/publicidad/{$publicityComplete}/logo/". "{$now}.png", $manager);
                 $publicity->logo =$this->app . '/storage' . str_replace('public/', '', $frontIdPath);
@@ -177,7 +176,7 @@ final class PublicityMutations{
             // ----------------------------------------------------------
             $adminId = $args['id_a'];
             $admin = User::where('id',$adminId)->where('type_user',3)->first();
-           
+
             // ----------------------------------------------------------
             //$clientsIds = self::clientsId();
             $techIds = self::technsIds();

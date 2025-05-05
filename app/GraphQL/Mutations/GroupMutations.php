@@ -23,7 +23,7 @@ class GroupMutations
 
     public function __construct()
     {
-        $this->app = env('APP_URL');
+        $this->app = config('app.url');;
     }
 
     public function create($root,array $args){
