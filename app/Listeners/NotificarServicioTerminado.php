@@ -35,7 +35,7 @@ class NotificarServicioTerminado
     public function handle(ServicioTerminado $event): void
     {
         $service = $event->service;
-        $actionKey = 'services_finish_tech';
+        $actionKey = 'services_finish_client'; //1234567890
         $config = DiccionaryNotifications::getByKey($actionKey);
 
         $userClient = Cliente_Interno::where('id', $service->clientId)->first(); //quien manda
