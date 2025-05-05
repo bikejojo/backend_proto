@@ -204,7 +204,7 @@ class ClienteInternoMutations{
                     $client->photo = env('APP_URL') . '/storage' . str_replace('public/', '', $photoPath);
                 } elseif (is_null($args['photo'])) {
                     if ($client->photo) {
-                        $path = str_replace(env('APP_URL'). '/storage/', '', $client->photo);
+                        $path = str_replace(env('APP_URL') . '/storage/', '', $client->photo);
                         Storage::delete('public/' . $path);
                         $client->photo = null;
                     }
