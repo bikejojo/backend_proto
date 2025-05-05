@@ -187,7 +187,7 @@ class ClienteInternoMutations{
         $client = Cliente_Interno::find($clientId);
         $user = User::find($client->userId);
         $ciudad = Ciudad::find($client->cityId);
-        dd($this->app);
+        //dd($this->app);
             $manager = new ImageManager(new Driver());
             // Manejo de la imagen
             ImageHelper::existDirectorieClient($client->id);
