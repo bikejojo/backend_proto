@@ -25,7 +25,7 @@ class ClienteInternoMutations{
     protected $now;
 
     public function __construct() {
-        $this->app = env('APP_URL');
+        $this->app = config('app.url');
         $this->now= Carbon::now()->format('Ymd_His');
     }
 
@@ -84,7 +84,7 @@ class ClienteInternoMutations{
         $manager = new ImageManager(new Driver());
         if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {
             $fotoPath = $this->processImage($args['photo'], "/client_{$clientId}/photo/{$this->now}.png",$manager);
-            $cliente->photo = env('APP_URL') . '/storage' . str_replace('public/', '', $fotoPath);  // Guardar la ruta de la imagen
+            $cliente->photo = $this->app . '/storage' . str_replace('public/', '', $fotoPath);  // Guardar la ruta de la imagen
             $cliente->save();
         }
 
@@ -187,7 +187,7 @@ class ClienteInternoMutations{
         $client = Cliente_Interno::find($clientId);
         $user = User::find($client->userId);
         $ciudad = Ciudad::find($client->cityId);
-
+        dd($this->app);
             $manager = new ImageManager(new Driver());
             // Manejo de la imagen
             ImageHelper::existDirectorieClient($client->id);
@@ -196,15 +196,15 @@ class ClienteInternoMutations{
                 if ($args['photo'] instanceof UploadedFile) {
                     // Eliminar la foto anterior si existe
                     if ($client->photo) {
-                        $path = str_replace(env('APP_URL') . '/storage/', '', $client->photo);
+                        $path = str_replace($this->app . '/storage/', '', $client->photo);
                         Storage::delete('public/' . $path);
                     }
 
                     $photoPath = $this->processImage($args['photo'], "/client_{$client->id}/photo/{$this->now}.png", $manager);
-                    $client->photo = env('APP_URL') . '/storage' . str_replace('public/', '', $photoPath);
+                    $client->photo = $this->app . '/storage' . str_replace('public/', '', $photoPath);
                 } elseif (is_null($args['photo'])) {
                     if ($client->photo) {
-                        $path = str_replace(env('APP_URL') . '/storage/', '', $client->photo);
+                        $path = str_replace($this->app. '/storage/', '', $client->photo);
                         Storage::delete('public/' . $path);
                         $client->photo = null;
                     }
