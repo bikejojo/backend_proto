@@ -51,8 +51,8 @@ class NotificationsQuery
                                             'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
                                             'id_client'             => $data['id_client'] ?? null,
                                             'id_technician'         => $data['id_technician'] ?? null,
-                                            'id_service'            => $data['id_service'] === null ? 'No existe' : $data['id_service'],
-                                                'id_request'            => $data['id_request'] === null ? 'No existe' : $data['id_request'],
+                                            'id_service'            => isset($data['id_service']) ? $data['id_service'] : 'no existe',
+                                            'id_request'            => $data['id_request'] ?? null ,
                                         ],
                                         'type' => 1
                                     ];
@@ -81,8 +81,8 @@ class NotificationsQuery
                                                 'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
                                                 'id_client'             => $data['id_client'] ?? null,
                                                 'id_technician'         => $data['id_technician'] ?? null,
-                                                'id_service'            => $data['id_service'] === null ? 'No existe' : $data['id_service'],
-                                                'id_request'            => $data['id_request'] === null ? 'No existe' : $data['id_request'],
+                                                'id_service'            => isset($data['id_service']) ? $data['id_service'] : 'no existe',
+                                                'id_request'            => $data['id_request'] ?? null ,
                                             ],
                                             'type' => 2
                                         ];
@@ -138,12 +138,13 @@ class NotificationsQuery
                                     'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
                                     'id_client'             => $data['id_client'] ?? null,
                                     'id_technician'         => $data['id_technician'] ?? null,
-                                    'id_service'            => $data['id_service'] === null ? 'No existe' : $data['id_service'],
-                                    'id_request'            => $data['id_request'] === null ? 'No existe' : $data['id_request'],
+                                    'id_service' => isset($data['id_service']) ? $data['id_service'] : 'no existe',
+                                    'id_request'            => $data['id_request'] ?? null ,
                                 ],
                                 'type' => 1
                             ];
                         });
+
             $notificationRecibidad = NotificationUser::leftJoin('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
                             ->where('notifications_user.user_id', $user->id)
                             ->select('notifications.id','notifications.title', 'notifications.body', 'notifications.data')
@@ -165,8 +166,8 @@ class NotificationsQuery
                                         'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
                                         'id_client'             => is_array($data['id_client'] ?? null) ? $data['id_client']['id_client'] ?? null : $data['id_client'] ?? null,
                                         'id_technician'         => $data['id_technician'] ?? null,
-                                        'id_service'            => $data['id_service'] === null ? 'No existe' : $data['id_service'],
-                                        'id_request'            => $data['id_request'] === null ? 'No existe' : $data['id_request'],
+                                        'id_service'            => isset($data['id_service']) ? $data['id_service'] : 'no existe',
+                                        'id_request'            => $data['id_request'] ?? null ,
                                     ],
                                     'type' => 2
                                 ];
