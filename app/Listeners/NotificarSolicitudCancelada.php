@@ -17,6 +17,8 @@ use App\Services\DiccionaryNotifications;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
+use function Ramsey\Uuid\v1;
+
 class NotificarSolicitudCancelada
 {
     /**
@@ -66,6 +68,8 @@ class NotificarSolicitudCancelada
             'estado_del_servicio' => 4,
             'tipo_notificacion' => 1,
             'id_request' => $solicitud->id,
+            'description' => $solicitud->requestDescription,
+            'date_request' => $solicitud->registrationDateTime,
         ];
         $fecha = Carbon::parse($solicitud->registrationDateTime);
         $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');

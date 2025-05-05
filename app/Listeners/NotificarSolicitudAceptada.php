@@ -57,7 +57,9 @@ class NotificarSolicitudAceptada
             'ubicacion' => 'lat: ' . $service->latitude . ' ' . 'lng: ' . $service->longitude,
             'referencia_ubicacion' => $service->serviceLocation,
             'estado_del_servicio' => $service->stateId,
-            'id_request' => $service->requestsId
+            'id_request' => $service->requestsId,
+            'description' => $service->requestDescription,
+            'date_service' => $service->updatedDateTime,
         ];
         $fecha = Carbon::parse($service->updatedDateTime);
         $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');

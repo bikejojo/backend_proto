@@ -53,6 +53,9 @@ class NotificationsQuery
                                             'id_technician'         => $data['id_technician'] ?? null,
                                             'id_service'            => isset($data['id_service']) ? $data['id_service'] : 'no existe',
                                             'id_request'            => $data['id_request'] ?? null ,
+                                            'description'           => $data['description'] ?? null ,
+                                            'date_request'          => isset($data['date_request']) ? $data['date_request'] : 'no existe',
+                                            'date_service'          => isset($data['date_service']) ? $data['date_service'] : 'no existe',
                                         ],
                                         'type' => 1
                                     ];
@@ -65,7 +68,6 @@ class NotificationsQuery
                                     ->get()
                                     ->map(function ($item) {
                                         $data = json_decode($item->data, true);
-                                        //dd($data);
                                         return [
                                             'id' => $item->id,
                                             'title' => $item->title,
@@ -83,6 +85,9 @@ class NotificationsQuery
                                                 'id_technician'         => $data['id_technician'] ?? null,
                                                 'id_service'            => isset($data['id_service']) ? $data['id_service'] : 'no existe',
                                                 'id_request'            => $data['id_request'] ?? null ,
+                                                'description'           => $data['description'] ?? null ,
+                                                'date_request'          => isset($data['date_request']) ? $data['date_request'] : 'no existe',
+                                                'date_service'          => isset($data['date_service']) ? $data['date_service'] : 'no existe',
                                             ],
                                             'type' => 2
                                         ];
@@ -140,6 +145,9 @@ class NotificationsQuery
                                     'id_technician'         => $data['id_technician'] ?? null,
                                     'id_service' => isset($data['id_service']) ? $data['id_service'] : 'no existe',
                                     'id_request'            => $data['id_request'] ?? null ,
+                                    'description'           => $data['description'] ?? null ,
+                                    'date_request'          => isset($data['date_request']) ? $data['date_request'] : 'no existe',
+                                    'date_service'          => isset($data['date_service']) ? $data['date_service'] : 'no existe',
                                 ],
                                 'type' => 1
                             ];
@@ -168,6 +176,9 @@ class NotificationsQuery
                                         'id_technician'         => $data['id_technician'] ?? null,
                                         'id_service'            => isset($data['id_service']) ? $data['id_service'] : 'no existe',
                                         'id_request'            => $data['id_request'] ?? null ,
+                                        'description'           => $data['description'] ?? null ,
+                                        'date_request'          => isset($data['date_request']) ? $data['date_request'] : 'no existe',
+                                        'date_service'          => isset($data['date_service']) ? $data['date_service'] : 'no existe',
                                     ],
                                     'type' => 2
                                 ];

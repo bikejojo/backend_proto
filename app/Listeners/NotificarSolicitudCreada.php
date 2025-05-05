@@ -58,10 +58,12 @@ class NotificarSolicitudCreada
             'id_technician' => $userTech['id'],
             'id_client' => $userClient['id'],
             'actividad' => $nameActividad ,
+            'description' => $solicitud->requestDescription,
             'ubicacion' => 'lat:' . $solicitud->latitude . ' ' . 'lng:' . $solicitud->longitude,
             'referencia_ubicacion' => $solicitud->serviceLocation,
             'estado_del_servicio' => $config['type'],
             'id_request' => $solicitud->id,
+            'date_request' => $solicitud->registrationDateTime,
         ];
         //dd($data);
         $notification = new Notification();

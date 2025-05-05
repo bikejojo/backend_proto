@@ -59,7 +59,9 @@ class NotificarServicioTerminado
             'ubicacion' => 'lat: ' . $service->latitude . ' ' . 'lng: ' . $service->longitude,
             'referencia_ubicacion' => $service->serviceLocation,
             'estado_del_servicio' => $service->stateId,
-            'id_request' => $service->requestsId
+            'id_request' => $service->requestsId,
+            'description' => $service->requestDescription,
+            'date_service' => $service->updatedDateTime,
         ];
 
         $notification = new Notification();
