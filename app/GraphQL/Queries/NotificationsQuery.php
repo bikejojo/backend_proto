@@ -127,16 +127,16 @@ class NotificationsQuery
                         ->where('sender_id', $user->id)
                         ->get()
                         ->map(function ($item) {
-                            $data = is_string($item->data) ? json_decode($item->data, true) : $item->data;
+                            $data =  $item->data;
                             return [
                                 'id' => $item->id,
                                 'title' => $item->title,
                                 'body'  => $item->body,
                                 'data'  => [
                                     'typeNotification'      => $data['typeNotification'] ?? null,
-                                    'full_name'             => is_array($data['full_name'] ?? null) ? $data['full_name']['full_name'] ?? null : $data['full_name'] ?? null,
+                                    'full_name'             => $data['full_name'] ?? null,
                                     'photo'                 => $data['photo'] ?? null,
-                                    'rate'                  => is_array($data['rate'] ?? null) ? $data['rate']['rate'] ?? null : $data['rate'] ?? null,
+                                    'rate'                  => $data['rate'] ?? null,
                                     'actividad'             => $data['actividad'] ?? null,
                                     'ubicacion'             => $data['ubicacion'] ?? null,
                                     'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,
@@ -158,7 +158,7 @@ class NotificationsQuery
                             ->select('notifications.id','notifications.title', 'notifications.body', 'notifications.data')
                             ->get()
                             ->map(function ($item) {
-                                $data = is_string($item->data) ? json_decode($item->data, true) : $item->data;
+                                $data = json_decode($item->data, true) ;
                                 return [
                                     'id' => $item->id,
                                     'title' => $item->title,
@@ -167,12 +167,12 @@ class NotificationsQuery
                                         'typeNotification'      => $data['typeNotification'] ?? null,
                                         'full_name'             => $data['full_name'] ?? null,
                                         'photo'                 => $data['photo'] ?? null,
-                                        'rate'                  => is_array($data['rate'] ?? null) ? $data['rate']['rate'] ?? null : $data['rate'] ?? null,
+                                        'rate'                  => $data['rate'] ?? null,
                                         'actividad'             => $data['actividad'] ?? null,
                                         'ubicacion'             => $data['ubicacion'] ?? null,
                                         'referencia_ubicacion'  => $data['referencia_ubicacion'] ?? null,
                                         'estado_del_servicio'   => $data['estado_del_servicio'] ?? null,
-                                        'id_client'             => is_array($data['id_client'] ?? null) ? $data['id_client']['id_client'] ?? null : $data['id_client'] ?? null,
+                                        'id_client'             => $data['id_client'] ?? null,
                                         'id_technician'         => $data['id_technician'] ?? null,
                                         'id_service'            => isset($data['id_service']) ? $data['id_service'] : 'no existe',
                                         'id_request'            => $data['id_request'] ?? null ,
@@ -183,7 +183,9 @@ class NotificationsQuery
                                     'type' => 2
                                 ];
                             });
-            $allNotifications = $notificationRecibidad->merge($notificacionMandaste)->values();
+            //$allNotifications = $notificationRecibidad->merge($notificacionMandaste)->values();
+            $allNotifications = collect($notificationRecibidad)->merge(collect($notificacionMandaste))->values();
+
 
             return [
                 'message' => 'Notificaciones para el usuario: ' . $client->firstName .' '. $client->lastName,
