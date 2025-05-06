@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 class DeviceTokenMutations
 {
     public function register($root , array $args){
+        Log::info('contenido ' . $args);
         DB::beginTransaction();
         try {
             $requestDevice = $args['deviceTokenRequest'];
@@ -56,6 +57,7 @@ class DeviceTokenMutations
                 //dd($deviceExists);
                 $deviceExists->expo_token = $requestDevice['expo_token'];
                 $deviceExists->save();
+                Log::info('useeeId'. $requestDevice['userId']);
                 $userId = ValidationModels::validation_user($requestDevice['userId']);
                 Log::info('token si existe en la base da tos ' . $userId);
                 if($userId){
