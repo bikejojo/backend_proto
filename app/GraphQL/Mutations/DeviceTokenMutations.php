@@ -7,6 +7,7 @@ use App\Models\Devices;
 use App\Services\ValidationModels;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DeviceTokenMutations
 {
@@ -51,18 +52,19 @@ class DeviceTokenMutations
             }else{
 
                 $deviceExists = Devices::where('expo_token',$requestDevice['expo_token'])->first();
+                Log::info('token si existe en la base da tos ' . $deviceExists);
                 //dd($deviceExists);
                 $deviceExists->expo_token = $requestDevice['expo_token'];
                 $deviceExists->save();
                 $userId = ValidationModels::validation_user($requestDevice['userId']);
-
+                Log::info('token si existe en la base da tos ' . $userId);
                 if($userId){
 
                     $deviceUser = new DevicesUser();
                         $deviceUser->users_id = $userId->id;
                         $deviceUser->device_id = $deviceExists->id;
                     $deviceUser->save();
-
+                    Log::info('token si existe en la base da tos ' . $deviceUser);
                     if(!$deviceUser){
                         DB::rollBack();
                         return [
