@@ -15,7 +15,7 @@ class DeviceTokenMutations
         //Log::info('contenido ' , $args);
         $type = $args["deviceTokenRequest"]["type"];
         switch($type){
-            case "1":
+            case "2":
                 DB::beginTransaction();
                 try {
                     $requestDevice = $args['deviceTokenRequest'];
@@ -96,7 +96,7 @@ class DeviceTokenMutations
                 }
                 break;
 
-            case "2":
+            case "1":
                 DB::beginTransaction();
                 try {
                     $requestDevice = $args['deviceTokenRequest'];
