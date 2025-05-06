@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Log;
 class DeviceTokenMutations
 {
     public function register($root , array $args){
-        Log::info('contenido ' . $args);
+        Log::info('contenido ' , $args);
         DB::beginTransaction();
         try {
             $requestDevice = $args['deviceTokenRequest'];
