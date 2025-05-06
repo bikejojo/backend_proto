@@ -56,14 +56,14 @@ class SkillSeeder extends Seeder
                 Habilidad::create([
                     'name' => $habilidad['name'],
                     'status' => 1,
-                    'photo' => env('APP_URL') . "/storage/{$imageDestinationPath}",
+                    'photo' => config('app.url') . "/storage/{$imageDestinationPath}",
                     'icons' => $habilidad['icons'] ?? 'hammer-wrench'
                 ]);
             } else {
                 Habilidad::create([
                     'name' => $habilidad['name'],
                     'status' => 1,
-                    'photo' => env('APP_URL') . "/storage/images/subgroup/default.png",
+                    'photo' => config('app.url') . "/storage/images/subgroup/default.png",
                     'icons' => $habilidad['icons'] ?? 'hammer-wrench'
                 ]);
             }

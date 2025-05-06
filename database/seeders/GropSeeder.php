@@ -41,7 +41,7 @@ class GropSeeder extends Seeder
                 Storage::disk('public')->put($imageDestinationPath,file_get_contents($imageSourcePath));
                 Group::create([
                     'name' => $group['name'],
-                    'photo' => env('APP_URL') . "/storage/{$imageDestinationPath}"
+                    'photo' => config('app.url') . "/storage/{$imageDestinationPath}"
                 ]);
             }else{
                 Group::create([

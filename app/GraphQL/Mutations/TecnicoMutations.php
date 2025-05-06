@@ -23,7 +23,7 @@ class TecnicoMutations {
     protected $nowProfile;
 
     public function __construct() {
-        $this->app= config('app.url');;
+        $this->app= config('app.url');
         $this->nowFront= Carbon::now()->format('Ymd_His');
         $this->nowBack=Carbon::now()->addMinute(1);
         $this->nowProfile=Carbon::now()->addMinutes(2);

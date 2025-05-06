@@ -32,7 +32,7 @@ class PublicidadCategSeeder extends Seeder
                     'description' => $categorias['description'],
                     'entity_type' => $categorias['entity_type'],
                     'code' => $categorias['code'],
-                    'photo' => env('APP_URL') . "/storage/{$imageDestinationPath}"
+                    'photo' => config('app.url') . "/storage/{$imageDestinationPath}"
                 ]);
             }else{
                 Categoria_Publicidad::create([
