@@ -77,10 +77,11 @@ class UserQuery{
         if(!$user){
             return null;
         }
-        //dd($user);
+       
         return [
             'id' => $user->id,
             'email' => $user->email,
+            'status' => $user->status ,
             'role' => $user->roles->first(),
             'permissions' => $user->permissions->map(fn($perm) => [
                 'id' => $perm->id, // Agregar el ID del permiso

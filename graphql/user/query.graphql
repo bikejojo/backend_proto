@@ -20,6 +20,7 @@ type paramsCount{
 type responseAdminLogin {
     id:ID
     email:String
+    status:String
     role:Role
     permissions:[Permission]
 }
