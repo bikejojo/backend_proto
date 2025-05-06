@@ -49,15 +49,19 @@ class DeviceTokenMutations
                 }
 
             }else{
+
                 $deviceExists = Devices::where('expo_token',$requestDevice['expo_token'])->first();
+                //dd($deviceExists);
                 $deviceExists->expo_token = $requestDevice['expo_token'];
                 $deviceExists->save();
                 $userId = ValidationModels::validation_user($requestDevice['userId']);
-               
+
                 if($userId){
-                    $deviceUser = DevicesUser::where('device_id',$deviceExists->id)->first();
+
+                    $deviceUser = new DevicesUser();
                         $deviceUser->users_id = $userId->id;
-                        $deviceUser->save();
+                        $deviceUser->device_id = $deviceExists->id;
+                    $deviceUser->save();
 
                     if(!$deviceUser){
                         DB::rollBack();
