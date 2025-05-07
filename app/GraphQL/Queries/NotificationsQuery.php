@@ -95,7 +95,7 @@ class NotificationsQuery
                                     });
             //7dd($notificationRecibidad);
             //$allNotifications = $notificationRecibidad->merge($notificacionMandaste)->values();
-            $allNotifications = collect($notificationRecibidad)->values();//->merge(collect($notificacionMandaste))->values();
+            $allNotifications = collect($notificationRecibidad)->unique('id')->values();//->merge(collect($notificacionMandaste))->values();
             return [
                 'message' => 'Notificaciones para el usuario: ' . $technician->firstName .' '. $technician->lastName,
                 'notifications' => $allNotifications,
