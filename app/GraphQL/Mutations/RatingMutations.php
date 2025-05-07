@@ -47,7 +47,7 @@ class RatingMutations{
 
                     continue;
                 }
-                //dd($service);
+
                 $service = Servicio::where('services.stateId', 5)
                     ->where('services.id', $rating['id_service'])
                     ->select(
@@ -70,6 +70,8 @@ class RatingMutations{
                 $service->stateId = 4;
                 $service->finishDateTime_client = now();
                 $service->save();
+                Log::info('Servicios' , $service);
+
                 event(new ServicioCompletado($service));
                 $request= Solicitud::where('id',$service->requestsId )->first();
                 if(!$request){
@@ -81,7 +83,7 @@ class RatingMutations{
                 }
                 $request->stateId = 4;
                 $request->save();
-
+                Log::info('solicitudes' , $request );
                 $ratingsSum = 0;
                 $ratingsCount = 0;
                     $ratingsSum = $rating['rating'] + $technician->average_rating;
