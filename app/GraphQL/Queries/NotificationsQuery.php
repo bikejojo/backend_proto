@@ -63,8 +63,8 @@ class NotificationsQuery
 
             $notificationRecibidad = NotificationUser::join('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
                                     ->where('notifications_user.user_id', $user->id)
-                                    ->select('notifications.id','notifications.title', 'notifications.body', 'notifications.data','notifications.send_at')
-                                    ->orderBy('notifications.send_at','ASC')
+                                    ->select('notifications.id','notifications.title', 'notifications.body', 'notifications.data','notifications.send_at as date')
+                                    ->orderBy('date','ASC')
                                     ->get()
                                     ->map(function ($item) {
                                         $data = json_decode($item->data, true);
@@ -72,6 +72,7 @@ class NotificationsQuery
                                             'id' => $item->id,
                                             'title' => $item->title,
                                             'body' => $item->body,
+                                            'date' => $item->date,
                                             'data'  => [
                                                 'typeNotification'      => $data['typeNotification'] ?? null,
                                                 'full_name'             => $data['full_name'] ?? null,
