@@ -70,7 +70,7 @@ class RatingMutations{
                 $service->stateId = 4;
                 $service->finishDateTime_client = now();
                 $service->save();
-                Log::info('Servicios' , $service);
+                Log::info('Servicios' , ['service' => $service->toArray()]);
 
                 event(new ServicioCompletado($service));
                 $request= Solicitud::where('id',$service->requestsId )->first();
@@ -83,7 +83,7 @@ class RatingMutations{
                 }
                 $request->stateId = 4;
                 $request->save();
-                Log::info('solicitudes' , $request );
+                Log::info('solicitudes' , ['request' => $request->toArray()]);
                 $ratingsSum = 0;
                 $ratingsCount = 0;
                     $ratingsSum = $rating['rating'] + $technician->average_rating;
