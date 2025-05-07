@@ -95,7 +95,7 @@ class NotificarSolicitudCreada
             $notificationsUsers->notification_id = $notification->id;
         $notificationsUsers->save();
 
-        SendNotificationJob::dispatch($notification->id,$userReceive->id);
+        SendNotificationJob::dispatch($notification->id,$user->id);
         //--------------------------- notificaciones    id de receptor;
     }
 }

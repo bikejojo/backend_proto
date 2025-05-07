@@ -43,7 +43,7 @@ class NotificarServicioTerminado
         $userTech = Tecnico::where('id', $service->technicianId)->first(); //quien recibe
         $userReceive = User::where('id', $userTech->userId)->first(); //usuario quien recibe
         $nameActividad = Tipo_Actividad::where('id',$service->activityId)->value('description');
-        $fecha = Carbon::parse($service->updatedDateTime);
+        $fecha = Carbon::parse($service->finishDateTime_technician);
         $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');
 
         $data = [

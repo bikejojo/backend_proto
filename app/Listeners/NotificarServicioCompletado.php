@@ -72,7 +72,7 @@ class NotificarServicioCompletado
             'description' => $service->requestDescription,
             'date_service' => $service->updatedDateTime,
         ];
-        $fecha = Carbon::parse($service->finishDateTime_technician);
+        $fecha = Carbon::parse($service->finishDateTime_client);
         $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');
 
         $notification = new Notification();

@@ -320,7 +320,8 @@ class ServiceQuery
             }else{
                 $serv_query = $service_query;
             }
-                $service = $serv_query->get();
+                $service = $serv_query->orderBy('services.updatedDateTime', 'desc')->get();
+                //$service = $serv_query->get();
             return [
                 'message' => 'Historial de servicios de un cliente',
                 'service' => $service
@@ -362,7 +363,8 @@ class ServiceQuery
         }else{
             $serv_query = $service_query;
         }
-        $service = $serv_query->get();
+        //$service = $serv_query->get();
+        $service = $serv_query->orderBy('services.updatedDateTime', 'desc')->get();
         return [
             'message' => 'Historial de servicios de un cliente',
             'service' => $service
