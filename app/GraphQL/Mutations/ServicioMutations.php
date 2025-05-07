@@ -415,16 +415,18 @@ class ServicioMutations
                         'message' => 'El servicio se elimino.',
                         'service' => $service
                     ];
+                }else{
+                    event(new ServicioAnulado($service,'services_anull_tech'));
+                    //event(new ServicioAnulado($service,'serv_anull_client'));
+                    //$service->updatedDateTime = Carbon::now();
+                    $service->status = 1;
+                    $service->save();
+                    return[
+                        'message' => 'El servicio se elimino.',
+                        'service' => $service
+                    ];
                 }
-                event(new ServicioAnulado($service,'services_anull_tech'));
-                //event(new ServicioAnulado($service,'serv_anull_client'));
-                //$service->updatedDateTime = Carbon::now();
-                $service->status = 1;
-                $service->save();
-                return[
-                    'message' => 'El servicio se elimino.',
-                    'service' => $service
-                ];
+
             }
         } catch (\Exception $e) {
             return [
