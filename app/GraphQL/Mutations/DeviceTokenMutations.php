@@ -101,6 +101,7 @@ class DeviceTokenMutations
                 try {
                     $requestDevice = $args['deviceTokenRequest'];
                     if(!Devices::where('expo_token',$requestDevice['expo_token'])->exists()){
+
                         $device = new Devices();
                             $device->type_device = $requestDevice['type_device'];
                             $device->name_device = $requestDevice['name_device'];
@@ -109,8 +110,8 @@ class DeviceTokenMutations
 
                         //$userId = ValidationModels::validation_user($requestDevice['userId']);
                         $userTech = ValidationModels::validation_clientInternal($requestDevice['userId']);
-                        $userId = ValidationModels::validation_user($userTech->userId);
-                        if(!$userId){
+                        if(!$userTech){
+
                             $deviceUser =new DevicesUser();
                                 $deviceUser->device_id = $device->id;
                                 $deviceUser->users_id = null;
@@ -123,6 +124,7 @@ class DeviceTokenMutations
                                 'success'=>1,
                             ];
                         }else{
+                            $userId = ValidationModels::validation_user($userTech->userId);
                             $deviceUser =new DevicesUser();
                                 $deviceUser->device_id = $device->id;
                                 $deviceUser->users_id = $userId->id;
