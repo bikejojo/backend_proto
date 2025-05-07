@@ -29,7 +29,7 @@ class NotificationsQuery
                 ];
             }
 
-            $notificacionMandaste = Notification::select('id','title', 'body', 'data')
+            /*$notificacionMandaste = Notification::select('id','title', 'body', 'data')
                                 ->where('sender_id', $user->id)
                                 ->orderBy('id','ASC')
                                 ->get()
@@ -59,12 +59,12 @@ class NotificationsQuery
                                         ],
                                         'type' => 1
                                     ];
-                                });
+                                });*/
 
             $notificationRecibidad = NotificationUser::join('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
                                     ->where('notifications_user.user_id', $user->id)
-                                    ->select('notifications.id','notifications.title', 'notifications.body', 'notifications.data')
-                                    ->orderBy('notifications.id','ASC')
+                                    ->select('notifications.id','notifications.title', 'notifications.body', 'notifications.data','notifications.send_at')
+                                    ->orderBy('notifications.send_at','ASC')
                                     ->get()
                                     ->map(function ($item) {
                                         $data = json_decode($item->data, true);
@@ -94,7 +94,7 @@ class NotificationsQuery
                                     });
             //7dd($notificationRecibidad);
             //$allNotifications = $notificationRecibidad->merge($notificacionMandaste)->values();
-            $allNotifications = collect($notificationRecibidad)->merge(collect($notificacionMandaste))->values();
+            $allNotifications = collect($notificationRecibidad)->values();//->merge(collect($notificacionMandaste))->values();
             return [
                 'message' => 'Notificaciones para el usuario: ' . $technician->firstName .' '. $technician->lastName,
                 'notifications' => $allNotifications,
@@ -125,6 +125,7 @@ class NotificationsQuery
 
             $notificacionMandaste = Notification::select('id','title', 'body', 'data','send_at as date')
                         ->where('sender_id', $user->id)
+                        //->orderBy('date','ASC')
                         ->get()
                         ->map(function ($item) {
                             $data =  $item->data;
@@ -157,6 +158,7 @@ class NotificationsQuery
             $notificationRecibidad = NotificationUser::leftJoin('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
                             ->where('notifications_user.user_id', $user->id)
                             ->select('notifications.id','notifications.title', 'notifications.send_at as date' ,'notifications.body', 'notifications.data')
+                            //->orderBy('date','ASC')
                             ->get()
                             ->map(function ($item) {
                                 $data = json_decode($item->data, true) ;
@@ -186,8 +188,12 @@ class NotificationsQuery
                                 ];
                             });
             //$allNotifications = $notificationRecibidad->merge($notificacionMandaste)->values();
-            $allNotifications = collect($notificationRecibidad)->merge(collect($notificacionMandaste))->values();
-
+            //$allNotifications = collect($notificationRecibidad)->merge(collect($notificacionMandaste))->values();
+            $allNotifications = collect($notificationRecibidad)
+                                ->merge($notificacionMandaste)
+                                ->unique('id') // elimina duplicados por ID
+                                ->sortByDesc('date') // opcional: orden descendente por fecha
+                                ->values();
 
             return [
                 'message' => 'Notificaciones para el usuario: ' . $client->firstName .' '. $client->lastName,

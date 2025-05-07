@@ -31,12 +31,12 @@ class RecordAppointments extends Command
     {
         Carbon::setLocale('es');
         $now = Carbon::now();
-        $minMinutesThirteen = now()->addMinutes(110);
-        $addMinutesThirteen = now()->addMinutes(129);
+        $minMinutesThirteen = now()->addMinutes(8);
+        $addMinutesThirteen = now()->addMinutes(14);
         $service = Servicio::where('stateId',1)
                             ->whereBetween('updatedDateTime',[$minMinutesThirteen , $addMinutesThirteen])
                             ->get();
-        
+
         if($service->isEmpty()){
             $this->info('No hay servicios para enviar recordatorio');
             return;
