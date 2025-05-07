@@ -59,10 +59,11 @@ class NotificationsQuery
                                         ],
                                         'type' => 1
                                     ];
-                                });*/
-
+                                });
+*/
             $notificationRecibidad = NotificationUser::leftJoin('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
                                     ->where('notifications_user.user_id', $user->id)
+                                    ->whereNull('notifications_user.expo_response')
                                     ->select('notifications.id','notifications.title', 'notifications.body', 'notifications.data','notifications.send_at as date')
                                     ->orderBy('date','ASC')
                                     ->get()
@@ -95,7 +96,7 @@ class NotificationsQuery
                                     });
             //7dd($notificationRecibidad);
             //$allNotifications = $notificationRecibidad->merge($notificacionMandaste)->values();
-            $allNotifications = collect($notificationRecibidad)->unique('id')->values();//->merge(collect($notificacionMandaste))->values();
+            $allNotifications = collect( $notificationRecibidad)->unique('id')->values();//->merge(collect($notificationRecibidad))->values();
             return [
                 'message' => 'Notificaciones para el usuario: ' . $technician->firstName .' '. $technician->lastName,
                 'notifications' => $allNotifications,

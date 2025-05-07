@@ -25,6 +25,15 @@ class DiccionaryNotifications
                 'status' => 2,
                 'type_users' => ['1','2'],
             ],
+
+            'request_send' => [
+                'title' => '¡Tienes una nueva solicitud de servicio! 📬',
+                'body' => 'Has recibido una nueva solicitud. Revisa los detalles y confirma tu disponibilidad. 🛠️',
+                'type' => 1,
+                'status' => 2,
+                'type_users' => ['1','2'],
+            ],
+
             'request_accepted' => [
                 'title' => '¡Solicitud aceptada! ✅',
                 'body' => 'El técnico ha aceptado tu solicitud. Está programada para el día: ',
