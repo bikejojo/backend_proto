@@ -61,7 +61,7 @@ class NotificationsQuery
                                     ];
                                 });*/
 
-            $notificationRecibidad = NotificationUser::join('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
+            $notificationRecibidad = NotificationUser::leftJoin('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
                                     ->where('notifications_user.user_id', $user->id)
                                     ->select('notifications.id','notifications.title', 'notifications.body', 'notifications.data','notifications.send_at as date')
                                     ->orderBy('date','ASC')
