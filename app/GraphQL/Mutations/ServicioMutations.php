@@ -409,7 +409,7 @@ class ServicioMutations
                 StatusAssigner::assignStatService($service,$this->now,self::$entity_type,'Se cancelo el servicio y la solicitud',5);
                 $service->stateId = 6;
                 if($service->typeClient === "2"){
-                    dd();
+                    
                     $service->status = 1;
                     $service->save();
                     return[
