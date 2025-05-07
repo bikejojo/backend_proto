@@ -13,6 +13,7 @@ use Illuminate\Console\Command;
 use App\Models\NotificationUser;
 use Illuminate\Support\Facades\Log;
 use App\Services\DiccionaryNotifications;
+use Illuminate\Support\Facades\DB;
 
 
 class RecordAppointments extends Command
@@ -30,13 +31,16 @@ class RecordAppointments extends Command
     public function handle()
     {
         Carbon::setLocale('es');
-        $now = Carbon::now();
-        $minMinutesThirteen = now()->addMinutes(8);
-        $addMinutesThirteen = now()->addMinutes(14);
+        $now = Carbon::now()->seconds(0);
+        $minMinutesThirteen = $now->copy()->subSeconds(1)->format('Y-m-d H:i:s');
+        $addMinutesThirteen = $now->copy()->addMinutes(10)->format('Y-m-d H:i:s');
+        //dd($addMinutesThirteen);
         $service = Servicio::where('stateId',1)
-                            ->whereBetween('updatedDateTime',[$minMinutesThirteen , $addMinutesThirteen])
+                            ->whereBetween('updatedDateTime',[$minMinutesThirteen,$addMinutesThirteen])
+                            ->where('typeClient','1')
                             ->get();
-
+       //dd(DB::connection()->getDatabaseName());
+        //dd($service);
         if($service->isEmpty()){
             $this->info('No hay servicios para enviar recordatorio');
             return;
@@ -55,12 +59,12 @@ class RecordAppointments extends Command
 
                 $config['body'] = str_replace('{fecha}' , $fecha ,$config['body']);
                 // Validar si este cliente ya tiene recordatorio enviado
-                $existingNotificationUserClient = NotificationUser::join('notifications', 'notifications.id', '=', 'notification_users.notification_id')
+                $existingNotificationUserClient = NotificationUser::join('notifications', 'notifications.id', '=', 'notifications_user.notification_id')
                     ->where('notifications.type',7)
                     ->where('notifications.status',2)
-                    ->where('notification_users.user_id', $client->id)
-                    ->where('notification_users.is_service_2hr', true)
-                    ->where('notification_users.is_service_1hr', false)
+                    ->where('notifications_user.user_id', $client->id)
+                    ->where('notifications_user.is_service_2hr', true)
+                    ->where('notifications_user.is_service_1hr', false)
                 ->count();
                 if($existingNotificationUserClient < 1){
 
@@ -159,6 +163,7 @@ class RecordAppointments extends Command
                     $this->info("Recordatorio enviado a {$technicians->firstName}");
                 }
             }
+            continue;
         }
         $this->info('Se enviaron los recordatorios correspondientes.');
         Log::info('Se ejecutó el recordatorio de citas 2hr. ✅ ');

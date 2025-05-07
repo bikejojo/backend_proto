@@ -83,7 +83,7 @@ class RatingMutations{
                 }
                 $request->stateId = 4;
                 $request->save();
-                Log::info('solicitudes' , ['request' => $request->toArray()]);
+                //Log::info('solicitudes' , ['request' => $request->toArray()]);
                 $ratingsSum = 0;
                 $ratingsCount = 0;
                     $ratingsSum = $rating['rating'] + $technician->average_rating;
