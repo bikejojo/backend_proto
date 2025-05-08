@@ -40,7 +40,7 @@ class NotificarServicioTerminado
         $config = DiccionaryNotifications::getByKey($actionKey);
 
         $userClient = Cliente_Interno::where('id', $serviceC->clientId)->first(); //quien manda
-        dd($userClient);
+        //dd($userClient);
         $userSend = User::where('id', $userClient->userId)->first(); //usuario quien manda
         $userTech = Tecnico::where('id', $serviceC->technicalId)->first(); //quien recibe
         $userReceive = User::where('id', $userTech->userId)->first(); //usuario quien recibe
