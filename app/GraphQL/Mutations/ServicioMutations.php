@@ -369,7 +369,7 @@ class ServicioMutations
                 $service->save();
             }
             $_service = Servicio::find($service->id);
-            event(new ServicioCompletado($service));
+            event(new ServicioTerminado($service));
             /*if(!is_null($_service->finishDateTime_client)){
                 $_service->stateId = 5;
                 $_service->save();
@@ -519,7 +519,7 @@ class ServicioMutations
                     'services.serviceDescription as description_service'
                 ])
                 ->get();
-               
+
             if($services->isEmpty()){
                 return [
                     'message' => 'Existen comentario',
