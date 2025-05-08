@@ -21,7 +21,7 @@ class NotificationsQuery
             $userId = $input['userTech'];
             $technician=Tecnico::where('id',$userId)->first();
             $user = User::find($technician->userId);
-
+            //dd($user);
             if(!$user){
                 return [
                     'message'=>'No se encontró el usuario para el dispositivo especificado.',
@@ -61,9 +61,8 @@ class NotificationsQuery
                                     ];
                                 });
 */
-            $notificationRecibidad = NotificationUser::leftJoin('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
+            $notificationRecibidad = NotificationUser::rightJoin('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
                                     ->where('notifications_user.user_id', $user->id)
-                                    ->whereNull('notifications_user.expo_response')
                                     ->select('notifications.id','notifications.title', 'notifications.body', 'notifications.data','notifications.send_at as date')
                                     ->orderBy('date','ASC')
                                     ->get()
@@ -125,7 +124,7 @@ class NotificationsQuery
                 ];
             }
 
-            $notificacionMandaste = Notification::select('id','title', 'body', 'data','send_at as date')
+            /*$notificacionMandaste = Notification::select('id','title', 'body', 'data','send_at as date')
                         ->where('sender_id', $user->id)
                         //->orderBy('date','ASC')
                         ->get()
@@ -155,7 +154,7 @@ class NotificationsQuery
                                 ],
                                 'type' => 1
                             ];
-                        });
+                        });*/
 
             $notificationRecibidad = NotificationUser::leftJoin('notifications', 'notifications_user.notification_id', '=', 'notifications.id')
                             ->where('notifications_user.user_id', $user->id)
@@ -192,7 +191,6 @@ class NotificationsQuery
             //$allNotifications = $notificationRecibidad->merge($notificacionMandaste)->values();
             //$allNotifications = collect($notificationRecibidad)->merge(collect($notificacionMandaste))->values();
             $allNotifications = collect($notificationRecibidad)
-                                ->merge($notificacionMandaste)
                                 ->unique('id') // elimina duplicados por ID
                                 ->sortByDesc('date') // opcional: orden descendente por fecha
                                 ->values();

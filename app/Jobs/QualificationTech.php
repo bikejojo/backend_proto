@@ -65,6 +65,12 @@ class QualificationTech implements ShouldQueue
                     'body' => $config['body'],
                     'data' => $notification->data,
                 ]);
+
+                $NotificationUser = NotificationUser::where('notification_id',$notification->id)->first();
+                    $NotificationUser->expo_response = $response;
+                    $NotificationUser->userId = $this->receptorId;
+                    $NotificationUser->save();
+
             }else{
                 $notification = Notification::find($this->notificationId);
                 if(!$notification){
@@ -94,6 +100,11 @@ class QualificationTech implements ShouldQueue
                     'body' => $config['body'],
                     'data' => $notification->data,
                 ]);
+
+                $NotificationUser = NotificationUser::where('notification_id',$notification->id)->first();
+                $NotificationUser->expo_response = $response;
+                $NotificationUser->userId = $this->receptorId;
+                $NotificationUser->save();
             }
         } catch( \Exception $e ){
             Log::error('Error al enviar la notificación: ' . $e->getMessage());

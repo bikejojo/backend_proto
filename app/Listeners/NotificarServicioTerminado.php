@@ -82,6 +82,8 @@ class NotificarServicioTerminado
         $notification->save();
         $notificationsUser = new NotificationUser();
             $notificationsUser->notification_id = $notification->id;
+            $notificationsUser->user_id = $userReceive->id;
+            $notificationsUser->type_users = $userReceive->type_user;
         $notificationsUser->save();
 
         SendNotificationJob::dispatch($notification->id, $userReceive->id);

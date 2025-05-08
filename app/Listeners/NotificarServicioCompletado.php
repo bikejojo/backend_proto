@@ -89,8 +89,8 @@ class NotificarServicioCompletado
             $notification->status = 6;
             $notification->sender_id = $userSend->id;
         $notification->save();
-        $data['id'] = $notification->id;
-        $notification->data = $data;
+            $data['id'] = $notification->id;
+            $notification->data = $data;
         $notification->save();
         $notificationsUser = new NotificationUser();
             $notificationsUser->notification_id = $notification->id;
