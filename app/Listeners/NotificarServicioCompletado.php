@@ -42,7 +42,7 @@ class NotificarServicioCompletado
         }
     }
 
-    public function handle(ServicioCompletado $event): void
+    public function handle(ServicioCompletado $event)
     {
         $serviceC = $event->service;
         $service = Servicio::where('id',$serviceC->id)->first();

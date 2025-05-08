@@ -33,7 +33,7 @@ class NotificarSolicitudAceptada
     /**
      * Handle the event.
      */
-    public function handle(SolicitudAceptada $event): void
+    public function handle(SolicitudAceptada $event)
     {
         $service = $event->service;
         $actionKey = 'request_accepted';

@@ -27,7 +27,7 @@ class NotificarSuscriptionChange
     /**
      * Handle the event.
      */
-    public function handle(SuscriptionChange $event): void
+    public function handle(SuscriptionChange $event)
     {
         $technician = $event->technician;
         $config = DiccionaryNotifications::getByKey('renovation_suscription');

@@ -27,7 +27,7 @@ class NotificationsPasswordChange
     /**
      * Handle the event.
      */
-    public function handle(PasswordChanged $event): void
+    public function handle(PasswordChanged $event)
     {
         //
         $user = $event->user;

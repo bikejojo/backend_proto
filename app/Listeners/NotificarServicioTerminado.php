@@ -32,7 +32,7 @@ class NotificarServicioTerminado
     /**
      * Handle the event.
      */
-    public function handle(ServicioTerminado $event): void
+    public function handle(ServicioTerminado $event)
     {
         $service = $event->service;
         $actionKey = 'services_finish_client'; //1234567890

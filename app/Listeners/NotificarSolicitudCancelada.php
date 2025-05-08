@@ -36,7 +36,7 @@ class NotificarSolicitudCancelada
     /**
      * Handle the event.
      */
-    public function handle(SolicitudCancelada $event): void
+    public function handle(SolicitudCancelada $event)
     {
         //
         $solicitud = $event->solicitud;
