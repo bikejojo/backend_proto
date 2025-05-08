@@ -69,7 +69,7 @@ class NotificarServicioCompletado
             'referencia_ubicacion' => $service->serviceLocation,
             'estado_del_servicio' => $service->stateId,
             'id_request' => $service->requestsId,
-            'description' => $service->requestDescription,
+            'description' => $service->serviceDescription,
             'date_service' => $service->updatedDateTime,
         ];
         $fecha = Carbon::parse($service->finishDateTime_client);

@@ -57,7 +57,7 @@ class NotificarServicioAnulado
                 'referencia_ubicacion' => $service->serviceLocation,
                 'estado_del_servicio' => $service->stateId,
                 'id_request' => $service->requestsId,
-                'description' => $service->serviceDescription || $service->requestDescription
+                'description' => $service->serviceDescription == null  ? $service->serviceDescription : $service->requestDescription
             ];
             $fecha = Carbon::parse($service->updatedDateTime);
             $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');
@@ -104,7 +104,7 @@ class NotificarServicioAnulado
                 'estado_del_servicio' => $service->stateId,
                 'id_request' => $service->requestsId,
                 'description' => $service->requestDescription != null ?  $service->requestDescription : $service->serviceDescription,
-                
+
             ];
             $fecha = Carbon::parse($service->updatedDateTime);
             $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');
