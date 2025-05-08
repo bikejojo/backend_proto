@@ -35,20 +35,22 @@ class NotificarServicioTerminado
     public function handle(ServicioTerminado $event)
     {
         $service = $event->service;
+        $serviceC = Servicio::where('id',$service->id)->first();
         $actionKey = 'services_finish_client'; //1234567890
         $config = DiccionaryNotifications::getByKey($actionKey);
 
-        $userClient = Cliente_Interno::where('id', $service->clientId)->first(); //quien manda
+        $userClient = Cliente_Interno::where('id', $serviceC->clientId)->first(); //quien manda
+        dd($userClient);
         $userSend = User::where('id', $userClient->userId)->first(); //usuario quien manda
-        $userTech = Tecnico::where('id', $service->technicalId)->first(); //quien recibe
+        $userTech = Tecnico::where('id', $serviceC->technicalId)->first(); //quien recibe
         $userReceive = User::where('id', $userTech->userId)->first(); //usuario quien recibe
-        $nameActividad = Tipo_Actividad::where('id',$service->activityId)->value('description');
-        $fecha = Carbon::parse($service->finishDateTime_technician);
+        $nameActividad = Tipo_Actividad::where('id',$serviceC->activityId)->value('description');
+        $fecha = Carbon::parse($serviceC->finishDateTime_technician);
         $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');
 
         $data = [
             'typeNotification' => $config['type'],
-            'id_service' => $service->id,
+            'id_service' => $serviceC->id,
             'type_notification' => $config['type'],
             'full_name' => $userTech->firstName . ' ' . $userTech->lastName,
             'photo' => $userTech->photo,
@@ -56,12 +58,12 @@ class NotificarServicioTerminado
             'id_technician' => $userTech['id'],
                 'id_client' => $userClient['id'],
             'actividad' => $nameActividad,
-            'ubicacion' => 'lat: ' . $service->latitude . ' ' . 'lng: ' . $service->longitude,
-            'referencia_ubicacion' => $service->serviceLocation,
-            'estado_del_servicio' => $service->stateId,
-            'id_request' => $service->requestsId,
-            'description' => $service->serviceDescription,
-            'date_service' => $service->updatedDateTime,
+            'ubicacion' => 'lat: ' . $serviceC->latitude . ' ' . 'lng: ' . $serviceC->longitude,
+            'referencia_ubicacion' => $serviceC->serviceLocation,
+            'estado_del_servicio' => $serviceC->stateId,
+            'id_request' => $serviceC->requestsId,
+            'description' => $serviceC->serviceDescription,
+            'date_service' => $serviceC->updatedDateTime,
         ];
 
         $notification = new Notification();

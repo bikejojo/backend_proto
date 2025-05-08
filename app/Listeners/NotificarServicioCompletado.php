@@ -71,7 +71,7 @@ class NotificarServicioCompletado
             'estado_del_servicio' => $service->stateId,
             'id_request' => $service->requestsId,
             'description' => $service->serviceDescription ,
-            'date_service' => $service->updatedDateTime,
+            'date_service' => $service->finishDateTime_technician,
         ];
         $fecha = Carbon::parse($service->finishDateTime_client);
         $completo = $fecha->translatedFormat('l d \d\e F \d\e Y \a \l\a\s H:i');
