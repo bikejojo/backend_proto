@@ -2,23 +2,23 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Events\ServicioAnulado;
-use App\Events\SolicitudAceptada;
-use App\Events\SolicitudCancelada;
-use App\Models\Cliente_Interno;
-use App\Models\Detalle_Agenda_Tecnico;
-use App\Models\Historial_Servicios;
+use Carbon\Carbon;
+use App\Models\Tecnico;
 use App\Models\Servicio;
 use App\Models\Solicitud;
-use App\Models\Tecnico;
-use App\Models\Lists_Internal_Client;
 use App\Services\StateCatalog;
-use App\Services\StatusAssigner;
 use App\Events\SolicitudCreada;
-
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
+use App\Models\Cliente_Interno;
+use App\Events\ServicioAnulado;
+use App\Events\SolicitudCreadaC;
+use App\Services\StatusAssigner;
+use App\Events\SolicitudAceptada;
 use App\Services\ValidationModels;
+use Illuminate\Support\Facades\DB;
+use App\Events\SolicitudCancelada;
+use App\Models\Historial_Servicios;
+use App\Models\Lists_Internal_Client;
+use App\Models\Detalle_Agenda_Tecnico;
 
 class SolicitudesMutations
 {
@@ -70,6 +70,7 @@ class SolicitudesMutations
                 $request->save();
 
                 event(new SolicitudCreada($request));
+                event(new SolicitudCreadaC($request));
 
                 $historial = new Historial_Servicios();
                     $historial->clientId = $client->id;
