@@ -46,6 +46,7 @@ class NotificarServicioCompletado
     {
         $serviceC = $event->service;
         $service = Servicio::where('id',$serviceC->id)->first();
+
         $actionKey = 'services_finish_tech';
         $config = DiccionaryNotifications::getByKey($actionKey);
         $userTech = Tecnico::where('id', $service->technicalId)->first(); //quien manda
@@ -69,7 +70,7 @@ class NotificarServicioCompletado
             'referencia_ubicacion' => $service->serviceLocation,
             'estado_del_servicio' => $service->stateId,
             'id_request' => $service->requestsId,
-            'description' => $service->serviceDescription === null ? $service->serviceDescription : $service->serviceDescription,
+            'description' => $service->serviceDescription ,
             'date_service' => $service->updatedDateTime,
         ];
         $fecha = Carbon::parse($service->finishDateTime_client);
