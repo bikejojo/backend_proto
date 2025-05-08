@@ -359,10 +359,10 @@ class ServicioMutations
                 StatusAssigner::assignStateRequest($request,$this->now,self::$entity_type,'El servicio fue terminado por el tecnico.',6);
                 $request->stateId = 5;
                 $request->save();
-            $detailTech->serviceDate = Carbon::now();
+            $detailTech->serviceDate = $serviceDateTime;//Carbon::now();
             $detailTech->save();
             $service->finishDateTime_technician = $serviceDateTime;
-            $service->updatedDateTime = Carbon::now();
+            $service->updatedDateTime = $serviceDateTime;//Carbon::now();
             $service->save();
             if( !$service->finishDateTime_client || !$service->finishDateTime_technician ){
                 StatusAssigner::assignStatService($service,$this->now,self::$entity_type,$comments,6);
