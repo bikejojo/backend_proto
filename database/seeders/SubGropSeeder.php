@@ -16,7 +16,7 @@ class SubGropSeeder extends Seeder
             ['description' => 'Calefonos', 'photo' => 'calefon.png'],
             ['description' => 'Electricistas', 'photo' => 'electricista.png'],
             ['description' => 'Plomero', 'photo' => 'plomero.png'],
-            ['description' => 'Piscinero / Jardineria', 'photo' => 'PiscineroJardineria.png'],
+            ['description' => 'Piscinero / Jardíneria', 'photo' => 'PiscineroJardineria.png'],
             ['description' => 'Veterinario', 'photo' => 'veterinario.png'],
             ['description' => 'Pintores', 'photo' => 'pintores.png'],
             ['description' => 'Cocinas / Heladeras / Lavadoras / Hornos', 'photo' => 'CocinasHeladerasLavadorasHornos.png'],

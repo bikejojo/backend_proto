@@ -20,7 +20,7 @@ class GropSeeder extends Seeder
                 'photo' => 'hogarymantenimiento.png'
             ],
             [
-                'name' => 'Tecnologia',
+                'name' => 'Tecnología',
                 'photo' => 'tecnologia.png'
             ],
             [

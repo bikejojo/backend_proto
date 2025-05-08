@@ -50,7 +50,7 @@ class NotificarServicioCompletado
         $actionKey = 'services_finish_tech';
         $config = DiccionaryNotifications::getByKey($actionKey);
         $userTech = Tecnico::where('id', $service->technicalId)->first(); //quien manda
-        //dd($userTech);
+        dd($userTech);
         $userSend = User::where('id', $userTech->userId)->first(); //usuario quien manda
         $userClie = Cliente_Interno::where('id', $service->clientId)->first(); //quien recibe
         $userReceive = User::where('id', $userClie->userId)->first(); //usuario quien recibe
@@ -80,8 +80,8 @@ class NotificarServicioCompletado
             $notification->action_key = $actionKey;
             $notification->title = $config['title'];
             $notification->body = $config['body'] . $userTech->firstName . ' ' . $userTech->lastName .' '.
-                                'finalizo '. $this->getStringActivity($service->activityId).
-                                $actividad->description . ' '. 'de' .' '. $service->titleService.' ' . 'el dia:'.' ' . $completo;
+                                'finalizó '. $this->getStringActivity($service->activityId).
+                                $actividad->description . ' '. 'de' .' '. $service->titleService.' ' . 'el día:'.' ' . $completo;
             $notification->data = $data;
             $notification->type = 2;
             $notification->type_users = $userSend->type_user;

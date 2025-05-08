@@ -72,7 +72,7 @@ class DiccionaryNotifications
 
             'services_anull_tech' => [
                 'title' => 'Servicio anulado ❌',
-                'body' => 'El tecnico ha anulado el servicio programado para el día: ',
+                'body' => 'El técnico ha anulado el servicio programado para el día: ',
                 'type' => 2,
                 'status' => 5,
                 'type_users' => ['1','2'],
@@ -80,7 +80,7 @@ class DiccionaryNotifications
 
             'serv_anull_client' => [
                 'title' => 'Servicio anulado 💡',
-                'body' => 'Tu servicio fue cancelada exitosamente. ¡Te esperamos cuando necesites agendar otro servicio!',
+                'body' => 'Tu servicio fue cancelado exitosamente. ¡Te esperamos cuando necesites agendar otro servicio!',
                 'type' => 2,
                 'status' => 5,
                 'type_users' => ['1','2'],
@@ -165,7 +165,7 @@ class DiccionaryNotifications
         return [
             'record_client'=>[
                 'title'=>'¡Recordatorio de servicio! ⏰',
-                'body'=>'Recuerda que pronto recibirás la visita del técnico.Para el : {fecha}',
+                'body'=>'Recuerda que pronto recibirás la visita del técnico. Para el: {fecha}',
                 'type'=>6,
                 'type_users'=>'[1,2]',
             ],

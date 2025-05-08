@@ -39,9 +39,9 @@ class TypeNotificationQuery
             'internal_clients.phoneNumber',
             )
         ->get();
-      
+
         return[
-            'message'=>'Las notificaciones de tecnico.',
+            'message'=>'Las notificaciones de técnico.',
             'technician' => $technician ,
             'notification' => $notificationId
         ];
@@ -67,7 +67,7 @@ class TypeNotificationQuery
         ->get();
         //dd($notificationId);
         return[
-            'message'=>'Las notificaciones de tecnico.',
+            'message'=>'Las notificaciones de técnico.',
             'technician' => $technician ,
             'notification' => $notificationId
         ];

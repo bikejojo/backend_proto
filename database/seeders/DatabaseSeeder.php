@@ -190,9 +190,9 @@ class DatabaseSeeder extends Seeder
 
         #agenda
         Tipo_Actividad::create(['description'=>'mantenimiento','entity_type'=>'service']);
-        Tipo_Actividad::create(['description'=>'reparacion','entity_type'=>'service']);
-        Tipo_Actividad::create(['description'=>'instalacion','entity_type'=>'service']);
-        Tipo_Actividad::create(['description'=>'inspeccion','entity_type'=>'service']);
+        Tipo_Actividad::create(['description'=>'reparación','entity_type'=>'service']);
+        Tipo_Actividad::create(['description'=>'instalación','entity_type'=>'service']);
+        Tipo_Actividad::create(['description'=>'inspección','entity_type'=>'service']);
         #solicitud
         Tipo_Estado::create(['description'=>'Pendiente']);
         Tipo_Estado::create(['description'=>'Aceptado']);
@@ -208,10 +208,10 @@ class DatabaseSeeder extends Seeder
         */
         $this->call(PublicidadCategSeeder::class);
         //suscripcion inicial
-        Suscripcion::create(['name'=>'Suscripcion Gratuita','description'=>'Suscripcion gratuita que proporciona la empresa para uso de pruebas, tiene una duracion de 7 dias.','createDate'=>Carbon::now(),'duration'=> 7,'status'=>1,'durationDescription'=>'7 dias','price'=>0,'codeSubcription'=>'FREE']);
-        Suscripcion::create(['name'=>'Suscripcion Basica','description'=>'Suscripcion basica que se proporciona a los clientes que tiene un costo, tiene una duracion de 15 dias','createDate'=>Carbon::now(),'duration'=> 14,'status'=>1,'durationDescription'=>'14 dias','price'=>12.50,'codeSubcription'=>'BASIC']);
-        Suscripcion::create(['name'=>'Suscripcion Esencial','description'=>'Duracion de 30 dias por esencial','createDate'=>Carbon::now(),'duration'=> 30,'status'=>1,'durationDescription'=>'30 dias','price'=>25.0,'codeSubcription'=>'ESENCIAL']);
-        Suscripcion::create(['name'=>'Suscripcion Estrella','description'=>'Duracion de 60 dias por premium','createDate'=>Carbon::now(),'duration'=> 60,'status'=>1,'durationDescription'=>'60 dias','price'=>60.0,'codeSubcription'=>'PREMIUN']);
+        Suscripcion::create(['name'=>'Suscripción Gratuita','description'=>'Suscripcion gratuita que proporciona la empresa para uso de pruebas, tiene una duracion de 7 dias.','createDate'=>Carbon::now(),'duration'=> 7,'status'=>1,'durationDescription'=>'7 dias','price'=>0,'codeSubcription'=>'FREE']);
+        Suscripcion::create(['name'=>'Suscripción Básica','description'=>'Suscripcion basica que se proporciona a los clientes que tiene un costo, tiene una duracion de 15 dias','createDate'=>Carbon::now(),'duration'=> 14,'status'=>1,'durationDescription'=>'14 dias','price'=>12.50,'codeSubcription'=>'BASIC']);
+        Suscripcion::create(['name'=>'Suscripción Esencial','description'=>'Duracion de 30 dias por esencial','createDate'=>Carbon::now(),'duration'=> 30,'status'=>1,'durationDescription'=>'30 dias','price'=>25.0,'codeSubcription'=>'ESENCIAL']);
+        Suscripcion::create(['name'=>'Suscripción Estrella','description'=>'Duracion de 60 dias por premium','createDate'=>Carbon::now(),'duration'=> 60,'status'=>1,'durationDescription'=>'60 dias','price'=>60.0,'codeSubcription'=>'PREMIUN']);
 
         Type::create(['description'=>'Solicitud enviada por el cliente','code_notifications'=>'SOL_CL']);
         Type::create(['description'=>'Solicitud enviada por el tecnico','code_notifications'=>'SOL_TC']);
