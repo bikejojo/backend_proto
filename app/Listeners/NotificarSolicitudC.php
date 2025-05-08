@@ -34,7 +34,7 @@ class NotificarSolicitudC
     /**
      * Handle the event.
      */
-    public function handle(SolicitudCreadaC $event): void
+    public function handle(SolicitudCreadaC $event)
     {
         $solicitud = $event->solicitud;
          /** ----------------------------------------------- */
