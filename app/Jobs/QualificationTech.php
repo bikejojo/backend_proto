@@ -63,7 +63,7 @@ class QualificationTech implements ShouldQueue
                     'to' => $devices->expo_token,
                     'title' => $config['title'],
                     'body' => $config['body'],
-                    'data' => json_decode($notification->data, true),
+                    'data' => $notification->data,
                 ]);
             }else{
                 $notification = Notification::find($this->notificationId);
