@@ -3,6 +3,7 @@
 namespace App\GraphQL\Mutations;
 
 use App\Events\ServicioCompletado;
+use App\Events\ServicioTerminado;
 use App\Models\Tecnico;
 use Illuminate\Support\Facades\DB;
 use App\Models\Servicio;
@@ -60,6 +61,7 @@ class RatingMutations{
                         'services.updatedDateTime',
                     )
                     ->first();
+                    //dd($service);
                 if(!$service){
                     DB::rollBack();
                     Log::info('Surgio un problema con servicio');
@@ -72,7 +74,7 @@ class RatingMutations{
                 $service->save();
                 Log::info('Servicios' , ['service' => $service->toArray()]);
 
-                event(new ServicioCompletado($service));
+                event(new ServicioTerminado($service));
                 $request= Solicitud::where('id',$service->requestsId )->first();
                 if(!$request){
                     DB::rollBack();

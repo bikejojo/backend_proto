@@ -40,7 +40,7 @@ class NotificarServicioTerminado
 
         $userClient = Cliente_Interno::where('id', $service->clientId)->first(); //quien manda
         $userSend = User::where('id', $userClient->userId)->first(); //usuario quien manda
-        $userTech = Tecnico::where('id', $service->technicianId)->first(); //quien recibe
+        $userTech = Tecnico::where('id', $service->technicalId)->first(); //quien recibe
         $userReceive = User::where('id', $userTech->userId)->first(); //usuario quien recibe
         $nameActividad = Tipo_Actividad::where('id',$service->activityId)->value('description');
         $fecha = Carbon::parse($service->finishDateTime_technician);

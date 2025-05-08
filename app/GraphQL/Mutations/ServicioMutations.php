@@ -369,7 +369,8 @@ class ServicioMutations
                 $service->save();
             }
             $_service = Servicio::find($service->id);
-            event(new ServicioTerminado($service));
+            //dd($_service);
+            event(new ServicioCompletado($service));
             /*if(!is_null($_service->finishDateTime_client)){
                 $_service->stateId = 5;
                 $_service->save();
