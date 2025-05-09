@@ -39,7 +39,7 @@ class RecordAppointments extends Command
                             ->whereBetween('updatedDateTime',[$minMinutesThirteen,$addMinutesThirteen])
                             ->where('typeClient','1')
                             ->get();
-       //dd(DB::connection()->getDatabaseName());
+        //dd(DB::connection()->getDatabaseName());
         //dd($service);
         if($service->isEmpty()){
             $this->info('No hay servicios para enviar recordatorio');
@@ -80,7 +80,7 @@ class RecordAppointments extends Command
                                 ->whereNull('notifications_user.expo_response')
                                 ->select('notifications_user.*')
                                 ->first();
-                                dd($notif);
+                                //dd($notif);
                     if($notif != null){
 
                         $notif->expo_response = json_encode(['data' => ['status' => 'ok',]]);
