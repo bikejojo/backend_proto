@@ -57,25 +57,29 @@ class SendNotificationJob implements ShouldQueue
                     'success' => false
                 ];
             }
-            $devicesUser = DevicesUser::where('users_id',$user->id)->first();
-            $devices = Devices::where('id',$devicesUser->device_id)->first();
 
-            $response = Http::post('https://exp.host/--/api/v2/push/send',[
-                'to' => $devices->expo_token,
-                'title' => $notification->title,
-                'body' => $notification->body,
-                'data' => $notification->data,
-            ]);
+            foreach ($user as $users) {
+
+                $devicesUser = DevicesUser::where('users_id',$users->id)->first();
+                if (!$devicesUser) continue;
+                $devices = Devices::where('id',$devicesUser->device_id)->first();
+                 if (!$devices) continue;
+                $response = Http::post('https://exp.host/--/api/v2/push/send',[
+                    'to' => $devices->expo_token,
+                    'title' => $notification->title,
+                    'body' => $notification->body,
+                    'data' => $notification->data,
+                ]);
 
 
-            NotificationUser::where('notification_id', $notification->id)
-            ->where('user_id', $user->id)
-            ->update([
-                'expo_response' => json_encode($response->json()),
-            ]);
+                NotificationUser::where('notification_id', $notification->id)
+                ->where('user_id', $users->id)
+                ->update([
+                    'expo_response' => json_encode($response->json()),
+                ]);
 
-            Log::info("Notificación enviada a usuario {$this->userId}");
-
+                Log::info("Notificación enviada a usuario {$this->userId}");
+            }
         } catch (\Exception $e) {
             Log::error('Error al enviar la notificación: ' . $e->getMessage());
             return [
