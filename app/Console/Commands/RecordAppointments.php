@@ -80,7 +80,8 @@ class RecordAppointments extends Command
                                 ->select('notifications_user.*')
                                 ->first();
                                 //dd($notif);
-                    if(!$notif){
+                    if($notif){
+
                         $notif->expo_response = json_encode(['data' => ['status' => 'ok',]]);
                         $notif->save();
                         continue;
@@ -149,7 +150,7 @@ class RecordAppointments extends Command
                                 ->where('notifications_user.is_service_1hr', false)
                                 ->select('notifications_user.*')
                                 ->first();
-                    if(!$notif){
+                    if($notif){
                         $notif->expo_response = json_encode(['data' => ['status' => 'ok',]]);
                         $notif->save();
                         continue;
