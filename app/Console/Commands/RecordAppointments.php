@@ -77,6 +77,7 @@ class RecordAppointments extends Command
                                 ->where('notifications.sender_id',$technicians->id)
                                 ->where('notifications_user.is_service_2hr', true)
                                 ->where('notifications_user.is_service_1hr', false)
+                                ->whereNull('notifications_user.expo_response')
                                 ->select('notifications_user.*')
                                 ->first();
                                 //dd($notif);
