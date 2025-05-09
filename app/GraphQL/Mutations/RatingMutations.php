@@ -11,6 +11,7 @@ use App\Models\Calificacion;
 use App\Models\Cliente_Interno;
 use App\Models\Solicitud;
 use App\Services\StatusAssigner;
+use App\Events\ServicioCalificacion;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -75,6 +76,7 @@ class RatingMutations{
                 Log::info('Servicios' , ['service' => $service->toArray()]);
 
                 event(new ServicioTerminado($service));
+                event(new ServicioCalificacion($service,'qualification_done'));
                 $request= Solicitud::where('id',$service->requestsId )->first();
                 if(!$request){
                     DB::rollBack();

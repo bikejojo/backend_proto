@@ -68,8 +68,17 @@ class RecordAppointments extends Command
                     ->where('notifications_user.is_service_1hr', false)
                 ->count();
                 //dd($existingNotificationUserClient);
-                //if($existingNotificationUserClient < 1){
-
+                if($existingNotificationUserClient <= 1){
+                    $notif = NotificationUser::join('notifications', 'notifications.id', '=', 'notifications_user.notification_id')
+                                ->where('notifications.type',7)
+                                ->where('notifications.status',2)
+                                ->where('notifications_user.user_id', $client->id)
+                                ->where('notifications_user.is_service_2hr', true)
+                                ->where('notifications_user.is_service_1hr', false)
+                                ->select('notifications_user.expo_response')
+                                ->first();
+                    $notif->expo_response = json_encode(['data' => ['status' => 'ok',]]);
+                    $notif->save();
                     $controlNotification = new Notification();
                         $controlNotification->action_key = 'record_appointments';
                         $controlNotification->title = 'record_appointments';
@@ -110,7 +119,7 @@ class RecordAppointments extends Command
                     recordAgenda::dispatch($services , $client , $config);
                     $this->info("Recordatorio enviado a {$clients->firstName}");
 
-                //}
+                }
             }
             if($technicians){
                 $config = DiccionaryNotifications::getByKey('record_technician');
@@ -122,8 +131,17 @@ class RecordAppointments extends Command
                 ->count();
                 // NUEVA instancia de Notification en cada iteración
 
-                //if($existingNotificationUserTech < 1 ){
-
+                if($existingNotificationUserTech <= 1 ){
+                    $notif = NotificationUser::join('notifications', 'notifications.id', '=', 'notifications_user.notification_id')
+                                ->where('notifications.type',7)
+                                ->where('notifications.status',2)
+                                ->where('notifications_user.user_id', $technicians->id)
+                                ->where('notifications_user.is_service_2hr', true)
+                                ->where('notifications_user.is_service_1hr', false)
+                                ->select('notifications_user.expo_response')
+                                ->first();
+                    $notif->expo_response = json_encode(['data' => ['status' => 'ok',]]);
+                    $notif->save();
                     $controlNotification = new Notification();
                         $controlNotification->action_key = 'record_appointments';
                         $controlNotification->title = 'record_appointments';
@@ -163,7 +181,7 @@ class RecordAppointments extends Command
 
                     recordAgenda::dispatch($services , $technicians , $config);
                     $this->info("Recordatorio enviado a {$technicians->firstName}");
-                //}
+                }
             }
             continue;
         }

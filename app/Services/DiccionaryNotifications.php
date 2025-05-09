@@ -138,6 +138,9 @@ class DiccionaryNotifications
             'qualification_c' => [
                 'title' => '¿Qué te pareció el servicio?' ,
                 'body' => '¡Califícanos! ⭐️' ,
+                'type' => 2,
+                'status' => 6,
+                'type_users' => ['1','2'],
             ],
         ];
     }

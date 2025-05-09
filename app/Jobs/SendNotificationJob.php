@@ -37,9 +37,9 @@ class SendNotificationJob implements ShouldQueue
      */
     public function handle()
     {
-
         try {
             $notification = Notification::find($this->notificationId);
+            Log::info("[JOB] Notificaciones {$notification}");
             if(!$notification){
                 Log::warning("[JOB] Notificación {$this->notificationId} no encontrada.");
                 return [

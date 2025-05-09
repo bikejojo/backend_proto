@@ -7,7 +7,10 @@ use App\Models\Devices;
 use App\Models\DevicesUser;
 use App\Models\Notification;
 use App\Models\NotificationUser;
+use Illuminate\Queue\SerializesModels;
 use App\Services\DiccionaryNotifications;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Http;
@@ -15,7 +18,7 @@ use Illuminate\Support\Facades\Log;
 
 class QualificationTech implements ShouldQueue
 {
-    use Queueable;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $notificationId;
     protected $receptorId;
@@ -38,6 +41,7 @@ class QualificationTech implements ShouldQueue
         try{
             if( $this->message === 'services_finish_tech'){
                 $notification = Notification::find($this->notificationId);
+                Log::info("[JOB] Notificaciones {$notification}");
                 if(!$notification){
                     Log::warning("[JOB] Notificación {$this->notificationId} no encontrada.");
                     return [
@@ -47,7 +51,7 @@ class QualificationTech implements ShouldQueue
                 }
 
                 $user  = $notification->recipients()->where('user_id',$this->receptorId)->first();
-                //dd($user);
+                Log::info("[JOB] Notificaciones {$user}");
                 if(!$user){
                     Log::warning("[JOB] Usuario {$this->receptorId} no encontrado para la notificación {$this->notificationId}.");
                     return [
@@ -67,12 +71,13 @@ class QualificationTech implements ShouldQueue
                 ]);
 
                 $NotificationUser = NotificationUser::where('notification_id',$notification->id)->first();
-                    $NotificationUser->expo_response = $response;
-                    $NotificationUser->userId = $this->receptorId;
-                    $NotificationUser->save();
+                    $NotificationUser->expo_response = json_encode($response->json());
+                    $NotificationUser->user_id = $this->receptorId;
+                $NotificationUser->save();
 
             }else{
                 $notification = Notification::find($this->notificationId);
+                Log::info("[JOB] Notificaciones {$notification}");
                 if(!$notification){
                     Log::warning("[JOB] Notificación {$this->notificationId} no encontrada.");
                     return [
@@ -82,7 +87,7 @@ class QualificationTech implements ShouldQueue
                 }
 
                 $user  = $notification->recipients()->where('user_id',$this->receptorId)->first();
-                //dd($user);
+                Log::info("[JOB] Notificaciones {$user}");
                 if(!$user){
                     Log::warning("[JOB] Usuario {$this->receptorId} no encontrado para la notificación {$this->notificationId}.");
                     return [
@@ -102,8 +107,8 @@ class QualificationTech implements ShouldQueue
                 ]);
 
                 $NotificationUser = NotificationUser::where('notification_id',$notification->id)->first();
-                $NotificationUser->expo_response = $response;
-                $NotificationUser->userId = $this->receptorId;
+                $NotificationUser->expo_response = json_encode($response->json());
+                $NotificationUser->user_id = $this->receptorId;
                 $NotificationUser->save();
             }
         } catch( \Exception $e ){

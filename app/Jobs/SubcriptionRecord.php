@@ -6,11 +6,13 @@ namespace App\Jobs;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
 
 class SubcriptionRecord implements ShouldQueue
 {
-    use Queueable;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * Create a new job instance.
@@ -18,7 +20,7 @@ class SubcriptionRecord implements ShouldQueue
     protected $body;
     protected $title;
     protected $device;
-    
+
     public function __construct($device, $title, $body)
     {
         $this->body = $body;

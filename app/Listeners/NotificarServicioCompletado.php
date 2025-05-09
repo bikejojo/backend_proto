@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Services\DiccionaryNotifications;
+use Illuminate\Support\Facades\Bus;
 use App\Events\ServicioCompletado;
 use App\Jobs\SendNotificationJob;
 use App\Models\NotificationUser;
@@ -100,8 +101,11 @@ class NotificarServicioCompletado
             $notificationsUser->created_at = Carbon::now();
         $notificationsUser->save();
 
+        /*Bus::chain([
+            new SendNotificationJob($notification->id, $userReceive->id),
+            //new QualificationTech($notification->id, $userReceive->id, $actionKey),
+        ])->dispatch();*/
         SendNotificationJob::dispatch($notification->id, $userReceive->id);
-        QualificationTech::dispatch($notification->id,$userReceive->id,$actionKey);
     }
 
 

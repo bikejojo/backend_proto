@@ -14,6 +14,7 @@ use App\Models\Asociacion_Cliente_Tecnico;
 use App\Models\Detalle_Agenda_Tecnico;
 use App\Models\Historial_Servicios;
 use App\Models\Solicitud;
+use App\Events\ServicioCalificacion;
 use App\Models\Tecnico;
 use App\Services\StateCatalog;
 use App\Services\StatusAssigner;
@@ -371,6 +372,7 @@ class ServicioMutations
             $_service = Servicio::find($service->id);
             //dd($_service);
             event(new ServicioCompletado($service));
+            event(new ServicioCalificacion($service,'qualification_c'));
             /*if(!is_null($_service->finishDateTime_client)){
                 $_service->stateId = 5;
                 $_service->save();
