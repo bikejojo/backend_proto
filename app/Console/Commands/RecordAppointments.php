@@ -77,8 +77,11 @@ class RecordAppointments extends Command
                                 ->where('notifications_user.is_service_1hr', false)
                                 ->select('notifications_user.*')
                                 ->first();
-                    $notif->expo_response = json_encode(['data' => ['status' => 'ok',]]);
-                    $notif->save();
+                    if($notif){
+                        $notif->expo_response = json_encode(['data' => ['status' => 'ok',]]);
+                        $notif->save();
+                        continue;
+                    }
                     $controlNotification = new Notification();
                         $controlNotification->action_key = 'record_appointments';
                         $controlNotification->title = 'record_appointments';
@@ -140,8 +143,12 @@ class RecordAppointments extends Command
                                 ->where('notifications_user.is_service_1hr', false)
                                 ->select('notifications_user.*')
                                 ->first();
-                    $notif->expo_response = json_encode(['data' => ['status' => 'ok',]]);
-                    $notif->save();
+                    if($notif){
+                        $notif->expo_response = json_encode(['data' => ['status' => 'ok',]]);
+                        $notif->save();
+                        continue;
+                    }
+
                     $controlNotification = new Notification();
                         $controlNotification->action_key = 'record_appointments';
                         $controlNotification->title = 'record_appointments';
