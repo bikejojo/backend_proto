@@ -64,10 +64,11 @@ class RecordAppointments extends Command
                     ->where('notifications.type',7)
                     ->where('notifications.status',2)
                     ->where('notifications_user.user_id', $client->id)
+                    ->where('notifications.sender_id',$technicians->id)
                     ->where('notifications_user.is_service_2hr', true)
                     ->where('notifications_user.is_service_1hr', false)
                 ->count();
-                //dd($existingNotificationUserClient);
+                dd($existingNotificationUserClient);
                 if($existingNotificationUserClient <= 1){
                     $notif = NotificationUser::join('notifications', 'notifications.id', '=', 'notifications_user.notification_id')
                                 ->where('notifications.type',7)
@@ -128,9 +129,11 @@ class RecordAppointments extends Command
                 $config = DiccionaryNotifications::getByKey('record_technician');
                 $config['body'] = str_replace('{fecha}' , $fecha ,$config['body']);
 
-                $existingNotificationUserTech = NotificationUser::where('user_id', $technicians->id)
-                    ->where('is_service_2hr', true)
-                    ->where('is_service_1hr', false)
+                $existingNotificationUserTech = NotificationUser::join('notifications','notifications.id','=','notifications_user.notification_id')
+                    ->where('notifications_user.user_id', $technicians->id)
+                    ->where('notifications.sender_id',$client->id)
+                    ->where('notifications_user.is_service_2hr', true)
+                    ->where('notifications_user.is_service_1hr', false)
                 ->count();
                 // NUEVA instancia de Notification en cada iteración
 
@@ -139,6 +142,7 @@ class RecordAppointments extends Command
                                 ->where('notifications.type',7)
                                 ->where('notifications.status',2)
                                 ->where('notifications_user.user_id', $technicians->id)
+                                ->where('notifications.sender_id',$client->id)
                                 ->where('notifications_user.is_service_2hr', true)
                                 ->where('notifications_user.is_service_1hr', false)
                                 ->select('notifications_user.*')
