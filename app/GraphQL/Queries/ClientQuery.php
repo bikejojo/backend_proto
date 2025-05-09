@@ -448,10 +448,6 @@ class ClientQuery{
                                 ->leftJoinSub($latestStateSubquery, 'latest_state', function ($join) {
                                     $join->on('requests.id', '=', 'latest_state.requestId');
                                 })
-                                /*->leftJoin('state_reference', function ($join) {
-                                    $join->on('state_reference.requestId', '=', 'latest_state.requestId')
-                                        ->on('state_reference.dateCreate', '=', 'latest_state.latest_date');
-                                })*/
                                 ->select([
                                         'requests.id As id_requests',
                                         'requests.titleRequests',
@@ -465,7 +461,8 @@ class ClientQuery{
                                         'requests.registrationDateTime',
                                         'requests.stateId As state',
                                         DB::raw('CONCAT(COALESCE(technicians."firstName", \'\'), \' \', COALESCE(technicians."lastName", \'\')) As full_name')
-                                    ]);
+                                    ])
+                                    ->orderBy('registrationDateTime','DESC');
 
             if (!empty($stateId)) {
                 //dd($stateId);

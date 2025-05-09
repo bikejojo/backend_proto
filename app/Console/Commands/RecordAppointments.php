@@ -32,7 +32,7 @@ class RecordAppointments extends Command
     {
         Carbon::setLocale('es');
         $now = Carbon::now()->seconds(0);
-        $minMinutesThirteen = $now->copy()->subSeconds(1)->format('Y-m-d H:i:s');
+        $minMinutesThirteen = $now->copy()->subSeconds(20)->format('Y-m-d H:i:s');
         $addMinutesThirteen = $now->copy()->addMinutes(10)->format('Y-m-d H:i:s');
         //dd($addMinutesThirteen);
         $service = Servicio::where('stateId',1)
@@ -55,6 +55,7 @@ class RecordAppointments extends Command
             $fecha = Carbon::parse($services->updatedDateTime)->translatedFormat('d \d\e F \a \l\a\s H:i');
 
             if($client){
+
                 $config = DiccionaryNotifications::getByKey('record_client');
 
                 $config['body'] = str_replace('{fecha}' , $fecha ,$config['body']);
@@ -66,7 +67,8 @@ class RecordAppointments extends Command
                     ->where('notifications_user.is_service_2hr', true)
                     ->where('notifications_user.is_service_1hr', false)
                 ->count();
-                if($existingNotificationUserClient < 1){
+                //dd($existingNotificationUserClient);
+                //if($existingNotificationUserClient < 1){
 
                     $controlNotification = new Notification();
                         $controlNotification->action_key = 'record_appointments';
@@ -108,7 +110,7 @@ class RecordAppointments extends Command
                     recordAgenda::dispatch($services , $client , $config);
                     $this->info("Recordatorio enviado a {$clients->firstName}");
 
-                }
+                //}
             }
             if($technicians){
                 $config = DiccionaryNotifications::getByKey('record_technician');
@@ -120,7 +122,7 @@ class RecordAppointments extends Command
                 ->count();
                 // NUEVA instancia de Notification en cada iteración
 
-                if($existingNotificationUserTech < 1 ){
+                //if($existingNotificationUserTech < 1 ){
 
                     $controlNotification = new Notification();
                         $controlNotification->action_key = 'record_appointments';
@@ -161,7 +163,7 @@ class RecordAppointments extends Command
 
                     recordAgenda::dispatch($services , $technicians , $config);
                     $this->info("Recordatorio enviado a {$technicians->firstName}");
-                }
+                //}
             }
             continue;
         }
