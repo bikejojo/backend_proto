@@ -75,7 +75,7 @@ class RecordAppointments extends Command
                                 ->where('notifications_user.user_id', $client->id)
                                 ->where('notifications_user.is_service_2hr', true)
                                 ->where('notifications_user.is_service_1hr', false)
-                                ->select('notifications_user.expo_response')
+                                ->select('notifications_user.*')
                                 ->first();
                     $notif->expo_response = json_encode(['data' => ['status' => 'ok',]]);
                     $notif->save();
@@ -138,7 +138,7 @@ class RecordAppointments extends Command
                                 ->where('notifications_user.user_id', $technicians->id)
                                 ->where('notifications_user.is_service_2hr', true)
                                 ->where('notifications_user.is_service_1hr', false)
-                                ->select('notifications_user.expo_response')
+                                ->select('notifications_user.*')
                                 ->first();
                     $notif->expo_response = json_encode(['data' => ['status' => 'ok',]]);
                     $notif->save();
