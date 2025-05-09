@@ -68,7 +68,7 @@ class RecordAppointments extends Command
                     ->where('notifications_user.is_service_2hr', true)
                     ->where('notifications_user.is_service_1hr', false)
                 ->count();
-                dd($existingNotificationUserClient);
+                //($existingNotificationUserClient);
                 if($existingNotificationUserClient <= 1){
                     $notif = NotificationUser::join('notifications', 'notifications.id', '=', 'notifications_user.notification_id')
                                 ->where('notifications.type',7)
