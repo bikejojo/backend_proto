@@ -7,6 +7,8 @@ use App\Models\Tecnico_Habilidad;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Ciudad;
+use App\Models\Devices;
+use App\Models\DevicesUser;
 use App\Models\Tecnico;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
@@ -322,6 +324,11 @@ class UserMutations{
                 ];
             }
 
+            $deviceUser = DevicesUser::where('users_id',$user->id)->first();
+
+            $device = Devices::where('id',$deviceUser->device_id)->first();
+            $deviceUser->delete();
+            $device->delete();
             return [
                 'message' => 'No se encontró el token actual'
             ];
