@@ -31,71 +31,125 @@ class RecordAppointments1hr extends Command
     public function handle()
     {
         Carbon::setLocale('es');
-        $minMinutesThirteen = now()->addMinutes(57);
-        $addMinutesThirteen = now()->addMinutes(65);
-        $service = Servicio::where('stateId',1)
+        $now = Carbon::now()->seconds(0);
+        $minMinutesThirteen = $now->copy()->subSeconds(60)->format('Y-m-d H:i:s');
+        $addMinutesThirteen = $now->copy()->addMinutes(58)->format('Y-m-d H:i:s');
+
+        $services = Servicio::where('stateId',1)
                             ->whereBetween('updatedDateTime',[$minMinutesThirteen , $addMinutesThirteen])
+                            ->where('typeClient', '1')
                             ->get();
 
-        if($service->isEmpty()){
+        if($services->isEmpty()){
             $this->info('No hay servicios para enviar recordatorio');
             return;
         };
 
-        foreach($service as $services){
-            $clients = Cliente_Interno::where('id', $services->clientId)->first();
-            $client = User::where('id',$clients->userId)->first();
-            $technicians = Tecnico::where('id',$services->technicalId)->first();
-            $technician = User::where('id',$technicians->userId)->first();
-            $fecha = Carbon::parse($services->updatedDateTime)->translatedFormat('d \d\e F \a \l\a\s H:i');
+        foreach($services as $service){
+            $client = Cliente_Interno::find($service->clientId);
+            $clients = User::find($client->userId);
+            $technician = Tecnico::find($service->technicalId);
+            $technicians = User::find($technician->userId);
 
-            if($client){
+            $fecha = Carbon::parse($service->updatedDateTime)->translatedFormat('d \d\e F \a \l\a\s H:i');
+
+            if($clients){
                 $config = DiccionaryNotifications::getByKey('record_client');
-                $config['body'] = str_replace('{fecha}' , $fecha ,$config['body']);
-                $existsNotification = Notification::where('data->id_service',$services->id)
-                                                    ->where('data->id_client',$client->id)
-                                                    ->first();
-                                                  
-                $exitsNotification2hrs = NotificationUser::where('notification_id',$existsNotification->id)
-                                                        ->where('is_service_2hr',true)
-                                                        ->where('is_service_1hr',false)
-                                                        ->exists();
+                $config['body'] = str_replace('{fecha}', $fecha, $config['body']);
 
-                if($exitsNotification2hrs){
-                    $notification = NotificationUser::where('notification_id',$existsNotification->id)->first();
+                $notif = NotificationUser::join('notifications', 'notifications.id', '=', 'notifications_user.notification_id')
+                    ->where('notifications_user.user_id', $technicians->id )
+                    ->where('notifications.sender_id', $clients->id)
+                    ->where('notifications.type',7)
+                    ->where('notifications.status',2)
+                    ->whereRaw("notifications.data->>'id_service' = ?", [$service->id])
+                    ->select('notifications_user.*')
+                ->first();
 
-                    $notification->is_service_1hr = true;
-                    $notification->save();
+                if ($notif && !$notif->is_service_1hr) {
+                    $notif->is_service_1hr = true;
+                    $notif->expo_response = json_encode(['data' => ['status' => 'ok']]);
+                    $notif->save();
+                }else{
+                    $notificationClient = new Notification();
+                        $notificationClient->action_key = 'record_client';
+                        $notificationClient->type_users = $technicians->type_user;
+                        $notificationClient->data = [
+                            'id_service' => $service->id,
+                            'id_client' => $clients->id,
+                            'type_notification' => $config['type'],
+                        ];
+                        $notificationClient->type = 7;
+                        $notificationClient->status = 2;
+                        $notificationClient->title = $config['title'];
+                        $notificationClient->body = $config['body'];
+                        $notificationClient->send_at = now();
+                        $notificationClient->sender_id = $clients->id;
+                    $notificationClient->save();
+                    //dd($notificationClient);
+                    $notificationUserClient = new NotificationUser();
+                        $notificationUserClient->notification_id = $notificationClient->id;
+                        $notificationUserClient->user_id = $technicians->id;
+                        $notificationUserClient->type_users = $clients->type_user;
+                        $notificationUserClient->is_service_2hr = false;
+                        $notificationUserClient->is_service_1hr = false;
+                        $notificationUserClient->created_at = now();
+                    $notificationUserClient->save();
 
-                    recordAgenda::dispatch($services , $client , $config);
+                    recordAgenda::dispatch($service, $client, $config);
                     $this->info("Recordatorio enviado a {$clients->firstName}");
                 }
 
             }
 
-            if($technician){
+            if($technicians){
                 $config = DiccionaryNotifications::getByKey('record_technician');
-                $config['body'] = str_replace('{fecha}' , $fecha ,$config['body']);
-                $existsNotificationt = Notification::where('data->id_service',$services->id)
-                                                    ->where('data->id_technician',$technician->id)
-                                                    ->first();
+                $config['body'] = str_replace('{fecha}', $fecha, $config['body']);
 
-                $exitsNotification2hrst = NotificationUser::where('notification_id',$existsNotificationt->id)
-                                        ->where('is_service_2hr',true)
-                                        ->where('is_service_1hr',false)
-                                        ->exists();
+                $notif = NotificationUser::join('notifications', 'notifications.id', '=', 'notifications_user.notification_id')
+                    ->where('notifications_user.user_id', $clients->id)
+                    ->where('notifications.sender_id', $technicians->id)
+                    ->where('notifications.type',7)
+                    ->where('notifications.status',2)
+                    ->whereRaw("notifications.data->>'id_service' = ?", [$service->id])
+                    ->select('notifications_user.*')
+                    ->first();
+                 if ($notif && !$notif->is_service_1hr) {
+                    $notif->is_service_1hr = true;
+                    $notif->expo_response = json_encode(['data' => ['status' => 'ok']]);
+                    $notif->save();
+                }else{
+                     $notificationTech = new Notification();
+                        $notificationTech->action_key = 'record_technician';
+                        $notificationTech->type = 7;
+                        $notificationTech->status = 2;
+                        $notificationTech->data = [
+                            'id_service' => $service->id,
+                            'id_technician' => $technicians->id,
+                            'type_notification' => $config['type'],
+                        ];
+                        $notificationTech->type_users = $clients->type_user;
+                        $notificationTech->title = $config['title'];
+                        $notificationTech->body = $config['body'];
+                        $notificationTech->send_at = now();
+                        $notificationTech->sender_id = $technicians->id;
+                    $notificationTech->save();
 
-                if($exitsNotification2hrst){
-                    $notification = NotificationUser::where('notification_id',$existsNotificationt->id)->first();
-                    $notification->is_service_1hr = true;
-                    $notification->save();
+                    $notificationUserTech = new NotificationUser();
+                        $notificationUserTech->notification_id = $notificationTech->id;
+                        $notificationUserTech->user_id = $clients->id;
+                        $notificationUserTech->type_users = $technicians->type_user;
+                        $notificationUserTech->is_service_2hr = false;
+                        $notificationUserTech->is_service_1hr = false;
+                        $notificationUserTech->created_at = now();
+                    $notificationUserTech->save();
 
-                    recordAgenda::dispatch($services , $technician , $config);
+                    recordAgenda::dispatch($service, $technicians, $config);
                     $this->info("Recordatorio enviado a {$technicians->firstName}");
                 }
             }
-            $this->info('Se enviaron los recordatorios correspondientes.');
-            Log::info('✅ Se ejecutó el recordatorio de citas 1hr.');
         }
+        $this->info('Se enviaron los recordatorios correspondientes.');
+        Log::info('Se ejecutó el recordatorio de citas 2hr. ✅');
     }
 }
