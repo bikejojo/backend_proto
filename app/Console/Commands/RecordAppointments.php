@@ -8,6 +8,7 @@ use App\Models\Tecnico;
 use App\Models\Servicio;
 use App\Jobs\recordAgenda;
 use App\Models\Notification;
+use App\Models\Tipo_Actividad;
 use App\Models\Cliente_Interno;
 use Illuminate\Console\Command;
 use App\Models\NotificationUser;
@@ -42,6 +43,7 @@ class RecordAppointments extends Command
             $clients = User::find($client->userId);
             $technician = Tecnico::find($service->technicalId);
             $technicians = User::find($technician->userId);
+            $nameActividad = Tipo_Actividad::where('id',$service->activityId)->value('description');
 
             $fecha = Carbon::parse($service->updatedDateTime)->translatedFormat('d \d\e F \a \l\a\s H:i');
 
@@ -77,6 +79,18 @@ class RecordAppointments extends Command
                     'id_service' => $service->id,
                     'id_client' => $clients->id,
                     'type_notification' => $configClient['type'],
+                    'full_name' => $technician->firstName . $technician->lastName,
+                    'actividad' => $nameActividad,
+                    'photo' => $technician->photo,
+                    'id_technician' => $technician->id,
+                    'id_client' => $client->id,
+                    'rate' => $technician->average_rating,
+                    'ubicacion' => 'lat: ' . $service->latitude . ' ' . 'lng: ' . $service->longitude,
+                    'referencia_ubicacion' => $service->serviceLocation,
+                    'estado_del_servicio' => $service->stateId,
+                    'id_request' => $service->requestsId,
+                    'description' => $service->serviceDescription ,
+                    'date_service' => $service->updatedDateTime,
                 ];
                 $notification->type = 7;
                 $notification->status = 2;
@@ -127,6 +141,18 @@ class RecordAppointments extends Command
                     'id_service' => $service->id,
                     'id_technician' => $technicians->id,
                     'type_notification' => $configTech['type'],
+                    'full_name' => $technician->firstName . $technician->lastName,
+                    'actividad' => $nameActividad,
+                    'photo' => $technician->photo,
+                    'id_technician' => $technician->id,
+                    'id_client' => $client->id,
+                    'rate' => $technician->average_rating,
+                    'ubicacion' => 'lat: ' . $service->latitude . ' ' . 'lng: ' . $service->longitude,
+                    'referencia_ubicacion' => $service->serviceLocation,
+                    'estado_del_servicio' => $service->stateId,
+                    'id_request' => $service->requestsId,
+                    'description' => $service->serviceDescription ,
+                    'date_service' => $service->updatedDateTime,
                 ];
                 $notification->type = 7;
                 $notification->status = 2;
