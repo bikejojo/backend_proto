@@ -326,9 +326,10 @@ class UserMutations{
 
             $deviceUser = DevicesUser::where('users_id',$user->id)->first();
 
-            $device = Devices::where('id',$deviceUser->device_id)->first();
-            $deviceUser->delete();
-            $device->delete();
+            //$device = Devices::where('id',$deviceUser->device_id)->first();
+            $deviceUser->device_id=null;
+            $deviceUser->save();
+
             return [
                 'message' => 'No se encontró el token actual'
             ];
