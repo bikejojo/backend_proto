@@ -196,7 +196,23 @@ class DeviceTokenMutations
             } else if ($type == "1") {
                 $userTech = ValidationModels::validation_clientInternal($requestDevice['userId']);
                 $userId = ValidationModels::validation_user($userTech->userId);
-            } else {
+            } else if ($type == "3"){
+                  // Buscar o crear el dispositivo
+                $device = Devices::firstOrCreate(
+                    ['expo_token' => $expoToken],
+                    [
+                        'type_device' => $requestDevice['type_device'],
+                        'name_device' => $requestDevice['name_device'],
+                    ]
+                );
+
+                DB::commit();
+                return [
+                    'message' => 'Registro exitoso del equipo invitado en el servidor.',
+                    'token' => $expoToken,
+                    'success' => 1,
+                ];
+            }else {
                 return [
                     'message' => 'Tipo de usuario no válido.',
                     'success' => 1
@@ -237,7 +253,7 @@ class DeviceTokenMutations
         } catch (\Exception $e) {
             DB::rollBack();
             return [
-                'message' => 'El error es el siguiente ' . $e->getMessage(),
+                'message' => ' El error es el siguiente ' . $e->getMessage(),
                 'success' => 3,
             ];
         }
