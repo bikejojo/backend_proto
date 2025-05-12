@@ -96,7 +96,7 @@ class DiccionaryNotifications
 
             'services_finish_client' => [
                 'title' => 'Servicio completado 🔧',
-                'body' => '¡El cliente marcado el servicio como finalizado!',
+                'body' => '¡El cliente concluyo con el proceso del servicio!',
                 'type' => 2,
                 'status' => 7,
                 'type_users' => ['1','2'],
