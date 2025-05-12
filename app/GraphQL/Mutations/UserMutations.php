@@ -308,10 +308,10 @@ class UserMutations{
 
     }
 
-    public function logout($root, array $args)
+    public function logout()
     {
         $user = Auth::user(); // Obtener el usuario autenticado
-
+        //dd($user);
         if ($user) {
             // Obtén el token actual del usuario y elimínalo
             $currentToken = $user->currentAccessToken();
@@ -319,16 +319,17 @@ class UserMutations{
             if ($currentToken) {
                 $currentToken->delete(); // Eliminar el token actual
                 $user->update(['token' => null]);
+                $deviceUser = DevicesUser::where('users_id',$user->id)->first();
+
+                //$device = Devices::where('id',$deviceUser->device_id)->first();
+                $deviceUser->users_id=null;
+                $deviceUser->save();
                 return [
                     'message' => 'Logout exitoso'
                 ];
             }
 
-            $deviceUser = DevicesUser::where('users_id',$user->id)->first();
 
-            //$device = Devices::where('id',$deviceUser->device_id)->first();
-            $deviceUser->device_id=null;
-            $deviceUser->save();
 
             return [
                 'message' => 'No se encontró el token actual'

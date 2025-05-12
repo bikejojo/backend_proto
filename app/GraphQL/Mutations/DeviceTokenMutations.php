@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class DeviceTokenMutations
 {
-    public function register($root , array $args){
+    /*public function register($root , array $args){
         //Log::info('contenido ' , $args);
         $type = $args["deviceTokenRequest"]["type"];
         switch($type){
@@ -181,6 +181,66 @@ class DeviceTokenMutations
         }
 
 
+    }*/
+    public function register($root, array $args)
+    {
+        DB::beginTransaction();
+        try {
+            $requestDevice = $args['deviceTokenRequest'];
+            $type = $requestDevice['type'];
+            $expoToken = $requestDevice['expo_token'];
+
+            if ($type == "2") {
+                $userTech = ValidationModels::validation_Technician($requestDevice['userId']);
+                $userId = ValidationModels::validation_user($userTech->userId);
+            } else if ($type == "1") {
+                $userTech = ValidationModels::validation_clientInternal($requestDevice['userId']);
+                $userId = ValidationModels::validation_user($userTech->userId);
+            } else {
+                return [
+                    'message' => 'Tipo de usuario no válido.',
+                    'success' => 1
+                ];
+            }
+
+            // Buscar o crear el dispositivo
+            $device = Devices::firstOrCreate(
+                ['expo_token' => $expoToken],
+                [
+                    'type_device' => $requestDevice['type_device'],
+                    'name_device' => $requestDevice['name_device'],
+                ]
+            );
+
+            // Buscar si el token ya está registrado en DevicesUser
+            $deviceUser = DevicesUser::where('device_id', $device->id)->first();
+
+            if ($deviceUser) {
+                // Ya existe: actualizar el user
+                $deviceUser->users_id = $userId->id ?? null;
+                $deviceUser->save();
+            } else {
+                // No existe: crear
+                DevicesUser::create([
+                    'device_id' => $device->id,
+                    'users_id' => $userId->id ?? null,
+                ]);
+            }
+
+            DB::commit();
+            return [
+                'message' => 'Registro o actualización exitoso del equipo en el servidor.',
+                'token' => $expoToken,
+                'success' => 1,
+            ];
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'message' => 'El error es el siguiente ' . $e->getMessage(),
+                'success' => 3,
+            ];
+        }
     }
 
 }
