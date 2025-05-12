@@ -38,7 +38,9 @@ class RatingMutations{
                     ->where('clientId', $rating['id_client'])
                     ->first();
 
-                    $service_= Servicio::find($rating['id_service']);
+                    $service_= Servicio::where('id',$rating['id_service'])
+                                        ->where('typeClient',1)
+                                        ->first();
 
                     $responses[] = [
                         'message' => 'Este servicio ya tiene una calificación.',
@@ -52,6 +54,7 @@ class RatingMutations{
 
                 $service = Servicio::where('services.stateId', 5)
                     ->where('services.id', $rating['id_service'])
+                    ->where('services.typeClient',1)
                     ->select(
                         'services.id',
                         'services.titleService',
