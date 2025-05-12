@@ -1,5 +1,6 @@
 extend type Query {
   getAllCities: [City] @all (model: "App\\Models\\Ciudad")
+  getAllCitiesList: [City] @field(resolver: "CiudadQuery@getAllCities_two")
   getCityById(id: ID! @whereKey): City @find (model: "App\\Models\\Ciudad")
 }
 
