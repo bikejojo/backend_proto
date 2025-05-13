@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('typeClient');
             $table->string('service_origin');//diferencia entre servicio creado por cliente y tecnico
             $table->text('titleService')->nullable();
-            $table->string('serviceDescription')->nullable();
+            $table->text('serviceDescription')->nullable();
             $table->text('serviceLocation')->nullable();
             $table->text('longitude')->nullable();
             $table->text('latitude')->nullable();
