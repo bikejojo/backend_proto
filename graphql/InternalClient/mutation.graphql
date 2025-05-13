@@ -23,8 +23,16 @@ type ClientResponse {
   city:cities
   user: User
   status:Int
+  device: devices
 }
 
+type devices {
+    device_id:String
+    expo_token:String
+    user_id:String
+    name_device:String
+    type_device:String
+}
 type cities {
     id_city:ID
     name:String

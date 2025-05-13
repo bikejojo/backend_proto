@@ -232,6 +232,18 @@ class UserMutations{
 
         $client1 =Cliente_Interno::where('internal_clients.userId',$user->id)->first();
         $ciudad = Ciudad::find($client1->cityId);
+        $token = $args['expo_token'];
+        $device = Devices::where('expo_token',$token)->first();
+        $deviceUser = DevicesUser::where('device_id',$device->id)->first();
+            $deviceUser->users_id = $user->id;
+        $deviceUser->save();
+        $devicess = [
+            'device_id' => $device->id,
+            'expo_token' => $device->expo_token,
+            'user_id' => $deviceUser->users_id,
+            'name_device' => $device->name_device ?? null, // ejemplo si quieres más campos
+            'type_device' => $device->type_device ,
+        ];
         // Crear token con Sanctum
         $tokens = $user->createToken('authToken')->plainTextToken;
         $user->token = $tokens;
@@ -243,6 +255,7 @@ class UserMutations{
                 'message' => 'Login exitoso',
                 'user' => $user,
                 'client' => $client1,
+                'devices' => $devicess,
                 'city' => [
                         'id_city' => $ciudad->id,
                         'name' => $ciudad->name,

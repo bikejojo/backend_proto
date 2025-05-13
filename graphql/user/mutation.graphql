@@ -32,6 +32,15 @@ type responseClientLogin {
     city:citiess
     client: InternalClient
     message:String
+    devices:devices
+}
+
+type devices {
+    device_id:String
+    expo_token:String
+    user_id:String
+    name_device:String
+    type_device:String
 }
 
 type citiess {

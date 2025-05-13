@@ -9,6 +9,8 @@ use App\Helpers\ImageHelper;
 use App\Services\StateCatalog;
 use App\Events\PasswordChanged;
 use App\Models\Cliente_Interno;
+use App\Models\Devices;
+use App\Models\DevicesUser;
 use Illuminate\Http\UploadedFile;
 use App\Services\ValidationModels;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +20,8 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+
+use function PHPSTORM_META\map;
 
 class ClienteInternoMutations{
     //variables
@@ -51,7 +55,7 @@ class ClienteInternoMutations{
         DB::beginTransaction();
         try{
         $email = strtolower(trim($clienteData['email']));
-
+        $token = $clienteData['expo_token'];
         $user = new User();
             $user->email = $email;
             $user->password = Hash::make($clienteData['password']);
@@ -88,6 +92,18 @@ class ClienteInternoMutations{
             $cliente->save();
         }
 
+        $deviceSearch = Devices::where('expo_token',$token)->first();
+        $deviceUser = DevicesUser::where('device_id',$deviceSearch->id)->first();
+            $deviceUser->users_id = $user->id;
+        $deviceUser->save();
+        $device = [
+            'device_id' => $deviceSearch->id,
+            'expo_token' => $deviceSearch->expo_token,
+            'user_id' => $deviceUser->users_id,
+            'name_device' => $deviceSearch->name_device ?? null, // ejemplo si quieres más campos
+            'type_device' => $deviceSearch->type_device ,
+
+        ];
         //$cliente=Cliente_Interno::find($clientId);
         $ciudad = Ciudad::find($cliente->cityId);
         //Log::info('------- Falla ----', $cliente->toArray());
@@ -97,6 +113,7 @@ class ClienteInternoMutations{
             'message' => 'Creacion Cliente exitoso!',
             'client' => $cliente,
             'user' => $user,
+            'device' => $device ,
             'status' => 1,
             'city' =>[
                     'id_city' => $ciudad->id,
