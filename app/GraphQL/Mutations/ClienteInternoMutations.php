@@ -94,8 +94,17 @@ class ClienteInternoMutations{
 
         $deviceSearch = Devices::where('expo_token',$token)->first();
         $deviceUser = DevicesUser::where('device_id',$deviceSearch->id)->first();
-            $deviceUser->users_id = $user->id;
-        $deviceUser->save();
+
+        if($deviceUser){
+            $deviceUser->users_id = $userId;
+            $deviceUser->save();
+        }else{
+            $deviceUser = new DevicesUser();
+                $deviceUser->users_id = $userId;
+                $deviceUser->device_id = $deviceSearch->id;
+            $deviceUser->save();
+        }
+
         $device = [
             'device_id' => $deviceSearch->id,
             'expo_token' => $deviceSearch->expo_token,

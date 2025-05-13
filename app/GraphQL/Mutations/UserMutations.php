@@ -235,8 +235,18 @@ class UserMutations{
         $token = $args['expo_token'];
         $device = Devices::where('expo_token',$token)->first();
         $deviceUser = DevicesUser::where('device_id',$device->id)->first();
+
+        if($deviceUser){
             $deviceUser->users_id = $user->id;
-        $deviceUser->save();
+            $deviceUser->save();
+        }else{
+            $deviceUser = new DevicesUser();
+                $deviceUser->users_id = $user->id;
+                $deviceUser->device_id = $device->id;
+            $deviceUser->save();
+        }
+
+
         $devicess = [
             'device_id' => $device->id,
             'expo_token' => $device->expo_token,
