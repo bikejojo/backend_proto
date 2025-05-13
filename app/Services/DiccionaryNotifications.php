@@ -168,14 +168,14 @@ class DiccionaryNotifications
         return [
             'record_client'=>[
                 'title'=>'¡Recordatorio de servicio! ⏰',
-                'body'=>'Recuerda que pronto recibirás la visita del técnico. Para el: {fecha}',
+                'body'=>'Tienes una cita programada el : {fecha}. ¡Prepárate para asistir!',
                 'type'=>6,
                 'type_users'=>'[1,2]',
             ],
 
             'record_technician'=>[
                 'title'=>'¡Recordatorio de servicio! 📅',
-                'body'=>'Tienes una cita programada el : {fecha}. ¡Prepárate para asistir!',
+                'body'=>'Recuerda que pronto recibirás la visita del técnico. Para el: {fecha}',
                 'type'=>6,
                 'type_users'=>'[1,2]',
             ],
