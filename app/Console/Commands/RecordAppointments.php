@@ -25,7 +25,7 @@ class RecordAppointments extends Command
     {
         Carbon::setLocale('es');
         $now = Carbon::now()->seconds(0);
-        $minMinutesThirteen = $now->copy()->subSeconds(9)->format('Y-m-d H:i:s');
+        $minMinutesThirteen = $now->copy()->subSeconds(7)->format('Y-m-d H:i:s');
         $addMinutesThirteen = $now->copy()->addMinutes(11)->format('Y-m-d H:i:s');
 
         $services = Servicio::where('stateId', 1)
@@ -48,7 +48,7 @@ class RecordAppointments extends Command
             $fecha = Carbon::parse($service->updatedDateTime)->translatedFormat('d \d\e F \a \l\a\s H:i');
 
             if (!$clients || !$technicians) {
-                continue; // 🔥 Seguridad extra
+                continue; // Seguridad extra
             }
 
             /** --- PRIMERO CLIENTE AL TÉCNICO --- */
@@ -73,7 +73,7 @@ class RecordAppointments extends Command
             } else {
                 // Crear notificación nueva CLIENTE -> TÉCNICO
                 $notification = new Notification();
-                $notification->action_key = 'record_client';
+                $notification->action_key = 'record_technician';
                 $notification->type_users = $technicians->type_user;
                 $notification->data = [
                     'id_service' => $service->id,
@@ -135,7 +135,7 @@ class RecordAppointments extends Command
             } else {
                 // Crear notificación nueva TÉCNICO -> CLIENTE
                 $notification = new Notification();
-                $notification->action_key = 'record_technician';
+                $notification->action_key = 'record_client';
                 $notification->type_users = $clients->type_user;
                 $notification->data = [
                     'id_service' => $service->id,
