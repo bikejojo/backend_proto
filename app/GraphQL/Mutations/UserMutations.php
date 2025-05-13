@@ -339,8 +339,11 @@ class UserMutations{
              $deviceUser = DevicesUser::where('users_id',$user->id)->first();
 
             //$device = Devices::where('id',$deviceUser->device_id)->first();
-            $deviceUser->users_id=null;
-            $deviceUser->save();
+            if( $deviceUser ){
+                $deviceUser->users_id=null;
+                $deviceUser->save();
+            }
+
 
             $currentToken = $user->currentAccessToken();
 
