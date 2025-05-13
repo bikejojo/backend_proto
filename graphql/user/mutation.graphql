@@ -32,6 +32,7 @@ type responseClientLogin {
     city:citiess
     client: InternalClient
     message:String
+    status:Int
     devices:devices
 }
 
