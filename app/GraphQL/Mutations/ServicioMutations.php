@@ -506,6 +506,7 @@ class ServicioMutations
                     $join->on('services.id', '=', 'rating.serviceId');
                 })
                 ->where('services.clientId', $technician->id)
+                ->where('services.typeClient','1')
                 ->where('services.stateId', 5)                  // solo estado = 5
                 ->whereNull('services.finishDateTime_client')   // fecha cliente vacía (null)
                 ->whereNull('rating.id')
