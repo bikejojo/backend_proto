@@ -1,0 +1,8 @@
+extend type Mutation{
+    createActivity(requestActivite:JSON):responseActivity @field(resolver: "AgendaMutations@aggActivity")
+}
+
+type responseActivity {
+    message:String
+    activity:ActivityType
+}
