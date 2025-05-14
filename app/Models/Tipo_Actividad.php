@@ -12,7 +12,8 @@ class Tipo_Actividad extends Model
     protected $table = 'activity_types';
     protected $fillable =[
         'description',
-        'entity_type'
+        'entity_type',
+        'status'
     ];
 
 

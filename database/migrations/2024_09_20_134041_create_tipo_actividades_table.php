@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('description');  // Traducción de 'descripcion'
             $table->text('entity_type')->nullable();
+            $table->integer('status')->nullable()->default(1);
             $table->timestamps();
         });
     }

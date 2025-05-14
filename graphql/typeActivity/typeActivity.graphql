@@ -2,4 +2,5 @@ type ActivityType {
     id:ID!
     description:String! @trim
     entity_type: String @trim
+    status:Int
 }
