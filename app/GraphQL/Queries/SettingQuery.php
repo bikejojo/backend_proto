@@ -4,6 +4,7 @@ namespace App\GraphQL\Queries;
 
 use App\Models\Setting;
 use App\Models\Tecnico;
+use App\Models\Tipo_Actividad;
 
 class SettingQuery
 {
@@ -13,5 +14,9 @@ class SettingQuery
             'message' => 'Listado de soporte',
             'contact' => $setting
         ];
+    }
+
+    public function getActivity($root,array $args){
+        return Tipo_Actividad::where('status',1)->get();
     }
 }

@@ -40,12 +40,12 @@ class RoleSeeder extends Seeder
         Permission::updateOrCreate(['name' => 'manage-users-roles', 'guard_name' => 'web']);
         Permission::updateOrCreate(['name' => 'manage-subcription', 'guard_name' => 'web']);
 
-        Permission::updateOrCreate(['name' => 'view-promotion', 'guard_name' => 'web']);
+        //Permission::updateOrCreate(['name' => 'view-promotion', 'guard_name' => 'web']);
         Permission::updateOrCreate(['name' => 'view-manage-actividade', 'guard_name' => 'web']);
         Permission::updateOrCreate(['name' => 'reports', 'guard_name' => 'web']);
 
         // Asignar permisos a roles
-        $adminRole->syncPermissions(['view-publicity', 'manage-clients', 'manage-technician', 'access-dashboard','manage-users-roles','manage-subcription','view-promotion','reports','view-manage-actividade']);
+        $adminRole->syncPermissions(['view-publicity', 'manage-clients', 'manage-technician', 'access-dashboard','manage-users-roles','manage-subcription',/*'view-promotion',*/'reports','view-manage-actividade']);
         $supportRole->syncPermissions(['manage-technician', 'manage-clients','view-manage-actividade']);
         $commercialRole->syncPermissions(['view-publicity', 'manage-subcription','view-promotion']);
     }
