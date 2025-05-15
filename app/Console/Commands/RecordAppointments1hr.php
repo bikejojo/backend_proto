@@ -33,7 +33,7 @@ class RecordAppointments1hr extends Command
     {
         Carbon::setLocale('es');
         $now = Carbon::now()->seconds(0);
-        $minMinutesThirteen = $now->copy()->subSeconds(30)->format('Y-m-d H:i:s');
+        $minMinutesThirteen = $now->copy()->addSecond(720)->format('Y-m-d H:i:s');
         $addMinutesThirteen = $now->copy()->addMinutes(1500)->format('Y-m-d H:i:s');
 
         $services = Servicio::where('stateId', 1)
@@ -109,12 +109,12 @@ class RecordAppointments1hr extends Command
                 $notification->save();
 
                 $notificationUser = new NotificationUser();
-                $notificationUser->notification_id = $notification->id;
-                $notificationUser->user_id = $technicians->id;
-                $notificationUser->type_users = $technicians->type_user;
-                $notificationUser->is_service_2hr = false;
-                $notificationUser->is_service_1hr = false;
-                $notificationUser->created_at = now();
+                    $notificationUser->notification_id = $notification->id;
+                    $notificationUser->user_id = $technicians->id;
+                    $notificationUser->type_users = $technicians->type_user;
+                    $notificationUser->is_service_2hr = false;
+                    $notificationUser->is_service_1hr = false;
+                    $notificationUser->created_at = now();
                 $notificationUser->save();
 
                 recordAgenda::dispatch($service, $technicians, $configClient);
