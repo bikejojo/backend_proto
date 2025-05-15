@@ -231,6 +231,6 @@ class DatabaseSeeder extends Seeder
         // Asignar el rol al usuario
         $user->assignRole('Administrativo');
 
-        $user->givePermissionTo('view-publicity', 'manage-clients', 'manage-technician', 'access-dashboard','manage-users-roles','manage-subcription','view-promotion');
+    $user->givePermissionTo('view-publicity', 'manage-clients', 'manage-technician', 'access-dashboard','manage-users-roles','manage-subcription'/*,'view-promotion'*/);
     }
 }

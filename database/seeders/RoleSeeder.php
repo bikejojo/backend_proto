@@ -47,6 +47,6 @@ class RoleSeeder extends Seeder
         // Asignar permisos a roles
         $adminRole->syncPermissions(['view-publicity', 'manage-clients', 'manage-technician', 'access-dashboard','manage-users-roles','manage-subcription',/*'view-promotion',*/'reports','view-manage-actividade']);
         $supportRole->syncPermissions(['manage-technician', 'manage-clients','view-manage-actividade']);
-        $commercialRole->syncPermissions(['view-publicity', 'manage-subcription','view-promotion']);
+    $commercialRole->syncPermissions(['view-publicity', 'manage-subcription'/*,'view-promotion'*/]);
     }
 }
