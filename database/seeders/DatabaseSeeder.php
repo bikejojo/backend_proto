@@ -233,7 +233,7 @@ class DatabaseSeeder extends Seeder
 
         $user_tech = User::factory()->create([
             'email' => 'alguien_sabe@alguiensabe.lat',
-            'password' => bcrypt('abc12345'),
+            'password' => bcrypt('12345678'),
             'ci' => '123',
             'type_user' => 3,
             'token' => "1"

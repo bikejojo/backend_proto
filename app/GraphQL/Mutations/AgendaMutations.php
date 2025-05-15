@@ -41,7 +41,7 @@ class AgendaMutations
     public function updateActivity($root,array $args){
         try{
             DB::beginTransaction();
-            $requestActivity = $args['requestActivity'];
+            $requestActivity = $args['requestActivite'];
             $idActivity = $requestActivity['id'];
             $activityData = Tipo_Actividad::where('id',$idActivity)->first();
                 $activityData->description = $requestActivity['description'];

@@ -1,5 +1,7 @@
 extend type Mutation{
     createActivity(requestActivite:JSON):responseActivity @field(resolver: "AgendaMutations@aggActivity")
+    updateActivity(requestActivite:JSON):responseActivity @field(resolver: "AgendaMutations@updateActivity")
+    deleteActivity(id:ID):responseActivity @field(resolver: "AgendaMutations@deleteActivity")
 }
 
 type responseActivity {
