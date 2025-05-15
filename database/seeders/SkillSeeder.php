@@ -28,7 +28,7 @@ class SkillSeeder extends Seeder
             ['name' => 'Pintor de obras', 'photo' => 'pintorObras.png', 'icons' => 'format-paint'],
             ['name' => 'Fumigador', 'photo' => 'fumigacion.png', 'icons' => 'sprinkler-variant'],
             ['name' => 'Vidriero', 'photo' => 'vidriero.png', 'icons' => 'google-glass'],
-            ['name' => 'Técnico en computacién', 'photo' => 'computacion.png', 'icons' => 'laptop'],
+            ['name' => 'Técnico en computación', 'photo' => 'computacion.png', 'icons' => 'laptop'],
             ['name' => 'Técnico en redes electricas', 'photo' => 'tecnicoRedesElectrica.png', 'icons' => 'flash-outline'],
             ['name' => 'Técnico en electrodómesticos', 'photo' => 'electrodomesticos.png', 'icons' => 'fridge-outline'],
             ['name' => 'Limpieza General', 'photo' => 'limpiezas.png', 'icons' => 'format-clear'],
