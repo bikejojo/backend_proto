@@ -23,7 +23,8 @@ return [
         'http://192.168.100.17:3000',
         'http://192.168.100.17:3000',
         'http://192.168.100.17:8020',
-        'https://ws.alguiensabe.lat'
+        'https://ws.alguiensabe.lat',
+        'https://panel.alguiensabe.lat'
     ],
     'allowed_origins_patterns' => ['.*'],
     'allowed_headers' => ['*'],
