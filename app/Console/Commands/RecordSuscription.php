@@ -33,11 +33,11 @@ class RecordSuscription extends Command
     public function handle()
     {
         Carbon::setLocale('es');
-        $addHours = now()->addMinutes(1446);
-        $mensHours = now()->addMinutes(1436);
+        $addHours = now()->addMinutes(1446)->format('Y-m-d H:i:s');
+        $mensHours = now()->subSeconds(10)->format('Y-m-d H:i:s');
         $suscription = Technician_subcripcion::where('status',1)
                                             ->whereBetween('endDateSubcription',[$mensHours,$addHours])->get();
-      
+
         //$suscription = Technician_subcripcion::whereTime('endDateSubcription',$addHours)->get();
         $config = DiccionaryNotifications::getByKey('terminate_suscription');
 
@@ -45,14 +45,15 @@ class RecordSuscription extends Command
 
             $fecha = Carbon::parse($suscriptions->endDateSubcription)->translatedFormat('d \d\e F');
             $techinician = Tecnico::where('id',$suscriptions->technicianId)->first();
-
             $user = User::where('id',$techinician->userId)->first();
-            $devicesUser = DevicesUser::where('users_id',$user->id)->first();
-            $devices = Devices::where('id',$devicesUser->device_id)->first();
+
+            $devicesUser = DevicesUser::where('users_id',$user->id)->get();
+            //$devices = Devices::where('id',$devicesUser->device_id)->get();
+
             $body = str_replace('{fecha}', $fecha, $config['body']);
             $title = $config['title'];
 
-            if(!$techinician || !$user || !$devicesUser || !$devices){
+            if(!$techinician || !$user || !$devicesUser ){
                 $this->info('No se encontraron los datos del tecnico o usuario o dispositivo.');
                 continue;
             }
@@ -92,10 +93,22 @@ class RecordSuscription extends Command
             $notificationUser->save();
 
 
-            SubcriptionRecord::dispatch($devices,$title,$body);
-            $this->info("✅ Recordatorio enviado a {$techinician->firstName}");
-        }
+            foreach ($devicesUser as $deviceUser) {
+                $device = Devices::find($deviceUser->device_id);
+                if ($device) {
+                    $notificationUser = new NotificationUser();
+                    $notificationUser->notification_id = $notification->id;
+                    $notificationUser->user_id = $user->id;
+                    $notificationUser->type_users = $user->type_user;
+                    $notificationUser->expo_response = null;
+                    $notificationUser->save();
 
+                    SubcriptionRecord::dispatch($device, $title, $body);
+                    $this->info('Se enviaron los recordatorios de suscripciones correspondientes al tecnico.');
+                    Log::info('✅ Se ejecutó el recordatorio de sus suscripciones al tecnico.');
+                }
+            }
+        }
         $this->info('Se enviaron los recordatorios de suscripciones correspondientes.');
         Log::info('✅ Se ejecutó el recordatorio de sus suscripciones.');
     }

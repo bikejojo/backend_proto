@@ -231,8 +231,8 @@ class DatabaseSeeder extends Seeder
         // Asignar el rol al usuario
         $user->assignRole('Administrativo');
 
-         $user_tech = User::factory()->create([
-            'email' => 'work@alguiensabe.lat',
+        $user_tech = User::factory()->create([
+            'email' => 'alguien_sabe@alguiensabe.lat',
             'password' => bcrypt('abc12345'),
             'ci' => '123',
             'type_user' => 3,
