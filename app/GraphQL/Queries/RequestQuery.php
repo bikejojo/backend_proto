@@ -221,6 +221,7 @@ class RequestQuery
                 'requestCancel'  => Solicitud::where('stateId',3)->count(),
                 'requestComple'  => Solicitud::where('stateId',5)->count(),
                 'requestAnulad'  => Solicitud::where('stateId',6)->count(),
+                'requestTermin'  => Solicitud::where('stateId',6)->count()
             ];
 
             return [
