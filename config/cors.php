@@ -22,7 +22,8 @@ return [
         'http://localhost:3000',
         'http://192.168.100.17:3000',
         'http://192.168.100.17:3000',
-        'http://192.168.100.17:8020'
+        'http://192.168.100.17:8020',
+        'https://ws.alguiensabe.lat'
     ],
     'allowed_origins_patterns' => ['.*'],
     'allowed_headers' => ['*'],

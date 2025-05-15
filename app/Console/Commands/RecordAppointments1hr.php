@@ -33,7 +33,7 @@ class RecordAppointments1hr extends Command
     {
         Carbon::setLocale('es');
         $now = Carbon::now()->seconds(0);
-        $minMinutesThirteen = $now->copy()->addSecond(720)->format('Y-m-d H:i:s');
+        $minMinutesThirteen = $now->copy()->addMinutes(1260)->format('Y-m-d H:i:s');
         $addMinutesThirteen = $now->copy()->addMinutes(1500)->format('Y-m-d H:i:s');
 
         $services = Servicio::where('stateId', 1)
