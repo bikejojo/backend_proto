@@ -122,7 +122,7 @@ class UserQuery{
             if($users->isEmpty()){
                 return [
                     'message' => 'No existen usuarios que coincidan con tu búsqueda.',
-                    'user' => []
+                    'user' => null
                 ];
             }
             //dd($users);
