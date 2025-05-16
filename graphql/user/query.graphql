@@ -17,8 +17,12 @@ type userCon {
     email:String
     ci:String
     status:Int
-    role:String
-    per:[permissionss]
+    roles:names
+    permissions:[permissionss]
+}
+
+type names {
+    name:String
 }
 
 type permissionss {

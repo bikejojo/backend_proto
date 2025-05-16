@@ -127,14 +127,20 @@ class UserQuery{
             }
             //dd($users);
             $userData = $users->map(function ($user) {
+                $role = $user->roles->first();
                 return [
                     'id' => $user->id,
                     'email' => $user->email,
                     'ci' => $user->ci,
                     'type_user' => $user->type_user,
                     'status' => $user->status,
-                    'role' => $user->roles->pluck('name')->first(), // Spatie
-                    'per' => $user->getAllPermissions()->map(function($perm) { return ['name' => $perm->name]; })->toArray(), ];
+                    'roles' => [
+                        'name' => optional($role)->name
+                    ],
+                    'permissions' => $user->permissions
+                        ->map(fn($perm) => ['name' => $perm->name])
+                        ->toArray(),
+                    ];
                 });
             //dd($userData);
             return [
