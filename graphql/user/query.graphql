@@ -4,6 +4,25 @@ extend type Query {
   getUserRol: responseRolUser @field(resolver: "UserQuery@getUserRol")
   me:responseAdminLogin @field(resolver: "UserQuery@me")
   countParams:responseCont @field(resolver: "UserQuery@countParams")
+  filterUser(email:String):responseEmail @field(resolver: "UserQuery@filterUserEmail")
+}
+
+type responseEmail {
+    message:String
+    user:[userCon]
+}
+
+type userCon {
+    id:String
+    email:String
+    ci:String
+    status:Int
+    role:String
+    per:[permissionss]
+}
+
+type permissionss {
+    name:String
 }
 
 type responseCont {

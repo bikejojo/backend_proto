@@ -9,6 +9,8 @@ use App\Models\Tecnico;
 use App\Models\User;
 use App\Services\StateCatalog;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -77,7 +79,7 @@ class UserQuery{
         if(!$user){
             return null;
         }
-       
+
         return [
             'id' => $user->id,
             'email' => $user->email,
@@ -108,6 +110,42 @@ class UserQuery{
             return [
                 'message' => 'Error durante el conteo: ' . $e->getMessage(),
                 'status' => 'error'
+            ];
+        }
+    }
+
+    public function filterUserEmail($root , array $args){
+        try {
+            $cont = $args['email'];
+            $users = User::where('email','ILIKE','%'.$cont . '%')->get();
+
+            if($users->isEmpty()){
+                return [
+                    'message' => 'No existen usuarios que coincidan con tu búsqueda.',
+                    'user' => []
+                ];
+            }
+            //dd($users);
+            $userData = $users->map(function ($user) {
+                return [
+                    'id' => $user->id,
+                    'email' => $user->email,
+                    'ci' => $user->ci,
+                    'type_user' => $user->type_user,
+                    'status' => $user->status,
+                    'role' => $user->roles->pluck('name')->first(), // Spatie
+                    'per' => $user->getAllPermissions()->map(function($perm) { return ['name' => $perm->name]; })->toArray(), ];
+                });
+            //dd($userData);
+            return [
+                'message' => 'Resultados' ,
+                'user' => $userData
+            ];
+
+        }catch(\Exception $e){
+            Log::info('Se presentaron las siguientes fallas en el user' . $e->getMessage());
+            return [
+                'message' => 'Se presentaron las fallas ' . $e->getMessage()
             ];
         }
     }

@@ -18,7 +18,7 @@ type User {
     clientsExterns:[InternalClient!]! @hasMany
     technicians:[Technician!]! @hasMany
     role: Role @belongsTo
-
+    status:Int
 }
 
 

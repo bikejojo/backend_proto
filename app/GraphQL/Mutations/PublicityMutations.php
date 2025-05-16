@@ -118,7 +118,7 @@ final class PublicityMutations{
             $publicity->commercialName = $publicityDate['commercialName'];
             $publicity->link = $publicityDate['link'];
             $publicity->startDate = $publicityDate['startDate'];
-            $publicity->createdDate = $publicityDate['createdDate'];
+            $publicity->createdDate = Carbon::now();
             $publicity->finishDate = $publicityDate['finishDate'];
             $publicity->categoryId = $publicityDate['id_category'];
             $publicity->save();
@@ -150,6 +150,7 @@ final class PublicityMutations{
             ];
         } catch(\Exception $e){
             DB::rollback();
+            Log::warning('Problemas que surgio' , [$e->getMessage()]);
             return [
                 'message' => 'La falla es la siguiente: '. $e->getMessage()
             ];
