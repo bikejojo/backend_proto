@@ -179,9 +179,9 @@ final class PublicityMutations{
             $admin = User::where('id',$adminId)->where('type_user',3)->first();
 
             // ----------------------------------------------------------
-            //$clientsIds = self::clientsId();
+            $clientsIds = self::clientsId();
             $techIds = self::technsIds();
-            event(new PublicidadEnvio( $publicity, $techIds, $admin ));
+            event(new PublicidadEnvio( $publicity, $techIds, $admin , $clientsIds));
             Log::info('[LOG] Envio exitoso!');
             return [
                 'message' => 'Envio exitoso de las notificaciones.',

@@ -3,6 +3,7 @@
 namespace App\GraphQL\Mutations;
 
 use App\Models\Agenda_Tecnico;
+use App\Models\Solicitud;
 use Carbon\Carbon;
 use App\Models\Tipo_Actividad;
 Use App\Models\Tipo_Estado;
@@ -67,12 +68,23 @@ class AgendaMutations
             DB::beginTransaction();
             $idActivity = $args['id'];
             $activityData = Tipo_Actividad::where('id',$idActivity)->first();
+            $existActivity = Solicitud::where('activityId',$activityData->id)->exists();
+            if($existActivity){
+                return [
+                    'message' => 'No se puede eliminar la actividad porque ya esta asignada a una solicitud'
+                ];
+            }else{
                 $activityData->status = 0;
-            $activityData->save();
-
+                $activityData->save();
+                DB::commit();
+                return [
+                    'message' => 'Actividad eliminada con exito',
+                    'activity' => $activityData
+                ];
+            }
         }catch(\Exception $e){
             DB::rollBack();
-            Log::warning('Surgio los siguientes problemas ' , $e->getMessage());
+            Log::info('Surgio los siguientes problemas ' . $e->getMessage());
             return [
                 'message' => 'Surgio los siguientes problemas ' . $e->getMessage()
             ];

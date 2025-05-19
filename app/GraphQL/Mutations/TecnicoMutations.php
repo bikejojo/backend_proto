@@ -292,7 +292,7 @@ class TecnicoMutations {
             DB::commit();
 
             //event de resetPassword
-            event(new PasswordChanged($user));
+            //event(new PasswordChanged($user));
 
             return [
                 'message' => 'Contraseña restablecida para el tecnico.',

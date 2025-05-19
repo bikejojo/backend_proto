@@ -267,7 +267,7 @@ class ClienteInternoMutations{
             $user->password = Hash::make($new_password);
             $user->save();
 
-            event(new PasswordChanged($user));
+            //event(new PasswordChanged($user));
 
             DB::commit();
             return [

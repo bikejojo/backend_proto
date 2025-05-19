@@ -22,12 +22,14 @@ class PublicidadEnvio
     protected $publicidad;
     protected $techsids;
     protected $admin;
+    protected $clientIds;
 
-    public function __construct(Publicidad $publicida, $techIds, $admin)
+    public function __construct(Publicidad $publicida, $techIds, $admin,$clientIds)
     {
         $this->publicidad = $publicida;
         $this->techsids   = $techIds;
         $this->admin      = $admin;
+        $this->clientIds  = $clientIds;
     }
 
     /**
@@ -52,5 +54,9 @@ class PublicidadEnvio
 
     public function getAdmin(){
         return $this->admin;
+    }
+
+    public function getClientIds(){
+        return $this->clientIds;
     }
 }
