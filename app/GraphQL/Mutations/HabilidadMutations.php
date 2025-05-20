@@ -72,7 +72,10 @@ class HabilidadMutations {
         $idSkill= $args['id'];
         $idGruop=$args['groupId'];
         $relationGroup = Skills_group::where('skillsId',$idSkill)->first();
-        $habilidad = Habilidad::where('id',$idSkill)->update(['name'=>$args['name']]);
+        $habilidad = Habilidad::where('id',$idSkill)->first();//update(['name'=>$args['name']]);
+        $habilidad->name = $args['name'];
+        $habilidad->icons = 'hammer-wrench';
+        $habilidad->save();
         $relationGroup->groupId = $idGruop;
         $relationGroup->save();
         $habilidadId = $habilidad->id;

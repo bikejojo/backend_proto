@@ -1,6 +1,6 @@
 extend type Mutation {
     createSkill(name: String , photo:Upload , groupId:String ): responseSkill @field(resolver: "HabilidadMutations@create")
-    updateSkill(id: ID!, name: String! , photo:Upload , groupId:String ): responseSkill @field(resolver: "HabilidadMutations@update")
+    updateSkill(id: ID, name: String , photo:Upload , groupId:String ): responseSkill @field(resolver: "HabilidadMutations@update")
 }
 
 type responseSkill {
