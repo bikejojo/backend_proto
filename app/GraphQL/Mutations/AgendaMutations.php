@@ -70,6 +70,8 @@ class AgendaMutations
             $activityData = Tipo_Actividad::where('id',$idActivity)->first();
             $existActivity = Solicitud::where('activityId',$activityData->id)->exists();
             if($existActivity){
+                DB::commit();
+                Log::info('No se puede eliminar la actividad porque ya esta asignada a una solicitud');
                 return [
                     'message' => 'No se puede eliminar la actividad porque ya esta asignada a una solicitud'
                 ];
