@@ -10,6 +10,7 @@ use App\Models\Promocion_suscripcion;
 use App\Services\ValidationModels;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Arr;
 
 class SubcriptionQuery
 {
@@ -248,5 +249,10 @@ class SubcriptionQuery
                 'details'=>[],
             ];
         }
+    }
+
+    public function allSubcriptionPlain($root, Array $args){
+        $subcription = Suscripcion::where('status',1)->get();
+        return $subcription;
     }
 }

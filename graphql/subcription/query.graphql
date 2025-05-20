@@ -8,7 +8,7 @@ extend type Query {
     getAllHistorySuscription(requestSubcription:JSON): responseSuscription_ @field(resolver: "SubcriptionQuery@getSuscripcionHistorial")
     allSuscription:[Subcription] @field(resolver: "SubcriptionQuery@allSuscriptionExceptFree")
     allSubcriptionAll:[Subcription] @field(resolver: "SubcriptionQuery@allSuscription")
-    allSubcriptionPlain:[Subcription] @all
+    allSubcriptionPlain:[Subcription] @field(resolver: "SubcriptionQuery@allSubcriptionPlain")#@all
     getLstTechnicianSuscrip(suscriptionId:String):responseTechnicianSus @field(resolver: "SubcriptionQuery@detailSubcriptionAll")
 }
 
