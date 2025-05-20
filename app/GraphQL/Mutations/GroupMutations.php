@@ -27,34 +27,40 @@ class GroupMutations
     }
 
     public function create($root,array $args){
-        $grupoData = $args['requestGroup'];
+        try {
+            $grupoData = $args['requestGroup'];
 
-        $grupo = new Group();
-            $grupo->name = $grupoData['name'];
-            $grupo->save();
+            $grupo = new Group();
+                $grupo->name = $grupoData['name'];
+                $grupo->save();
 
-        $grupoId = $grupo->id;
-        $validators=ImageHelper::validationImageGroup($args);
-        if ($validators->fails()) {
+            $grupoId = $grupo->id;
+            $validators=ImageHelper::validationImageGroup($args);
+            if ($validators->fails()) {
+                return [
+                    'message' => 'Archivo de imagen inválido.'
+                ];
+            }
+            ImageHelper::deleteDirectoryGrop($grupoId);
+            $manager = new ImageManager(new Driver());
+            $now = Carbon::now()->format('Ymd_His');
+            $isPhotoGroup = (isset($args['photo']) && $args['photo'] instanceof UploadedFile);
+            ImageHelper::existGroup($grupoId);
+            if($isPhotoGroup){
+                $photoGroupPath=ImageHelper::processImage($args['photo'],"/images/group/{$grupoId}/"."{$now}.png",$manager);
+                $grupo->photo = $this->app . '/storage' . str_replace('/public','',$photoGroupPath);
+                $grupo->save();
+            }
+            //return $grupo;
             return [
-                'message' => 'Archivo de imagen inválido.'
+                'message' => 'Creacion correcta del grupo.!',
+                'group'   => $grupo
+            ];
+        } catch (\Exception $e){
+            return [
+                'message' => 'Se produjo una falla al momento de crear el grupo.' . $e->getMessage()
             ];
         }
-        ImageHelper::deleteDirectoryGrop($grupoId);
-        $manager = new ImageManager(new Driver());
-        $now = Carbon::now()->format('Ymd_His');
-        $isPhotoGroup = (isset($args['photo']) && $args['photo'] instanceof UploadedFile);
-        ImageHelper::existGroup($grupoId);
-        if($isPhotoGroup){
-            $photoGroupPath=ImageHelper::processImage($args['photo'],"/images/group/{$grupoId}/"."{$now}.png",$manager);
-            $grupo->photo = $this->app . '/storage' . str_replace('/public','',$photoGroupPath);
-            $grupo->save();
-        }
-        //return $grupo;
-        return [
-            'message' => 'Creacion correcta del grupo.!',
-            'group'   => $grupo
-        ];
     }
 
     public function update($root , array $args){

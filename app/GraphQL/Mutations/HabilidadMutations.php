@@ -67,9 +67,37 @@ class HabilidadMutations {
         }
    }
    public function update($root,array $args){
-    $id= $args['id'];
-
-    $habilidad_ = Habilidad::where('id',$id)->update(['name'=>$args['name']]);
+    DB::beginTransaction();
+    try {
+        $idSkill= $args['id'];
+        $idGruop=$args['groupId'];
+        $relationGroup = Skills_group::where('skillsId',$idSkill)->first();
+        $habilidad = Habilidad::where('id',$idSkill)->update(['name'=>$args['name']]);
+        $relationGroup->groupId = $idGruop;
+        $relationGroup->save();
+        $habilidadId = $habilidad->id;
+        ImageHelper::deleteDirectorySkill($habilidadId);
+        $manager = new ImageManager(new Driver());
+        $now = Carbon::now()->format('Ymd_His');
+        $isPhotoHabilidad = isset($args['photo']) && $args['photo'] instanceof UploadedFile;
+        ImageHelper::existSkill($habilidadId);
+        if($isPhotoHabilidad){
+            $photoHabilidadPath = ImageHelper::processImage($args['photo'],"/skill/{$habilidadId}/"."{$now}.png",$manager);
+            $habilidad->photo=$this->app . '/storage'. str_replace('/public','',$photoHabilidadPath);
+        }
+        $habilidad->save();
+        DB::commit();
+        return [
+            'message' => 'Actualizacion de habilidad',
+            'skill' => $habilidad
+        ];
+    } catch (\Exception $err) {
+        DB::rollBack();
+        return [
+            'message' => 'Error al actualizar la habilidad: ' . $err->getMessage()
+        ];
+    }
+    /*$habilidad_ = Habilidad::where('id',$id)->update(['name'=>$args['name']]);
     $habilidad = Habilidad::where('id',$id)->first();
     $habilidadId = $habilidad->id;
     ImageHelper::deleteDirectorySkill($habilidadId);
@@ -85,7 +113,7 @@ class HabilidadMutations {
     return [
         'message' => 'Actualizacion de habilidad',
         'skill' => $habilidad
-    ];
+    ];*/
    }
    public function delete($root,array $args){
       $id = Habilidad::find($args['id']);
