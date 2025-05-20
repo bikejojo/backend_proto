@@ -515,6 +515,7 @@ class ClientQuery{
                             'internal_clients.lastName',
                             'internal_clients.phoneNumber',
                             'internal_clients.email' ,
+                            'internal_clients.photo' ,
                             'internal_clients.status' ,
                             'cities.name as nameClient'
                         )
