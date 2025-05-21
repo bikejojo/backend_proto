@@ -36,15 +36,20 @@ class GroupSkillQuery
                 'id' => $group->id,
                 'nameCategory' => $group->name,
                 'photo' => $group->photo,
-                'skill' => $group->skillGroup->map(function ($skillGroup) {
+                'skill' => $group->skillGroup
+                   ->filter(function ($skillGroup) {
+                    return $skillGroup->skill && $skillGroup->skill->status == 1;
+                })
+                ->map(function ($skillGroup) {
                     return [
-                        'id' => $skillGroup->skill->id ?? null,
-                        'name' => $skillGroup->skill->name ?? null,
+                        'id' => $skillGroup->skill->id,
+                        'name' => $skillGroup->skill->name,
                         'photo' => $skillGroup->skill->photo
                     ];
-                })->filter(), // Elimina elementos nulos
-            ];
-        });
+                })
+                ->values(), // Limpia los índices si se filtró algo
+        ];
+    });
 
         return [
             'message' => 'Categorías obtenidas con éxito.',

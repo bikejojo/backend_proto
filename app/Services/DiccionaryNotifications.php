@@ -185,7 +185,7 @@ class DiccionaryNotifications
     public static function getPublicity(){
         return [
             'send_publicity'=>[
-                'title'=> '¡Publicidad exclusivas para técnicos! 🎯',
+                'title'=> '¡Publicidad exclusivas 🎯',
                 'body'=>'',
                 'type'=>4,
                 'status'=> 2,
