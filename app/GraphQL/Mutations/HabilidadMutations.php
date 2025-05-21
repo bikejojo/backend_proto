@@ -10,6 +10,7 @@ use App\Models\Skills_group;
 use Carbon\Carbon;
 use Illuminate\Database\Capsule\Manager;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
@@ -119,12 +120,17 @@ class HabilidadMutations {
     ];*/
    }
    public function delete($root,array $args){
-      $id = Habilidad::find($args['id']);
-      if($id){
-         return ['message'=> 'Borrado no existoso'];
-      }else{
-         $habilidad=Habilidad::where('id',$id)->delete();
-         return ['message'=> 'Borrado existoso'];
-      }
+    try{
+        $skill = Habilidad::where('id',$args['id'])->first();
+            $skill->status = 0;
+            $skill->save();
+        if(!$skill){
+            return ['message'=> 'Borrado no existoso'];
+        }else{
+            return ['message'=> 'Borrado existoso'];
+        }
+    }catch(\Exception $e){
+        Log::info('Se presentaron los siguientes problemas: ',$e->getMessage());
+    }
    }
 }

@@ -13,7 +13,8 @@ class Habilidad extends Model
     protected $fillable = [
         'name',  // nombre
         'photo',
-        'icons'
+        'icons',
+        'status', // 1 activo, 0 inactivo
     ];
 
     // Relación con TechnicianSkill (Tecnico_Habilidad)

@@ -54,6 +54,7 @@ class SkillQuery
             $skillsIds = isset($searchData['skillsId']) && is_array($searchData['skillsId']) && count($searchData['skillsId']) > 0
             ? $searchData['skillsId']
             : null;
+            //dd($skillsIds);
             $experience      = $searchData['experience'] ?? null;
             $qualification   = $searchData['qualification'] ?? null;
             $cityId          = $searchData['cityId'] ?? null;
@@ -81,7 +82,7 @@ class SkillQuery
             if (!is_null($skillsIds)) {
                 $query->whereIn('skills.id', $skillsIds);
             }
-
+            //dd($query->get());
             // 🔹 Filtro por experiencia en habilidades (si `experience` tiene valor)
             if (!is_null($experience)) {
                 $query->where('technician_skills.experience', '>=', $experience);
@@ -222,5 +223,10 @@ class SkillQuery
                 'status' => 3
             ];
         }
+    }
+
+    public function getSkillAll($root, array $args){
+        $skills = Habilidad::where('status', 1)->get();
+        return $skills;
     }
 }

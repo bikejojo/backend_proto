@@ -3,6 +3,7 @@ type Skill {
   name: String!
   photo:String
   icons:String!
+  status:Int
 
   technicianSkills: [TechnicianSkill] @hasMany
   groupSkill:[Skill] @hasMany
