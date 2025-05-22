@@ -89,13 +89,13 @@ class RolMutations
             $permissionsToAssign = array_filter($validPermissions, function ($perm) use ($rolePermissions) {
                 return $rolePermissions->contains($perm);
             });
-       
-            if (empty($permissionsToAssign)) {
+
+            /*if (empty($permissionsToAssign)) {
                 return [
                     'message' => 'No tienes roles que permitan asignar estos permisos.',
                     'status' => false
                 ];
-            }
+            }*/
 
             // **Actualizar permisos dinámicamente**
             $user->syncPermissions($permissionsToAssign); // Quita permisos antiguos y asigna los nuevos
