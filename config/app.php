@@ -26,8 +26,8 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
-
+    //'env' => env('APP_ENV', 'production'),
+    'env' => env('APP_ENV', 'https://ws.alguiensabe.lat'),
     /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://ws.alguiensabe.lat'),//'url' => env('APP_URL', 'http://localhost'),
 
     /*
     |--------------------------------------------------------------------------
