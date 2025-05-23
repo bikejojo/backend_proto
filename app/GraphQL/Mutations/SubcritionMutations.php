@@ -301,6 +301,12 @@ class SubcritionMutations
                     'subcriptionsId' => $subcription->id
                 ]);
 
+                $tech = Tecnico::where('id',$newSubscription->technicianId)->first();
+                if($tech->status === 0){
+                    $tech->status = 1;
+                    $tech->save();
+                }
+
                 $newSubscription->starDateSubcription = $this->now;
                 $newSubscription->endDateSubcription = $this->now->copy()->addDay($subcription->duration);
                 $newSubscription->status = StateCatalog::STATUS_ACTIVE;

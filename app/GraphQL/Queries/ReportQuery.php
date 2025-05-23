@@ -22,13 +22,15 @@ class ReportQuery{
         // Consulta base
         $query = Technician_subcripcion::leftJoin('subcriptions', 'technician_subcription.subcriptionsId', '=', 'subcriptions.id')
                     ->leftJoin('technicians', 'technician_subcription.technicianId', '=', 'technicians.id');
-
+        //dd($query->get());
         // Filtros dinámicos
         if ($startDate && $finishDate) {
-            $query->whereDate('technician_subcription.starDateSubcription', '>=', $startDate)
-                  ->whereDate('technician_subcription.endDateSubcription', '<=', $finishDate);
+            $query->where(function ($q) use ($startDate, $finishDate) {
+                $q->whereDate('technician_subcription.starDateSubcription', '<=', $finishDate)
+                ->whereDate('technician_subcription.endDateSubcription', '>=', $startDate);
+            });
         }
-
+        //dd($query->get());
         if ($type) {
             $query->where('technician_subcription.subcriptionsId', $type);
         }
@@ -168,6 +170,6 @@ class ReportQuery{
         $cities = $input['cities'] ?? null;
         $status = $input['status'] ?? null;
         $activity = $input['activity'] ?? null;
-        
+
     }
 }
