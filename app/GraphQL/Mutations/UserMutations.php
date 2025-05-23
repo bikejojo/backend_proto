@@ -336,15 +336,13 @@ class UserMutations{
         $user = Auth::user(); // Obtener el usuario autenticado
         //dd($user);
         if ($user) {
-             $deviceUser = DevicesUser::where('users_id',$user->id)->first();
+            $deviceUser = DevicesUser::where('users_id',$user->id)->first();
 
-            //$device = Devices::where('id',$deviceUser->device_id)->first();
-            if( $deviceUser ){
-                $deviceUser->users_id=null;
-                $deviceUser->save();
-            }
+            $device = Devices::where('id',$deviceUser->device_id)->first();
 
-
+            $deviceUser->delete();
+            $device->delete();
+            // Eliminar el token actual
             $currentToken = $user->currentAccessToken();
 
             if ($currentToken) {
