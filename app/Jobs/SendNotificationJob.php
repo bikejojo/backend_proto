@@ -48,8 +48,8 @@ class SendNotificationJob implements ShouldQueue
                 ];
             }
 
-            $user  = $notification->recipients()->where('user_id',$this->receptorId)->first();
-            //dd($user);
+            $user  = $notification->recipients()->where('user_id',$this->receptorId)->get();
+            //Log::info("[JOB] Faltas 1 ",  $user->toArray());
             if(!$user){
                 Log::warning("[JOB] Usuario {$this->receptorId} no encontrado para la notificación {$this->notificationId}.");
                 return [
@@ -59,10 +59,12 @@ class SendNotificationJob implements ShouldQueue
             }
 
             foreach ($user as $users) {
-
+                //Log::info("[JOB] faltas 4" , $users);
                 $devicesUser = DevicesUser::where('users_id',$users->id)->first();
+                //Log::info("[JOB] Faltas 2 ",  $devicesUser->toArray());
                 if (!$devicesUser) continue;
                 $devices = Devices::where('id',$devicesUser->device_id)->first();
+                //Log::info("[JOB] Faltas 3",  $devices->toArray());
                  if (!$devices) continue;
                 $response = Http::post('https://exp.host/--/api/v2/push/send',[
                     'to' => $devices->expo_token,
