@@ -113,8 +113,8 @@ class DiccionaryNotifications
                 'type_users' => ['1'],
             ],
             'renovation_suscription' => [
-                'title' => '¡Renovación confirmada!',
-                'body' => '¡Hola {nombre}! Tu suscripción ha sido renovada. ¡Gracias por seguir con nosotros! 🎉',
+                'title' => '¡Suscripcion confirmada!',
+                'body' => '¡Hola {nombre}! Tu suscripción ha sido registrada. ¡Gracias por seguir con nosotros! 🎉',
                 'type' => 'suscripcion',
                 'type_users' => ['1'],
             ],

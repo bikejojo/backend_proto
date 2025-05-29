@@ -62,6 +62,6 @@ class NotificarSuscriptionChange
             $notificattionUser->created_at = now();
         $notificattionUser->save();
 
-        RenovationSuscription::dispatch($devices,$notification);
+        //RenovationSuscription::dispatch($devices,$notification);
     }
 }
