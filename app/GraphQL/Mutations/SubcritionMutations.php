@@ -315,7 +315,7 @@ class SubcritionMutations
                     ->where('technician_subcription.id',$newSubscription->id)
                     ->select('subcriptions.name','subcriptions.description','subcriptions.codeSubcription','technician_subcription.starDateSubcription','technician_subcription.endDateSubcription')
                     ->first();
-                event(new SuscriptionChange($technician));
+                //event(new SuscriptionChange($technician));
                 DB::commit();
                 return [
                     'message' => 'El registro de suscripción fue exitoso.',
