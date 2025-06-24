@@ -49,7 +49,7 @@ class SendNotificationJob implements ShouldQueue
             }
 
             $user  = $notification->recipients()->where('user_id',$this->receptorId)->get();
-            //Log::info("[JOB] Faltas 1 ",  $user->toArray());
+            
             if(!$user){
                 Log::warning("[JOB] Usuario {$this->receptorId} no encontrado para la notificación {$this->notificationId}.");
                 return [

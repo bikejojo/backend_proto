@@ -82,7 +82,10 @@ class NotificarSolicitudCreada
         $userReceive = User::where('id',$userRecept->userId)->first();
 
         $device = DevicesUser::where('users_id',$userReceive->id)->first();
-        $deviceUser = Devices::where('id',$device->device_id)->first();
+        if($device){
+            $deviceUser = Devices::where('id',$device->device_id)->first();
+        }
+
 
         $notificationsUsers = new NotificationUser();
             $notificationsUsers->created_at = Carbon::now();

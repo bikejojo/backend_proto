@@ -37,8 +37,10 @@ class NotificarSuscriptionChange
         $config['body'] = str_replace('{nombre}', $fullName, $config['body']);
 
         $userDevice = DevicesUser::where('users_id',$user->id)->first();
-        //dd($userDevice);
-        $devices = Devices::where('id',$userDevice->device_id)->first();
+        if($userDevice){
+            $devices = Devices::where('id',$userDevice->device_id)->first();
+        }
+
 
         $notification = new Notification();
             $notification->action_key = 'renovation_suscription';

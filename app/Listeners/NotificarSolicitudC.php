@@ -80,8 +80,12 @@ class NotificarSolicitudC
          $userRecept = Tecnico::find($solicitud->technicianId);
          $userReceive = User::where('id',$userRecept->userId)->first();
 
-         $device = DevicesUser::where('users_id',$userRecept->userId)->first();
-         $deviceUser = Devices::where('id',$device->device_id)->first();
+         //$device = DevicesUser::where('users_id',$userRecept->userId)->first();
+         //$deviceUser = Devices::where('id',$device->device_id)->first();
+        $device = DevicesUser::where('users_id',$userRecept->userId)->first();
+        if($device){
+            $deviceUser = Devices::where('id',$device->device_id)->first();
+        }
 
          $notificationsUsers = new NotificationUser();
              $notificationsUsers->created_at = Carbon::now();
