@@ -187,6 +187,8 @@ class DeviceTokenMutations
         DB::beginTransaction();
         try {
             $requestDevice = $args['deviceTokenRequest'];
+            //Log::info('Parámetros recibidos:', $requestDevice->all());
+            //dd($requestDevice);
             $type = $requestDevice['type'];
             $expoToken = $requestDevice['expo_token'];
 
@@ -194,6 +196,7 @@ class DeviceTokenMutations
                 $userTech = ValidationModels::validation_Technician($requestDevice['userId']);
                 $userId = ValidationModels::validation_user($userTech->userId);
             } else if ($type == "1") {
+                //dump($type);
                 $userTech = ValidationModels::validation_clientInternal($requestDevice['userId']);
                 $userId = ValidationModels::validation_user($userTech->userId);
             } else if ($type == "3"){

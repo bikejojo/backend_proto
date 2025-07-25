@@ -101,11 +101,11 @@ class ValidationModels{
         }
     }
     public static function validation_Technician($objeto){
-        return Tecnico::find($objeto);
-    }
+        return Tecnico::find($objeto);//where('userId',$objeto)->first();
+    }//cambio realizdo e 25 de julio
 
     public static function validation_clientInternal($objeto){
-        return Cliente_Interno::find($objeto);
+        return Cliente_Interno::where('userId',$objeto)->first();
     }
 
     public static function validation_user($objeto){
