@@ -17,6 +17,7 @@ class AgendaMutations
         $agendaData = $args['agendaRequest'];
     }
 
+    // se agrega una actividad en la agenda del tecnico
     public function aggActivity($root, array $args){
         DB::beginTransaction();
         try {
@@ -39,10 +40,11 @@ class AgendaMutations
         }
     }
 
+    // se actualiza la actidad de la agenda del tecnico
     public function updateActivity($root,array $args){
         try{
             DB::beginTransaction();
-            $requestActivity = $args['requestActivite'];
+            $requestActivity = $args['requestActivite']; // arrau que conteiene la id de la actidad 
             $idActivity = $requestActivity['id'];
             $activityData = Tipo_Actividad::where('id',$idActivity)->first();
                 $activityData->description = $requestActivity['description'];

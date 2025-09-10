@@ -11,7 +11,9 @@ use App\Services\ValidationModels;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
+//cliente externo , solo es un registro de un cliente , este no es un usuario del sistema
 class ClienteExternoMutations{
+    //create cliente externo , en $args se manda los atributos necesarios para el backend
     public function create($root, array $args) {
         $clienteData = $args['clientRequest'];
         $tecnicoId = $clienteData['technicalId'];
@@ -21,7 +23,8 @@ class ClienteExternoMutations{
 
 
         DB::beginTransaction();
-        try{
+        try{ //lista de cliente externos que esten relacionados con el tecnico , en su agenda
+             //verificaion si existe un cliente en el listaod
             $external = Asociacion_Cliente_Tecnico::join('external_clients','associationTechnClient.clientId','=','external_clients.id')
                 ->join('technicians','associationTechnClient.technicalId','=','technicians.id')
                 ->where('external_clients.phoneNumber',$phone)
@@ -38,9 +41,9 @@ class ClienteExternoMutations{
             }
 
             $externo = Cliente_Externo::where('phoneNumber',$phone)->where('fullName',$name_full)->first();
-        
-            if (!$externo) {
 
+            if (!$externo) {
+                // cliente externo no se encuentra este recien se podra crear en el listado
                 $externo = new Cliente_Externo();
                     $externo->fullName = $name_full;
                     $externo->phoneNumber = $phone;
@@ -81,7 +84,7 @@ class ClienteExternoMutations{
         }
     }
 
-
+    //actualizacion del cliente externo.
     public function update($root, array $args) {
         $clienteData = $args['clientRequest'];
         $tecnicoId = $clienteData['id_technician'];
@@ -168,6 +171,7 @@ class ClienteExternoMutations{
         }
     }
 
+    //  Dado de baja del cliente externo en el sistema
     public function delete($root ,array $args){
         DB::beginTransaction();
         try {
@@ -191,7 +195,7 @@ class ClienteExternoMutations{
             ];
         }
     }
-
+    // Modo de reactivacion para el cliente externo 
     public function reactivate($root, array $args) {
         $clienteData = $args['clientRequest'];
         $tecnicoId = $clienteData['technicalId'];

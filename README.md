@@ -37,7 +37,7 @@
 - **PHP**: ^8.2
 - **Composer**: Última versión
 - **Node.js**: 18+ (para asset compilation)
-- **Base de datos**: MySQL/PostgreSQL/SQLite
+- **Base de datos**: PostgreSQL
 
 ## 📦 Instalación
 
@@ -87,9 +87,6 @@ php artisan db:seed
 ```bash
 # Crear link simbólico para storage
 php artisan storage:link
-
-# Configurar permisos (Linux/Mac)
-chmod -R 775 storage bootstrap/cache
 ```
 
 ## 🚀 Uso
