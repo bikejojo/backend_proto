@@ -9,6 +9,7 @@ use App\Services\ValidationModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+// clase para la configuracion del token para envio de notificaciones a los usuarios
 class DeviceTokenMutations
 {
     /*public function register($root , array $args){
@@ -182,6 +183,7 @@ class DeviceTokenMutations
 
 
     }*/
+    //reigstro de un token geenrado del frontend para el envio de notificaciones 
     public function register($root, array $args)
     {
         DB::beginTransaction();

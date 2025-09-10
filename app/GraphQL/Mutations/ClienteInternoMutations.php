@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Log;
 
 use function PHPSTORM_META\map;
 
+// Cliente interno , este tiene usuario en el sistema y password
 class ClienteInternoMutations{
     //variables
     protected $app;
@@ -32,7 +33,7 @@ class ClienteInternoMutations{
         $this->app = config('app.url');
         $this->now= Carbon::now()->format('Ymd_His');
     }
-
+    // creacion de cliente interno , mas sus caracteristicas y el usuario y del cliente
     public function create($root, array $args){
         $clienteData = $args['clientRequest'];
         // Crear el cliente en la base de datos
@@ -83,7 +84,7 @@ class ClienteInternoMutations{
             $cliente->save();
         $clientId = $cliente->id;
         $value=$user->type_user;
-
+            //
         ImageHelper::createDirectorie($clientId,$value);
         $manager = new ImageManager(new Driver());
         if (isset($args['photo']) && $args['photo'] instanceof UploadedFile) {

@@ -66,9 +66,9 @@ cp .env.example .env
 php artisan key:generate
 
 # Configurar tu base de datos en .env
-# DB_CONNECTION=mysql
+# DB_CONNECTION=pgsql
 # DB_HOST=127.0.0.1
-# DB_PORT=3306
+# DB_PORT=5432
 # DB_DATABASE=tu_base_datos
 # DB_USERNAME=tu_usuario
 # DB_PASSWORD=tu_password

@@ -6,6 +6,7 @@ use App\Models\Setting;
 use Carbon\Carbon;
 
 class ContactoMutations{
+    // creacion de contacto en la vist de configuracion 
     public function create($root , array $args ){
         $contactData = $args['settingRequest'];
 
